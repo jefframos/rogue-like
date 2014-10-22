@@ -1,5 +1,5 @@
 ## rogue-like
-Estrurando ainda
+Estruturando ainda
 
 ### Dependências
 - pixi.js
