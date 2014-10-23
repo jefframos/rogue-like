@@ -5,10 +5,10 @@ var Door = Entity.extend({
         this.updateable = false;
         this.deading = false;
         this.side = side;
-        this.range = APP.tileSize.x / 2;
+        this.range = APP.tileSize.x / 1.8;
         this.width = APP.tileSize.x;
         this.height = APP.tileSize.y;
-        this.centerPosition = {x:-this.width/2, y:-this.height/2};
+        // this.centerPosition = {x:this.width/2, y:this.height/2};
         this.type = 'door';
         this.node = null;
         this.updateable = true;
@@ -49,12 +49,14 @@ var Door = Entity.extend({
             // console.log(this.polygon);
             this.debugGraphic.beginFill(color, 0.5);
             this.debugGraphic.lineStyle(1, 0xffd900);
-            this.debugGraphic.moveTo(this.polygon.points[this.polygon.points.length - 1].x,this.polygon.points[this.polygon.points.length - 1].y);
-            // console.log('this.polygon',this.polygon.points);
+            
+            this.debugGraphic.drawCircle(this.getPosition().x + this.centerPosition.x,this.getPosition().y + this.centerPosition.y,this.range);
+            // this.debugGraphic.moveTo(this.polygon.points[this.polygon.points.length - 1].x,this.polygon.points[this.polygon.points.length - 1].y);
+            // // console.log('this.polygon',this.polygon.points);
 
-            for (var i = this.polygon.points.length - 2; i >= 0; i--) {
-                this.debugGraphic.lineTo(this.polygon.points[i].x, this.polygon.points[i].y);
-            }
+            // for (var i = this.polygon.points.length - 2; i >= 0; i--) {
+            //     this.debugGraphic.lineTo(this.polygon.points[i].x, this.polygon.points[i].y);
+            // }
             this.debugGraphic.endFill();
         }
     },

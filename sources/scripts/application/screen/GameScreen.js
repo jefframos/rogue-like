@@ -1,5 +1,5 @@
 /*jshint undef:false */
-var DesktopMainScreen = AbstractScreen.extend({
+var GameScreen = AbstractScreen.extend({
     init: function (label) {
         MicroEvent.mixin(this);
         this._super(label);
@@ -21,6 +21,8 @@ var DesktopMainScreen = AbstractScreen.extend({
         this.addChild(this.layerManager);
         this.margin = {x:APP.tileSize.x / 2 * 3,y:160 / 2};
         this.mouseDown = false;
+
+        this.playerModel = new PlayerModel();
 
     },
     destroy: function () {
@@ -49,7 +51,7 @@ var DesktopMainScreen = AbstractScreen.extend({
         this._super();
 
         this.currentNode = APP.gen.firstNode;
-        console.log('this.currentNode', this.currentNode);
+        //console.log('this.currentNode', this.currentNode);
         // SOCKET.updateObj({user:{isMobile:false}});
         // SOCKET.updateObj({socket:this.currentAppModel});
         this.rainContainer = new PIXI.DisplayObjectContainer();
@@ -57,53 +59,7 @@ var DesktopMainScreen = AbstractScreen.extend({
         var self = this;
 
         this.vecPositions = [];
-        document.body.addEventListener('mouseup', function(e){
-            self.mouseDown = false;
-        });
-        document.body.addEventListener('mousedown', function(e){
-            self.mouseDown = true;
-            self.player.fireFreqAcum = 0;
-        });
-        document.body.addEventListener('keyup', function(e){
-            if(self.player){
-                if(e.keyCode === 87 || e.keyCode === 38 && self.player.velocity.y < 0){
-                    self.removePosition('up');
-                }
-                else if(e.keyCode === 83 || e.keyCode === 40 && self.player.velocity.y > 0){
-                    self.removePosition('down');
-                }
-                else if(e.keyCode === 65 || e.keyCode === 37 && self.player.velocity.x < 0){
-                    self.removePosition('left');
-                }
-                else if(e.keyCode === 68 || e.keyCode === 39 && self.player.velocity.x > 0){
-                    self.removePosition('right');
-                }
-                self.updatePlayerVel();
-            }
-        });
-        document.body.addEventListener('keydown', function(e){
-            var vel = 6;
-            //console.log('keydown');
-
-            if(e.keyCode === 87 || e.keyCode === 38){
-                self.removePosition('down');
-                self.addPosition('up');
-            }
-            else if(e.keyCode === 83 || e.keyCode === 40){
-                self.removePosition('up');
-                self.addPosition('down');
-            }
-            else if(e.keyCode === 65 || e.keyCode === 37){
-                self.removePosition('right');
-                self.addPosition('left');
-            }
-            else if(e.keyCode === 68 || e.keyCode === 39){
-                self.removePosition('left');
-                self.addPosition('right');
-            }
-            self.updatePlayerVel();
-
-        });
+        this.keyboardInput = new KeyboardInput(this);
         var tempRain = null;
         this.vecRain = [];
         for (var j = 300; j >= 0; j--) {
@@ -114,7 +70,6 @@ var DesktopMainScreen = AbstractScreen.extend({
 
         this.mascara = new PIXI.Graphics();
         this.mascara.beginFill(0xFFFF00);
-        // set the line style to have a width of 5 and set the color to red
         this.mascara.lineStyle(5, 0xFF0000);
         this.mascara.moveTo(-1920,-1280);
         this.mascara.lineTo(1920*2,-1280);
@@ -227,20 +182,7 @@ var DesktopMainScreen = AbstractScreen.extend({
     },
     //colocar isso dentro do personagem
     shoot:function(){
-        var self = this;
-        var angle = Math.atan2(this.player.getPosition().y-APP.stage.getMousePosition().y,  this.player.getPosition().x-APP.stage.getMousePosition().x);
-        angle = angle * 180 / Math.PI * -1;
-        angle += 90 + 180;
-        angle = angle / 180 * Math.PI;
-        for (var i = 0; i < 10; i++) {
-            var tempFire = new Fire({x:this.player.fireSpeed * Math.sin(angle * i), y: this.player.fireSpeed * Math.cos(angle * i)});
-            tempFire.timeLive = this.player.fireStepLive;
-            tempFire.power = this.player.firePower;
-            tempFire.build();
-            tempFire.setPosition(this.player.getPosition().x + 40, this.player.getPosition().y +10);
-            this.entityLayer.addChild(tempFire);
-            this.player.fireFreqAcum = this.player.fireFreq;
-        }
+        this.player.shoot(APP.stage.getMousePosition());
     },
     update:function()
     {
@@ -347,7 +289,7 @@ var DesktopMainScreen = AbstractScreen.extend({
         this.level = getRandomLevel();
 
         
-        this.player = new Player();
+        this.player = new Player(this.playerModel);
         this.player.build();
 
 
@@ -361,13 +303,13 @@ var DesktopMainScreen = AbstractScreen.extend({
             this.player.setPosition(windowWidth/2,this.margin.y );
         }else if(this.currentPlayerSide === 'left')
         {
-            this.player.setPosition(windowWidth - this.margin.x - this.player.width,windowHeight/2);
+            this.player.setPosition(windowWidth - this.margin.x - this.player.width ,windowHeight/2 - this.player.height/2);
         }else if(this.currentPlayerSide === 'right')
         {
-            this.player.setPosition(this.margin.x,windowHeight/2);
+            this.player.setPosition(this.margin.x,windowHeight/2- this.player.height/2);
         }
 
-        this.heart = new Enemy();
+        this.heart = new Enemy(this.player);
         this.heart.build();
        
         this.fly = new FlightEnemy(500,500);

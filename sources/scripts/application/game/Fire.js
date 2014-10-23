@@ -8,6 +8,7 @@ var Fire = Entity.extend({
         this.width = 1;
         this.height = 1;
         this.type = 'fire';
+        this.fireType = 'physical';
         this.node = null;
         this.velocity.x = vel.x;
         this.velocity.y = vel.y;
@@ -102,7 +103,7 @@ var Fire = Entity.extend({
             if(arrayCollide[0].type === 'enemy'){
                 this.getContent().tint = 0xff0000;
                 this.preKill();
-                arrayCollide[0].hurt(this.power);
+                arrayCollide[0].hurt(this.power, this.fireType);
 
             }
         }

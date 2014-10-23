@@ -9,7 +9,7 @@ var FlightEnemy = Enemy.extend({
         this.height = 142/2;
         this.type = 'flight';
         this.node = null;
-        this.life = 50000;
+        this.life = 10;
 
         this.radius = 200;
         this.acumSimCos = 0;

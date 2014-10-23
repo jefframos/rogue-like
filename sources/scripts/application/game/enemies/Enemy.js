@@ -9,16 +9,19 @@ var Enemy = SpritesheetEntity.extend({
         this.height = APP.tileSize.y * 0.9;
         this.type = 'enemy';
         this.node = null;
-        this.life = 1000;
+        this.life = 20;
         this.boundsCollision = true;
         this.defaultVelocity = 1;
         this.player = player;
+        this.monsterModel = new MonsterModel();
         this.behaviour = new DefaultBehaviour(this, player);
     },
-    hurt:function(power){
-        console.log('hurt');
+    hurt:function(demage, type){
         this.getTexture().tint = 0xFF0000;
-        this.life -= power;
+        var trueDemage = this.monsterModel.getHurt(demage, type);
+        console.log(demage,'hurt',trueDemage);
+
+        this.life -= trueDemage;
         if(this.life <= 0){
             this.preKill();
         }
@@ -56,6 +59,7 @@ var Enemy = SpritesheetEntity.extend({
     preKill:function(){
         //this._super();
         var self = this;
+        this.player.playerModel.updateXp(this.monsterModel.xp);
         this.updateable = false;
         this.collidable = false;
         TweenLite.to(this.getContent(), 0.5, {alpha:0, onComplete:function(){self.kill = true;}});

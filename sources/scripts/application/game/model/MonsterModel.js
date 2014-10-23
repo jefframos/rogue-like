@@ -1,39 +1,24 @@
 /*jshint undef:false */
-var PlayerModel = Class.extend({
+var MonsterModel = Class.extend({
 	init: function (){
 		this.velocity = 4;
-		this.fireFreq = 10;
-
-
+		this.fireFreq = 5;
 		this.life = 20;
-		this.level = 2;
+		this.level = 1;
 		this.magicPower = 20;
 		this.spellPower = 2;
         this.battlePower = 2;
 		this.defense = 20;
 		this.critialChance = 0.0;
 		this.speedStatus = 'normal';
-		this.vigor = 100;
+		this.vigor = parseInt(Math.random() * 7) + 53;
         this.vigor2 = this.vigor*2;
+        this.xp = 100;
         if(this.vigor >= 128){
             this.vigor2 = 255;
         }
 		this.attack = this.battlePower + this.vigor2;
         this.speed = 10;
-		this.xp = 0;
-	},
-	updateLevel: function(){
-		// console.log((this.level*this.level+this.level+3)/4, 'compare');
-
-		if(this.xp > (this.level*this.level+this.level+3)/4* 100){
-			this.level ++;
-		}
-		console.log(this.level,'<- level, xp ->',this.xp);
-	},
-	updateXp: function(xp){
-		console.log('xp', xp);
-		this.xp += xp;
-		this.updateLevel();
 	},
 	getDemage: function(type){
 		var damageMultiplier = Math.random() < this.critialChance ? 0.5 : 2;
@@ -41,18 +26,26 @@ var PlayerModel = Class.extend({
 		if(type === 'physical'){
 			demage = this.battlePower + ((this.level * this.level * this.attack) / 256) * 3 / 2;
 		}else if(type === 'magical'){
-			demage = this.spellPower * 4 + (this.level * this.magicPower * this.spellPower / 32);
+			demage = this.spellPower * 4 + (this.level * (this.magicPower * 3/2) * this.spellPower / 32);
 		}
-
 		demage = demage + ((demage / 2) * damageMultiplier);
 
 		return demage;
 	},
-	getHurt: function(demage){
-		demage = (demage * (255 - this.defense) / 256) + 1;
+	getHurt: function(demage, type){
+		console.log('getHurt1',demage);
+
+		if(type === 'physical'){
+			demage = (demage * (255 - this.defense) / 256) + 1;
+		}else if(type === 'magical'){
+			demage = (demage * (255 - this.magicDefense) / 256) + 1;
+		}
+
+		console.log('getHurt2',demage);
+
 		return demage;
 	},
-	getSpeed: function(type){
+	getSpeed: function(){
 		if(type === 'normal'){
 			currentSpeed = (96 * (this.speed + 20)) / 16;//normal
 		}else if(type === 'haste'){

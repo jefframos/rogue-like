@@ -20,7 +20,7 @@ var DungeonGenerator = Class.extend({
 	generate:function(seed, precision, minMax, bounds,maxLenght, start)
 	{
 		this.seed = seed;
-		console.log('seed', seed);
+		//console.log('seed', seed);
 		random = 0;
 		if(maxLenght < 0){
 			maxLenght = 99999;
@@ -139,7 +139,7 @@ var DungeonGenerator = Class.extend({
 	generateNodes:function(i, j, parent, maxLeght, forceAdd)
 	{
 		if ((this.numActivesNodes >= this.maxNodes || maxLeght <= 0) && !forceAdd){
-			console.log('maxLeght ', maxLeght, !forceAdd);
+			//console.log('maxLeght ', maxLeght, !forceAdd);
 
 			return;
 		}
@@ -162,9 +162,9 @@ var DungeonGenerator = Class.extend({
 
 		if (!node)
 		{
-			if(forceAdd){
-				console.log('numActivesNodes', this.numActivesNodes);
-			}
+			// if(forceAdd){
+			// 	console.log('numActivesNodes', this.numActivesNodes);
+			// }
 			//minNodes ++;
 			return;
 		}
@@ -185,7 +185,7 @@ var DungeonGenerator = Class.extend({
 			}
 			if (parent && node.id !== 1)
 			{
-				console.log('o id ', node.id, ' é filho de ', parent.id);
+				//console.log('o id ', node.id, ' é filho de ', parent.id);
 				node.parentPosition = parent.position;
 				node.parentId = parent.id;
 				node.parent = parent;
@@ -229,7 +229,7 @@ var DungeonGenerator = Class.extend({
 					node.childrenSides[1] = node.parent;
 				}
 				else if (node.parent.position[0] < node.position[0]){
-					console.log('o node ', node.id,' tem um pai em cima');
+					//console.log('o node ', node.id,' tem um pai em cima');
 					node.childrenSides[2] = node.parent;
 				}
 				else if (node.parent.position[0] > node.position[0]){

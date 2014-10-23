@@ -1,4 +1,4 @@
-/*! goyabpd 22-10-2014 */
+/*! goyabpd 23-10-2014 */
 function getRandomLevel() {
     var id = 3;
     return ALL_LEVELS[id];
@@ -11,8 +11,8 @@ function testMobile() {
 function update() {
     requestAnimFrame(update);
     var tempRation = window.innerHeight / windowHeight, ratio = tempRation < window.innerWidth / windowWidth ? tempRation : window.innerWidth / windowWidth;
-    windowWidthVar = windowWidth * ratio, windowHeightVar = windowHeight * ratio, renderer.view.style.width = windowWidthVar + "px", 
-    renderer.view.style.height = windowHeightVar + "px", APP.update(), renderer.render(APP.stage);
+    windowWidthVar = windowWidth * ratio, windowHeightVar = windowHeight * ratio, renderer.view.style.width = windowWidth / 2 + "px", 
+    renderer.view.style.height = windowHeight / 2 + "px", APP.update(), renderer.render(APP.stage);
 }
 
 var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ], [ [ 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 2 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ] ], [ [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ] ], [ [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ], [ 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0 ], [ 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2 ], [ 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0 ], [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ] ], [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ] ], DungeonGenerator = Class.extend({
@@ -23,9 +23,9 @@ var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0,
         this.precision = 1, this.seed = 0, this.rooms = [];
     },
     generate: function(seed, precision, minMax, bounds, maxLenght, start) {
-        this.seed = seed, console.log("seed", seed), random = 0, 0 > maxLenght && (maxLenght = 99999), 
-        this.minNodes = minMax[0], this.maxNodes = minMax[1], this.precision = precision, 
-        this.numActivesNodes = 0, this.maxDist = -999999999, this.seeds = 1;
+        this.seed = seed, random = 0, 0 > maxLenght && (maxLenght = 99999), this.minNodes = minMax[0], 
+        this.maxNodes = minMax[1], this.precision = precision, this.numActivesNodes = 0, 
+        this.maxDist = -999999999, this.seeds = 1;
         var i = 0, j = 0;
         if (this.rooms.length <= 0) for (i = 0; i < bounds[0]; i++) {
             var temp = [];
@@ -59,44 +59,42 @@ var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0,
         console.log(this.firstNode);
     },
     generateNodes: function(i, j, parent, maxLeght, forceAdd) {
-        if ((this.numActivesNodes >= this.maxNodes || 0 >= maxLeght) && !forceAdd) return void console.log("maxLeght ", maxLeght, !forceAdd);
-        if (!(this.numActivesNodes > 50)) {
+        if (!((this.numActivesNodes >= this.maxNodes || 0 >= maxLeght) && !forceAdd || this.numActivesNodes > 50)) {
             for (var node = null, jj = 0; jj < this.rooms.length; jj++) for (var item = this.rooms[jj], ii = 0; ii < item.length; ii++) item[ii].position[0] === i && item[ii].position[1] === j && (node = item[ii]);
-            if (!node) return void (forceAdd && console.log("numActivesNodes", this.numActivesNodes));
-            if (node.active && !forceAdd) return void this.minNodes++;
-            if (this.minNodes--, node.mode = 2, this.numActivesNodes++, node.active = !0, node.id < 0 && (node.id = this.numActivesNodes), 
-            parent && 1 !== node.id) {
-                console.log("o id ", node.id, " é filho de ", parent.id), node.parentPosition = parent.position, 
-                node.parentId = parent.id, node.parent = parent;
-                var dist = this.pointDistance(parent.position[0], parent.position[1], this.firstNode.position[0], this.firstNode.position[1]);
-                for (node.dist = dist, this.maxDist <= dist && node.parentId > 2 && (this.maxDist = dist, 
-                this.mostDistant = node), node.dist = dist, ri = this.rooms.length - 1; ri >= 0; ri--) {
-                    var tempNodeArray = this.rooms[ri];
-                    for (nj = tempNodeArray.length - 1; nj >= 0; nj--) tempNodeArray[nj].id === node.parentId && (tempNodeArray[nj].position[1] > node.position[1] ? tempNodeArray[nj].childrenSides[0] = node : tempNodeArray[nj].position[1] < node.position[1] ? tempNodeArray[nj].childrenSides[1] = node : tempNodeArray[nj].position[0] > node.position[0] ? tempNodeArray[nj].childrenSides[2] = node : tempNodeArray[nj].position[0] < node.position[0] && (tempNodeArray[nj].childrenSides[3] = node));
+            if (node) {
+                if (node.active && !forceAdd) return void this.minNodes++;
+                if (this.minNodes--, node.mode = 2, this.numActivesNodes++, node.active = !0, node.id < 0 && (node.id = this.numActivesNodes), 
+                parent && 1 !== node.id) {
+                    node.parentPosition = parent.position, node.parentId = parent.id, node.parent = parent;
+                    var dist = this.pointDistance(parent.position[0], parent.position[1], this.firstNode.position[0], this.firstNode.position[1]);
+                    for (node.dist = dist, this.maxDist <= dist && node.parentId > 2 && (this.maxDist = dist, 
+                    this.mostDistant = node), node.dist = dist, ri = this.rooms.length - 1; ri >= 0; ri--) {
+                        var tempNodeArray = this.rooms[ri];
+                        for (nj = tempNodeArray.length - 1; nj >= 0; nj--) tempNodeArray[nj].id === node.parentId && (tempNodeArray[nj].position[1] > node.position[1] ? tempNodeArray[nj].childrenSides[0] = node : tempNodeArray[nj].position[1] < node.position[1] ? tempNodeArray[nj].childrenSides[1] = node : tempNodeArray[nj].position[0] > node.position[0] ? tempNodeArray[nj].childrenSides[2] = node : tempNodeArray[nj].position[0] < node.position[0] && (tempNodeArray[nj].childrenSides[3] = node));
+                    }
+                    node.parent.position[1] < node.position[1] ? node.childrenSides[0] = node.parent : node.parent.position[1] > node.position[1] ? node.childrenSides[1] = node.parent : node.parent.position[0] < node.position[0] ? node.childrenSides[2] = node.parent : node.parent.position[0] > node.position[0] && (node.childrenSides[3] = node.parent);
+                } else node.id = 1, node.mode = 1, this.firstNode = node;
+                var has = !1;
+                if (this.getNextFloat() < this.seeds || this.minNodes > 0) {
+                    this.seeds *= this.precision;
+                    for (var tmpArr = [ 0, 0 ], arrayGens = [], rndTest = 1 === node.id, rndValue = rndTest ? .9 : .4, k = 0; 4 > k; k++) if (this.getNextFloat() < rndValue) {
+                        has = !0, 0 === k ? tmpArr = [ -1, 0 ] : 1 === k ? tmpArr = [ 1, 0 ] : 2 === k ? tmpArr = [ 0, 1 ] : 3 === k && (tmpArr = [ 0, -1 ]);
+                        var objGen = {};
+                        objGen.i = i + tmpArr[0], objGen.j = j + tmpArr[1], objGen.parentPosition = [ i, j ], 
+                        objGen.parent = node, arrayGens.push(objGen);
+                    }
+                    for (var n = arrayGens.length - 1; n >= 0; n--) {
+                        var obj = arrayGens[n];
+                        rndTest || maxLeght--, this.generateNodes(obj.i, obj.j, obj.parent, maxLeght, rndTest);
+                    }
+                    if (this.minNodes > 0 || this.seeds >= 1) {
+                        var tempRnd = this.getNextFloat();
+                        tmpArr = .25 > tempRnd ? [ -1, 0 ] : .5 > tempRnd ? [ 1, 0 ] : .75 > tempRnd ? [ 0, 1 ] : [ 0, -1 ], 
+                        this.generateNodes(i + tmpArr[0], j + tmpArr[1], node, --maxLeght);
+                    }
                 }
-                node.parent.position[1] < node.position[1] ? node.childrenSides[0] = node.parent : node.parent.position[1] > node.position[1] ? node.childrenSides[1] = node.parent : node.parent.position[0] < node.position[0] ? (console.log("o node ", node.id, " tem um pai em cima"), 
-                node.childrenSides[2] = node.parent) : node.parent.position[0] > node.position[0] && (node.childrenSides[3] = node.parent);
-            } else node.id = 1, node.mode = 1, this.firstNode = node;
-            var has = !1;
-            if (this.getNextFloat() < this.seeds || this.minNodes > 0) {
-                this.seeds *= this.precision;
-                for (var tmpArr = [ 0, 0 ], arrayGens = [], rndTest = 1 === node.id, rndValue = rndTest ? .9 : .4, k = 0; 4 > k; k++) if (this.getNextFloat() < rndValue) {
-                    has = !0, 0 === k ? tmpArr = [ -1, 0 ] : 1 === k ? tmpArr = [ 1, 0 ] : 2 === k ? tmpArr = [ 0, 1 ] : 3 === k && (tmpArr = [ 0, -1 ]);
-                    var objGen = {};
-                    objGen.i = i + tmpArr[0], objGen.j = j + tmpArr[1], objGen.parentPosition = [ i, j ], 
-                    objGen.parent = node, arrayGens.push(objGen);
-                }
-                for (var n = arrayGens.length - 1; n >= 0; n--) {
-                    var obj = arrayGens[n];
-                    rndTest || maxLeght--, this.generateNodes(obj.i, obj.j, obj.parent, maxLeght, rndTest);
-                }
-                if (this.minNodes > 0 || this.seeds >= 1) {
-                    var tempRnd = this.getNextFloat();
-                    tmpArr = .25 > tempRnd ? [ -1, 0 ] : .5 > tempRnd ? [ 1, 0 ] : .75 > tempRnd ? [ 0, 1 ] : [ 0, -1 ], 
-                    this.generateNodes(i + tmpArr[0], j + tmpArr[1], node, --maxLeght);
-                }
+                has || (node.mode = 3);
             }
-            has || (node.mode = 3);
         }
     },
     pointDistance: function(x, y, x0, y0) {
@@ -157,44 +155,35 @@ SmartSocket.SOCKET_ERROR = "socketError";
 
 var Application = AbstractApplication.extend({
     init: function() {
-        $.ajax({
-            cache: !1
-        }), this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(16777215), 
+        this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(16777215), 
         this.stage.removeChild(this.loadText), this.isMobile = testMobile(), this.appContainer = document.getElementById("rect"), 
         this.id = parseInt(1e11 * Math.random()), this.gen = new DungeonGenerator(), this.gen.generate(16777215 * Math.random(), 1, [ 10, 15 ], [ 12, 12 ], 5), 
         this.gen.log(), this.tileSize = {
             x: 80,
             y: 80
         };
+        var model1 = new PlayerModel(), model2 = new MonsterModel();
+        console.log("player physical attack", model2.getHurt(model1.getDemage("physical"))), 
+        console.log("player magical attack", model2.getHurt(model1.getDemage("magical")));
+        for (var i = 0; 20 > i; i++) model1.updateXp(10);
+        console.log("monster physical attack", model1.getHurt(model2.getDemage("physical"))), 
+        console.log("monster magical attack", model1.getHurt(model2.getDemage("magical")));
     },
     build: function() {
-        this._super(), console.log("build"), this.onAssetsLoaded();
+        this._super(), this.onAssetsLoaded();
     },
     onAssetsLoaded: function() {
-        this.mainApp = null, this.isMobile ? (this.mainApp = new MobileMainScreen("Main"), 
-        this.screenManager.addScreen(this.mainApp), this.screenManager.change("Main")) : (this.mainApp = new DesktopMainScreen("Main"), 
-        this.screenManager.addScreen(this.mainApp), this.screenManager.change("Main"));
+        this.mainApp = new GameScreen("Main"), this.screenManager.addScreen(this.mainApp), 
+        this.screenManager.change("Main");
     },
-    appWrite: function(obj) {
-        console.log("appWrite", obj), SOCKET.updateObj({
-            socket: obj
-        });
-    },
-    readObj: function(obj) {
-        obj && (obj.user && obj.user.isMobile && "Main" !== APP.screenManager.currentScreen.screenLabel ? APP.screenManager.change("Main") : obj.socket && obj.socket.isMobile !== this.isMobile && APP.mainApp.updateNotification(obj.socket));
-    },
-    writeObj: function() {},
-    setObj: function() {},
     show: function() {},
     hide: function() {},
     destroy: function() {}
 }), Door = Entity.extend({
     init: function(side) {
-        this._super(!0), this.updateable = !1, this.deading = !1, this.side = side, this.range = APP.tileSize.x / 2, 
-        this.width = APP.tileSize.x, this.height = APP.tileSize.y, this.centerPosition = {
-            x: -this.width / 2,
-            y: -this.height / 2
-        }, this.type = "door", this.node = null, this.updateable = !0;
+        this._super(!0), this.updateable = !1, this.deading = !1, this.side = side, this.range = APP.tileSize.x / 1.8, 
+        this.width = APP.tileSize.x, this.height = APP.tileSize.y, this.type = "door", this.node = null, 
+        this.updateable = !0;
     },
     getBounds: function() {
         return this.bounds = {
@@ -231,14 +220,11 @@ var Application = AbstractApplication.extend({
         this.bounds;
     },
     debugPolygon: function(color, force) {
-        if (this.lastColorDebug !== color || force) {
-            null === this.debugGraphic.parent && null !== this.getContent().parent && this.getContent().parent.addChild(this.debugGraphic), 
-            this.lastColorDebug = color, this.gambAcum++, void 0 !== this.debugGraphic ? this.debugGraphic.clear() : this.debugGraphic = new PIXI.Graphics(), 
-            this.debugGraphic.beginFill(color, .5), this.debugGraphic.lineStyle(1, 16767232), 
-            this.debugGraphic.moveTo(this.polygon.points[this.polygon.points.length - 1].x, this.polygon.points[this.polygon.points.length - 1].y);
-            for (var i = this.polygon.points.length - 2; i >= 0; i--) this.debugGraphic.lineTo(this.polygon.points[i].x, this.polygon.points[i].y);
-            this.debugGraphic.endFill();
-        }
+        (this.lastColorDebug !== color || force) && (null === this.debugGraphic.parent && null !== this.getContent().parent && this.getContent().parent.addChild(this.debugGraphic), 
+        this.lastColorDebug = color, this.gambAcum++, void 0 !== this.debugGraphic ? this.debugGraphic.clear() : this.debugGraphic = new PIXI.Graphics(), 
+        this.debugGraphic.beginFill(color, .5), this.debugGraphic.lineStyle(1, 16767232), 
+        this.debugGraphic.drawCircle(this.getPosition().x + this.centerPosition.x, this.getPosition().y + this.centerPosition.y, this.range), 
+        this.debugGraphic.endFill());
     },
     build: function() {
         this._super("_dist/img/cubo2.png");
@@ -257,8 +243,9 @@ var Application = AbstractApplication.extend({
 }), Fire = Entity.extend({
     init: function(vel) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = 60, this.width = 1, 
-        this.height = 1, this.type = "fire", this.node = null, this.velocity.x = vel.x, 
-        this.velocity.y = vel.y, this.timeLive = 10, this.power = 1, this.defaultVelocity = 1;
+        this.height = 1, this.type = "fire", this.fireType = "physical", this.node = null, 
+        this.velocity.x = vel.x, this.velocity.y = vel.y, this.timeLive = 10, this.power = 1, 
+        this.defaultVelocity = 1;
     },
     getBounds: function() {
         return this.bounds = {
@@ -318,7 +305,7 @@ var Application = AbstractApplication.extend({
     },
     collide: function(arrayCollide) {
         this.collidable && "enemy" === arrayCollide[0].type && (this.getContent().tint = 16711680, 
-        this.preKill(), arrayCollide[0].hurt(this.power));
+        this.preKill(), arrayCollide[0].hurt(this.power, this.fireType));
     },
     preKill: function() {
         if (this.collidable) {
@@ -443,25 +430,19 @@ var Application = AbstractApplication.extend({
         };
     },
     build: function() {
-        console.log(APP.gen.rooms);
-        for (var minX = 9999, minY = 9999, maxX = -9999, maxY = -9999, tempX = 0, tempY = 0, j = 0; j < APP.gen.rooms.length; j++) {
-            var item = APP.gen.rooms[j];
-            console.log(item);
-            for (var i = 0; i < item.length; i++) if (item[i].id > 0) {
-                var tempRoomView = new PIXI.Graphics();
-                tempRoomView.beginFill(1 === item[i].mode ? 5428328 : 2 === item[i].mode ? 11447982 : 3 === item[i].mode ? 16239929 : 4 === item[i].mode ? 16202041 : 5 === item[i].mode ? 2171169 : 6 === item[i].mode ? 13324996 : 16777215), 
-                tempRoomView.lineStyle(1, 3355443, 1), tempX = item[i].position[1] * this.sizeTile.x, 
-                tempY = item[i].position[0] * this.sizeTile.y, tempRoomView.position.x = tempX, 
-                tempRoomView.position.y = tempY, tempRoomView.drawRect(0, 0, this.sizeGraph.x, this.sizeGraph.y), 
-                tempRoomView.endFill(), this.container.addChild(tempRoomView), minX > item[i].position[1] && (minX = item[i].position[1]), 
-                minY > item[i].position[0] && (minY = item[i].position[0]), maxX < item[i].position[1] && (maxX = item[i].position[1]), 
-                maxY < item[i].position[0] && (maxY = item[i].position[0]), this.arrayRooms.push(tempRoomView);
-            }
+        for (var minX = 9999, minY = 9999, maxX = -9999, maxY = -9999, tempX = 0, tempY = 0, j = 0; j < APP.gen.rooms.length; j++) for (var item = APP.gen.rooms[j], i = 0; i < item.length; i++) if (item[i].id > 0) {
+            var tempRoomView = new PIXI.Graphics();
+            tempRoomView.beginFill(1 === item[i].mode ? 5428328 : 2 === item[i].mode ? 11447982 : 3 === item[i].mode ? 16239929 : 4 === item[i].mode ? 16202041 : 5 === item[i].mode ? 2171169 : 6 === item[i].mode ? 13324996 : 16777215), 
+            tempRoomView.lineStyle(1, 3355443, 1), tempX = item[i].position[1] * this.sizeTile.x, 
+            tempY = item[i].position[0] * this.sizeTile.y, tempRoomView.position.x = tempX, 
+            tempRoomView.position.y = tempY, tempRoomView.drawRect(0, 0, this.sizeGraph.x, this.sizeGraph.y), 
+            tempRoomView.endFill(), this.container.addChild(tempRoomView), minX > item[i].position[1] && (minX = item[i].position[1]), 
+            minY > item[i].position[0] && (minY = item[i].position[0]), maxX < item[i].position[1] && (maxX = item[i].position[1]), 
+            maxY < item[i].position[0] && (maxY = item[i].position[0]), this.arrayRooms.push(tempRoomView);
         }
         for (var k = 0; k < this.arrayRooms.length; k++) this.arrayRooms[k].position.x -= minX * this.sizeTile.x - this.margin.x - this.sizeGraph.x / 2, 
         this.arrayRooms[k].position.y -= minY * this.sizeTile.y - this.margin.y - this.sizeGraph.y / 2;
-        console.log(minX, minY, maxX, maxY, maxX * this.margin.x, this.margin.x), this.background.beginFill(0), 
-        this.background.drawRect(0, 0, (maxX - minX + 1) * this.sizeTile.x + 2 * this.margin.x + this.sizeGraph.x / 2, (maxY - minY + 1) * this.sizeTile.y + 2 * this.margin.y + this.sizeGraph.y / 2), 
+        this.background.beginFill(0), this.background.drawRect(0, 0, (maxX - minX + 1) * this.sizeTile.x + 2 * this.margin.x + this.sizeGraph.x / 2, (maxY - minY + 1) * this.sizeTile.y + 2 * this.margin.y + this.sizeGraph.y / 2), 
         this.background.endFill();
     },
     getContent: function() {
@@ -509,21 +490,32 @@ var Application = AbstractApplication.extend({
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     }
 }), Player = SpritesheetEntity.extend({
-    init: function() {
+    init: function(model) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.collidable = !0, 
         this.range = APP.tileSize.x / 2, this.width = .8 * APP.tileSize.x, this.height = .8 * APP.tileSize.y, 
         this.type = "player", this.collisionPointsMarginDivide = 0, this.isTouch = !1, this.boundsCollision = !0, 
-        this.playerModel = new PlayerModel(), this.fireModel = new FireModel(), this.endLevel = !1, 
-        this.defaultVelocity = this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq, 
-        this.life = this.playerModel.life, this.fireSpeed = this.fireModel.fireSpeed, this.fireStepLive = this.fireModel.fireStepLive, 
+        this.playerModel = model, this.fireModel = new FireModel(), this.endLevel = !1, 
+        this.centerPosition = {
+            x: this.width / 2,
+            y: this.height / 4
+        }, this.defaultVelocity = this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq, 
+        this.life = this.playerModel.life, console.log(this.playerModel.getSpeed("normal")), 
+        this.fireSpeed = this.fireModel.fireSpeed, this.fireStepLive = this.fireModel.fireStepLive, 
         this.firePower = this.fireModel.firePower, this.fireFreqAcum = 0;
     },
-    debug: function() {
-        null === this.debugGraphic.parent && null !== this.getContent().parent && this.getContent().parent.addChild(this.debugGraphic), 
-        this.debugGraphic.clear(), this.debugGraphic.beginFill(16724736), this.debugGraphic.lineStyle(1, 16767232), 
-        this.debugGraphic.moveTo(this.bounds.x, this.bounds.y), this.debugGraphic.lineTo(this.bounds.x + this.bounds.w, this.bounds.y), 
-        this.debugGraphic.lineTo(this.bounds.x + this.bounds.w, this.bounds.y + this.bounds.h), 
-        this.debugGraphic.lineTo(this.bounds.x, this.bounds.y + this.bounds.h), this.debugGraphic.endFill();
+    build: function() {
+        var self = this, motionArray = this.getFramesByRange("chinesa10", 0, 8), animationIdle = new SpritesheetAnimation();
+        animationIdle.build("idle", motionArray, 1, !0, null);
+        var motionArrayDead = this.getFramesByRange("chinesa10", 0, 8), animationDead = new SpritesheetAnimation();
+        animationDead.build("dead", motionArrayDead, 2, !1, function() {
+            TweenLite.to(self.spritesheet.scale, .2, {
+                x: 0,
+                y: 0
+            });
+        }), this.spritesheet = new Spritesheet(), this.spritesheet.addAnimation(animationIdle), 
+        this.spritesheet.addAnimation(animationDead), this.spritesheet.play("idle"), this.reset(), 
+        this.counter = 0, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
+        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill();
     },
     getBounds: function() {
         return this.bounds = {
@@ -559,23 +551,22 @@ var Application = AbstractApplication.extend({
         }, this.polygon = new PIXI.Polygon(new PIXI.Point(this.bounds.x + this.bounds.w / 2, this.bounds.y), new PIXI.Point(this.bounds.x, this.bounds.y), new PIXI.Point(this.bounds.x, this.bounds.y + this.bounds.h), new PIXI.Point(this.bounds.x + this.bounds.w / 2, this.bounds.y + this.bounds.h), new PIXI.Point(this.bounds.x + this.bounds.w, this.bounds.y + this.bounds.h), new PIXI.Point(this.bounds.x + this.bounds.w, this.bounds.y)), 
         this.bounds;
     },
-    build: function() {
-        var self = this, motionArray = this.getFramesByRange("chinesa10", 0, 8), animationIdle = new SpritesheetAnimation();
-        animationIdle.build("idle", motionArray, 1, !0, null);
-        var motionArrayDead = this.getFramesByRange("chinesa10", 0, 8), animationDead = new SpritesheetAnimation();
-        animationDead.build("dead", motionArrayDead, 2, !1, function() {
-            TweenLite.to(self.spritesheet.scale, .2, {
-                x: 0,
-                y: 0
-            });
-        }), this.spritesheet = new Spritesheet(), this.spritesheet.addAnimation(animationIdle), 
-        this.spritesheet.addAnimation(animationDead), this.spritesheet.play("idle"), this.reset(), 
-        this.counter = 0, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
-        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill();
-    },
     update: function() {
         this.isTouch || (this.velocity = this.virtualVelocity), this.deading && this.setVelocity(0, 0), 
         this._super(), this.debugPolygon(5596740, !0), this.getTexture() && (this.getContent().position.x = 20);
+    },
+    shoot: function(mousePos) {
+        var angle = Math.atan2(this.getPosition().y - mousePos.y, this.getPosition().x - mousePos.x);
+        angle = 180 * angle / Math.PI * -1, angle += 270, angle = angle / 180 * Math.PI;
+        for (var i = 0; 1 > i; i++) {
+            var tempFire = new Fire({
+                x: this.fireSpeed * Math.sin(angle),
+                y: this.fireSpeed * Math.cos(angle)
+            });
+            tempFire.timeLive = this.fireStepLive, tempFire.power = this.playerModel.getDemage("physical"), 
+            tempFire.build(), tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y + 10), 
+            this.layer.addChild(tempFire), this.fireFreqAcum = this.fireFreq;
+        }
     },
     preKill: function() {
         this._super(), this.debugGraphic.parent && this.debugGraphic.parent.removeChild(this.debugGraphic);
@@ -592,16 +583,32 @@ var Application = AbstractApplication.extend({
     touch: function(collection) {
         this.isTouch = !0, console.log(collection), (collection.left || collection.right && 0 !== this.virtualVelocity.x) && (this.velocity.x = 0), 
         (collection.up || collection.down && 0 !== this.virtualVelocity.y) && (this.velocity.y = 0);
+    },
+    debug: function() {
+        null === this.debugGraphic.parent && null !== this.getContent().parent && this.getContent().parent.addChild(this.debugGraphic), 
+        this.debugGraphic.clear(), this.debugGraphic.beginFill(16724736), this.debugGraphic.lineStyle(1, 16767232), 
+        this.debugGraphic.moveTo(this.bounds.x, this.bounds.y), this.debugGraphic.lineTo(this.bounds.x + this.bounds.w, this.bounds.y), 
+        this.debugGraphic.lineTo(this.bounds.x + this.bounds.w, this.bounds.y + this.bounds.h), 
+        this.debugGraphic.lineTo(this.bounds.x, this.bounds.y + this.bounds.h), this.debugGraphic.endFill();
+    },
+    debugPolygon: function(color, force) {
+        (this.lastColorDebug !== color || force) && (null === this.debugGraphic.parent && null !== this.getContent().parent && this.getContent().parent.addChild(this.debugGraphic), 
+        this.lastColorDebug = color, this.gambAcum++, void 0 !== this.debugGraphic ? this.debugGraphic.clear() : this.debugGraphic = new PIXI.Graphics(), 
+        this.debugGraphic.beginFill(color, .5), this.debugGraphic.lineStyle(1, 16767232), 
+        this.debugGraphic.drawCircle(this.getPosition().x + this.centerPosition.x, this.getPosition().y + this.centerPosition.y, this.range), 
+        this.debugGraphic.endFill());
     }
 }), Enemy = SpritesheetEntity.extend({
     init: function(player) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = APP.tileSize.x / 2, 
         this.width = .9 * APP.tileSize.x, this.height = .9 * APP.tileSize.y, this.type = "enemy", 
-        this.node = null, this.life = 1e3, this.boundsCollision = !0, this.defaultVelocity = 1, 
-        this.player = player, this.behaviour = new DefaultBehaviour(this, player);
+        this.node = null, this.life = 20, this.boundsCollision = !0, this.defaultVelocity = 1, 
+        this.player = player, this.monsterModel = new MonsterModel(), this.behaviour = new DefaultBehaviour(this, player);
     },
-    hurt: function(power) {
-        console.log("hurt"), this.getTexture().tint = 16711680, this.life -= power, this.life <= 0 && this.preKill();
+    hurt: function(demage, type) {
+        this.getTexture().tint = 16711680;
+        var trueDemage = this.monsterModel.getHurt(demage, type);
+        console.log(demage, "hurt", trueDemage), this.life -= trueDemage, this.life <= 0 && this.preKill();
     },
     build: function() {
         var motionArray = this.getFramesByRange("dragon10", 0, 14), animationIdle = new SpritesheetAnimation();
@@ -617,7 +624,8 @@ var Application = AbstractApplication.extend({
     },
     preKill: function() {
         var self = this;
-        this.updateable = !1, this.collidable = !1, TweenLite.to(this.getContent(), .5, {
+        this.player.playerModel.updateXp(this.monsterModel.xp), this.updateable = !1, this.collidable = !1, 
+        TweenLite.to(this.getContent(), .5, {
             alpha: 0,
             onComplete: function() {
                 self.kill = !0;
@@ -634,7 +642,7 @@ var Application = AbstractApplication.extend({
 }), FlightEnemy = Enemy.extend({
     init: function(position) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = 60, this.width = 71, 
-        this.height = 71, this.type = "flight", this.node = null, this.life = 5e4, this.radius = 200, 
+        this.height = 71, this.type = "flight", this.node = null, this.life = 10, this.radius = 200, 
         this.acumSimCos = 0, this.setPosition(position.x, position.y), this.boundsCollision = !0;
     },
     build: function() {
@@ -690,14 +698,56 @@ var Application = AbstractApplication.extend({
     update: function() {}
 }), FireModel = Class.extend({
     init: function() {
-        this.fireSpeed = 10, this.fireStepLive = 20, this.firePower = 20;
+        this.fireSpeed = 10, this.fireStepLive = 40, this.firePower = 20;
     },
     update: function() {}
+}), MonsterModel = Class.extend({
+    init: function() {
+        this.velocity = 4, this.fireFreq = 5, this.life = 20, this.level = 1, this.magicPower = 20, 
+        this.spellPower = 2, this.battlePower = 2, this.defense = 20, this.critialChance = 0, 
+        this.speedStatus = "normal", this.vigor = parseInt(7 * Math.random()) + 53, this.vigor2 = 2 * this.vigor, 
+        this.xp = 100, this.vigor >= 128 && (this.vigor2 = 255), this.attack = this.battlePower + this.vigor2, 
+        this.speed = 10;
+    },
+    getDemage: function(type) {
+        var damageMultiplier = Math.random() < this.critialChance ? .5 : 2, demage = 0;
+        return "physical" === type ? demage = this.battlePower + this.level * this.level * this.attack / 256 * 3 / 2 : "magical" === type && (demage = 4 * this.spellPower + this.level * (3 * this.magicPower / 2) * this.spellPower / 32), 
+        demage += demage / 2 * damageMultiplier;
+    },
+    getHurt: function(demage, type) {
+        return console.log("getHurt1", demage), "physical" === type ? demage = demage * (255 - this.defense) / 256 + 1 : "magical" === type && (demage = demage * (255 - this.magicDefense) / 256 + 1), 
+        console.log("getHurt2", demage), demage;
+    },
+    getSpeed: function() {
+        return "normal" === type ? currentSpeed = 96 * (this.speed + 20) / 16 : "haste" === type ? currentSpeed = 126 * (this.speed + 20) / 16 : "slow" === type && (currentSpeed = 48 * (this.speed + 20) / 16), 
+        currentSpeed;
+    }
 }), PlayerModel = Class.extend({
     init: function() {
-        this.velocity = 4, this.fireFreq = 5, this.life = 20;
+        this.velocity = 4, this.fireFreq = 10, this.life = 20, this.level = 2, this.magicPower = 20, 
+        this.spellPower = 2, this.battlePower = 2, this.defense = 20, this.critialChance = 0, 
+        this.speedStatus = "normal", this.vigor = 100, this.vigor2 = 2 * this.vigor, this.vigor >= 128 && (this.vigor2 = 255), 
+        this.attack = this.battlePower + this.vigor2, this.speed = 10, this.xp = 0;
     },
-    update: function() {}
+    updateLevel: function() {
+        this.xp > (this.level * this.level + this.level + 3) / 4 * 100 && this.level++, 
+        console.log(this.level, "<- level, xp ->", this.xp);
+    },
+    updateXp: function(xp) {
+        console.log("xp", xp), this.xp += xp, this.updateLevel();
+    },
+    getDemage: function(type) {
+        var damageMultiplier = Math.random() < this.critialChance ? .5 : 2, demage = 0;
+        return "physical" === type ? demage = this.battlePower + this.level * this.level * this.attack / 256 * 3 / 2 : "magical" === type && (demage = 4 * this.spellPower + this.level * this.magicPower * this.spellPower / 32), 
+        demage += demage / 2 * damageMultiplier;
+    },
+    getHurt: function(demage) {
+        return demage = demage * (255 - this.defense) / 256 + 1;
+    },
+    getSpeed: function(type) {
+        return "normal" === type ? currentSpeed = 96 * (this.speed + 20) / 16 : "haste" === type ? currentSpeed = 126 * (this.speed + 20) / 16 : "slow" === type && (currentSpeed = 48 * (this.speed + 20) / 16), 
+        currentSpeed;
+    }
 }), MobileApp = SmartObject.extend({
     init: function() {
         this._super();
@@ -739,7 +789,7 @@ var Application = AbstractApplication.extend({
         this.content.position.y > this.vArea && (this.content.position.x = Math.random() * this.hArea, 
         this.content.position.y = -200);
     }
-}), DesktopMainScreen = AbstractScreen.extend({
+}), GameScreen = AbstractScreen.extend({
     init: function(label) {
         MicroEvent.mixin(this), this._super(label);
         var bg = new SimpleSprite("_dist/img/rascunho-mapa.jpg");
@@ -750,7 +800,7 @@ var Application = AbstractApplication.extend({
         this.margin = {
             x: APP.tileSize.x / 2 * 3,
             y: 80
-        }, this.mouseDown = !1;
+        }, this.mouseDown = !1, this.playerModel = new PlayerModel();
     },
     destroy: function() {
         this._super();
@@ -761,22 +811,8 @@ var Application = AbstractApplication.extend({
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad();
     },
     onAssetsLoaded: function() {
-        this._super(), this.currentNode = APP.gen.firstNode, console.log("this.currentNode", this.currentNode), 
-        this.rainContainer = new PIXI.DisplayObjectContainer();
-        var self = this;
-        this.vecPositions = [], document.body.addEventListener("mouseup", function() {
-            self.mouseDown = !1;
-        }), document.body.addEventListener("mousedown", function() {
-            self.mouseDown = !0, self.player.fireFreqAcum = 0;
-        }), document.body.addEventListener("keyup", function(e) {
-            self.player && (87 === e.keyCode || 38 === e.keyCode && self.player.velocity.y < 0 ? self.removePosition("up") : 83 === e.keyCode || 40 === e.keyCode && self.player.velocity.y > 0 ? self.removePosition("down") : 65 === e.keyCode || 37 === e.keyCode && self.player.velocity.x < 0 ? self.removePosition("left") : (68 === e.keyCode || 39 === e.keyCode && self.player.velocity.x > 0) && self.removePosition("right"), 
-            self.updatePlayerVel());
-        }), document.body.addEventListener("keydown", function(e) {
-            87 === e.keyCode || 38 === e.keyCode ? (self.removePosition("down"), self.addPosition("up")) : 83 === e.keyCode || 40 === e.keyCode ? (self.removePosition("up"), 
-            self.addPosition("down")) : 65 === e.keyCode || 37 === e.keyCode ? (self.removePosition("right"), 
-            self.addPosition("left")) : (68 === e.keyCode || 39 === e.keyCode) && (self.removePosition("left"), 
-            self.addPosition("right")), self.updatePlayerVel();
-        });
+        this._super(), this.currentNode = APP.gen.firstNode, this.rainContainer = new PIXI.DisplayObjectContainer();
+        this.vecPositions = [], this.keyboardInput = new KeyboardInput(this);
         var tempRain = null;
         this.vecRain = [];
         for (var j = 300; j >= 0; j--) tempRain = new RainParticle(50, 5, windowWidth + 200, windowHeight, "left"), 
@@ -821,17 +857,7 @@ var Application = AbstractApplication.extend({
         }
     },
     shoot: function() {
-        var angle = Math.atan2(this.player.getPosition().y - APP.stage.getMousePosition().y, this.player.getPosition().x - APP.stage.getMousePosition().x);
-        angle = 180 * angle / Math.PI * -1, angle += 270, angle = angle / 180 * Math.PI;
-        for (var i = 0; 10 > i; i++) {
-            var tempFire = new Fire({
-                x: this.player.fireSpeed * Math.sin(angle * i),
-                y: this.player.fireSpeed * Math.cos(angle * i)
-            });
-            tempFire.timeLive = this.player.fireStepLive, tempFire.power = this.player.firePower, 
-            tempFire.build(), tempFire.setPosition(this.player.getPosition().x + 40, this.player.getPosition().y + 10), 
-            this.entityLayer.addChild(tempFire), this.player.fireFreqAcum = this.player.fireFreq;
-        }
+        this.player.shoot(APP.stage.getMousePosition());
     },
     update: function() {
         if (this.player) {
@@ -881,9 +907,9 @@ var Application = AbstractApplication.extend({
             roomState = "key";
         }
         this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState), 
-        this.level = getRandomLevel(), this.player = new Player(), this.player.build(), 
-        "up" === this.currentPlayerSide ? this.player.setPosition(windowWidth / 2, windowHeight - this.margin.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(windowWidth / 2, this.margin.y) : "left" === this.currentPlayerSide ? this.player.setPosition(windowWidth - this.margin.x - this.player.width, windowHeight / 2) : "right" === this.currentPlayerSide && this.player.setPosition(this.margin.x, windowHeight / 2), 
-        this.heart = new Enemy(), this.heart.build(), this.fly = new FlightEnemy(500, 500), 
+        this.level = getRandomLevel(), this.player = new Player(this.playerModel), this.player.build(), 
+        "up" === this.currentPlayerSide ? this.player.setPosition(windowWidth / 2, windowHeight - this.margin.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(windowWidth / 2, this.margin.y) : "left" === this.currentPlayerSide ? this.player.setPosition(windowWidth - this.margin.x - this.player.width, windowHeight / 2 - this.player.height / 2) : "right" === this.currentPlayerSide && this.player.setPosition(this.margin.x, windowHeight / 2 - this.player.height / 2), 
+        this.heart = new Enemy(this.player), this.heart.build(), this.fly = new FlightEnemy(500, 500), 
         this.fly.build(), this.heart.setPosition(700, 200), this.fly.setPosition(100, 200), 
         this.entityLayer.addChild(this.player), this.entityLayer.addChild(this.heart), this.entityLayer.addChild(this.fly);
         for (var i = this.level.length - 1; i >= 0; i--) for (var j = this.level[i].length - 1; j >= 0; j--) if (this.level[i][j] > 0) {
@@ -911,62 +937,6 @@ var Application = AbstractApplication.extend({
         return a.children.length > 0 && (yA = a.children[0].position.y + a.children[0].height), 
         b.children.length > 0 && (yB = b.children[0].position.y + b.children[0].height), 
         yB > yA ? -1 : yA > yB ? 1 : 0;
-    }
-}), MobileMainScreen = AbstractScreen.extend({
-    init: function(label) {
-        MicroEvent.mixin(this), this._super(label), this.currentAppModel = new AppModel(), 
-        this.initPosition = null;
-    },
-    destroy: function() {
-        this._super();
-    },
-    build: function() {
-        this._super(), this.name = new PIXI.Text("iniciou a aplicação no mobile", {
-            fill: "black",
-            align: "center"
-        });
-        var bg = new SimpleSprite("_dist/img/bgMobile.png");
-        this.addChild(bg);
-        var assetsToLoader = [ "_dist/img/bgMobile.png", "_dist/img/buttonDown0001.png", "_dist/img/buttonDown0002.png", "_dist/img/buttonLeft0001.png", "_dist/img/buttonLeft0002.png", "_dist/img/buttonRight0001.png", "_dist/img/buttonRight0002.png", "_dist/img/buttonUp0001.png", "_dist/img/buttonUp0002.png" ];
-        this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad();
-    },
-    onAssetsLoaded: function() {
-        this._super(), SOCKET.updateObj({
-            user: {
-                isMobile: !0
-            }
-        }), SOCKET.updateObj({
-            socket: this.currentAppModel
-        }), console.log("carregou os assets", this.screenLabel);
-        var self = this;
-        this.buttonUp = new DefaultButton("_dist/img/buttonUp0001.png", "_dist/img/buttonUp0002.png", "_dist/img/buttonUp0002.png"), 
-        this.buttonUp.build(), this.buttonUp.setPosition(windowWidth / 2 - this.buttonUp.width / 2, windowHeight / 2 - 200 - this.buttonUp.height / 2), 
-        this.addChild(this.buttonUp), this.buttonDown = new DefaultButton("_dist/img/buttonDown0001.png", "_dist/img/buttonDown0002.png", "_dist/img/buttonDown0002.png"), 
-        this.buttonDown.build(), this.buttonDown.setPosition(windowWidth / 2 - this.buttonDown.width / 2, windowHeight / 2 + 200 - this.buttonDown.height / 2), 
-        this.addChild(this.buttonDown), this.buttonLeft = new DefaultButton("_dist/img/buttonLeft0001.png", "_dist/img/buttonLeft0002.png", "_dist/img/buttonLeft0002.png"), 
-        this.buttonLeft.build(), this.buttonLeft.setPosition(50 + windowWidth / 2 - 1.5 * this.buttonLeft.width, windowHeight / 2 - this.buttonLeft.height / 2), 
-        this.addChild(this.buttonLeft), this.buttonRight = new DefaultButton("_dist/img/buttonRight0001.png", "_dist/img/buttonRight0002.png", "_dist/img/buttonRight0002.png"), 
-        this.buttonRight.build(), this.buttonRight.setPosition(-50 + windowWidth / 2 + this.buttonRight.width / 2, windowHeight / 2 - this.buttonRight.height / 2), 
-        this.addChild(this.buttonRight), this.buttonUp.mouseDownCallback = function() {
-            "up" !== self.currentAppModel.side && (self.currentAppModel.side = "up", self.currentAppModel.action = "down"), 
-            self.sendNotification(self.currentAppModel);
-        }, this.buttonDown.mouseDownCallback = function() {
-            "down" !== self.currentAppModel.side && (self.currentAppModel.side = "down", self.currentAppModel.action = "down"), 
-            self.sendNotification(self.currentAppModel);
-        }, this.buttonLeft.mouseDownCallback = function() {
-            "left" !== self.currentAppModel.side && (self.currentAppModel.side = "left", self.currentAppModel.action = "down"), 
-            self.sendNotification(self.currentAppModel);
-        }, this.buttonRight.mouseDownCallback = function() {
-            "right" !== self.currentAppModel.side && (self.currentAppModel.side = "right", self.currentAppModel.action = "down"), 
-            self.sendNotification(self.currentAppModel);
-        }, this.sendNotification(new AppModel());
-    },
-    update: function() {
-        this._super();
-    },
-    updateNotification: function() {},
-    sendNotification: function(socketObj) {
-        socketObj.id = parseInt(5003232323 * Math.random()), socketObj.isMobile = !0, this.trigger("writeObj", socketObj);
     }
 }), WaitScreen = AbstractScreen.extend({
     init: function(label) {
@@ -1022,7 +992,22 @@ var Application = AbstractApplication.extend({
     },
     destroy: function() {}
 }), KeyboardInput = Class.extend({
-    init: function() {}
+    init: function(parent) {
+        var self = parent;
+        document.body.addEventListener("mouseup", function() {
+            self.mouseDown = !1;
+        }), document.body.addEventListener("mousedown", function() {
+            self.mouseDown = !0, self.player.fireFreqAcum = 0;
+        }), document.body.addEventListener("keyup", function(e) {
+            self.player && (87 === e.keyCode || 38 === e.keyCode && self.player.velocity.y < 0 ? self.removePosition("up") : 83 === e.keyCode || 40 === e.keyCode && self.player.velocity.y > 0 ? self.removePosition("down") : 65 === e.keyCode || 37 === e.keyCode && self.player.velocity.x < 0 ? self.removePosition("left") : (68 === e.keyCode || 39 === e.keyCode && self.player.velocity.x > 0) && self.removePosition("right"), 
+            self.updatePlayerVel());
+        }), document.body.addEventListener("keydown", function(e) {
+            87 === e.keyCode || 38 === e.keyCode ? (self.removePosition("down"), self.addPosition("up")) : 83 === e.keyCode || 40 === e.keyCode ? (self.removePosition("up"), 
+            self.addPosition("down")) : 65 === e.keyCode || 37 === e.keyCode ? (self.removePosition("right"), 
+            self.addPosition("left")) : (68 === e.keyCode || 39 === e.keyCode) && (self.removePosition("left"), 
+            self.addPosition("right")), self.updatePlayerVel();
+        });
+    }
 }), SOCKET = null, windowWidth = 1280, windowHeight = 720;
 
 testMobile() && (windowWidth = 640, windowHeight = 960);
@@ -1031,26 +1016,9 @@ var renderer, windowWidthVar = window.innerWidth, windowHeightVar = window.inner
 
 document.body.appendChild(renderer.view);
 
-var qrcode = new QRCode("qrcode", {
-    width: 768,
-    height: 768,
-    colorDark: "#D5272C",
-    colorLight: "#CBF2F1",
-    correctLevel: QRCode.CorrectLevel.H
-}), firebaseId = parseInt(56659779 * Math.random()), APP, funfa = !1;
+var APP;
 
-if (funfa) firebaseId = 555, "localhost" === document.location.host || "192.168.4.65" === document.location.host ? (console.log("local"), 
-qrcode.makeCode("http://192.168.4.65/socket-smart-control-app/"), APP = new Application("https://jefframos.firebaseio.com/" + document.location.host.substring(0, 3) + firebaseId)) : (qrcode.makeCode("http://jeff.manydevs.com/socket/socket-smart-control-app/"), 
-APP = new Application("https://jefframos.firebaseio.com/many" + firebaseId)); else {
-    var firebaseId = parseInt(56659779 * Math.random());
-    if (testMobile()) {
-        var fireBaseIdStrHASH = window.location.hash.substring(1), linkCode = "";
-        APP = new Application("https://jefframos.firebaseio.com/" + fireBaseIdStrHASH);
-    } else linkCode = "localhost" === document.location.host || "192.168.4.65" === document.location.host ? "http://192.168.4.65/socket-smart-control-app/#" + firebaseId : "http://jeff.manydevs.com/socket/socket-smart-control-app/#" + firebaseId, 
-    console.log(linkCode), qrcode.makeCode(linkCode), APP = new Application("https://jefframos.firebaseio.com/" + firebaseId);
-}
-
-APP.build(), APP.show();
+APP = new Application(), APP.build(), APP.show();
 
 var initialize = function() {
     PIXI.BaseTexture.SCALE_MODE = 2, requestAnimFrame(update);

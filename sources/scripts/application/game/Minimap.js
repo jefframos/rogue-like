@@ -20,7 +20,7 @@ var Minimap = Class.extend({
 		this.sizeGraph = {x:30, y:30};
 	},
 	build:function(){
-		console.log(APP.gen.rooms);
+		// console.log(APP.gen.rooms);
 
 		var minX = 9999;
 		var minY = 9999;
@@ -32,7 +32,7 @@ var Minimap = Class.extend({
 		for (var j = 0; j < APP.gen.rooms.length; j++)
 		{
 			var item = APP.gen.rooms[j];
-			console.log(item);
+			// console.log(item);
 
 			for (var i = 0; i < item.length; i++)
 			{
@@ -86,7 +86,7 @@ var Minimap = Class.extend({
 			this.arrayRooms[k].position.x -= minX * this.sizeTile.x - this.margin.x - this.sizeGraph.x/2;
 			this.arrayRooms[k].position.y -= minY * this.sizeTile.y - this.margin.y - this.sizeGraph.y/2;
 		}
-		console.log(minX,minY,maxX,maxY, maxX * this.margin.x, this.margin.x);
+		// console.log(minX,minY,maxX,maxY, maxX * this.margin.x, this.margin.x);
 		this.background.beginFill(0x0);
 		// this.background.lineStyle(1, 0xffd900, 1);
 		this.background.drawRect(0,0,

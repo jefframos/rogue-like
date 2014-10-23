@@ -6,14 +6,13 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>Goya</title>
+		<title>Rogue-like</title>
 		<meta name="description" content="">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<link rel="shortcut icon" href="favicon.ico">
+		<!-- <link rel="shortcut icon" href="favicon.ico"> -->
 
 		<link rel="stylesheet" href="_dist/css/main.css">
-		<script src="https://cdn.firebase.com/js/client/1.0.21/firebase.js"></script>
 
 		<style type="text/css">	
 		body{
@@ -28,8 +27,8 @@
 		}
 		canvas {
 			position:  absolute;
-			width:  20px;
-  			height: 20px;
+			width:  200px;
+  			height: 200px;
 			left: 0;
 			top: 0;
 			right: 0;
@@ -40,8 +39,6 @@
 	</style>
 	</head>
 	<body>
-		<div id="qrcode" style="display:none"></div>
-
 		<script src="_dist/js/lib/plugins.js"></script>
 		<script src="_dist/js/main.js"></script>
 
