@@ -1,4 +1,4 @@
-/*! goyabpd 23-10-2014 */
+/*! goyabpd 24-10-2014 */
 function getRandomLevel() {
     var id = 3;
     return ALL_LEVELS[id];
@@ -162,14 +162,21 @@ var Application = AbstractApplication.extend({
             x: 80,
             y: 80
         };
-        var model1 = new PlayerModel(), model2 = new MonsterModel();
-        console.log("player physical attack", model2.getHurt(model1.getDemage("physical"))), 
-        console.log("player magical attack", model2.getHurt(model1.getDemage("magical")));
-        for (var i = 0; 20 > i; i++) model1.updateXp(10);
-        console.log("monster physical attack", model1.getHurt(model2.getDemage("physical"))), 
-        console.log("monster magical attack", model1.getHurt(model2.getDemage("magical")));
+        var model1 = new PlayerModel();
+        model1.log(), model1.levelUp(), model1.log(), model1.levelUp(), model1.log(), model1.levelUp(), 
+        model1.log(), model1.levelUp(), model1.log(), model1.levelUp(), model1.log(), model1.levelUp(), 
+        model1.log(), model1.levelUp(), model1.log();
     },
     build: function() {
+        this.spellList = [], this.spellList.push(new SpellModel(1, "bolt1", 6, 20)), this.spellList.push(new SpellModel(1, "fire1", 4, 21)), 
+        this.spellList.push(new SpellModel(1, "ice1", 5, 22)), this.spellList.push(new SpellModel(1, "poison", 3, 25)), 
+        this.spellList.push(new SpellModel(1, "wind", 75, 25)), this.spellList.push(new SpellModel(2, "bolt2", 22, 26)), 
+        this.spellList.push(new SpellModel(2, "fire2", 20, 60)), this.spellList.push(new SpellModel(2, "ice2", 21, 62)), 
+        this.spellList.push(new SpellModel(2, "drain", 15, 38)), this.spellList.push(new SpellModel(3, "meteor", 62, 36)), 
+        this.spellList.push(new SpellModel(3, "bio", 26, 53)), this.spellList.push(new SpellModel(3, "flare", 45, 60)), 
+        this.spellList.push(new SpellModel(4, "quake", 50, 111)), this.spellList.push(new SpellModel(5, "bolt3", 53, 120)), 
+        this.spellList.push(new SpellModel(5, "fire3", 51, 121)), this.spellList.push(new SpellModel(5, "ice3", 52, 122)), 
+        this.spellList.push(new SpellModel(6, "merton", 85, 138)), this.spellList.push(new SpellModel(7, "ultima", 80, 150)), 
         this._super(), this.onAssetsLoaded();
     },
     onAssetsLoaded: function() {
@@ -723,14 +730,50 @@ var Application = AbstractApplication.extend({
         currentSpeed;
     }
 }), PlayerModel = Class.extend({
-    init: function() {
-        this.velocity = 4, this.fireFreq = 10, this.life = 20, this.level = 2, this.magicPower = 20, 
-        this.spellPower = 2, this.battlePower = 2, this.defense = 20, this.critialChance = 0, 
-        this.speedStatus = "normal", this.vigor = 100, this.vigor2 = 2 * this.vigor, this.vigor >= 128 && (this.vigor2 = 255), 
-        this.attack = this.battlePower + this.vigor2, this.speed = 10, this.xp = 0;
+    init: function(playerClass) {
+        this.velocity = 4, this.fireFreq = 10, this.playerClass = playerClass ? playerClass : "warrior", 
+        this.level = 1, "warrior" === this.playerClass ? (this.vigor = 40, this.speed = 28, 
+        this.stamina = 33, this.magicPower = 25, this.battlePower = 25, this.defense = 48, 
+        this.magicDefense = 20, this.baseHPModifier = 1.32, this.baseHP = this.level * (20 / this.baseHPModifier), 
+        this.vigorModifier = .007, this.speedModifier = .004, this.staminaModifier = .007, 
+        this.magicPowerModifier = .003, this.battlePowerModifier = .006, this.defenseModifier = .006, 
+        this.magicDefenseModifier = .003) : "mage" === this.playerClass ? (this.vigor = 31, 
+        this.speed = 33, this.stamina = 28, this.magicPower = 39, this.battlePower = 12, 
+        this.defense = 42, this.magicDefense = 33, this.baseHPModifier = 1.32, this.baseHP = this.level * (20 / this.baseHPModifier), 
+        this.vigorModifier = .005, this.speedModifier = .004, this.staminaModifier = .005, 
+        this.magicPowerModifier = .007, this.battlePowerModifier = .003, this.defenseModifier = .005, 
+        this.magicDefenseModifier = .007) : "thief" === this.playerClass && (this.vigor = 37, 
+        this.speed = 40, this.stamina = 31, this.magicPower = 28, this.battlePower = 14, 
+        this.defense = 46, this.magicDefense = 23, this.baseHPModifier = 1.32, this.baseHP = this.level * (20 / this.baseHPModifier), 
+        this.vigorModifier = .004, this.speedModifier = .007, this.staminaModifier = .007, 
+        this.magicPowerModifier = .004, this.battlePowerModifier = .006, this.defenseModifier = .004, 
+        this.magicDefenseModifier = .004), this.spellPower = 20, this.life = this.baseHP * (this.stamina + 32) / 32, 
+        this.critialChance = 0, this.speedStatus = "normal", this.vigor2 = 2 * this.vigor, 
+        this.vigor >= 128 && (this.vigor2 = 255), this.attack = this.battlePower + this.vigor2, 
+        this.xp = 0;
+    },
+    log: function() {
+        console.log(), console.log("stats"), console.log("level", Math.floor(this.level)), 
+        console.log("life", Math.floor(this.life)), console.log("vigor", Math.floor(this.vigor)), 
+        console.log("speed", Math.floor(this.speed)), console.log("stamina", Math.floor(this.stamina)), 
+        console.log("magicPower", Math.floor(this.magicPower)), console.log("battlePower", Math.floor(this.battlePower)), 
+        console.log("defense", Math.floor(this.defense)), console.log("attack", Math.floor(this.attack)), 
+        console.log("magicDefense", Math.floor(this.magicDefense));
+    },
+    levelUp: function() {
+        this.level++, this.vigor += (this.vigor * this.vigor + this.vigor + 3) / 4 * this.vigorModifier, 
+        this.speed += (this.speed * this.speed + this.speed + 3) / 4 * this.speedModifier, 
+        this.stamina += (this.stamina * this.stamina + this.stamina + 3) / 4 * this.staminaModifier, 
+        this.magicPower += (this.magicPower * this.magicPower + this.magicPower + 3) / 4 * this.magicPowerModifier, 
+        this.battlePower += (this.battlePower * this.battlePower + this.battlePower + 3) / 4 * this.battlePowerModifier, 
+        this.defense += (this.defense * this.defense + this.defense + 3) / 4 * this.defenseModifier, 
+        this.magicDefense += (this.magicDefense * this.magicDefense + this.magicDefense + 3) / 4 * this.magicDefenseModifier, 
+        this.vigor2 = 2 * this.vigor, this.vigor >= 128 && (this.vigor2 = 255), this.attack = this.battlePower + this.vigor2, 
+        this.baseHPModifier -= .0085, this.baseHP = this.level * (20 / this.baseHPModifier), 
+        this.life += this.baseHP * (this.stamina + 32) / 32;
     },
     updateLevel: function() {
-        this.xp > (this.level * this.level + this.level + 3) / 4 * 100 && this.level++, 
+        this.xp > (this.level * this.level + this.level + 3) / 4 * 100 && this.levelUp(), 
         console.log(this.level, "<- level, xp ->", this.xp);
     },
     updateXp: function(xp) {
@@ -741,12 +784,17 @@ var Application = AbstractApplication.extend({
         return "physical" === type ? demage = this.battlePower + this.level * this.level * this.attack / 256 * 3 / 2 : "magical" === type && (demage = 4 * this.spellPower + this.level * this.magicPower * this.spellPower / 32), 
         demage += demage / 2 * damageMultiplier;
     },
-    getHurt: function(demage) {
-        return demage = demage * (255 - this.defense) / 256 + 1;
+    getHurt: function(demage, type) {
+        return "physical" === type ? demage = demage * (255 - this.defense) / 256 + 1 : "magical" === type && (demage = demage * (255 - this.magicDefense) / 256 + 1), 
+        demage;
     },
     getSpeed: function(type) {
         return "normal" === type ? currentSpeed = 96 * (this.speed + 20) / 16 : "haste" === type ? currentSpeed = 126 * (this.speed + 20) / 16 : "slow" === type && (currentSpeed = 48 * (this.speed + 20) / 16), 
         currentSpeed;
+    }
+}), SpellModel = Class.extend({
+    init: function(level, name, mp, spellPower) {
+        this.level = level, this.name = name, this.mp = mp, this.spellPower = spellPower;
     }
 }), MobileApp = SmartObject.extend({
     init: function() {
