@@ -19,17 +19,21 @@ var Player = SpritesheetEntity.extend({
 
         this.centerPosition = {x:this.width/2, y:this.height/4};
 
-        this.defaultVelocity = this.playerModel.velocity;
+        this.defaultVelocity = this.playerModel.speed / 10;
         this.fireFreq = this.playerModel.fireFreq;
-        this.life = this.playerModel.life;
+        this.life = this.playerModel.hp;
 
 
-        console.log(this.playerModel.getSpeed('normal'));
+        // console.log(this.playerModel.getSpeed('normal'));
+
+        this.playerModel.log();
 
 
         this.fireSpeed = this.fireModel.fireSpeed;
         this.fireStepLive = this.fireModel.fireStepLive;
-        this.firePower = this.fireModel.firePower;
+
+        this.firePower = this.playerModel.getDemage('physical');
+        console.log('fire weapon ', this.firePower);
         this.fireFreqAcum = 0;
 
     },
@@ -60,7 +64,7 @@ var Player = SpritesheetEntity.extend({
         this.debugGraphic.beginFill(0xFF3300);
         this.debugGraphic.lineStyle(1, 0xffd900, 1);
         this.debugGraphic.endFill();
-
+        console.log('level', this.playerModel.level);
 
     },
     getBounds: function(){

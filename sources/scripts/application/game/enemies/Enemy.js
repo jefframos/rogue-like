@@ -1,6 +1,6 @@
 /*jshint undef:false */
 var Enemy = SpritesheetEntity.extend({
-    init:function(player){
+    init:function(player, model){
         this._super( true );
         this.updateable = false;
         this.deading = false;
@@ -9,20 +9,25 @@ var Enemy = SpritesheetEntity.extend({
         this.height = APP.tileSize.y * 0.9;
         this.type = 'enemy';
         this.node = null;
-        this.life = 20;
         this.boundsCollision = true;
-        this.defaultVelocity = 1;
         this.player = player;
-        this.monsterModel = new MonsterModel();
+        this.monsterModel = model;
+        console.log('enemy', model);
+        this.defaultVelocity = this.monsterModel.speed/10;
+        this.hp = this.monsterModel.hp;
+
         this.behaviour = new DefaultBehaviour(this, player);
     },
     hurt:function(demage, type){
         this.getTexture().tint = 0xFF0000;
         var trueDemage = this.monsterModel.getHurt(demage, type);
-        console.log(demage,'hurt',trueDemage);
 
-        this.life -= trueDemage;
-        if(this.life <= 0){
+        this.hp -= trueDemage;
+
+        console.log(demage,'hurt',trueDemage, this.hp, this.monsterModel.level);
+
+
+        if(this.hp <= 0){
             this.preKill();
         }
     },

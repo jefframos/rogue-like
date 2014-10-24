@@ -1,30 +1,40 @@
 /*jshint undef:false */
 var MonsterModel = Class.extend({
-	init: function (){
-		this.velocity = 4;
-		this.fireFreq = 5;
-		this.life = 20;
-		this.level = 1;
-		this.magicPower = 20;
-		this.spellPower = 2;
-        this.battlePower = 2;
-		this.defense = 20;
+	init: function (level,hp,speed,magicPower,battlePower,defense,magicDefense, xp){
+		this.level = level;
+		this.hp = hp;
+		// this.vigor = vigor;
+		this.speed = speed;
+		this.magicPower = magicPower;
+		this.battlePower = battlePower;
+		this.defense = defense;
+		this.magicDefense = magicDefense;
 		this.critialChance = 0.0;
 		this.speedStatus = 'normal';
-		this.vigor = parseInt(Math.random() * 7) + 53;
-        this.vigor2 = this.vigor*2;
-        this.xp = 100;
-        if(this.vigor >= 128){
-            this.vigor2 = 255;
-        }
-		this.attack = this.battlePower + this.vigor2;
-        this.speed = 10;
+		// this.vigor = parseInt(Math.random() * 7) + 53;
+		// this.vigor2 = this.vigor*2;
+		if(xp){
+			this.xp = xp;
+		}else{
+			this.xp = 100;
+		}
+
+		this.spellPower = 20; //speel do bolt
+
+		// if(this.vigor >= 128){
+		//     this.vigor2 = 255;
+		// }
+		// this.attack = this.battlePower + this.vigor2;
+		// this.speed = 10;
 	},
 	getDemage: function(type){
 		var damageMultiplier = Math.random() < this.critialChance ? 0.5 : 2;
 		var demage = 0;
 		if(type === 'physical'){
-			demage = this.battlePower + ((this.level * this.level * this.attack) / 256) * 3 / 2;
+			//demage = this.battlePower * this.level + ((this.level * this.attack * this.weaponPower) / 256) * 3 / 2;
+
+			demage = this.battlePower * this.level + ((this.level * this.level * this.battlePower) / 256) * 4 / 2;
+			// demage = this.battlePower + ((this.level * this.level * this.attack) / 256) * 3 / 2;
 		}else if(type === 'magical'){
 			demage = this.spellPower * 4 + (this.level * (this.magicPower * 3/2) * this.spellPower / 32);
 		}
@@ -33,15 +43,11 @@ var MonsterModel = Class.extend({
 		return demage;
 	},
 	getHurt: function(demage, type){
-		console.log('getHurt1',demage);
-
 		if(type === 'physical'){
 			demage = (demage * (255 - this.defense) / 256) + 1;
 		}else if(type === 'magical'){
 			demage = (demage * (255 - this.magicDefense) / 256) + 1;
 		}
-
-		console.log('getHurt2',demage);
 
 		return demage;
 	},

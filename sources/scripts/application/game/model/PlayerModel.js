@@ -42,8 +42,8 @@ var PlayerModel = Class.extend({
 			this.baseHPModifier = 1.32;
 			this.baseHP = this.level* (20 / this.baseHPModifier);
 
-			this.vigorModifier = 0.005;
-	        this.speedModifier = 0.004;
+			this.vigorModifier = 0.004;
+	        this.speedModifier = 0.005;
 	        this.staminaModifier = 0.005;
 			this.magicPowerModifier = 0.007;
 	        this.battlePowerModifier = 0.003;
@@ -81,7 +81,8 @@ var PlayerModel = Class.extend({
 		// }
 
 		this.spellPower = 20; //speel do bolt
-		this.life = (this.baseHP*(this.stamina + 32))/32;
+		this.weaponPower = 30; //mithirl knife
+		this.hp = (this.baseHP*(this.stamina + 32))/32;
 
 
 		this.critialChance = 0.0;
@@ -96,16 +97,19 @@ var PlayerModel = Class.extend({
 	log: function(){
 		console.log();
 		console.log('stats');
-		console.log('level',Math.floor(this.level));
-		console.log('life',Math.floor(this.life));
-		console.log('vigor',Math.floor(this.vigor));
-		console.log('speed',Math.floor(this.speed));
-		console.log('stamina',Math.floor(this.stamina));
-		console.log('magicPower',Math.floor(this.magicPower));
-		console.log('battlePower',Math.floor(this.battlePower));
-		console.log('defense',Math.floor(this.defense));
-		console.log('attack',Math.floor(this.attack));
-		console.log('magicDefense',Math.floor(this.magicDefense));
+		console.log('class,', this.playerClass);
+		console.log('level,',Math.floor(this.level));
+		console.log('hp,',Math.floor(this.hp));
+		console.log('vigor,',Math.floor(this.vigor));
+		console.log('speed,',Math.floor(this.speed));
+		console.log('stamina,',Math.floor(this.stamina));
+		console.log('magicPower,',Math.floor(this.magicPower));
+		console.log('battlePower,',Math.floor(this.battlePower));
+		console.log('defense,',Math.floor(this.defense));
+		console.log('attack,',Math.floor(this.attack));
+		console.log('magicDefense,',Math.floor(this.magicDefense));
+		console.log('demagePhysical,',Math.floor(this.getDemage('physical')));
+		console.log('demageMagical,',Math.floor(this.getDemage('magical')));
 	},
 	levelUp: function(){
 		this.level ++;
@@ -118,23 +122,106 @@ var PlayerModel = Class.extend({
 		this.defense += (this.defense*this.defense+this.defense+3)/4*this.defenseModifier;
 		// this.attack += (this.attack*this.attack+this.attack+3)/4*this.attackModifier;
 		this.magicDefense += (this.magicDefense*this.magicDefense+this.magicDefense+3)/4*this.magicDefenseModifier;
+
+		this.vigorModifier -=0.0005;
+	    this.speedModifier -=0.0005;
+	    this.staminaModifier -=0.0005;
+		this.magicPowerModifier -=0.0005;
+	    this.battlePowerModifier -=0.0005;
+		this.defenseModifier -=0.0005;
+		this.magicDefenseModifier -=0.0005;
+
+		if(this.vigorModifier <= 0.001)
+		{
+			this.vigorModifier = 0.001;
+		}
+	    if(this.speedModifier <= 0.001)
+	    {
+			this.speedModifier = 0.001;
+	    }
+	    if(this.staminaModifier <= 0.001)
+	    {
+			this.staminaModifier = 0.001;
+	    }
+		if(this.magicPowerModifier <= 0.001)
+		{
+			this.magicPowerModifier = 0.001;
+		}
+	    if(this.battlePowerModifier <= 0.001)
+	    {
+			this.battlePowerModifier = 0.001;
+	    }
+		if(this.defenseModifier <= 0.001)
+		{
+			this.defenseModifier = 0.001;
+		}
+		if(this.magicDefenseModifier <= 0.001)
+		{
+			this.magicDefenseModifier = 0.001;
+		}
+
 		this.vigor2 = this.vigor*2;
         if(this.vigor >= 128){
             this.vigor2 = 255;
         }
 		this.attack = this.battlePower + this.vigor2;
 
-		this.baseHPModifier -= 0.0085;
+
+
+		if(this.vigor > 255){
+			this.vigor = 255;
+		}
+        if(this.speed > 255){
+			this.speed = 255;
+        }
+        if(this.stamina > 255){
+			this.stamina = 255;
+        }
+		if(this.magicPower > 255){
+			this.magicPower = 255;
+		}
+        if(this.battlePower > 255){
+			this.battlePower = 255;
+        }
+		if(this.defense > 255){
+			this.defense = 255;
+		}
+		if(this.attack > 255){
+			this.attack = 255;
+		}
+		if(this.magicDefense > 255){
+			this.magicDefense = 255;
+		}
+
+
+
+		// this.baseHPModifier -= 0.0085;
+		this.baseHPModifier -= 0.008;
 		this.baseHP = this.level* (20 / this.baseHPModifier);
-		this.life += (this.baseHP*(this.stamina+32))/32;
+		this.hp += (this.baseHP*(this.stamina+32))/32;
+
+
+		console.log(this.level,'<- levelUp, xp ->',this.xp);
+
 	},
 	updateLevel: function(){
 		// console.log((this.level*this.level+this.level+3)/4, 'compare');
+		for (var i = this.level; i <= 99; i++) {
+			var calcXP = (i*i+i+3)/4* 20 * i;
+			console.log(this.xp, calcXP, 'level', i);
 
-		if(this.xp > (this.level*this.level+this.level+3)/4* 100){
-			this.levelUp();
+			if(this.xp > calcXP){
+				this.levelUp();
+			}else
+			{
+				break;
+			}
 		}
-		console.log(this.level,'<- level, xp ->',this.xp);
+		// if(this.xp > (this.level*this.level+this.level+3)/4* 100){
+
+		// 	this.levelUp();
+		// }
+		//console.log(this.level,'<- level, xp ->',this.xp);
 	},
 	updateXp: function(xp){
 		console.log('xp', xp);
@@ -145,7 +232,8 @@ var PlayerModel = Class.extend({
 		var damageMultiplier = Math.random() < this.critialChance ? 0.5 : 2;
 		var demage = 0;
 		if(type === 'physical'){
-			demage = this.battlePower + ((this.level * this.level * this.attack) / 256) * 3 / 2;
+			demage = this.battlePower * this.level + ((this.level * this.attack * this.weaponPower) / 256) * 3 / 2;
+			// demage = this.battlePower + ((this.level * this.level * this.attack * this.weaponPower) / 256) * 3 / 2;
 		}else if(type === 'magical'){
 			demage = this.spellPower * 4 + (this.level * this.magicPower * this.spellPower / 32);
 		}
@@ -227,8 +315,20 @@ var PlayerModel = Class.extend({
 // Cure510Recovers HP
 // Cure 22528Recovers HP
 // Cure 34066Recovers HP
-// Life302Recovers life
-// Life 26016Restores life and HP/MP
-// Life 3500Protects from wound
+// hp302Recovers hp
+// hp 26016Restores hp and HP/MP
+// hp 3500Protects from wound
 // Regen100Gradually recovers HP
 // Remedy150Cures status ailments
+
+
+// level, 1
+// hp, 30
+// vigor, 40 
+// speed, 28 
+// stamina, 33 
+// magicPower, 25 
+// battlePower, 25 
+// defense, 48 
+// attack, 105 
+// magicDefense, 20 

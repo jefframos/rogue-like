@@ -15,7 +15,7 @@ function update() {
     renderer.view.style.height = windowHeight / 2 + "px", APP.update(), renderer.render(APP.stage);
 }
 
-var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ], [ [ 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 2 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ] ], [ [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ] ], [ [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ], [ 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0 ], [ 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2 ], [ 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0 ], [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ] ], [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ] ], DungeonGenerator = Class.extend({
+var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ], [ [ 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 2 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ] ], [ [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ] ], [ [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ] ], [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ] ], DungeonGenerator = Class.extend({
     init: function() {
         this.random = 0, this.numActivesNodes = 0, this.maxDist = 5, this.minNodes = 5, 
         this.seeds = 1, this.rooms = [], this.maxNodes = 10, this.mostDistant = new NodeModel(), 
@@ -162,12 +162,33 @@ var Application = AbstractApplication.extend({
             x: 80,
             y: 80
         };
-        var model1 = new PlayerModel();
-        model1.log(), model1.levelUp(), model1.log(), model1.levelUp(), model1.log(), model1.levelUp(), 
-        model1.log(), model1.levelUp(), model1.log(), model1.levelUp(), model1.log(), model1.levelUp(), 
-        model1.log(), model1.levelUp(), model1.log();
+        var model1 = new PlayerModel("warrior");
+        model1.levelUp(), model1.levelUp(), model1.levelUp(), model1.levelUp(), model1.levelUp(), 
+        model1.levelUp(), model1.levelUp(), model1.log();
+        var model2 = new PlayerModel("mage");
+        model2.levelUp(), model2.levelUp(), model2.levelUp(), model2.levelUp(), model2.levelUp(), 
+        model2.levelUp(), model2.levelUp(), model2.log();
+        var model3 = new PlayerModel("thief");
+        model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), 
+        model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), 
+        model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), 
+        model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.log();
+        var monster = new MonsterModel(19, 8e3, 55, 55, 13, 140, 160);
+        console.log("thief"), console.log("player physical attack", monster.getHurt(model3.getDemage("physical"), "physical")), 
+        console.log("player magical attack", monster.getHurt(model3.getDemage("magical"), "magical")), 
+        console.log("monster physical attack", model3.getHurt(monster.getDemage("physical"), "physical")), 
+        console.log("monster magical attack", model3.getHurt(monster.getDemage("magical"), "magical")), 
+        console.log("warrior"), console.log("player physical attack", monster.getHurt(model1.getDemage("physical"), "physical")), 
+        console.log("player magical attack", monster.getHurt(model1.getDemage("magical"), "magical")), 
+        console.log("monster physical attack", model1.getHurt(monster.getDemage("physical"), "physical")), 
+        console.log("monster magical attack", model1.getHurt(monster.getDemage("magical"), "magical")), 
+        console.log("mage"), console.log("player physical attack", monster.getHurt(model2.getDemage("physical"), "physical")), 
+        console.log("player magical attack", monster.getHurt(model2.getDemage("magical"), "magical")), 
+        console.log("monster physical attack", model2.getHurt(monster.getDemage("physical"), "physical")), 
+        console.log("monster magical attack", model2.getHurt(monster.getDemage("magical"), "magical"));
     },
     build: function() {
+        this.monsterList = [], this.monsterList.push(new MonsterModel(6, 800, 55, 55, 13, 140, 160, 94)), 
         this.spellList = [], this.spellList.push(new SpellModel(1, "bolt1", 6, 20)), this.spellList.push(new SpellModel(1, "fire1", 4, 21)), 
         this.spellList.push(new SpellModel(1, "ice1", 5, 22)), this.spellList.push(new SpellModel(1, "poison", 3, 25)), 
         this.spellList.push(new SpellModel(1, "wind", 75, 25)), this.spellList.push(new SpellModel(2, "bolt2", 22, 26)), 
@@ -177,7 +198,51 @@ var Application = AbstractApplication.extend({
         this.spellList.push(new SpellModel(4, "quake", 50, 111)), this.spellList.push(new SpellModel(5, "bolt3", 53, 120)), 
         this.spellList.push(new SpellModel(5, "fire3", 51, 121)), this.spellList.push(new SpellModel(5, "ice3", 52, 122)), 
         this.spellList.push(new SpellModel(6, "merton", 85, 138)), this.spellList.push(new SpellModel(7, "ultima", 80, 150)), 
-        this._super(), this.onAssetsLoaded();
+        this.weaponList = [], this.weaponList.push(new WeaponModel("AirLancet", 76, 180, 950)), 
+        this.weaponList.push(new WeaponModel("Assassin", 106, 180, 2)), this.weaponList.push(new WeaponModel("Dirk", 26, 180, 150)), 
+        this.weaponList.push(new WeaponModel("Graedus", 204, 180, 2)), this.weaponList.push(new WeaponModel("Guardian", 59, 180, 2)), 
+        this.weaponList.push(new WeaponModel("ManEater", 146, 180, 11e3)), this.weaponList.push(new WeaponModel("MithrilKnife", 30, 180, 300)), 
+        this.weaponList.push(new WeaponModel("SwordBreaker", 164, 180, 16e3)), this.weaponList.push(new WeaponModel("ThiefKnife", 88, 180, 2)), 
+        this.weaponList.push(new WeaponModel("ValiantKnife", 145, 180, 2)), this.weaponList.push(new WeaponModel("Atma,WeaponBat", 255, 150, 2)), 
+        this.weaponList.push(new WeaponModel("Blizzard", 108, 150, 7e3)), this.weaponList.push(new WeaponModel("Break Blade", 117, 150, 12e3)), 
+        this.weaponList.push(new WeaponModel("Crystal", 167, 150, 15e3)), this.weaponList.push(new WeaponModel("Drainer", 121, 150, 2)), 
+        this.weaponList.push(new WeaponModel("Enhancer", 135, 150, 1e4)), this.weaponList.push(new WeaponModel("Epee", 98, 150, 3e3)), 
+        this.weaponList.push(new WeaponModel("Excalibur", 217, 150, 2)), this.weaponList.push(new WeaponModel("Falchion", 176, 150, 17e3)), 
+        this.weaponList.push(new WeaponModel("Flame,Sabre", 108, 150, 7e3)), this.weaponList.push(new WeaponModel("Illumina", 255, 255, 2)), 
+        this.weaponList.push(new WeaponModel("MithrilBlade", 38, 150, 450)), this.weaponList.push(new WeaponModel("Ogre Nix", 182, 150, 2)), 
+        this.weaponList.push(new WeaponModel("Ragnarok", 255, 150, 2)), this.weaponList.push(new WeaponModel("RegalCutlass", 54, 150, 800)), 
+        this.weaponList.push(new WeaponModel("Rune,Edge", 55, 150, 7500)), this.weaponList.push(new WeaponModel("Scimitar", 208, 150, 2)), 
+        this.weaponList.push(new WeaponModel("Soul,Sabre", 125, 150, 2)), this.weaponList.push(new WeaponModel("ThunderBlade", 108, 150, 7e3)), 
+        this.weaponList.push(new WeaponModel("Aura,Lance", 227, 180, 2)), this.weaponList.push(new WeaponModel("Gold,Lance", 139, 150, 12e3)), 
+        this.weaponList.push(new WeaponModel("Imp,Halberd", 253, 150, 2)), this.weaponList.push(new WeaponModel("Mithril,Pike", 70, 150, 800)), 
+        this.weaponList.push(new WeaponModel("Partisan", 150, 150, 13e3)), this.weaponList.push(new WeaponModel("Pearl,Lance", 194, 150, 2)), 
+        this.weaponList.push(new WeaponModel("Stout,Spear", 112, 150, 1e4)), this.weaponList.push(new WeaponModel("Trident", 93, 150, 1700)), 
+        this.weaponList.push(new WeaponModel("Blossom", 112, 180, 3200)), this.weaponList.push(new WeaponModel("Hardened", 121, 180, 2)), 
+        this.weaponList.push(new WeaponModel("Imperial", 82, 180, 600)), this.weaponList.push(new WeaponModel("Kodachi", 93, 180, 1200)), 
+        this.weaponList.push(new WeaponModel("Striker", 190, 180, 2)), this.weaponList.push(new WeaponModel("Stunner", 220, 180, 2)), 
+        this.weaponList.push(new WeaponModel("Ashura", 57, 150, 500)), this.weaponList.push(new WeaponModel("Aura", 162, 150, 2)), 
+        this.weaponList.push(new WeaponModel("Forged", 81, 150, 1200)), this.weaponList.push(new WeaponModel("Kotetsu", 66, 150, 800)), 
+        this.weaponList.push(new WeaponModel("Murasame", 110, 150, 9e3)), this.weaponList.push(new WeaponModel("Sky,Render", 215, 150, 2)), 
+        this.weaponList.push(new WeaponModel("Strato", 199, 150, 2)), this.weaponList.push(new WeaponModel("Tempest", 101, 150, 8e3)), 
+        this.weaponList.push(new WeaponModel("Fire,Rod", 79, 135, 3e3)), this.weaponList.push(new WeaponModel("Gravity,Rod", 120, 135, 13e3)), 
+        this.weaponList.push(new WeaponModel("Heal,Rod", 200, 255, 2)), this.weaponList.push(new WeaponModel("Ice,Rod", 79, 135, 3e3)), 
+        this.weaponList.push(new WeaponModel("Magus,Rod", 168, 135, 2)), this.weaponList.push(new WeaponModel("Mithril,Rod", 60, 135, 500)), 
+        this.weaponList.push(new WeaponModel("Pearl,Rod", 124, 135, 12e3)), this.weaponList.push(new WeaponModel("Poison,Rod", 86, 135, 1500)), 
+        this.weaponList.push(new WeaponModel("Punisher", 111, 150, 2)), this.weaponList.push(new WeaponModel("Thunder,Rod", 79, 135, 3e3)), 
+        this.weaponList.push(new WeaponModel("Chocobo,Brsh", 60, 135, 600)), this.weaponList.push(new WeaponModel("DaVinci,Brsh", 100, 135, 7e3)), 
+        this.weaponList.push(new WeaponModel("Magical,Brsh", 130, 135, 1e4)), this.weaponList.push(new WeaponModel("Rainbow,Brsh", 146, 135, 2)), 
+        this.weaponList.push(new WeaponModel("Ninja,Star", 132, 230, 500)), this.weaponList.push(new WeaponModel("Shuriken", 86, 230, 30)), 
+        this.weaponList.push(new WeaponModel("Tack,Star", 190, 230, 2)), this.weaponList.push(new WeaponModel("Bone,Club", 151, 150, 2e4)), 
+        this.weaponList.push(new WeaponModel("Boomerang", 102, 230, 4500)), this.weaponList.push(new WeaponModel("Flail", 86, 150, 2e3)), 
+        this.weaponList.push(new WeaponModel("Full,Moon", 95, 230, 2500)), this.weaponList.push(new WeaponModel("Hawk,Eye", 111, 180, 6e3)), 
+        this.weaponList.push(new WeaponModel("Morning,Star", 109, 150, 5e3)), this.weaponList.push(new WeaponModel("Rising,Sun", 98, 230, 2)), 
+        this.weaponList.push(new WeaponModel("Cards", 104, 230, 1e3)), this.weaponList.push(new WeaponModel("Darts", 115, 230, 1e4)), 
+        this.weaponList.push(new WeaponModel("Doom,Darts", 187, 230, 2)), this.weaponList.push(new WeaponModel("Trump", 133, 230, 13e3)), 
+        this.weaponList.push(new WeaponModel("ClawDragon,Claw", 188, 200, 2)), this.weaponList.push(new WeaponModel("ClawFire,Knuckle", 122, 200, 1e4)), 
+        this.weaponList.push(new WeaponModel("ClawKaiser", 83, 200, 1e3)), this.weaponList.push(new WeaponModel("ClawMetalKnuckle", 55, 200, 500)), 
+        this.weaponList.push(new WeaponModel("ClawMithril,Claw", 65, 200, 800)), this.weaponList.push(new WeaponModel("ClawPoison,Claw", 95, 200, 2500)), 
+        this.weaponList.push(new WeaponModel("ClawTiger,Fangs", 215, 200, 2)), this._super(), 
+        this.onAssetsLoaded();
     },
     onAssetsLoaded: function() {
         this.mainApp = new GameScreen("Main"), this.screenManager.addScreen(this.mainApp), 
@@ -188,7 +253,7 @@ var Application = AbstractApplication.extend({
     destroy: function() {}
 }), Door = Entity.extend({
     init: function(side) {
-        this._super(!0), this.updateable = !1, this.deading = !1, this.side = side, this.range = APP.tileSize.x / 1.8, 
+        this._super(!0), this.updateable = !1, this.deading = !1, this.side = side, this.range = APP.tileSize.x, 
         this.width = APP.tileSize.x, this.height = APP.tileSize.y, this.type = "door", this.node = null, 
         this.updateable = !0;
     },
@@ -505,10 +570,10 @@ var Application = AbstractApplication.extend({
         this.centerPosition = {
             x: this.width / 2,
             y: this.height / 4
-        }, this.defaultVelocity = this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq, 
-        this.life = this.playerModel.life, console.log(this.playerModel.getSpeed("normal")), 
-        this.fireSpeed = this.fireModel.fireSpeed, this.fireStepLive = this.fireModel.fireStepLive, 
-        this.firePower = this.fireModel.firePower, this.fireFreqAcum = 0;
+        }, this.defaultVelocity = this.playerModel.speed / 10, this.fireFreq = this.playerModel.fireFreq, 
+        this.life = this.playerModel.hp, this.playerModel.log(), this.fireSpeed = this.fireModel.fireSpeed, 
+        this.fireStepLive = this.fireModel.fireStepLive, this.firePower = this.playerModel.getDemage("physical"), 
+        console.log("fire weapon ", this.firePower), this.fireFreqAcum = 0;
     },
     build: function() {
         var self = this, motionArray = this.getFramesByRange("chinesa10", 0, 8), animationIdle = new SpritesheetAnimation();
@@ -522,7 +587,7 @@ var Application = AbstractApplication.extend({
         }), this.spritesheet = new Spritesheet(), this.spritesheet.addAnimation(animationIdle), 
         this.spritesheet.addAnimation(animationDead), this.spritesheet.play("idle"), this.reset(), 
         this.counter = 0, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
-        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill();
+        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), console.log("level", this.playerModel.level);
     },
     getBounds: function() {
         return this.bounds = {
@@ -606,16 +671,18 @@ var Application = AbstractApplication.extend({
         this.debugGraphic.endFill());
     }
 }), Enemy = SpritesheetEntity.extend({
-    init: function(player) {
+    init: function(player, model) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = APP.tileSize.x / 2, 
         this.width = .9 * APP.tileSize.x, this.height = .9 * APP.tileSize.y, this.type = "enemy", 
-        this.node = null, this.life = 20, this.boundsCollision = !0, this.defaultVelocity = 1, 
-        this.player = player, this.monsterModel = new MonsterModel(), this.behaviour = new DefaultBehaviour(this, player);
+        this.node = null, this.boundsCollision = !0, this.player = player, this.monsterModel = model, 
+        console.log("enemy", model), this.defaultVelocity = this.monsterModel.speed / 10, 
+        this.hp = this.monsterModel.hp, this.behaviour = new DefaultBehaviour(this, player);
     },
     hurt: function(demage, type) {
         this.getTexture().tint = 16711680;
         var trueDemage = this.monsterModel.getHurt(demage, type);
-        console.log(demage, "hurt", trueDemage), this.life -= trueDemage, this.life <= 0 && this.preKill();
+        this.hp -= trueDemage, console.log(demage, "hurt", trueDemage, this.hp, this.monsterModel.level), 
+        this.hp <= 0 && this.preKill();
     },
     build: function() {
         var motionArray = this.getFramesByRange("dragon10", 0, 14), animationIdle = new SpritesheetAnimation();
@@ -709,21 +776,19 @@ var Application = AbstractApplication.extend({
     },
     update: function() {}
 }), MonsterModel = Class.extend({
-    init: function() {
-        this.velocity = 4, this.fireFreq = 5, this.life = 20, this.level = 1, this.magicPower = 20, 
-        this.spellPower = 2, this.battlePower = 2, this.defense = 20, this.critialChance = 0, 
-        this.speedStatus = "normal", this.vigor = parseInt(7 * Math.random()) + 53, this.vigor2 = 2 * this.vigor, 
-        this.xp = 100, this.vigor >= 128 && (this.vigor2 = 255), this.attack = this.battlePower + this.vigor2, 
-        this.speed = 10;
+    init: function(level, hp, speed, magicPower, battlePower, defense, magicDefense, xp) {
+        this.level = level, this.hp = hp, this.speed = speed, this.magicPower = magicPower, 
+        this.battlePower = battlePower, this.defense = defense, this.magicDefense = magicDefense, 
+        this.critialChance = 0, this.speedStatus = "normal", this.xp = xp ? xp : 100, this.spellPower = 20;
     },
     getDemage: function(type) {
         var damageMultiplier = Math.random() < this.critialChance ? .5 : 2, demage = 0;
-        return "physical" === type ? demage = this.battlePower + this.level * this.level * this.attack / 256 * 3 / 2 : "magical" === type && (demage = 4 * this.spellPower + this.level * (3 * this.magicPower / 2) * this.spellPower / 32), 
+        return "physical" === type ? demage = this.battlePower * this.level + this.level * this.level * this.battlePower / 256 * 4 / 2 : "magical" === type && (demage = 4 * this.spellPower + this.level * (3 * this.magicPower / 2) * this.spellPower / 32), 
         demage += demage / 2 * damageMultiplier;
     },
     getHurt: function(demage, type) {
-        return console.log("getHurt1", demage), "physical" === type ? demage = demage * (255 - this.defense) / 256 + 1 : "magical" === type && (demage = demage * (255 - this.magicDefense) / 256 + 1), 
-        console.log("getHurt2", demage), demage;
+        return "physical" === type ? demage = demage * (255 - this.defense) / 256 + 1 : "magical" === type && (demage = demage * (255 - this.magicDefense) / 256 + 1), 
+        demage;
     },
     getSpeed: function() {
         return "normal" === type ? currentSpeed = 96 * (this.speed + 20) / 16 : "haste" === type ? currentSpeed = 126 * (this.speed + 20) / 16 : "slow" === type && (currentSpeed = 48 * (this.speed + 20) / 16), 
@@ -740,25 +805,26 @@ var Application = AbstractApplication.extend({
         this.magicDefenseModifier = .003) : "mage" === this.playerClass ? (this.vigor = 31, 
         this.speed = 33, this.stamina = 28, this.magicPower = 39, this.battlePower = 12, 
         this.defense = 42, this.magicDefense = 33, this.baseHPModifier = 1.32, this.baseHP = this.level * (20 / this.baseHPModifier), 
-        this.vigorModifier = .005, this.speedModifier = .004, this.staminaModifier = .005, 
+        this.vigorModifier = .004, this.speedModifier = .005, this.staminaModifier = .005, 
         this.magicPowerModifier = .007, this.battlePowerModifier = .003, this.defenseModifier = .005, 
         this.magicDefenseModifier = .007) : "thief" === this.playerClass && (this.vigor = 37, 
         this.speed = 40, this.stamina = 31, this.magicPower = 28, this.battlePower = 14, 
         this.defense = 46, this.magicDefense = 23, this.baseHPModifier = 1.32, this.baseHP = this.level * (20 / this.baseHPModifier), 
         this.vigorModifier = .004, this.speedModifier = .007, this.staminaModifier = .007, 
         this.magicPowerModifier = .004, this.battlePowerModifier = .006, this.defenseModifier = .004, 
-        this.magicDefenseModifier = .004), this.spellPower = 20, this.life = this.baseHP * (this.stamina + 32) / 32, 
-        this.critialChance = 0, this.speedStatus = "normal", this.vigor2 = 2 * this.vigor, 
-        this.vigor >= 128 && (this.vigor2 = 255), this.attack = this.battlePower + this.vigor2, 
+        this.magicDefenseModifier = .004), this.spellPower = 20, this.weaponPower = 30, 
+        this.hp = this.baseHP * (this.stamina + 32) / 32, this.critialChance = 0, this.speedStatus = "normal", 
+        this.vigor2 = 2 * this.vigor, this.vigor >= 128 && (this.vigor2 = 255), this.attack = this.battlePower + this.vigor2, 
         this.xp = 0;
     },
     log: function() {
-        console.log(), console.log("stats"), console.log("level", Math.floor(this.level)), 
-        console.log("life", Math.floor(this.life)), console.log("vigor", Math.floor(this.vigor)), 
-        console.log("speed", Math.floor(this.speed)), console.log("stamina", Math.floor(this.stamina)), 
-        console.log("magicPower", Math.floor(this.magicPower)), console.log("battlePower", Math.floor(this.battlePower)), 
-        console.log("defense", Math.floor(this.defense)), console.log("attack", Math.floor(this.attack)), 
-        console.log("magicDefense", Math.floor(this.magicDefense));
+        console.log(), console.log("stats"), console.log("class,", this.playerClass), console.log("level,", Math.floor(this.level)), 
+        console.log("hp,", Math.floor(this.hp)), console.log("vigor,", Math.floor(this.vigor)), 
+        console.log("speed,", Math.floor(this.speed)), console.log("stamina,", Math.floor(this.stamina)), 
+        console.log("magicPower,", Math.floor(this.magicPower)), console.log("battlePower,", Math.floor(this.battlePower)), 
+        console.log("defense,", Math.floor(this.defense)), console.log("attack,", Math.floor(this.attack)), 
+        console.log("magicDefense,", Math.floor(this.magicDefense)), console.log("demagePhysical,", Math.floor(this.getDemage("physical"))), 
+        console.log("demageMagical,", Math.floor(this.getDemage("magical")));
     },
     levelUp: function() {
         this.level++, this.vigor += (this.vigor * this.vigor + this.vigor + 3) / 4 * this.vigorModifier, 
@@ -768,20 +834,33 @@ var Application = AbstractApplication.extend({
         this.battlePower += (this.battlePower * this.battlePower + this.battlePower + 3) / 4 * this.battlePowerModifier, 
         this.defense += (this.defense * this.defense + this.defense + 3) / 4 * this.defenseModifier, 
         this.magicDefense += (this.magicDefense * this.magicDefense + this.magicDefense + 3) / 4 * this.magicDefenseModifier, 
+        this.vigorModifier -= 5e-4, this.speedModifier -= 5e-4, this.staminaModifier -= 5e-4, 
+        this.magicPowerModifier -= 5e-4, this.battlePowerModifier -= 5e-4, this.defenseModifier -= 5e-4, 
+        this.magicDefenseModifier -= 5e-4, this.vigorModifier <= .001 && (this.vigorModifier = .001), 
+        this.speedModifier <= .001 && (this.speedModifier = .001), this.staminaModifier <= .001 && (this.staminaModifier = .001), 
+        this.magicPowerModifier <= .001 && (this.magicPowerModifier = .001), this.battlePowerModifier <= .001 && (this.battlePowerModifier = .001), 
+        this.defenseModifier <= .001 && (this.defenseModifier = .001), this.magicDefenseModifier <= .001 && (this.magicDefenseModifier = .001), 
         this.vigor2 = 2 * this.vigor, this.vigor >= 128 && (this.vigor2 = 255), this.attack = this.battlePower + this.vigor2, 
-        this.baseHPModifier -= .0085, this.baseHP = this.level * (20 / this.baseHPModifier), 
-        this.life += this.baseHP * (this.stamina + 32) / 32;
+        this.vigor > 255 && (this.vigor = 255), this.speed > 255 && (this.speed = 255), 
+        this.stamina > 255 && (this.stamina = 255), this.magicPower > 255 && (this.magicPower = 255), 
+        this.battlePower > 255 && (this.battlePower = 255), this.defense > 255 && (this.defense = 255), 
+        this.attack > 255 && (this.attack = 255), this.magicDefense > 255 && (this.magicDefense = 255), 
+        this.baseHPModifier -= .008, this.baseHP = this.level * (20 / this.baseHPModifier), 
+        this.hp += this.baseHP * (this.stamina + 32) / 32, console.log(this.level, "<- levelUp, xp ->", this.xp);
     },
     updateLevel: function() {
-        this.xp > (this.level * this.level + this.level + 3) / 4 * 100 && this.levelUp(), 
-        console.log(this.level, "<- level, xp ->", this.xp);
+        for (var i = this.level; 99 >= i; i++) {
+            var calcXP = (i * i + i + 3) / 4 * 20 * i;
+            if (console.log(this.xp, calcXP, "level", i), !(this.xp > calcXP)) break;
+            this.levelUp();
+        }
     },
     updateXp: function(xp) {
         console.log("xp", xp), this.xp += xp, this.updateLevel();
     },
     getDemage: function(type) {
         var damageMultiplier = Math.random() < this.critialChance ? .5 : 2, demage = 0;
-        return "physical" === type ? demage = this.battlePower + this.level * this.level * this.attack / 256 * 3 / 2 : "magical" === type && (demage = 4 * this.spellPower + this.level * this.magicPower * this.spellPower / 32), 
+        return "physical" === type ? demage = this.battlePower * this.level + this.level * this.attack * this.weaponPower / 256 * 3 / 2 : "magical" === type && (demage = 4 * this.spellPower + this.level * this.magicPower * this.spellPower / 32), 
         demage += demage / 2 * damageMultiplier;
     },
     getHurt: function(demage, type) {
@@ -795,6 +874,10 @@ var Application = AbstractApplication.extend({
 }), SpellModel = Class.extend({
     init: function(level, name, mp, spellPower) {
         this.level = level, this.name = name, this.mp = mp, this.spellPower = spellPower;
+    }
+}), WeaponModel = Class.extend({
+    init: function(name, battlePower, value) {
+        this.name = name, this.battlePower = battlePower, this.value = value;
     }
 }), MobileApp = SmartObject.extend({
     init: function() {
@@ -848,7 +931,9 @@ var Application = AbstractApplication.extend({
         this.margin = {
             x: APP.tileSize.x / 2 * 3,
             y: 80
-        }, this.mouseDown = !1, this.playerModel = new PlayerModel();
+        }, this.mouseDown = !1, this.playerModel = new PlayerModel("thief"), this.playerModel.levelUp(), 
+        this.playerModel.levelUp(), this.playerModel.levelUp(), this.playerModel.levelUp(), 
+        this.playerModel.levelUp();
     },
     destroy: function() {
         this._super();
@@ -865,13 +950,6 @@ var Application = AbstractApplication.extend({
         this.vecRain = [];
         for (var j = 300; j >= 0; j--) tempRain = new RainParticle(50, 5, windowWidth + 200, windowHeight, "left"), 
         this.rainContainer.addChild(tempRain.content), this.vecRain.push(tempRain);
-        this.mascara = new PIXI.Graphics(), this.mascara.beginFill(16776960), this.mascara.lineStyle(5, 16711680), 
-        this.mascara.moveTo(-1920, -1280), this.mascara.lineTo(3840, -1280), this.mascara.lineTo(3840, 2560), 
-        this.mascara.lineTo(-1920, 2560), this.mascara.lineTo(-1920, -1280), this.mascara.lineTo(854, 596), 
-        this.mascara.lineTo(902, 542), this.mascara.lineTo(960, 528), this.mascara.lineTo(1034, 556), 
-        this.mascara.lineTo(1064, 604), this.mascara.lineTo(1068, 670), this.mascara.lineTo(1032, 724), 
-        this.mascara.lineTo(966, 750), this.mascara.lineTo(902, 734), this.mascara.lineTo(854, 676), 
-        this.mascara.lineTo(854, 594), this.mascara.endFill(), this.mascara.position.x = 500, 
         this.graphDebug = new PIXI.Graphics(), this.addChild(this.graphDebug), this.blackShape = new PIXI.Graphics(), 
         this.blackShape.beginFill(0), this.blackShape.drawRect(0, 0, windowWidth, windowHeight), 
         this.addChild(this.blackShape), TweenLite.to(this.blackShape, 1, {
@@ -957,9 +1035,11 @@ var Application = AbstractApplication.extend({
         this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState), 
         this.level = getRandomLevel(), this.player = new Player(this.playerModel), this.player.build(), 
         "up" === this.currentPlayerSide ? this.player.setPosition(windowWidth / 2, windowHeight - this.margin.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(windowWidth / 2, this.margin.y) : "left" === this.currentPlayerSide ? this.player.setPosition(windowWidth - this.margin.x - this.player.width, windowHeight / 2 - this.player.height / 2) : "right" === this.currentPlayerSide && this.player.setPosition(this.margin.x, windowHeight / 2 - this.player.height / 2), 
-        this.heart = new Enemy(this.player), this.heart.build(), this.fly = new FlightEnemy(500, 500), 
-        this.fly.build(), this.heart.setPosition(700, 200), this.fly.setPosition(100, 200), 
-        this.entityLayer.addChild(this.player), this.entityLayer.addChild(this.heart), this.entityLayer.addChild(this.fly);
+        console.log("monster list", APP.monsterList[0]);
+        for (var o = 0; 5 > o; o++) this.heart = new Enemy(this.player, APP.monsterList[0]), 
+        this.heart.build(), this.heart.setPosition(700 * Math.random(), 700 * Math.random()), 
+        this.entityLayer.addChild(this.heart);
+        this.entityLayer.addChild(this.player);
         for (var i = this.level.length - 1; i >= 0; i--) for (var j = this.level[i].length - 1; j >= 0; j--) if (this.level[i][j] > 0) {
             var obs = new Obstacle(this.level[i][j] - 1);
             obs.build(), obs.setPosition(j * APP.tileSize.x + this.margin.x, (i + 1) * APP.tileSize.y + this.margin.y), 

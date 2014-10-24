@@ -22,8 +22,12 @@ var GameScreen = AbstractScreen.extend({
         this.margin = {x:APP.tileSize.x / 2 * 3,y:160 / 2};
         this.mouseDown = false;
 
-        this.playerModel = new PlayerModel();
-
+        this.playerModel = new PlayerModel('thief');
+        this.playerModel.levelUp();
+        this.playerModel.levelUp();
+        this.playerModel.levelUp();
+        this.playerModel.levelUp();
+        this.playerModel.levelUp();
     },
     destroy: function () {
         this._super();
@@ -68,31 +72,6 @@ var GameScreen = AbstractScreen.extend({
             this.vecRain.push(tempRain);
         }
 
-        this.mascara = new PIXI.Graphics();
-        this.mascara.beginFill(0xFFFF00);
-        this.mascara.lineStyle(5, 0xFF0000);
-        this.mascara.moveTo(-1920,-1280);
-        this.mascara.lineTo(1920*2,-1280);
-        this.mascara.lineTo(1920*2,1280*2);
-        this.mascara.lineTo(-1920,1280*2);
-        this.mascara.lineTo(-1920,-1280);
-        this.mascara.lineTo(854,596);
-        this.mascara.lineTo(902,542);
-        this.mascara.lineTo(960,528);
-        this.mascara.lineTo(1034,556);
-        this.mascara.lineTo(1064,604);
-        this.mascara.lineTo(1068,670);
-        this.mascara.lineTo(1032,724);
-        this.mascara.lineTo(966,750);
-        this.mascara.lineTo(902,734);
-        this.mascara.lineTo(854,676);
-        this.mascara.lineTo(854,594);
-        // end the fill
-        this.mascara.endFill();
-        this.mascara.position.x = 500;
-        // this.addChild(this.mascara);
-        //this.addChild(this.rainContainer);
-        // this.rainContainer.mask = this.mascara;
 
         this.graphDebug = new PIXI.Graphics();
         this.addChild(this.graphDebug);
@@ -235,12 +214,6 @@ var GameScreen = AbstractScreen.extend({
             this.killLevel(this.resetLevel);
             this.player = null;
         }
-       
-        // if(this.player){
-        //     console.log('updade here');
-        //     this.mascara.position.x = this.player.getPosition().x -1920/2;
-        //     this.mascara.position.y = this.player.getPosition().y -1280/2;
-        // }
     },
     killLevel:function(callback){
         // console.log('kill here');
@@ -309,17 +282,24 @@ var GameScreen = AbstractScreen.extend({
             this.player.setPosition(this.margin.x,windowHeight/2- this.player.height/2);
         }
 
-        this.heart = new Enemy(this.player);
-        this.heart.build();
+        console.log('monster list', APP.monsterList[0]);
+
+
+
+        for (var o = 0; o < 5; o++) {
+            this.heart = new Enemy(this.player, APP.monsterList[0]);
+            this.heart.build();
+            this.heart.setPosition(700 * Math.random(),700 * Math.random());
+            this.entityLayer.addChild(this.heart);
+        }
+        
        
-        this.fly = new FlightEnemy(500,500);
-        this.fly.build();
-        this.heart.setPosition(700,200);
-        this.fly.setPosition(100,200);
+        // this.fly = new FlightEnemy(500,500);
+        // this.fly.build();
+        // this.fly.setPosition(100,200);
         
         this.entityLayer.addChild(this.player);
-        this.entityLayer.addChild(this.heart);
-        this.entityLayer.addChild(this.fly);
+        // this.entityLayer.addChild(this.fly);
         
 
         for (var i = this.level.length - 1; i >= 0; i--) {
