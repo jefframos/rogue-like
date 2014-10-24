@@ -234,7 +234,7 @@ var Application = AbstractApplication.extend({
         this.debugGraphic.endFill());
     },
     build: function() {
-        this._super("_dist/img/cubo2.png");
+        this._super("dist/img/cubo2.png");
         this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.getContent().alpha = .5;
     },
@@ -302,7 +302,7 @@ var Application = AbstractApplication.extend({
         }
     },
     build: function() {
-        this._super("_dist/img/fireball.png"), this.updateable = !0, this.collidable = !0, 
+        this._super("dist/img/fireball.png"), this.updateable = !0, this.collidable = !0, 
         this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(1127168), this.debugGraphic.lineStyle(1, 16767232, 1), 
         this.debugGraphic.endFill();
     },
@@ -460,7 +460,7 @@ var Application = AbstractApplication.extend({
     }
 }), Obstacle = Entity.extend({
     init: function(imgId) {
-        this._super(), this.updateable = !0, this.collidable = !0, this.arrayObstacles = [ "_dist/img/2.png", "_dist/img/3.png", "_dist/img/2.png" ], 
+        this._super(), this.updateable = !0, this.collidable = !0, this.arrayObstacles = [ "dist/img/2.png", "dist/img/3.png", "dist/img/2.png" ], 
         this.srcImg = this.arrayObstacles[imgId], this.type = "environment", this.width = APP.tileSize.x, 
         this.height = APP.tileSize.x, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0;
@@ -815,7 +815,7 @@ var Application = AbstractApplication.extend({
 }), RainParticle = Class.extend({
     init: function(fallSpeed, windSpeed, hArea, vArea, dir) {
         this.fallSpeed = fallSpeed, this.windSpeed = windSpeed, this.dir = dir, this.hArea = hArea, 
-        this.vArea = vArea, this.texture = new PIXI.Texture.fromImage("_dist/img/drop.png"), 
+        this.vArea = vArea, this.texture = new PIXI.Texture.fromImage("dist/img/drop.png"), 
         this.content = new PIXI.Sprite(this.texture), this.content.position.x = Math.random() * hArea, 
         this.content.position.y = Math.random() * vArea, this.gambAccum = 0;
     },
@@ -840,7 +840,7 @@ var Application = AbstractApplication.extend({
 }), GameScreen = AbstractScreen.extend({
     init: function(label) {
         MicroEvent.mixin(this), this._super(label);
-        var bg = new SimpleSprite("_dist/img/rascunho-mapa.jpg");
+        var bg = new SimpleSprite("dist/img/rascunho-mapa.jpg");
         this.addChild(bg), this.currentAppModel = new AppModel(), this.mainLayer = new Layer("main"), 
         this.entityLayer = new Layer("fire"), this.environmentLayer = new Layer("environment"), 
         this.layerManager = new LayerManager(), this.layerManager.addLayer(this.environmentLayer), 
@@ -855,7 +855,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/spritesheet/dragon.json", "_dist/img/spritesheet/dragon.png", "_dist/img/dragao-perdido.png", "_dist/img/fireball.png", "_dist/img/spritesheet/chinesa.json", "_dist/img/spritesheet/finn.json", "_dist/img/spritesheet/finn.png", "_dist/img/spritesheet/chinesa.png" ];
+        var assetsToLoader = [ "dist/img/spritesheet/dragon.json", "dist/img/spritesheet/dragon.png", "dist/img/dragao-perdido.png", "dist/img/fireball.png", "dist/img/spritesheet/chinesa.json", "dist/img/spritesheet/finn.json", "dist/img/spritesheet/finn.png", "dist/img/spritesheet/chinesa.png" ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad();
     },
     onAssetsLoaded: function() {
@@ -995,12 +995,12 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var bg = new SimpleSprite("_dist/img/bg.png");
+        var bg = new SimpleSprite("dist/img/bg.png");
         this.addChild(bg), this.name = new PIXI.Text("Aguardando mobile entrar", {
             fill: "black",
             align: "center"
         });
-        var assetsToLoader = [ "_dist/img/qrcode.png" ];
+        var assetsToLoader = [ "dist/img/qrcode.png" ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad();
     },
     onAssetsLoaded: function() {
