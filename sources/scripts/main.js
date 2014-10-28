@@ -36,10 +36,10 @@ function update() {
 	var ratio = tempRation < (window.innerWidth/windowWidth)?tempRation:(window.innerWidth/windowWidth);
 	windowWidthVar = windowWidth * ratio;
 	windowHeightVar = windowHeight * ratio;
-	//renderer.view.style.width = windowWidthVar+'px';
-	//renderer.view.style.height = windowHeightVar+'px';
-	renderer.view.style.width = (windowWidth/2)+'px';
-	renderer.view.style.height = (windowHeight/2)+'px';
+	// renderer.view.style.width = windowWidthVar+'px';
+	// renderer.view.style.height = windowHeightVar+'px';
+	renderer.view.style.width = (windowWidth/1.5)+'px';
+	renderer.view.style.height = (windowHeight/1.5)+'px';
 	APP.update();
 	renderer.render(APP.stage);
 }

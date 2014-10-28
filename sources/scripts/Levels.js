@@ -47,7 +47,7 @@ var ALL_LEVELS = [
 	]
 ];
 function getRandomLevel(){
-	var id = 3;//Math.floor(Math.random() * ALL_LEVELS.length);
+	var id = 4;//Math.floor(Math.random() * ALL_LEVELS.length);
 	//console.log('getRandomLevel id', id);
 	return ALL_LEVELS[id];
 }

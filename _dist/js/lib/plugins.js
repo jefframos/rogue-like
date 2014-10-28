@@ -1,4 +1,4 @@
-/*! goyabpd 24-10-2014 */
+/*! goyabpd 28-10-2014 */
 var QRCode;
 
 !function() {

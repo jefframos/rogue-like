@@ -14,14 +14,17 @@ var Player = SpritesheetEntity.extend({
         this.boundsCollision = true;
 
         this.playerModel = model;
+        this.playerModel.entity = this;
         this.fireModel = new FireModel();
         this.endLevel = false;
 
         this.centerPosition = {x:this.width/2, y:this.height/4};
 
-        this.defaultVelocity = this.playerModel.speed / 10;
-        this.fireFreq = this.playerModel.fireFreq;
-        this.life = this.playerModel.hp;
+        this.defaultVelocity = this.playerModel.velocity;
+        this.fireFreq = this.playerModel.fireFreq - 3;
+        console.log('fireFreq', this.fireFreq);
+        this.hpMax = this.playerModel.hp;
+        this.hp = this.playerModel.hp;
 
 
         // console.log(this.playerModel.getSpeed('normal'));
@@ -31,12 +34,19 @@ var Player = SpritesheetEntity.extend({
 
         this.fireSpeed = this.fireModel.fireSpeed;
         this.fireStepLive = this.fireModel.fireStepLive;
+        //this.firePower = this.playerModel.getDemage('physical');
 
-        this.firePower = this.playerModel.getDemage('physical');
-        console.log('fire weapon ', this.firePower);
         this.fireFreqAcum = 0;
 
     },
+    levelUp: function(){
+        console.log('level up no player');
+        this.hpMax = this.playerModel.hp;
+        this.hp = this.playerModel.hp;
+        this.defaultVelocity = this.playerModel.velocity;
+        this.fireFreq = this.playerModel.fireFreq - 3;
+    },
+    updateXP: function(xp){},
     build: function(){
         // console.log('criou o player');
 

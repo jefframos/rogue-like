@@ -22,12 +22,22 @@ var GameScreen = AbstractScreen.extend({
         this.margin = {x:APP.tileSize.x / 2 * 3,y:160 / 2};
         this.mouseDown = false;
 
-        this.playerModel = new PlayerModel('thief');
+        var clss = 'thief';
+        var rnd = Math.random();
+        if(rnd < 0.33){
+            clss = 'warrior';
+        }
+        else if(rnd < 0.66){
+            clss = 'mage';
+        }
+
+        this.playerModel = new PlayerModel(clss);
         this.playerModel.levelUp();
-        this.playerModel.levelUp();
-        this.playerModel.levelUp();
-        this.playerModel.levelUp();
-        this.playerModel.levelUp();
+        for (var i = 0; i < 0; i++) {
+            this.playerModel.levelUp();
+        }
+        // this.playerModel.levelUp();
+        this.playerModel.logCSV();
     },
     destroy: function () {
         this._super();
@@ -39,12 +49,9 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/spritesheet/dragon.png',
         // '_dist/img/chinesa.png',
             '_dist/img/dragao-perdido.png',
-            // '_dist/img/drop.png',
+            '_dist/img/drop.png',
             '_dist/img/fireball.png',
             '_dist/img/spritesheet/chinesa.json',
-            '_dist/img/spritesheet/finn.json',
-            '_dist/img/spritesheet/finn.png',
-            // '_dist/img/rascunho-mapa.jpg',
             '_dist/img/spritesheet/chinesa.png'
         ];
         this.loader = new PIXI.AssetLoader(assetsToLoader);
@@ -55,9 +62,6 @@ var GameScreen = AbstractScreen.extend({
         this._super();
 
         this.currentNode = APP.gen.firstNode;
-        //console.log('this.currentNode', this.currentNode);
-        // SOCKET.updateObj({user:{isMobile:false}});
-        // SOCKET.updateObj({socket:this.currentAppModel});
         this.rainContainer = new PIXI.DisplayObjectContainer();
 
         var self = this;
@@ -85,6 +89,10 @@ var GameScreen = AbstractScreen.extend({
         this.levelLabel = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
         this.addChild(this.levelLabel);
 
+        this.lifebar = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
+        this.addChild(this.lifebar);
+
+
         this.resetLevel();
         this.minimap = new Minimap();
         this.addChild(this.minimap);
@@ -97,6 +105,10 @@ var GameScreen = AbstractScreen.extend({
 
         this.collisionSystem = new BoundCollisionSystem(this, true);
         // console.log(this.collisionSystem,'col system');
+
+        this.effectsContainer = new PIXI.DisplayObjectContainer();
+        this.addChild(this.effectsContainer);
+
     },
     removePosition:function(position){
         for (var i = this.vecPositions.length - 1; i >= 0; i--) {
@@ -206,6 +218,11 @@ var GameScreen = AbstractScreen.extend({
         //     }
         // }
         // console.log('entity childs', this.entityLayer.childs.length);
+        if(this.lifebar && this.player){
+            this.lifebar.setText(Math.floor(this.player.hp)+'/ '+Math.floor(this.player.hpMax));
+            this.lifebar.position.x = this.player.getPosition().x;
+            this.lifebar.position.y = this.player.getPosition().y - this.player.height / 2;
+        }
         if(this.player && this.player.endLevel)
         {
             this.player.endLevel = false;
@@ -258,7 +275,7 @@ var GameScreen = AbstractScreen.extend({
 
         }
         //console.log(this, 'ESSE É O ID DO LEVEL ATUAL -> ', this.currentNode);
-        this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+roomState);
+        this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+roomState+'   -    playerClass:'+this.playerModel.playerClass);
         this.level = getRandomLevel();
 
         
@@ -287,6 +304,7 @@ var GameScreen = AbstractScreen.extend({
 
 
         for (var o = 0; o < 5; o++) {
+            APP.monsterList[0].level = this.playerModel.level + 10;
             this.heart = new Enemy(this.player, APP.monsterList[0]);
             this.heart.build();
             this.heart.setPosition(700 * Math.random(),700 * Math.random());

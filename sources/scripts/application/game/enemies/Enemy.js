@@ -12,19 +12,23 @@ var Enemy = SpritesheetEntity.extend({
         this.boundsCollision = true;
         this.player = player;
         this.monsterModel = model;
-        console.log('enemy', model);
         this.defaultVelocity = this.monsterModel.speed/10;
         this.hp = this.monsterModel.hp;
-
         this.behaviour = new DefaultBehaviour(this, player);
     },
     hurt:function(demage, type){
+        var pop = new PopUpText('red');
+        pop.setText(Math.floor(demage));
+        APP.getGame().effectsContainer.addChild(pop.getContent());
+        pop.setPosition(this.getPosition().x -10 + Math.random() * 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2);
+        pop.initMotion(-10 - (Math.random() * 10), 0.5);
         this.getTexture().tint = 0xFF0000;
+
         var trueDemage = this.monsterModel.getHurt(demage, type);
 
         this.hp -= trueDemage;
 
-        console.log(demage,'hurt',trueDemage, this.hp, this.monsterModel.level);
+        // console.log(demage,'hurt',trueDemage, this.hp, this.monsterModel.level);
 
 
         if(this.hp <= 0){

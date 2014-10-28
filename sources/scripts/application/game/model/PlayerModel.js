@@ -1,8 +1,7 @@
 /*jshint undef:false */
 var PlayerModel = Class.extend({
 	init: function (playerClass){
-		this.velocity = 4;
-		this.fireFreq = 10;
+		
 
 		if(!playerClass){
 			this.playerClass = 'warrior';
@@ -14,7 +13,7 @@ var PlayerModel = Class.extend({
 
 		if(this.playerClass === 'warrior'){
 			this.vigor = 40;
-	        this.speed = 28;
+	        this.speed = 33;
 	        this.stamina = 33;
 			this.magicPower = 25;
 	        this.battlePower = 25;
@@ -53,19 +52,19 @@ var PlayerModel = Class.extend({
 		else if(this.playerClass === 'thief'){
 			this.vigor = 37;
 	        this.speed = 40;
-	        this.stamina = 31;
+	        this.stamina = 28;
 			this.magicPower = 28;
 	        this.battlePower = 14;
-			this.defense = 46;
+			this.defense = 38;
 			this.magicDefense = 23;
 			this.baseHPModifier = 1.32;
 			this.baseHP = this.level* (20 / this.baseHPModifier);
 
-			this.vigorModifier = 0.004;
+			this.vigorModifier = 0.005;
 	        this.speedModifier = 0.007;
 	        this.staminaModifier = 0.007;
 			this.magicPowerModifier = 0.004;
-	        this.battlePowerModifier = 0.006;
+	        this.battlePowerModifier = 0.005;
 			this.defenseModifier = 0.004;
 			this.magicDefenseModifier = 0.004;
 		}
@@ -93,6 +92,29 @@ var PlayerModel = Class.extend({
         }
 		this.attack = this.battlePower + this.vigor2;
 		this.xp = 0;
+
+		this.velocity = 8 - (255 - this.speed) / 25 + 5;
+		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * 1.5;
+
+
+        this.entity = null;
+
+
+		this.csvStr = 'level,hp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n';
+		this.csvStr += this.level+','+
+		Math.floor(this.hp)+','+
+		Math.floor(this.vigor)+','+
+		Math.floor(this.speed)+','+
+		Math.floor(this.stamina)+','+
+		Math.floor(this.magicPower)+','+
+		Math.floor(this.battlePower)+','+
+		Math.floor(this.defense)+','+
+		Math.floor(this.attack)+','+
+		Math.floor(this.magicDefense)+','+
+		Math.floor(this.velocity)+','+
+		Math.floor(this.fireFreq)+','+
+		Math.floor(this.getDemage('physical'))+','+
+		Math.floor(this.getDemage('magical'))+'\n';
 	},
 	log: function(){
 		console.log();
@@ -108,8 +130,14 @@ var PlayerModel = Class.extend({
 		console.log('defense,',Math.floor(this.defense));
 		console.log('attack,',Math.floor(this.attack));
 		console.log('magicDefense,',Math.floor(this.magicDefense));
+		console.log('velocity,',Math.floor(this.velocity));
+		console.log('fireFreq,',Math.floor(this.fireFreq));
 		console.log('demagePhysical,',Math.floor(this.getDemage('physical')));
 		console.log('demageMagical,',Math.floor(this.getDemage('magical')));
+
+	},
+	logCSV: function(){
+		console.log(this.csvStr);
 	},
 	levelUp: function(){
 		this.level ++;
@@ -199,9 +227,46 @@ var PlayerModel = Class.extend({
 		this.baseHPModifier -= 0.008;
 		this.baseHP = this.level* (20 / this.baseHPModifier);
 		this.hp += (this.baseHP*(this.stamina+32))/32;
-
+		this.velocity = 8 - (255 - this.speed) / 25 + 5;
+		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * (1.1 + (this.speedModifier*1000));
+		if(this.fireFreq <= 4)
+		{
+			this.fireFreq = 4;
+		}
+		if(this.fireFreq >= 25)
+		{
+			this.fireFreq = 25;
+		}
+		if(this.velocity >= 10)
+		{
+			this.velocity = 10;
+		}
+		if(this.velocity <= 3)
+		{
+			this.velocity = 3;
+		}
 
 		console.log(this.level,'<- levelUp, xp ->',this.xp);
+
+
+		this.csvStr += this.level+','+
+		Math.floor(this.hp)+','+
+		Math.floor(this.vigor)+','+
+		Math.floor(this.speed)+','+
+		Math.floor(this.stamina)+','+
+		Math.floor(this.magicPower)+','+
+		Math.floor(this.battlePower)+','+
+		Math.floor(this.defense)+','+
+		Math.floor(this.attack)+','+
+		Math.floor(this.magicDefense)+','+
+		Math.floor(this.velocity)+','+
+		Math.floor(this.fireFreq)+','+
+		Math.floor(this.getDemage('physical'))+','+
+		Math.floor(this.getDemage('magical'))+'\n';
+
+		if(this.entity){
+			this.entity.levelUp();
+		}
 
 	},
 	updateLevel: function(){
@@ -227,9 +292,13 @@ var PlayerModel = Class.extend({
 		console.log('xp', xp);
 		this.xp += xp;
 		this.updateLevel();
+		if(this.entity){
+			this.entity.updateXP(xp);
+		}
 	},
 	getDemage: function(type){
-		var damageMultiplier = Math.random() < this.critialChance ? 0.5 : 2;
+		var damageMultiplierCritical = Math.random() < this.critialChance ? 0.5 : 2;
+		var damageMultiplier = (Math.random()/2) + 1;
 		var demage = 0;
 		if(type === 'physical'){
 			demage = this.battlePower * this.level + ((this.level * this.attack * this.weaponPower) / 256) * 3 / 2;
@@ -238,7 +307,7 @@ var PlayerModel = Class.extend({
 			demage = this.spellPower * 4 + (this.level * this.magicPower * this.spellPower / 32);
 		}
 
-		demage = demage + ((demage / 2) * damageMultiplier);
+		demage = damageMultiplier * demage + ((demage / 2) * damageMultiplierCritical);
 
 		return demage;
 	},
@@ -332,3 +401,4 @@ var PlayerModel = Class.extend({
 // defense, 48 
 // attack, 105 
 // magicDefense, 20 
+

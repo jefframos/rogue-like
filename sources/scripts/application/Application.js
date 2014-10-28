@@ -108,9 +108,14 @@ var Application = AbstractApplication.extend({
         console.log('monster physical attack', model2.getHurt(monster.getDemage('physical'),'physical'));
         console.log('monster magical attack', model2.getHurt(monster.getDemage('magical'),'magical'));
 	},
+    getGame:function(){
+        return this.mainApp;
+    },
     build:function(){
         this.monsterList = [];
-        this.monsterList.push(new MonsterModel(6,800,55,55,13,140,160, 94));
+
+        // this.monsterList.push(new MonsterModel(6,800,55,55,13,140,160, 94));
+        this.monsterList.push(new MonsterModel(1,150,55,55,13,140,160, 6));
 
 
         this.spellList = [];

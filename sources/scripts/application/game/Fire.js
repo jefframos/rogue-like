@@ -104,7 +104,7 @@ var Fire = Entity.extend({
                 this.getContent().tint = 0xff0000;
                 this.preKill();
                 arrayCollide[0].hurt(this.power, this.fireType);
-
+                
             }
         }
     },
