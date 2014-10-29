@@ -1,4 +1,4 @@
-/*! goyabpd 28-10-2014 */
+/*! goyabpd 29-10-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -155,43 +155,28 @@ SmartSocket.SOCKET_ERROR = "socketError";
 
 var Application = AbstractApplication.extend({
     init: function() {
-        this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(16777215), 
-        this.stage.removeChild(this.loadText), this.isMobile = testMobile(), this.appContainer = document.getElementById("rect"), 
+        this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(0), this.stage.removeChild(this.loadText), 
+        this.isMobile = testMobile(), this.appContainer = document.getElementById("rect"), 
         this.id = parseInt(1e11 * Math.random()), this.gen = new DungeonGenerator(), this.gen.generate(16777215 * Math.random(), 1, [ 10, 15 ], [ 12, 12 ], 5), 
         this.gen.log(), this.tileSize = {
             x: 80,
             y: 80
         };
-        var model1 = new PlayerModel("warrior");
-        model1.levelUp(), model1.levelUp(), model1.levelUp(), model1.levelUp(), model1.levelUp(), 
-        model1.levelUp(), model1.levelUp(), model1.log();
-        var model2 = new PlayerModel("mage");
-        model2.levelUp(), model2.levelUp(), model2.levelUp(), model2.levelUp(), model2.levelUp(), 
-        model2.levelUp(), model2.levelUp(), model2.log();
-        var model3 = new PlayerModel("thief");
-        model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), 
-        model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), 
-        model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.levelUp(), 
-        model3.levelUp(), model3.levelUp(), model3.levelUp(), model3.log();
-        var monster = new MonsterModel(19, 8e3, 55, 55, 13, 140, 160);
-        console.log("thief"), console.log("player physical attack", monster.getHurt(model3.getDemage("physical"), "physical")), 
-        console.log("player magical attack", monster.getHurt(model3.getDemage("magical"), "magical")), 
-        console.log("monster physical attack", model3.getHurt(monster.getDemage("physical"), "physical")), 
-        console.log("monster magical attack", model3.getHurt(monster.getDemage("magical"), "magical")), 
-        console.log("warrior"), console.log("player physical attack", monster.getHurt(model1.getDemage("physical"), "physical")), 
-        console.log("player magical attack", monster.getHurt(model1.getDemage("magical"), "magical")), 
-        console.log("monster physical attack", model1.getHurt(monster.getDemage("physical"), "physical")), 
-        console.log("monster magical attack", model1.getHurt(monster.getDemage("magical"), "magical")), 
-        console.log("mage"), console.log("player physical attack", monster.getHurt(model2.getDemage("physical"), "physical")), 
-        console.log("player magical attack", monster.getHurt(model2.getDemage("magical"), "magical")), 
-        console.log("monster physical attack", model2.getHurt(monster.getDemage("physical"), "physical")), 
-        console.log("monster magical attack", model2.getHurt(monster.getDemage("magical"), "magical"));
+    },
+    getEffectsContainer: function() {
+        return this.mainApp.effectsContainer;
     },
     getGame: function() {
         return this.mainApp;
     },
+    getGameContent: function() {
+        return this.mainApp.getContent();
+    },
+    getHUD: function() {
+        return this.HUD;
+    },
     build: function() {
-        this.monsterList = [], this.monsterList.push(new MonsterModel(1, 150, 55, 55, 13, 140, 160, 6)), 
+        this.monsterList = [], this.monsterList.push(new MonsterModel(1, 150, 55, 55, 13, 140, 160, 20)), 
         this.spellList = [], this.spellList.push(new SpellModel(1, "bolt1", 6, 20)), this.spellList.push(new SpellModel(1, "fire1", 4, 21)), 
         this.spellList.push(new SpellModel(1, "ice1", 5, 22)), this.spellList.push(new SpellModel(1, "poison", 3, 25)), 
         this.spellList.push(new SpellModel(1, "wind", 75, 25)), this.spellList.push(new SpellModel(2, "bolt2", 22, 26)), 
@@ -249,7 +234,7 @@ var Application = AbstractApplication.extend({
     },
     onAssetsLoaded: function() {
         this.mainApp = new GameScreen("Main"), this.screenManager.addScreen(this.mainApp), 
-        this.screenManager.change("Main");
+        this.HUD = new PIXI.DisplayObjectContainer(), this.stage.addChild(this.HUD), this.screenManager.change("Main");
     },
     show: function() {},
     hide: function() {},
@@ -601,16 +586,26 @@ var Application = AbstractApplication.extend({
         this.endLevel = !1, this.centerPosition = {
             x: this.width / 2,
             y: this.height / 4
-        }, this.defaultVelocity = this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3, 
-        console.log("fireFreq", this.fireFreq), this.hpMax = this.playerModel.hp, this.hp = this.playerModel.hp, 
-        this.playerModel.log(), this.fireSpeed = this.fireModel.fireSpeed, this.fireStepLive = this.fireModel.fireStepLive, 
-        this.fireFreqAcum = 0;
+        }, this.fireFreqAcum = 0, this.updateAtt();
+    },
+    updateAtt: function() {
+        this.hpMax = this.playerModel.hp, this.hp = this.playerModel.hp, this.defaultVelocity = this.playerModel.velocity, 
+        this.fireFreq = this.playerModel.fireFreq - 3, this.fireSpeed < this.defaultVelocity + 3 && (this.fireSpeed = this.defaultVelocity + 3), 
+        this.fireSpeed = this.fireModel.fireSpeed, this.fireStepLive = this.fireModel.fireStepLive;
     },
     levelUp: function() {
-        console.log("level up no player"), this.hpMax = this.playerModel.hp, this.hp = this.playerModel.hp, 
-        this.defaultVelocity = this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3;
+        console.log("level up no player");
+        var pop = new PopUpText("white");
+        pop.setText("LEVEL UP"), APP.getEffectsContainer().addChild(pop.getContent()), pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
+        pop.initMotion(-15 - 10 * Math.random(), .8), this.getTexture().tint = 16711680, 
+        this.updateAtt();
     },
-    updateXP: function() {},
+    updateXP: function(xp) {
+        var pop = new PopUpText("green");
+        pop.setText(Math.floor(xp) + " XP"), APP.getEffectsContainer().addChild(pop.getContent()), 
+        pop.setPosition(this.getPosition().x + this.centerPosition.x - 10, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2), 
+        pop.initMotion(-10 - 10 * Math.random(), .5), this.getTexture().tint = 16711680;
+    },
     build: function() {
         var self = this, motionArray = this.getFramesByRange("chinesa10", 0, 8), animationIdle = new SpritesheetAnimation();
         animationIdle.build("idle", motionArray, 1, !0, null);
@@ -664,7 +659,8 @@ var Application = AbstractApplication.extend({
         this._super(), this.debugPolygon(5596740, !0), this.getTexture() && (this.getContent().position.x = 20);
     },
     shoot: function(mousePos) {
-        var angle = Math.atan2(this.getPosition().y - mousePos.y, this.getPosition().x - mousePos.x);
+        var angle = (-APP.getGameContent().position.x + windowWidth / 2 + mousePos.x, -APP.getGameContent().position.y + windowHeight / 2 + mousePos.y, 
+        Math.atan2(windowHeight / 2 - mousePos.y + this.centerPosition.y, windowWidth / 2 - mousePos.x + this.centerPosition.x));
         angle = 180 * angle / Math.PI * -1, angle += 270, angle = angle / 180 * Math.PI;
         for (var i = 0; 1 > i; i++) {
             var tempFire = new Fire({
@@ -716,11 +712,11 @@ var Application = AbstractApplication.extend({
     },
     hurt: function(demage, type) {
         var pop = new PopUpText("red");
-        pop.setText(Math.floor(demage)), APP.getGame().effectsContainer.addChild(pop.getContent()), 
+        pop.setText(Math.floor(demage)), APP.getEffectsContainer().addChild(pop.getContent()), 
         pop.setPosition(this.getPosition().x - 10 + 20 * Math.random(), this.getPosition().y - 5 + 10 * Math.random() - this.height / 2), 
         pop.initMotion(-10 - 10 * Math.random(), .5), this.getTexture().tint = 16711680;
         var trueDemage = this.monsterModel.getHurt(demage, type);
-        this.hp -= trueDemage, this.hp <= 0 && this.preKill();
+        this.hp -= trueDemage, this.hp <= 0 && (this.preKill(), this.player.playerModel.updateXp(this.monsterModel.xp));
     },
     build: function() {
         var motionArray = this.getFramesByRange("dragon10", 0, 14), animationIdle = new SpritesheetAnimation();
@@ -736,8 +732,7 @@ var Application = AbstractApplication.extend({
     },
     preKill: function() {
         var self = this;
-        this.player.playerModel.updateXp(this.monsterModel.xp), this.updateable = !1, this.collidable = !1, 
-        TweenLite.to(this.getContent(), .5, {
+        this.updateable = !1, this.collidable = !1, TweenLite.to(this.getContent(), .5, {
             alpha: 0,
             onComplete: function() {
                 self.kill = !0;
@@ -970,15 +965,20 @@ var Application = AbstractApplication.extend({
     }
 }), GameScreen = AbstractScreen.extend({
     init: function(label) {
-        MicroEvent.mixin(this), this._super(label);
-        var bg = new SimpleSprite("_dist/img/rascunho-mapa.jpg");
-        this.addChild(bg), this.currentAppModel = new AppModel(), this.mainLayer = new Layer("main"), 
+        MicroEvent.mixin(this), this._super(label), this.bgContainer = new PIXI.DisplayObjectContainer(), 
+        this.addChild(this.bgContainer), this.currentAppModel = new AppModel(), this.mainLayer = new Layer("main"), 
         this.entityLayer = new Layer("fire"), this.environmentLayer = new Layer("environment"), 
         this.layerManager = new LayerManager(), this.layerManager.addLayer(this.environmentLayer), 
         this.layerManager.addLayer(this.entityLayer), this.addChild(this.layerManager), 
-        this.margin = {
+        this.mapPosition = {
             x: APP.tileSize.x / 2 * 3,
             y: 80
+        }, this.tempSizeTiles = {
+            x: 12,
+            y: 10
+        }, this.levelBounds = {
+            x: 80 * this.tempSizeTiles.x - 2 * this.mapPosition.x,
+            y: 80 * this.tempSizeTiles.y - 2 * this.mapPosition.y
         }, this.mouseDown = !1;
         var clss = "thief", rnd = Math.random();
         .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = new PlayerModel(clss), 
@@ -996,26 +996,27 @@ var Application = AbstractApplication.extend({
     },
     onAssetsLoaded: function() {
         this._super(), this.currentNode = APP.gen.firstNode, this.rainContainer = new PIXI.DisplayObjectContainer();
-        this.vecPositions = [], this.keyboardInput = new KeyboardInput(this);
-        var tempRain = null;
-        this.vecRain = [];
-        for (var j = 300; j >= 0; j--) tempRain = new RainParticle(50, 5, windowWidth + 200, windowHeight, "left"), 
-        this.rainContainer.addChild(tempRain.content), this.vecRain.push(tempRain);
-        this.graphDebug = new PIXI.Graphics(), this.addChild(this.graphDebug), this.blackShape = new PIXI.Graphics(), 
-        this.blackShape.beginFill(0), this.blackShape.drawRect(0, 0, windowWidth, windowHeight), 
-        this.addChild(this.blackShape), TweenLite.to(this.blackShape, 1, {
+        this.vecPositions = [], this.keyboardInput = new KeyboardInput(this), this.graphDebug = new PIXI.Graphics(), 
+        this.addChild(this.graphDebug), this.blackShape = new PIXI.Graphics(), this.blackShape.beginFill(0), 
+        this.blackShape.drawRect(0, 0, windowWidth, windowHeight), APP.getHUD().addChild(this.blackShape), 
+        TweenLite.to(this.blackShape, 1, {
             alpha: 0
         }), this.levelLabel = new PIXI.Text("", {
             fill: "white",
             align: "center",
             font: "bold 20px Arial"
-        }), this.addChild(this.levelLabel), this.lifebar = new PIXI.Text("", {
+        }), console.log("HUD", APP.getHUD()), APP.getHUD().addChild(this.levelLabel), this.lifebar = new PIXI.Text("", {
             fill: "white",
             align: "center",
             font: "bold 20px Arial"
-        }), this.addChild(this.lifebar), this.resetLevel(), this.minimap = new Minimap(), 
-        this.addChild(this.minimap), this.minimap.build(), this.minimap.setPosition(windowWidth - 100, 5), 
-        this.minimap.getContent().scale.x = .3, this.minimap.getContent().scale.y = .3, 
+        }), APP.getHUD().addChild(this.lifebar), this.lifebar.position.x = windowWidth - 200, 
+        this.resetLevel(), this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent()), 
+        this.minimap.build(), this.minimap.setPosition(windowWidth - 100, 5), this.minimap.getContent().scale.x = .3, 
+        this.minimap.getContent().scale.y = .3;
+        var tempRain = null;
+        this.vecRain = [];
+        for (var j = 300; j >= 0; j--) tempRain = new RainParticle(50, 5, this.levelBounds.x + 200, this.levelBounds.y, "left"), 
+        this.rainContainer.addChild(tempRain.content), this.vecRain.push(tempRain);
         this.collisionSystem = new BoundCollisionSystem(this, !0), this.effectsContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.effectsContainer);
     },
@@ -1043,15 +1044,15 @@ var Application = AbstractApplication.extend({
     },
     update: function() {
         if (this.player) {
-            this.mouseDown && (this.player.fireFreqAcum--, this.player.fireFreqAcum <= 0 && this.shoot()), 
+            this.getContent().position.x = windowWidth / 2 - this.player.getPosition().x, this.getContent().position.y = windowHeight / 2 - this.player.getPosition().y, 
+            this.player.fireFreqAcum--, this.mouseDown && this.player.fireFreqAcum <= 0 && this.shoot(), 
             this.entityLayer.collideChilds(this.player), this.environmentLayer.collideChilds(this.player), 
-            (this.player.getPosition().x + this.player.virtualVelocity.x < this.margin.x && this.player.virtualVelocity.x < 0 || this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > windowWidth - this.margin.x && this.player.virtualVelocity.x > 0) && (this.player.virtualVelocity.x = 0), 
-            (this.player.getPosition().y + this.player.virtualVelocity.y < this.margin.y && this.player.virtualVelocity.y < 0 || this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > windowHeight - this.margin.y && this.player.virtualVelocity.y > 0) && (this.player.virtualVelocity.y = 0);
+            (this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x && this.player.virtualVelocity.x < 0 || this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > this.levelBounds.x + this.mapPosition.x && this.player.virtualVelocity.x > 0) && (this.player.virtualVelocity.x = 0), 
+            (this.player.getPosition().y + this.player.virtualVelocity.y < this.mapPosition.y && this.player.virtualVelocity.y < 0 || this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > this.levelBounds.y + this.mapPosition.y && this.player.virtualVelocity.y > 0) && (this.player.virtualVelocity.y = 0);
             for (var i = 0; i < this.entityLayer.childs.length; i++) "fire" === this.entityLayer.childs[i].type && this.entityLayer.collideChilds(this.entityLayer.childs[i]);
             this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs);
         }
-        this._super(), this.entityLayer.getContent().children.sort(this.depthCompare), this.lifebar && this.player && (this.lifebar.setText(Math.floor(this.player.hp) + "/ " + Math.floor(this.player.hpMax)), 
-        this.lifebar.position.x = this.player.getPosition().x, this.lifebar.position.y = this.player.getPosition().y - this.player.height / 2), 
+        this._super(), this.entityLayer.getContent().children.sort(this.depthCompare), this.lifebar && this.player && this.lifebar.setText(Math.floor(this.player.hp) + "/ " + Math.floor(this.player.hpMax)), 
         this.player && this.player.endLevel && (this.player.endLevel = !1, this.currentNode = this.player.nextNode, 
         this.currentPlayerSide = this.player.nextDoorSide, this.killLevel(this.resetLevel), 
         this.player = null);
@@ -1066,9 +1067,28 @@ var Application = AbstractApplication.extend({
         }, 700);
     },
     resetLevel: function() {
-        this.vecPositions = [], TweenLite.to(this.blackShape, 1, {
+        for (this.vecPositions = [], this.blackShape.alpha = 1, TweenLite.to(this.blackShape, 1, {
             alpha: 0
-        });
+        }); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
+        this.tempSizeTiles = 1 === this.currentNode.mode ? {
+            x: Math.floor(windowWidth / 80),
+            y: Math.floor(windowHeight / 80)
+        } : {
+            x: 9 + Math.floor(15 * Math.random()),
+            y: 9 + Math.floor(15 * Math.random())
+        }, this.levelBounds = {
+            x: 80 * this.tempSizeTiles.x - 2 * this.mapPosition.x,
+            y: 80 * this.tempSizeTiles.y - 2 * this.mapPosition.y
+        }, console.log("this.tempSizeTiles", this.tempSizeTiles);
+        for (var ii = 0; ii < this.tempSizeTiles.x; ii++) for (var jj = 0; jj < this.tempSizeTiles.y; jj++) {
+            var tempTile = new SimpleSprite(Math.random() < .5 ? "_dist/img/tile1.png" : "_dist/img/tile2.png");
+            tempTile.setPosition(80 * ii, 80 * jj), tempTile.getContent().cacheAsBitmap = !0, 
+            this.bgContainer.addChild(tempTile.getContent());
+        }
+        this.levelBoundsGraph && this.levelBoundsGraph.parent && this.levelBoundsGraph.parent.removeChild(this.levelBoundsGraph), 
+        this.levelBoundsGraph = new PIXI.Graphics(), this.levelBoundsGraph.lineStyle(1, 16711680), 
+        this.levelBoundsGraph.drawRect(this.mapPosition.x, this.mapPosition.y, this.levelBounds.x, this.levelBounds.y), 
+        this.addChild(this.levelBoundsGraph);
         var roomState = "first room";
         switch (this.currentNode.mode) {
           case 2:
@@ -1092,30 +1112,30 @@ var Application = AbstractApplication.extend({
         }
         this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState + "   -    playerClass:" + this.playerModel.playerClass), 
         this.level = getRandomLevel(), this.player = new Player(this.playerModel), this.player.build(), 
-        "up" === this.currentPlayerSide ? this.player.setPosition(windowWidth / 2, windowHeight - this.margin.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(windowWidth / 2, this.margin.y) : "left" === this.currentPlayerSide ? this.player.setPosition(windowWidth - this.margin.x - this.player.width, windowHeight / 2 - this.player.height / 2) : "right" === this.currentPlayerSide && this.player.setPosition(this.margin.x, windowHeight / 2 - this.player.height / 2), 
         console.log("monster list", APP.monsterList[0]);
         for (var o = 0; 5 > o; o++) APP.monsterList[0].level = this.playerModel.level + 10, 
-        this.heart = new Enemy(this.player, APP.monsterList[0]), this.heart.build(), this.heart.setPosition(700 * Math.random(), 700 * Math.random()), 
+        this.heart = new Enemy(this.player, APP.monsterList[0]), this.heart.build(), this.heart.setPosition(this.levelBounds.x * Math.random() + this.mapPosition.x, this.levelBounds.y * Math.random() + this.mapPosition.y), 
         this.entityLayer.addChild(this.heart);
         this.entityLayer.addChild(this.player);
         for (var i = this.level.length - 1; i >= 0; i--) for (var j = this.level[i].length - 1; j >= 0; j--) if (this.level[i][j] > 0) {
             var obs = new Obstacle(this.level[i][j] - 1);
-            obs.build(), obs.setPosition(j * APP.tileSize.x + this.margin.x, (i + 1) * APP.tileSize.y + this.margin.y), 
+            obs.build(), obs.setPosition(j * APP.tileSize.x + this.mapPosition.x, (i + 1) * APP.tileSize.y + this.mapPosition.y), 
             this.entityLayer.addChild(obs);
         }
-        this.createDoors();
+        this.createDoors(), "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y - this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2, this.mapPosition.y) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x - this.mapPosition.x - this.player.width, this.levelBounds.y / 2 - this.player.height / 2) : "right" === this.currentPlayerSide && this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 - this.player.height / 2);
     },
     createDoors: function() {
         this.currentNode.childrenSides[0] && (this.doorLeft = new Door("left"), this.doorLeft.build(), 
-        this.doorLeft.setPosition(this.margin.x - APP.tileSize.x / 2, windowHeight / 2), 
+        this.doorLeft.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.doorLeft.height), 
         this.doorLeft.node = this.currentNode.childrenSides[0], this.environmentLayer.addChild(this.doorLeft)), 
         this.currentNode.childrenSides[1] && (this.doorRight = new Door("right"), this.doorRight.build(), 
-        this.doorRight.setPosition(windowWidth - this.margin.x + APP.tileSize.x / 2, windowHeight / 2), 
+        this.doorRight.setPosition(this.levelBounds.x + this.mapPosition.x, this.levelBounds.y / 2 + this.doorRight.height), 
         this.doorRight.node = this.currentNode.childrenSides[1], this.environmentLayer.addChild(this.doorRight)), 
         this.currentNode.childrenSides[2] && (this.doorUp = new Door("up"), this.doorUp.build(), 
-        this.doorUp.setPosition(windowWidth / 2, this.margin.y - APP.tileSize.y / 2), this.doorUp.node = this.currentNode.childrenSides[2], 
-        this.environmentLayer.addChild(this.doorUp)), this.currentNode.childrenSides[3] && (this.doorDown = new Door("down"), 
-        this.doorDown.build(), this.doorDown.setPosition(windowWidth / 2, windowHeight - this.margin.y + APP.tileSize.y / 2), 
+        this.doorUp.setPosition(this.mapPosition.x + this.levelBounds.x / 2, this.mapPosition.y), 
+        this.doorUp.node = this.currentNode.childrenSides[2], this.environmentLayer.addChild(this.doorUp)), 
+        this.currentNode.childrenSides[3] && (this.doorDown = new Door("down"), this.doorDown.build(), 
+        this.doorDown.setPosition(this.mapPosition.x + this.levelBounds.x / 2, this.levelBounds.y + this.mapPosition.y), 
         this.doorDown.node = this.currentNode.childrenSides[3], this.environmentLayer.addChild(this.doorDown));
     },
     depthCompare: function(a, b) {
@@ -1181,9 +1201,9 @@ var Application = AbstractApplication.extend({
     init: function(parent) {
         var self = parent;
         document.body.addEventListener("mouseup", function() {
-            self.mouseDown = !1;
+            self.player && (self.mouseDown = !1);
         }), document.body.addEventListener("mousedown", function() {
-            self.mouseDown = !0, self.player.fireFreqAcum = 0;
+            self.player && (self.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
             self.player && (87 === e.keyCode || 38 === e.keyCode && self.player.velocity.y < 0 ? self.removePosition("up") : 83 === e.keyCode || 40 === e.keyCode && self.player.velocity.y > 0 ? self.removePosition("down") : 65 === e.keyCode || 37 === e.keyCode && self.player.velocity.x < 0 ? self.removePosition("left") : (68 === e.keyCode || 39 === e.keyCode && self.player.velocity.x > 0) && self.removePosition("right"), 
             self.updatePlayerVel());

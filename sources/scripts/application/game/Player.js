@@ -19,34 +19,48 @@ var Player = SpritesheetEntity.extend({
         this.endLevel = false;
 
         this.centerPosition = {x:this.width/2, y:this.height/4};
-
-        this.defaultVelocity = this.playerModel.velocity;
-        this.fireFreq = this.playerModel.fireFreq - 3;
-        console.log('fireFreq', this.fireFreq);
-        this.hpMax = this.playerModel.hp;
-        this.hp = this.playerModel.hp;
-
-
-        // console.log(this.playerModel.getSpeed('normal'));
-
-        this.playerModel.log();
-
-
-        this.fireSpeed = this.fireModel.fireSpeed;
-        this.fireStepLive = this.fireModel.fireStepLive;
+       
+        //this.playerModel.log();
         //this.firePower = this.playerModel.getDemage('physical');
 
         this.fireFreqAcum = 0;
 
+        this.updateAtt();
+
     },
-    levelUp: function(){
-        console.log('level up no player');
+    updateAtt: function(){
         this.hpMax = this.playerModel.hp;
         this.hp = this.playerModel.hp;
         this.defaultVelocity = this.playerModel.velocity;
         this.fireFreq = this.playerModel.fireFreq - 3;
+        if(this.fireSpeed < this.defaultVelocity + 3){
+            this.fireSpeed = this.defaultVelocity + 3;
+        }
+        this.fireSpeed = this.fireModel.fireSpeed;
+       
+        this.fireStepLive = this.fireModel.fireStepLive;
     },
-    updateXP: function(xp){},
+    levelUp: function(){
+        console.log('level up no player');
+
+        var pop = new PopUpText('white');
+        pop.setText('LEVEL UP');
+        APP.getEffectsContainer().addChild(pop.getContent());
+        pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2 - 20);
+        pop.initMotion(-15 - (Math.random() * 10), 0.8);
+        this.getTexture().tint = 0xFF0000;
+
+        this.updateAtt();
+       
+    },
+    updateXP: function(xp){
+        var pop = new PopUpText('green');
+        pop.setText(Math.floor(xp) + ' XP');
+        APP.getEffectsContainer().addChild(pop.getContent());
+        pop.setPosition(this.getPosition().x + this.centerPosition.x - 10, this.getPosition().y-5 + Math.random() * 10 - this.height/2);
+        pop.initMotion(-10 - (Math.random() * 10), 0.5);
+        this.getTexture().tint = 0xFF0000;
+    },
     build: function(){
         // console.log('criou o player');
 
@@ -114,7 +128,16 @@ var Player = SpritesheetEntity.extend({
     },
     shoot: function(mousePos){
         var self = this;
-        var angle = Math.atan2(this.getPosition().y-mousePos.y,  this.getPosition().x-mousePos.x);
+
+
+        var mouseX = -APP.getGameContent().position.x + windowWidth/2  + mousePos.x;
+        var mouseY = -APP.getGameContent().position.y + windowHeight/2  + mousePos.y;
+        //var angle = Math.atan2(APP.getGameContent().x + this.getPosition().y-mousePos.y, APP.getGameContent().y + this.getPosition().x-mousePos.x);
+        var angle = Math.atan2( windowHeight/2 - mousePos.y + this.centerPosition.y,  windowWidth/2-mousePos.x+ this.centerPosition.x);
+
+
+
+        // var angle = Math.atan2(this.getPosition().y-mousePos.y,  this.getPosition().x-mousePos.x);
         angle = angle * 180 / Math.PI * -1;
         angle += 90 + 180;
         angle = angle / 180 * Math.PI;

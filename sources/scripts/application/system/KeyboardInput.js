@@ -3,11 +3,15 @@ var KeyboardInput = Class.extend({
 	init: function (parent){
 		var self = parent;
 		document.body.addEventListener('mouseup', function(e){
-			self.mouseDown = false;
+			if(self.player){
+				self.mouseDown = false;
+			}
 		});
 		document.body.addEventListener('mousedown', function(e){
-			self.mouseDown = true;
-			self.player.fireFreqAcum = 0;
+			if(self.player){
+				self.mouseDown = true;
+				// self.player.fireFreqAcum = 0;
+			}
 		});
 		document.body.addEventListener('keyup', function(e){
 			if(self.player){

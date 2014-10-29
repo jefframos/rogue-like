@@ -19,7 +19,7 @@ var Enemy = SpritesheetEntity.extend({
     hurt:function(demage, type){
         var pop = new PopUpText('red');
         pop.setText(Math.floor(demage));
-        APP.getGame().effectsContainer.addChild(pop.getContent());
+        APP.getEffectsContainer().addChild(pop.getContent());
         pop.setPosition(this.getPosition().x -10 + Math.random() * 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2);
         pop.initMotion(-10 - (Math.random() * 10), 0.5);
         this.getTexture().tint = 0xFF0000;
@@ -33,6 +33,7 @@ var Enemy = SpritesheetEntity.extend({
 
         if(this.hp <= 0){
             this.preKill();
+            this.player.playerModel.updateXp(this.monsterModel.xp);
         }
     },
     build: function(){
@@ -68,7 +69,6 @@ var Enemy = SpritesheetEntity.extend({
     preKill:function(){
         //this._super();
         var self = this;
-        this.player.playerModel.updateXp(this.monsterModel.xp);
         this.updateable = false;
         this.collidable = false;
         TweenLite.to(this.getContent(), 0.5, {alpha:0, onComplete:function(){self.kill = true;}});

@@ -8,7 +8,7 @@ var Application = AbstractApplication.extend({
         // });
         //8599741.56163418 78
         this._super(windowWidth, windowHeight);
-        this.stage.setBackgroundColor(0xffffff);
+        this.stage.setBackgroundColor(0x000);
         this.stage.removeChild(this.loadText);
         this.isMobile = testMobile();
         this.appContainer = document.getElementById('rect');
@@ -20,102 +20,113 @@ var Application = AbstractApplication.extend({
         this.gen.log();
         this.tileSize = {x:80, y: 80};
 
-        var model1 = new PlayerModel('warrior');
-        //model1.log();
-        model1.levelUp();
-       // model1.log();
-        model1.levelUp();
-       // model1.log();
-        model1.levelUp();
-        //model1.log();
-        model1.levelUp();
-        //model1.log();
-        model1.levelUp();
-        //model1.log();
-        model1.levelUp();
-        //model1.log();
-        model1.levelUp();
-        model1.log();
+       //  var model1 = new PlayerModel('warrior');
+       //  //model1.log();
+       //  model1.levelUp();
+       // // model1.log();
+       //  model1.levelUp();
+       // // model1.log();
+       //  model1.levelUp();
+       //  //model1.log();
+       //  model1.levelUp();
+       //  //model1.log();
+       //  model1.levelUp();
+       //  //model1.log();
+       //  model1.levelUp();
+       //  //model1.log();
+       //  model1.levelUp();
+       //  model1.log();
 
-        var model2 = new PlayerModel('mage');
-        //model2.log();
-        model2.levelUp();
-       // model2.log();
-        model2.levelUp();
-       // model2.log();
-        model2.levelUp();
-        //model2.log();
-        model2.levelUp();
-        //model2.log();
-        model2.levelUp();
-        //model2.log();
-        model2.levelUp();
-        //model2.log();
-        model2.levelUp();
-        model2.log();
+       //  var model2 = new PlayerModel('mage');
+       //  //model2.log();
+       //  model2.levelUp();
+       // // model2.log();
+       //  model2.levelUp();
+       // // model2.log();
+       //  model2.levelUp();
+       //  //model2.log();
+       //  model2.levelUp();
+       //  //model2.log();
+       //  model2.levelUp();
+       //  //model2.log();
+       //  model2.levelUp();
+       //  //model2.log();
+       //  model2.levelUp();
+       //  model2.log();
 
 
-        var model3 = new PlayerModel('thief');
-        //model3.log();
-        model3.levelUp();
-       // model3.log();
-        model3.levelUp();
-       // model3.log();
-        model3.levelUp();
-        //model3.log();
-        model3.levelUp();
-        //model3.log();
-        model3.levelUp();
-        //model3.log();
-        model3.levelUp();
-        //model3.log();
-        model3.levelUp();
+       //  var model3 = new PlayerModel('thief');
+       //  //model3.log();
+       //  model3.levelUp();
+       // // model3.log();
+       //  model3.levelUp();
+       // // model3.log();
+       //  model3.levelUp();
+       //  //model3.log();
+       //  model3.levelUp();
+       //  //model3.log();
+       //  model3.levelUp();
+       //  //model3.log();
+       //  model3.levelUp();
+       //  //model3.log();
+       //  model3.levelUp();
         
 
-        model3.levelUp();
-        model3.levelUp();
-        model3.levelUp();
-        model3.levelUp();
-        model3.levelUp();
-        model3.levelUp();
-        model3.levelUp();
-        model3.levelUp();
-        model3.levelUp();
-        model3.levelUp();
-        model3.levelUp();
-        model3.log();
+       //  model3.levelUp();
+       //  model3.levelUp();
+       //  model3.levelUp();
+       //  model3.levelUp();
+       //  model3.levelUp();
+       //  model3.levelUp();
+       //  model3.levelUp();
+       //  model3.levelUp();
+       //  model3.levelUp();
+       //  model3.levelUp();
+       //  model3.levelUp();
+       //  model3.log();
+
         // var model2 = new MonsterModel();
         //level,hp,speed,magicPower,battlePower,defense, magDef
         // var monster = new MonsterModel(8,860,35,10,16,125,150);
         // var monster = new MonsterModel(12,230,35,10,13,150,100);
         // var monster = new MonsterModel(24,1305,40,10,22,225,45);
-        var monster = new MonsterModel(19,8000,55,55,13,140,160);
-        console.log('thief');
-        console.log('player physical attack', monster.getHurt(model3.getDemage('physical'),'physical'));
-        console.log('player magical attack', monster.getHurt(model3.getDemage('magical'),'magical'));
-        console.log('monster physical attack', model3.getHurt(monster.getDemage('physical'),'physical'));
-        console.log('monster magical attack', model3.getHurt(monster.getDemage('magical'),'magical'));
+        // var monster = new MonsterModel(19,8000,55,55,13,140,160);
 
-        console.log('warrior');
-        console.log('player physical attack', monster.getHurt(model1.getDemage('physical'),'physical'));
-        console.log('player magical attack', monster.getHurt(model1.getDemage('magical'),'magical'));
-        console.log('monster physical attack', model1.getHurt(monster.getDemage('physical'),'physical'));
-        console.log('monster magical attack', model1.getHurt(monster.getDemage('magical'),'magical'));
+        // console.log('thief');
+        // console.log('player physical attack', monster.getHurt(model3.getDemage('physical'),'physical'));
+        // console.log('player magical attack', monster.getHurt(model3.getDemage('magical'),'magical'));
+        // console.log('monster physical attack', model3.getHurt(monster.getDemage('physical'),'physical'));
+        // console.log('monster magical attack', model3.getHurt(monster.getDemage('magical'),'magical'));
 
-        console.log('mage');
-        console.log('player physical attack', monster.getHurt(model2.getDemage('physical'),'physical'));
-        console.log('player magical attack', monster.getHurt(model2.getDemage('magical'),'magical'));
-        console.log('monster physical attack', model2.getHurt(monster.getDemage('physical'),'physical'));
-        console.log('monster magical attack', model2.getHurt(monster.getDemage('magical'),'magical'));
+        // console.log('warrior');
+        // console.log('player physical attack', monster.getHurt(model1.getDemage('physical'),'physical'));
+        // console.log('player magical attack', monster.getHurt(model1.getDemage('magical'),'magical'));
+        // console.log('monster physical attack', model1.getHurt(monster.getDemage('physical'),'physical'));
+        // console.log('monster magical attack', model1.getHurt(monster.getDemage('magical'),'magical'));
+
+        // console.log('mage');
+        // console.log('player physical attack', monster.getHurt(model2.getDemage('physical'),'physical'));
+        // console.log('player magical attack', monster.getHurt(model2.getDemage('magical'),'magical'));
+        // console.log('monster physical attack', model2.getHurt(monster.getDemage('physical'),'physical'));
+        // console.log('monster magical attack', model2.getHurt(monster.getDemage('magical'),'magical'));
 	},
+    getEffectsContainer:function(){
+        return this.mainApp.effectsContainer;
+    },
     getGame:function(){
         return this.mainApp;
+    },
+    getGameContent:function(){
+        return this.mainApp.getContent();
+    },
+    getHUD:function(){
+        return this.HUD;
     },
     build:function(){
         this.monsterList = [];
 
         // this.monsterList.push(new MonsterModel(6,800,55,55,13,140,160, 94));
-        this.monsterList.push(new MonsterModel(1,150,55,55,13,140,160, 6));
+        this.monsterList.push(new MonsterModel(1,150,55,55,13,140,160, 20));
 
 
         this.spellList = [];
@@ -237,6 +248,8 @@ var Application = AbstractApplication.extend({
     },
     onAssetsLoaded:function()
     {
+        
+
         this.mainApp = new GameScreen('Main');
         this.screenManager.addScreen(this.mainApp);
 
@@ -244,6 +257,8 @@ var Application = AbstractApplication.extend({
             // this.screenManager.addScreen(this.waitScreen);
 
             // this.screenManager.change('Wait');
+        this.HUD = new PIXI.DisplayObjectContainer();
+        this.stage.addChild(this.HUD);
         this.screenManager.change('Main');
     },
     show:function(){

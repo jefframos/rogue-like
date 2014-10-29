@@ -4,8 +4,19 @@ var GameScreen = AbstractScreen.extend({
         MicroEvent.mixin(this);
         this._super(label);
 
-        var bg = new SimpleSprite('_dist/img/rascunho-mapa.jpg');
-        this.addChild(bg);
+        //var bg = new SimpleSprite('_dist/img/rascunho-mapa.jpg');
+        //this.addChild(bg);
+
+        this.bgContainer = new PIXI.DisplayObjectContainer();
+        // var tempTile = new SimpleSprite('_dist/img/tile1.png');
+
+
+
+
+        this.addChild(this.bgContainer);
+        
+        // bgContainer.cacheAsBitmap = true;
+
         // bg.getContent().scale.x = 0.5;
         // bg.getContent().scale.y = 0.5;
         this.currentAppModel = new AppModel();
@@ -19,7 +30,12 @@ var GameScreen = AbstractScreen.extend({
 
         this.layerManager.addLayer(this.entityLayer);
         this.addChild(this.layerManager);
-        this.margin = {x:APP.tileSize.x / 2 * 3,y:160 / 2};
+        this.mapPosition = {x:APP.tileSize.x / 2 * 3,y:160 / 2};
+
+        this.tempSizeTiles = {x:12, y:10};
+        //POR ENQUANTO 80 é o tamanho do tile
+        this.levelBounds = {x: this.tempSizeTiles.x * 80 - this.mapPosition.x*2, y: this.tempSizeTiles.y * 80 - this.mapPosition.y * 2};
+
         this.mouseDown = false;
 
         var clss = 'thief';
@@ -68,13 +84,7 @@ var GameScreen = AbstractScreen.extend({
 
         this.vecPositions = [];
         this.keyboardInput = new KeyboardInput(this);
-        var tempRain = null;
-        this.vecRain = [];
-        for (var j = 300; j >= 0; j--) {
-            tempRain = new RainParticle(50, 5, windowWidth + 200, windowHeight, 'left');
-            this.rainContainer.addChild(tempRain.content);
-            this.vecRain.push(tempRain);
-        }
+        
 
 
         this.graphDebug = new PIXI.Graphics();
@@ -83,24 +93,34 @@ var GameScreen = AbstractScreen.extend({
         this.blackShape = new PIXI.Graphics();
         this.blackShape.beginFill(0x000000);
         this.blackShape.drawRect(0,0,windowWidth, windowHeight);
-        this.addChild(this.blackShape);
+        APP.getHUD().addChild(this.blackShape);
         TweenLite.to(this.blackShape, 1, {alpha:0});
 
         this.levelLabel = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
-        this.addChild(this.levelLabel);
+        console.log('HUD',APP.getHUD());
+        APP.getHUD().addChild(this.levelLabel);
 
         this.lifebar = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
-        this.addChild(this.lifebar);
-
+        APP.getHUD().addChild(this.lifebar);
+        this.lifebar.position.x = windowWidth - 200;
 
         this.resetLevel();
         this.minimap = new Minimap();
-        this.addChild(this.minimap);
+        APP.getHUD().addChild(this.minimap.getContent());
         this.minimap.build();
         this.minimap.setPosition(windowWidth - 100,5);
         this.minimap.getContent().scale.x = 0.3;
         this.minimap.getContent().scale.y = 0.3;
 
+
+
+        var tempRain = null;
+        this.vecRain = [];
+        for (var j = 300; j >= 0; j--) {
+            tempRain = new RainParticle(50, 5, this.levelBounds.x + 200, this.levelBounds.y, 'left');
+            this.rainContainer.addChild(tempRain.content);
+            this.vecRain.push(tempRain);
+        }
         // console.log(new BoundCollisionSystem(),'col system BoundCollisionSystem');
 
         this.collisionSystem = new BoundCollisionSystem(this, true);
@@ -108,6 +128,7 @@ var GameScreen = AbstractScreen.extend({
 
         this.effectsContainer = new PIXI.DisplayObjectContainer();
         this.addChild(this.effectsContainer);
+
 
     },
     removePosition:function(position){
@@ -179,24 +200,40 @@ var GameScreen = AbstractScreen.extend({
     {
        // console.log(this.mouseDown);
 
+
+
         if(this.player){
-            
+            this.getContent().position.x = windowWidth/2 - this.player.getPosition().x;
+            this.getContent().position.y = windowHeight/2 - this.player.getPosition().y;
+            this.player.fireFreqAcum --;
+
             if(this.mouseDown){
-                this.player.fireFreqAcum --;
-                //console.log(this.player.fireFreqAcum);
+                //console.log(this.player.fireFreqAcum);ds
                 if(this.player.fireFreqAcum <= 0){
                     this.shoot();
                 }
             }
+
             this.entityLayer.collideChilds(this.player);
             this.environmentLayer.collideChilds(this.player);
             //zera as posições aqui, caso encontre uma porte, por isso a colisao antes
-            if(((this.player.getPosition().x + this.player.virtualVelocity.x < this.margin.x ) && this.player.virtualVelocity.x < 0) ||
-                ((this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > windowWidth -  this.margin.x)&& this.player.virtualVelocity.x > 0)){
+            // if(((this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x ) && this.player.virtualVelocity.x < 0) ||
+            //     ((this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > windowWidth -  this.mapPosition.x)&& this.player.virtualVelocity.x > 0)){
+            //     this.player.virtualVelocity.x = 0;
+            // }
+            // if(((this.player.getPosition().y + this.player.virtualVelocity.y < this.mapPosition.y ) && this.player.virtualVelocity.y < 0) ||
+            //     ((this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > windowHeight -  this.mapPosition.y)&& this.player.virtualVelocity.y > 0)){
+            //     this.player.virtualVelocity.y = 0;
+            // } ----<< OLD
+
+
+            // RETIREI AS mapPosition, VER ACIMA COMO ERA
+            if(((this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x ) && this.player.virtualVelocity.x < 0) ||
+                ((this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > this.levelBounds.x  +  this.mapPosition.x)&& this.player.virtualVelocity.x > 0)){
                 this.player.virtualVelocity.x = 0;
             }
-            if(((this.player.getPosition().y + this.player.virtualVelocity.y < this.margin.y ) && this.player.virtualVelocity.y < 0) ||
-                ((this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > windowHeight -  this.margin.y)&& this.player.virtualVelocity.y > 0)){
+            if(((this.player.getPosition().y + this.player.virtualVelocity.y < this.mapPosition.y) && this.player.virtualVelocity.y < 0) ||
+                ((this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > this.levelBounds.y +  this.mapPosition.y)&& this.player.virtualVelocity.y > 0)){
                 this.player.virtualVelocity.y = 0;
             }
 
@@ -220,8 +257,8 @@ var GameScreen = AbstractScreen.extend({
         // console.log('entity childs', this.entityLayer.childs.length);
         if(this.lifebar && this.player){
             this.lifebar.setText(Math.floor(this.player.hp)+'/ '+Math.floor(this.player.hpMax));
-            this.lifebar.position.x = this.player.getPosition().x;
-            this.lifebar.position.y = this.player.getPosition().y - this.player.height / 2;
+            // this.lifebar.position.x = this.player.getPosition().x;
+            // this.lifebar.position.y = this.player.getPosition().y - this.player.height / 2;
         }
         if(this.player && this.player.endLevel)
         {
@@ -253,8 +290,41 @@ var GameScreen = AbstractScreen.extend({
     },
     resetLevel:function()
     {
+
+       
+
+
         this.vecPositions = [];
+        this.blackShape.alpha = 1;
         TweenLite.to(this.blackShape, 1, {alpha:0});
+
+
+        while(this.bgContainer.children.length){
+            this.bgContainer.removeChildAt(0);
+        }
+        if(this.currentNode.mode === 1){
+            this.tempSizeTiles = {x: Math.floor(windowWidth / 80), y:Math.floor(windowHeight / 80)};
+        }else{
+            this.tempSizeTiles = {x:9 + Math.floor(Math.random() * 15), y:9+Math.floor(Math.random() * 15)};
+        }
+        this.levelBounds = {x: this.tempSizeTiles.x * 80 - this.mapPosition.x*2, y: this.tempSizeTiles.y * 80 - this.mapPosition.y * 2};
+        console.log('this.tempSizeTiles',this.tempSizeTiles);
+        for (var ii = 0; ii < this.tempSizeTiles.x; ii++) {
+            for (var jj = 0; jj < this.tempSizeTiles.y; jj++) {
+                var tempTile = new SimpleSprite(Math.random() < 0.5 ? '_dist/img/tile1.png':'_dist/img/tile2.png');
+                tempTile.setPosition(ii * 80,jj * 80);
+                tempTile.getContent().cacheAsBitmap = true;
+                this.bgContainer.addChild(tempTile.getContent());
+            }
+        }
+        if(this.levelBoundsGraph && this.levelBoundsGraph.parent){
+            this.levelBoundsGraph.parent.removeChild(this.levelBoundsGraph);
+        }
+        this.levelBoundsGraph = new PIXI.Graphics();
+        this.levelBoundsGraph.lineStyle(1,0xff0000);
+        this.levelBoundsGraph.drawRect(this.mapPosition.x,this.mapPosition.y,this.levelBounds.x, this.levelBounds.y);
+        this.addChild(this.levelBoundsGraph);
+
         var roomState = 'first room';
         switch(this.currentNode.mode)
         {
@@ -284,20 +354,22 @@ var GameScreen = AbstractScreen.extend({
 
 
 
-        if(this.currentPlayerSide === 'up')
-        {
-            this.player.setPosition(windowWidth/2,windowHeight - this.margin.y- this.player.height);
+        // if(this.currentPlayerSide === 'up')
+        // {
+        //     this.player.setPosition(windowWidth/2,windowHeight - this.mapPosition.y- this.player.height);
 
-        }else if(this.currentPlayerSide === 'down')
-        {
-            this.player.setPosition(windowWidth/2,this.margin.y );
-        }else if(this.currentPlayerSide === 'left')
-        {
-            this.player.setPosition(windowWidth - this.margin.x - this.player.width ,windowHeight/2 - this.player.height/2);
-        }else if(this.currentPlayerSide === 'right')
-        {
-            this.player.setPosition(this.margin.x,windowHeight/2- this.player.height/2);
-        }
+        // }else if(this.currentPlayerSide === 'down')
+        // {
+        //     this.player.setPosition(windowWidth/2,this.mapPosition.y );
+        // }else if(this.currentPlayerSide === 'left')
+        // {
+        //     this.player.setPosition(windowWidth - this.mapPosition.x - this.player.width ,windowHeight/2 - this.player.height/2);
+        // }else if(this.currentPlayerSide === 'right')
+        // {
+        //     this.player.setPosition(this.mapPosition.x,windowHeight/2- this.player.height/2);
+        // } ---<<< OLD
+
+        
 
         console.log('monster list', APP.monsterList[0]);
 
@@ -307,7 +379,7 @@ var GameScreen = AbstractScreen.extend({
             APP.monsterList[0].level = this.playerModel.level + 10;
             this.heart = new Enemy(this.player, APP.monsterList[0]);
             this.heart.build();
-            this.heart.setPosition(700 * Math.random(),700 * Math.random());
+            this.heart.setPosition(this.levelBounds.x * Math.random() + this.mapPosition.x,this.levelBounds.y * Math.random() + this.mapPosition.y);
             this.entityLayer.addChild(this.heart);
         }
         
@@ -326,21 +398,36 @@ var GameScreen = AbstractScreen.extend({
                 {
                     var obs = new Obstacle(this.level[i][j] - 1);
                     obs.build();
-                    obs.setPosition((j)* APP.tileSize.x+ this.margin.x, (i+1)* APP.tileSize.y+ this.margin.y);
+                    obs.setPosition((j)* APP.tileSize.x+ this.mapPosition.x, (i+1)* APP.tileSize.y+ this.mapPosition.y);
                     this.entityLayer.addChild(obs);
-                    
                 }
             }
         }
 
 
         this.createDoors();
+
+
+        if(this.currentPlayerSide === 'up')
+        {
+            this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y - this.mapPosition.y- this.player.height);
+
+        }else if(this.currentPlayerSide === 'down')
+        {
+            this.player.setPosition(this.levelBounds.x/2,this.mapPosition.y );
+        }else if(this.currentPlayerSide === 'left')
+        {
+            this.player.setPosition(this.levelBounds.x - this.mapPosition.x - this.player.width ,this.levelBounds.y/2 - this.player.height/2);
+        }else if(this.currentPlayerSide === 'right')
+        {
+            this.player.setPosition(this.mapPosition.x,this.levelBounds.y/2- this.player.height/2);
+        }
     },
     createDoors:function(){
         if(this.currentNode.childrenSides[0]){
             this.doorLeft = new Door('left');
             this.doorLeft.build();
-            this.doorLeft.setPosition(this.margin.x - APP.tileSize.x / 2,windowHeight/2);
+            this.doorLeft.setPosition(this.mapPosition.x,this.levelBounds.y/2 + this.doorLeft.height);
 
             this.doorLeft.node = this.currentNode.childrenSides[0];
             this.environmentLayer.addChild(this.doorLeft);
@@ -349,7 +436,7 @@ var GameScreen = AbstractScreen.extend({
         if(this.currentNode.childrenSides[1]){
             this.doorRight = new Door('right');
             this.doorRight.build();
-            this.doorRight.setPosition(windowWidth - this.margin.x + APP.tileSize.x / 2,windowHeight/2);
+            this.doorRight.setPosition(this.levelBounds.x + this.mapPosition.x,this.levelBounds.y/2  + this.doorRight.height);
 
             this.doorRight.node = this.currentNode.childrenSides[1];
             this.environmentLayer.addChild(this.doorRight);
@@ -358,7 +445,7 @@ var GameScreen = AbstractScreen.extend({
         if(this.currentNode.childrenSides[2]){
             this.doorUp = new Door('up');
             this.doorUp.build();
-            this.doorUp.setPosition(windowWidth/2,this.margin.y - APP.tileSize.y / 2);
+            this.doorUp.setPosition(this.mapPosition.x + this.levelBounds.x / 2,this.mapPosition.y);
 
             this.doorUp.node = this.currentNode.childrenSides[2];
             this.environmentLayer.addChild(this.doorUp);
@@ -367,7 +454,7 @@ var GameScreen = AbstractScreen.extend({
         if(this.currentNode.childrenSides[3]){
             this.doorDown = new Door('down');
             this.doorDown.build();
-            this.doorDown.setPosition(windowWidth/2,windowHeight - this.margin.y + APP.tileSize.y / 2);
+            this.doorDown.setPosition(this.mapPosition.x + this.levelBounds.x / 2,this.levelBounds.y + this.mapPosition.y);
 
             this.doorDown.node = this.currentNode.childrenSides[3];
             this.environmentLayer.addChild(this.doorDown);
