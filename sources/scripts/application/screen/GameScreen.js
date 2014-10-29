@@ -94,15 +94,20 @@ var GameScreen = AbstractScreen.extend({
         this.blackShape.beginFill(0x000000);
         this.blackShape.drawRect(0,0,windowWidth, windowHeight);
         APP.getHUD().addChild(this.blackShape);
+
+        this.lifeBarView = new BarView(200,30, 100,50);
+        this.lifeBarView.setPosition(100,100);
+        APP.getHUD().addChild(this.lifeBarView.getContent());
+
         TweenLite.to(this.blackShape, 1, {alpha:0});
 
         this.levelLabel = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
         console.log('HUD',APP.getHUD());
         APP.getHUD().addChild(this.levelLabel);
 
-        this.lifebar = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
-        APP.getHUD().addChild(this.lifebar);
-        this.lifebar.position.x = windowWidth - 200;
+        // this.lifebar = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
+        // APP.getHUD().addChild(this.lifebar);
+        // this.lifebar.position.x = windowWidth - 200;
 
         this.resetLevel();
         this.minimap = new Minimap();
@@ -201,8 +206,9 @@ var GameScreen = AbstractScreen.extend({
        // console.log(this.mouseDown);
 
 
-
         if(this.player){
+            // this.player.hurt(1);
+
             this.getContent().position.x = windowWidth/2 - this.player.getPosition().x;
             this.getContent().position.y = windowHeight/2 - this.player.getPosition().y;
             this.player.fireFreqAcum --;
@@ -255,8 +261,10 @@ var GameScreen = AbstractScreen.extend({
         //     }
         // }
         // console.log('entity childs', this.entityLayer.childs.length);
-        if(this.lifebar && this.player){
-            this.lifebar.setText(Math.floor(this.player.hp)+'/ '+Math.floor(this.player.hpMax));
+        if(this.lifeBarView && this.player){
+            this.lifeBarView.updateBar(Math.floor(this.player.hp),Math.floor(this.player.hpMax));
+            this.lifeBarView.setText(Math.floor(this.player.hp)+'/ '+Math.floor(this.player.hpMax));
+
             // this.lifebar.position.x = this.player.getPosition().x;
             // this.lifebar.position.y = this.player.getPosition().y - this.player.height / 2;
         }
@@ -265,6 +273,13 @@ var GameScreen = AbstractScreen.extend({
             this.player.endLevel = false;
             this.currentNode = this.player.nextNode;
             this.currentPlayerSide = this.player.nextDoorSide;
+            this.killLevel(this.resetLevel);
+            this.player = null;
+        }else if(this.player && this.player.playerDead)
+        {
+            // this.player.endLevel = false;
+            // this.currentNode = this.player.nextNode;
+            // this.currentPlayerSide = this.player.nextDoorSide;
             this.killLevel(this.resetLevel);
             this.player = null;
         }

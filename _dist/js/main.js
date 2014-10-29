@@ -239,6 +239,33 @@ var Application = AbstractApplication.extend({
     show: function() {},
     hide: function() {},
     destroy: function() {}
+}), BarView = Class.extend({
+    init: function(width, height, maxValue, currentValue) {
+        this.maxValue = maxValue, this.text = "default", this.currentValue = currentValue, 
+        this.container = new PIXI.DisplayObjectContainer(), this.width = width, this.height = height, 
+        this.backShape = new PIXI.Graphics(), this.backShape.beginFill(16711680), this.backShape.drawRect(0, 0, width, height), 
+        this.container.addChild(this.backShape), this.frontShape = new PIXI.Graphics(), 
+        this.frontShape.beginFill(65280), this.frontShape.drawRect(0, 0, width, height), 
+        this.container.addChild(this.frontShape), this.frontShape.scale.x = this.currentValue / this.maxValue;
+    },
+    setText: function(text) {
+        this.text !== text && (this.lifebar ? this.lifebar.setText(text) : (this.lifebar = new PIXI.Text(text, {
+            fill: "white",
+            align: "center",
+            font: "bold 20px Arial"
+        }), this.container.addChild(this.lifebar)));
+    },
+    updateBar: function(currentValue, maxValue) {
+        (this.currentValue !== currentValue || this.maxValue !== maxValue && currentValue >= 0) && (this.currentValue = currentValue, 
+        this.maxValue = maxValue, this.frontShape.scale.x = this.currentValue / this.maxValue, 
+        this.frontShape.scale.x < 0 && (this.frontShape.scale.x = 0));
+    },
+    getContent: function() {
+        return this.container;
+    },
+    setPosition: function(x, y) {
+        this.container.position.x = x, this.container.position.y = y;
+    }
 }), PopUpText = Class.extend({
     init: function(color) {
         this.color = color ? color : "white", this.label = new PIXI.Text("", {
@@ -331,9 +358,9 @@ var Application = AbstractApplication.extend({
 }), Fire = Entity.extend({
     init: function(vel) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = 60, this.width = 1, 
-        this.height = 1, this.type = "fire", this.fireType = "physical", this.node = null, 
-        this.velocity.x = vel.x, this.velocity.y = vel.y, this.timeLive = 10, this.power = 1, 
-        this.defaultVelocity = 1;
+        this.height = 1, this.type = "fire", this.target = "enemy", this.fireType = "physical", 
+        this.node = null, this.velocity.x = vel.x, this.velocity.y = vel.y, this.timeLive = 10, 
+        this.power = 1, this.defaultVelocity = 1;
     },
     getBounds: function() {
         return this.bounds = {
@@ -392,7 +419,7 @@ var Application = AbstractApplication.extend({
         this.height = this.getContent().height), this.getBounds(), this.range = this.width / 2;
     },
     collide: function(arrayCollide) {
-        this.collidable && "enemy" === arrayCollide[0].type && (this.getContent().tint = 16711680, 
+        this.collidable && arrayCollide[0].type === this.target && (this.getContent().tint = 16711680, 
         this.preKill(), arrayCollide[0].hurt(this.power, this.fireType));
     },
     preKill: function() {
@@ -583,7 +610,7 @@ var Application = AbstractApplication.extend({
         this.range = APP.tileSize.x / 2, this.width = .8 * APP.tileSize.x, this.height = .8 * APP.tileSize.y, 
         this.type = "player", this.collisionPointsMarginDivide = 0, this.isTouch = !1, this.boundsCollision = !0, 
         this.playerModel = model, this.playerModel.entity = this, this.fireModel = new FireModel(), 
-        this.endLevel = !1, this.centerPosition = {
+        this.endLevel = !1, this.playerDead = !1, this.centerPosition = {
             x: this.width / 2,
             y: this.height / 4
         }, this.fireFreqAcum = 0, this.updateAtt();
@@ -673,7 +700,8 @@ var Application = AbstractApplication.extend({
         }
     },
     preKill: function() {
-        this._super(), this.debugGraphic.parent && this.debugGraphic.parent.removeChild(this.debugGraphic);
+        this._super(), this.debugGraphic.parent && (this.debugGraphic.parent.removeChild(this.debugGraphic), 
+        this.playerDead = !0);
     },
     reset: function() {
         this.deading = !1, this.setPosition(windowWidth / 2, windowHeight / 2), this.spritesheet.play("idle"), 
@@ -694,6 +722,17 @@ var Application = AbstractApplication.extend({
         this.debugGraphic.moveTo(this.bounds.x, this.bounds.y), this.debugGraphic.lineTo(this.bounds.x + this.bounds.w, this.bounds.y), 
         this.debugGraphic.lineTo(this.bounds.x + this.bounds.w, this.bounds.y + this.bounds.h), 
         this.debugGraphic.lineTo(this.bounds.x, this.bounds.y + this.bounds.h), this.debugGraphic.endFill();
+    },
+    hurt: function(demage, type) {
+        if (!(this.hp < 0)) {
+            type || (type = "physical");
+            var pop = new PopUpText("red");
+            pop.setText(Math.floor(demage)), APP.getEffectsContainer().addChild(pop.getContent()), 
+            pop.setPosition(this.getPosition().x - 10 + 20 * Math.random(), this.getPosition().y - 5 + 10 * Math.random() - this.height / 2), 
+            pop.initMotion(-10 - 10 * Math.random(), .5), this.getTexture().tint = 16711680;
+            var trueDemage = this.playerModel.getHurt(demage, type);
+            this.hp -= trueDemage, this.hp < 0 && (this.hp = 0), this.hp <= 0 && this.preKill();
+        }
     },
     debugPolygon: function(color, force) {
         (this.lastColorDebug !== color || force) && (null === this.debugGraphic.parent && null !== this.getContent().parent && this.getContent().parent.addChild(this.debugGraphic), 
@@ -922,14 +961,6 @@ var Application = AbstractApplication.extend({
     init: function(name, battlePower, value) {
         this.name = name, this.battlePower = battlePower, this.value = value;
     }
-}), MobileApp = SmartObject.extend({
-    init: function() {
-        this._super();
-    },
-    show: function() {},
-    hide: function() {},
-    build: function() {},
-    destroy: function() {}
 }), AppModel = Class.extend({
     init: function() {
         this.isMobile = !1, this.action = "default", this.id = 0, this.position = 0, this.angle = 0, 
@@ -999,18 +1030,15 @@ var Application = AbstractApplication.extend({
         this.vecPositions = [], this.keyboardInput = new KeyboardInput(this), this.graphDebug = new PIXI.Graphics(), 
         this.addChild(this.graphDebug), this.blackShape = new PIXI.Graphics(), this.blackShape.beginFill(0), 
         this.blackShape.drawRect(0, 0, windowWidth, windowHeight), APP.getHUD().addChild(this.blackShape), 
-        TweenLite.to(this.blackShape, 1, {
+        this.lifeBarView = new BarView(200, 30, 100, 50), this.lifeBarView.setPosition(100, 100), 
+        APP.getHUD().addChild(this.lifeBarView.getContent()), TweenLite.to(this.blackShape, 1, {
             alpha: 0
         }), this.levelLabel = new PIXI.Text("", {
             fill: "white",
             align: "center",
             font: "bold 20px Arial"
-        }), console.log("HUD", APP.getHUD()), APP.getHUD().addChild(this.levelLabel), this.lifebar = new PIXI.Text("", {
-            fill: "white",
-            align: "center",
-            font: "bold 20px Arial"
-        }), APP.getHUD().addChild(this.lifebar), this.lifebar.position.x = windowWidth - 200, 
-        this.resetLevel(), this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent()), 
+        }), console.log("HUD", APP.getHUD()), APP.getHUD().addChild(this.levelLabel), this.resetLevel(), 
+        this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent()), 
         this.minimap.build(), this.minimap.setPosition(windowWidth - 100, 5), this.minimap.getContent().scale.x = .3, 
         this.minimap.getContent().scale.y = .3;
         var tempRain = null;
@@ -1052,9 +1080,11 @@ var Application = AbstractApplication.extend({
             for (var i = 0; i < this.entityLayer.childs.length; i++) "fire" === this.entityLayer.childs[i].type && this.entityLayer.collideChilds(this.entityLayer.childs[i]);
             this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs);
         }
-        this._super(), this.entityLayer.getContent().children.sort(this.depthCompare), this.lifebar && this.player && this.lifebar.setText(Math.floor(this.player.hp) + "/ " + Math.floor(this.player.hpMax)), 
-        this.player && this.player.endLevel && (this.player.endLevel = !1, this.currentNode = this.player.nextNode, 
+        this._super(), this.entityLayer.getContent().children.sort(this.depthCompare), this.lifeBarView && this.player && (this.lifeBarView.updateBar(Math.floor(this.player.hp), Math.floor(this.player.hpMax)), 
+        this.lifeBarView.setText(Math.floor(this.player.hp) + "/ " + Math.floor(this.player.hpMax))), 
+        this.player && this.player.endLevel ? (this.player.endLevel = !1, this.currentNode = this.player.nextNode, 
         this.currentPlayerSide = this.player.nextDoorSide, this.killLevel(this.resetLevel), 
+        this.player = null) : this.player && this.player.playerDead && (this.killLevel(this.resetLevel), 
         this.player = null);
     },
     killLevel: function() {
@@ -1205,7 +1235,7 @@ var Application = AbstractApplication.extend({
         }), document.body.addEventListener("mousedown", function() {
             self.player && (self.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
-            self.player && (87 === e.keyCode || 38 === e.keyCode && self.player.velocity.y < 0 ? self.removePosition("up") : 83 === e.keyCode || 40 === e.keyCode && self.player.velocity.y > 0 ? self.removePosition("down") : 65 === e.keyCode || 37 === e.keyCode && self.player.velocity.x < 0 ? self.removePosition("left") : (68 === e.keyCode || 39 === e.keyCode && self.player.velocity.x > 0) && self.removePosition("right"), 
+            self.player && (87 === e.keyCode || 38 === e.keyCode && self.player.velocity.y < 0 ? self.removePosition("up") : 83 === e.keyCode || 40 === e.keyCode && self.player.velocity.y > 0 ? self.removePosition("down") : 65 === e.keyCode || 37 === e.keyCode && self.player.velocity.x < 0 ? self.removePosition("left") : 68 === e.keyCode || 39 === e.keyCode && self.player.velocity.x > 0 ? self.removePosition("right") : 32 === e.keyCode && self.player.hurt(10), 
             self.updatePlayerVel());
         }), document.body.addEventListener("keydown", function(e) {
             87 === e.keyCode || 38 === e.keyCode ? (self.removePosition("down"), self.addPosition("up")) : 83 === e.keyCode || 40 === e.keyCode ? (self.removePosition("up"), 

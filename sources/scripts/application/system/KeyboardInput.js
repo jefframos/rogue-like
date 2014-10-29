@@ -27,6 +27,9 @@ var KeyboardInput = Class.extend({
 				else if(e.keyCode === 68 || e.keyCode === 39 && self.player.velocity.x > 0){
 					self.removePosition('right');
 				}
+				else if(e.keyCode === 32){
+					self.player.hurt(10);
+				}
 				self.updatePlayerVel();
 			}
 		});

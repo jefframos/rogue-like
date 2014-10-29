@@ -17,6 +17,7 @@ var Player = SpritesheetEntity.extend({
         this.playerModel.entity = this;
         this.fireModel = new FireModel();
         this.endLevel = false;
+        this.playerDead = false;
 
         this.centerPosition = {x:this.width/2, y:this.height/4};
        
@@ -157,6 +158,7 @@ var Player = SpritesheetEntity.extend({
         this._super();
         if(this.debugGraphic.parent){
             this.debugGraphic.parent.removeChild(this.debugGraphic);
+            this.playerDead = true;
         }
     },
     reset: function(){
@@ -217,6 +219,33 @@ var Player = SpritesheetEntity.extend({
         this.debugGraphic.lineTo(this.bounds.x + this.bounds.w, this.bounds.y + this.bounds.h);
         this.debugGraphic.lineTo(this.bounds.x, this.bounds.y + this.bounds.h);
         this.debugGraphic.endFill();
+    },
+    hurt:function(demage, type){
+        if(this.hp < 0){
+            return;
+        }
+        if(!type){
+            type = 'physical';
+        }
+        var pop = new PopUpText('red');
+        pop.setText(Math.floor(demage));
+        APP.getEffectsContainer().addChild(pop.getContent());
+        pop.setPosition(this.getPosition().x -10 + Math.random() * 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2);
+        pop.initMotion(-10 - (Math.random() * 10), 0.5);
+        this.getTexture().tint = 0xFF0000;
+
+        var trueDemage = this.playerModel.getHurt(demage, type);
+
+        this.hp -= trueDemage;
+        if(this.hp < 0){
+            this.hp = 0;
+        }
+        // console.log(demage,'hurt',trueDemage, this.hp, this.monsterModel.level);
+
+
+        if(this.hp <= 0){
+            this.preKill();
+        }
     },
     debugPolygon: function(color, force){
         if(this.lastColorDebug !== color || force){
