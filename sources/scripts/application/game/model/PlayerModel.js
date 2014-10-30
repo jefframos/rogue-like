@@ -22,13 +22,13 @@ var PlayerModel = Class.extend({
 			this.baseHPModifier = 1.32;
 			this.baseHP = this.level* (20 / this.baseHPModifier);
 			//modifiers
-			this.vigorModifier = 0.007;
+			this.vigorModifier = 0.0065;
 	        this.speedModifier = 0.004;
 	        this.staminaModifier = 0.007;
-			this.magicPowerModifier = 0.003;
-	        this.battlePowerModifier = 0.006;
+			this.magicPowerModifier = 0.0035;
+	        this.battlePowerModifier = 0.0055;
 			this.defenseModifier = 0.006;
-			this.magicDefenseModifier = 0.003;
+			this.magicDefenseModifier = 0.0035;
 
 		}else if(this.playerClass === 'mage'){
 			this.vigor = 31;
@@ -81,6 +81,8 @@ var PlayerModel = Class.extend({
 
 		this.spellPower = 20; //speel do bolt
 		this.weaponPower = 30; //mithirl knife
+		this.defenseArmor = 0;//no armor
+		this.magicDefenseArmor = 0;//no armor
 		this.hp = (this.baseHP*(this.stamina + 32))/32;
 
 
@@ -306,16 +308,18 @@ var PlayerModel = Class.extend({
 		}else if(type === 'magical'){
 			demage = this.spellPower * 4 + (this.level * this.magicPower * this.spellPower / 32);
 		}
+		//o demage comentado abaixo funciona muito bem em um rpg de turno
+		//demage = damageMultiplier * demage + ((demage / 2) * damageMultiplierCritical);
 
-		demage = damageMultiplier * demage + ((demage / 2) * damageMultiplierCritical);
-
+		//por enquanto está retornando 30% do dano padrão pelos algoritimos do final fantasy 6 -> http://www.rpglegion.com/ff6/ff6alg.txt
+		demage = (damageMultiplier * demage + ((demage / 2) * damageMultiplierCritical)) * 0.3;
 		return demage;
 	},
 	getHurt: function(demage, type){
 		if(type === 'physical'){
-			demage = (demage * (255 - this.defense) / 256) + 1;
+			demage = (demage * (255 - this.defense - this.defenseArmor +(3 - Math.random() * 10)) / 256) + 1;
 		}else if(type === 'magical'){
-			demage = (demage * (255 - this.magicDefense) / 256) + 1;
+			demage = (demage * (255 - this.magicDefense - this.magicDefenseArmor +(3 - Math.random() * 10)) / 256) + 1;
 		}
 
 		return demage;

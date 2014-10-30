@@ -10,5 +10,14 @@ var NodeModel = Class.extend({
 		this.active = false;
 		this.mode = 0;
 		this.id = -1;
+		this.seed = -1;
+		this.tempAccSeed = this.seed;
+	},
+	applySeed:function(){
+		this.tempAccSeed = this.seed;
+	},
+	getNextFloat:function() {
+	    var x = Math.sin(this.tempAccSeed++) * 10000;
+	    return x - Math.floor(x);
 	}
 });

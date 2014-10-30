@@ -182,6 +182,8 @@ var DungeonGenerator = Class.extend({
 			node.active = true;
 			if(node.id < 0){
 				node.id = this.numActivesNodes;
+				node.seed = this.getNextFloat();
+				node.applySeed();
 			}
 			if (parent && node.id !== 1)
 			{

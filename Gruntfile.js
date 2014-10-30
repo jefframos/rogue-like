@@ -45,6 +45,7 @@ module.exports = function(grunt) {
             plugins: {
                 dest: '<%= globalConfig.dest %>js/lib/plugins.js',
                 src: [
+                    '<%= globalConfig.src %>scripts/plugins/fpsmeter.js',
                     '<%= globalConfig.src %>scripts/plugins/qrcode.min.js',
                     '<%= globalConfig.src %>scripts/plugins/microevent.js',
                     '<%= globalConfig.src %>scripts/plugins/proton.js',

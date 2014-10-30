@@ -1,4 +1,6 @@
 /*jshint undef:false */
+var meter = new FPSMeter();
+
 function testMobile() {
     return false;// Modernizr.touch || window.innerWidth < 600;
 }
@@ -21,8 +23,6 @@ var renderer = PIXI.autoDetectRenderer(windowWidth, windowHeight);
 // renderer.view.style.width = windowWidthVar+'px';
 // renderer.view.style.height = windowHeightVar+'px';
 
-
-
 document.body.appendChild(renderer.view);
 
 var APP;
@@ -32,6 +32,7 @@ APP.show();
 
 function update() {
 	requestAnimFrame(update );
+	meter.tickStart();
 	var tempRation =  (window.innerHeight/windowHeight);
 	var ratio = tempRation < (window.innerWidth/windowWidth)?tempRation:(window.innerWidth/windowWidth);
 	windowWidthVar = windowWidth * ratio;
@@ -42,6 +43,7 @@ function update() {
 	renderer.view.style.height = (windowHeight/1.5)+'px';
 	APP.update();
 	renderer.render(APP.stage);
+	meter.tick();
 }
 
 var initialize = function(){

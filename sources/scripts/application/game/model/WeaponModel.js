@@ -1,8 +1,9 @@
 /*jshint undef:false */
 var WeaponModel = Class.extend({
-	init: function (name,battlePower,value){
+	init: function (name,battlePower,hitRate,price){
 		this.name = name;
 		this.battlePower = battlePower;
-		this.value = value;
+		this.hitRate = hitRate;
+		this.price = price;
 	}
 });

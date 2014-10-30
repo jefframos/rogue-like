@@ -78,6 +78,8 @@ var GameScreen = AbstractScreen.extend({
         this._super();
 
         this.currentNode = APP.gen.firstNode;
+        this.currentNode.applySeed();
+
         this.rainContainer = new PIXI.DisplayObjectContainer();
 
         var self = this;
@@ -101,7 +103,7 @@ var GameScreen = AbstractScreen.extend({
 
         TweenLite.to(this.blackShape, 1, {alpha:0});
 
-        this.levelLabel = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
+        this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 20px Arial'});
         console.log('HUD',APP.getHUD());
         APP.getHUD().addChild(this.levelLabel);
 
@@ -207,14 +209,11 @@ var GameScreen = AbstractScreen.extend({
 
 
         if(this.player){
-            // this.player.hurt(1);
-
             this.getContent().position.x = windowWidth/2 - this.player.getPosition().x;
             this.getContent().position.y = windowHeight/2 - this.player.getPosition().y;
             this.player.fireFreqAcum --;
 
             if(this.mouseDown){
-                //console.log(this.player.fireFreqAcum);ds
                 if(this.player.fireFreqAcum <= 0){
                     this.shoot();
                 }
@@ -272,6 +271,7 @@ var GameScreen = AbstractScreen.extend({
         {
             this.player.endLevel = false;
             this.currentNode = this.player.nextNode;
+            this.currentNode.applySeed();
             this.currentPlayerSide = this.player.nextDoorSide;
             this.killLevel(this.resetLevel);
             this.player = null;
@@ -320,13 +320,13 @@ var GameScreen = AbstractScreen.extend({
         if(this.currentNode.mode === 1){
             this.tempSizeTiles = {x: Math.floor(windowWidth / 80), y:Math.floor(windowHeight / 80)};
         }else{
-            this.tempSizeTiles = {x:9 + Math.floor(Math.random() * 15), y:9+Math.floor(Math.random() * 15)};
+            this.tempSizeTiles = {x:9 + Math.floor(this.currentNode.getNextFloat() * 15), y:9+Math.floor(this.currentNode.getNextFloat() * 15)};
         }
         this.levelBounds = {x: this.tempSizeTiles.x * 80 - this.mapPosition.x*2, y: this.tempSizeTiles.y * 80 - this.mapPosition.y * 2};
         console.log('this.tempSizeTiles',this.tempSizeTiles);
         for (var ii = 0; ii < this.tempSizeTiles.x; ii++) {
             for (var jj = 0; jj < this.tempSizeTiles.y; jj++) {
-                var tempTile = new SimpleSprite(Math.random() < 0.5 ? '_dist/img/tile1.png':'_dist/img/tile2.png');
+                var tempTile = new SimpleSprite(this.currentNode.getNextFloat() < 0.5 ? '_dist/img/tile1.png':'_dist/img/tile2.png');
                 tempTile.setPosition(ii * 80,jj * 80);
                 tempTile.getContent().cacheAsBitmap = true;
                 this.bgContainer.addChild(tempTile.getContent());
@@ -360,14 +360,18 @@ var GameScreen = AbstractScreen.extend({
 
         }
         //console.log(this, 'ESSE É O ID DO LEVEL ATUAL -> ', this.currentNode);
-        this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+roomState+'   -    playerClass:'+this.playerModel.playerClass);
         this.level = getRandomLevel();
 
         
         this.player = new Player(this.playerModel);
         this.player.build();
+        this.player.setArmorModel(APP.armorList[Math.floor(APP.armorList.length * Math.random())]);
+        this.player.setWeaponModel(APP.weaponList[Math.floor(APP.weaponList.length * Math.random())]);
 
-
+        this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+roomState+'   -    playerClass:'+this.playerModel.playerClass+
+            '\narmor: '+this.player.armorModel.name +' - def: '+this.player.armorModel.defenseArmor +' - magDef: '+this.player.armorModel.magicDefenseArmor+
+            '\nweapon: '+this.player.weaponModel.name +' - pow: '+this.player.weaponModel.battlePower +' - hitRate: '+this.player.weaponModel.hitRate
+            );
 
         // if(this.currentPlayerSide === 'up')
         // {
@@ -383,10 +387,16 @@ var GameScreen = AbstractScreen.extend({
         // {
         //     this.player.setPosition(this.mapPosition.x,windowHeight/2- this.player.height/2);
         // } ---<<< OLD
-
+        
         
 
-        console.log('monster list', APP.monsterList[0]);
+        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
+        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
+        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
+        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
+        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
+        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
+        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
 
 
 
@@ -394,7 +404,7 @@ var GameScreen = AbstractScreen.extend({
             APP.monsterList[0].level = this.playerModel.level + 10;
             this.heart = new Enemy(this.player, APP.monsterList[0]);
             this.heart.build();
-            this.heart.setPosition(this.levelBounds.x * Math.random() + this.mapPosition.x,this.levelBounds.y * Math.random() + this.mapPosition.y);
+            this.heart.setPosition(this.levelBounds.x * this.currentNode.getNextFloat() + this.mapPosition.x,this.levelBounds.y * this.currentNode.getNextFloat() + this.mapPosition.y);
             this.entityLayer.addChild(this.heart);
         }
         

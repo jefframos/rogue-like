@@ -13,6 +13,8 @@ var Player = SpritesheetEntity.extend({
         this.isTouch = false;
         this.boundsCollision = true;
 
+        this.armorModel = null;
+        this.weaponModel = null;
         this.playerModel = model;
         this.playerModel.entity = this;
         this.fireModel = new FireModel();
@@ -25,9 +27,15 @@ var Player = SpritesheetEntity.extend({
         //this.firePower = this.playerModel.getDemage('physical');
 
         this.fireFreqAcum = 0;
-
+        this.returnCollider = 0;
         this.updateAtt();
 
+    },
+    setArmorModel: function(aModel){
+        this.armorModel = aModel;
+    },
+    setWeaponModel: function(wModel){
+        this.weaponModel = wModel;
     },
     updateAtt: function(){
         this.hpMax = this.playerModel.hp;
@@ -113,10 +121,12 @@ var Player = SpritesheetEntity.extend({
         return this.bounds;
     },
     update: function(){
-        if(!this.isTouch){
+        if(!this.isTouch && this.returnCollider <= 0){
             this.velocity = this.virtualVelocity;
         }
-
+        if(this.returnCollider > 0){
+            this.returnCollider --;
+        }
         if(this.deading){
             this.setVelocity(0,0);
         }
@@ -146,6 +156,9 @@ var Player = SpritesheetEntity.extend({
             // var tempFire = new Fire({x:this.fireSpeed * Math.sin(angle * i), y: this.fireSpeed * Math.cos(angle * i)});
             var tempFire = new Fire({x:this.fireSpeed * Math.sin(angle), y: this.fireSpeed * Math.cos(angle)});
             tempFire.timeLive = this.fireStepLive;
+            if(this.weaponModel){
+                this.playerModel.weaponPower = this.weaponModel.battlePower;
+            }
             tempFire.power = this.playerModel.getDemage('physical');
             tempFire.build();
             tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y +10);
@@ -185,12 +198,14 @@ var Player = SpritesheetEntity.extend({
                 this.nextDoorSide = arrayCollide[0].side;
             }
         }
-        if(arrayCollide[0].type === 'enemy'){
-            // var angle = Math.atan2(this.getPosition().y-arrayCollide[0].getPosition().y,  this.getPosition().x-arrayCollide[0].getPosition().x);
-            // angle = angle * 180 / Math.PI;
-            // this.setPosition(this.getPosition().x + arrayCollide[0].range * Math.sin(angle), this.getPosition().y + arrayCollide[0].range * Math.cos(angle));
-        }
-        //console.log('colidiu');
+        //COLISÃO DO PLAYER COM O INIMIGO
+        // if(arrayCollide[0].type === 'enemy' && this.returnCollider <= 0){
+        //     var angle = Math.atan2(this.getPosition().y-arrayCollide[0].getPosition().y,  this.getPosition().x-arrayCollide[0].getPosition().x);
+        //     angle = angle * 180 / Math.PI;
+        //     // this.setPosition(this.getPosition().x + arrayCollide[0].range * Math.sin(angle), this.getPosition().y + arrayCollide[0].range * Math.cos(angle));
+        //     this.setVelocity(5 * Math.sin(angle), 5 * Math.cos(angle));
+        //     this.returnCollider = 10;
+        // }
     },
     touch: function(collection){
         this.isTouch = true;
@@ -227,21 +242,25 @@ var Player = SpritesheetEntity.extend({
         if(!type){
             type = 'physical';
         }
+
+        if(this.armorModel){
+            this.playerModel.magicDefenseArmor = this.armorModel.magicDefenseArmor;
+            this.playerModel.defenseArmor = this.armorModel.defenseArmor;
+        }
+        var trueDemage = this.playerModel.getHurt(demage, type);
+
         var pop = new PopUpText('red');
-        pop.setText(Math.floor(demage));
+        pop.setText(Math.floor(trueDemage));
         APP.getEffectsContainer().addChild(pop.getContent());
         pop.setPosition(this.getPosition().x -10 + Math.random() * 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2);
         pop.initMotion(-10 - (Math.random() * 10), 0.5);
         this.getTexture().tint = 0xFF0000;
 
-        var trueDemage = this.playerModel.getHurt(demage, type);
 
         this.hp -= trueDemage;
         if(this.hp < 0){
             this.hp = 0;
         }
-        // console.log(demage,'hurt',trueDemage, this.hp, this.monsterModel.level);
-
 
         if(this.hp <= 0){
             this.preKill();
