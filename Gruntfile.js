@@ -54,6 +54,7 @@ module.exports = function(grunt) {
                     '<%= globalConfig.src %>scripts/plugins/modernizr-2.7.1.min.js',
                     '<%= globalConfig.src %>scripts/plugins/jquery-1.11.0.min.js',
                     '<%= globalConfig.src %>scripts/plugins/class.js',
+                    '<%= globalConfig.src %>scripts/plugins/perlin-noise.js',
                     '<%= globalConfig.src %>scripts/plugins/easegame/**/*.js'
                 ]
             }

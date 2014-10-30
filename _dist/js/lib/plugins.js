@@ -1,4 +1,34 @@
 /*! goyabpd 30-10-2014 */
+function generatePerlinNoise(width, height, options) {
+    function generateSmoothNoise(octave) {
+        for (var noise = new Array(width * height), samplePeriod = Math.pow(2, octave), sampleFrequency = 1 / samplePeriod, noiseIndex = 0, y = 0; height > y; ++y) for (var sampleY0 = Math.floor(y / samplePeriod) * samplePeriod, sampleY1 = (sampleY0 + samplePeriod) % height, vertBlend = (y - sampleY0) * sampleFrequency, x = 0; width > x; ++x) {
+            var sampleX0 = Math.floor(x / samplePeriod) * samplePeriod, sampleX1 = (sampleX0 + samplePeriod) % width, horizBlend = (x - sampleX0) * sampleFrequency, top = interpolate(whiteNoise[sampleY0 * width + sampleX0], whiteNoise[sampleY1 * width + sampleX0], vertBlend), bottom = interpolate(whiteNoise[sampleY0 * width + sampleX1], whiteNoise[sampleY1 * width + sampleX1], vertBlend);
+            noise[noiseIndex] = interpolate(top, bottom, horizBlend), noiseIndex += 1;
+        }
+        return noise;
+    }
+    options = options || {};
+    var i, octaveCount = options.octaveCount || 4, amplitude = options.amplitude || .1, persistence = options.persistence || .2, whiteNoise = generateWhiteNoise(width, height), smoothNoiseList = new Array(octaveCount);
+    for (i = 0; octaveCount > i; ++i) smoothNoiseList[i] = generateSmoothNoise(i);
+    var perlinNoise = new Array(width * height), totalAmplitude = 0;
+    for (i = octaveCount - 1; i >= 0; --i) {
+        amplitude *= persistence, totalAmplitude += amplitude;
+        for (var j = 0; j < perlinNoise.length; ++j) perlinNoise[j] = perlinNoise[j] || 0, 
+        perlinNoise[j] += smoothNoiseList[i][j] * amplitude;
+    }
+    for (i = 0; i < perlinNoise.length; ++i) perlinNoise[i] /= totalAmplitude;
+    return perlinNoise;
+}
+
+function generateWhiteNoise(width, height) {
+    for (var noise = new Array(width * height), i = 0; i < noise.length; ++i) noise[i] = Math.random();
+    return noise;
+}
+
+function interpolate(x0, x1, alpha) {
+    return x0 * (1 - alpha) + alpha * x1;
+}
+
 !function(m, j) {
     function s(a, e) {
         for (var g in e) try {

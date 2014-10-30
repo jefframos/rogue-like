@@ -39,10 +39,13 @@ var LevelGenerator = Class.extend({
 				tempContainer.addChild(tempTile.getContent());
 			}
 		}
-
+		// var noise = new ClassicalNoise(Math);
+  //       console.log('noise',noise.p);
+        var nacum = 0;
 		for (ii = 0; ii < this.parent.tempSizeTiles.x; ii++) {
 			for (jj = 0; jj < this.parent.tempSizeTiles.y; jj++) {
 				if(this.parent.currentNode.getNextFloat() < 0.2){
+				// if(noise.p[++nacum] < 128){
 					tempTile = new SimpleSprite('_dist/img/grama1.png');
 					tempTile.setPosition(ii * 80,jj * 80);
 					tempTile.getContent().cacheAsBitmap = true;
@@ -118,6 +121,11 @@ var LevelGenerator = Class.extend({
 			this.parent.doorDown.node = this.parent.currentNode.childrenSides[3];
 			this.parent.environmentLayer.addChild(this.parent.doorDown);
 
+		}
+	},
+	removeRain: function(){
+		if(this.rainContainer && this.rainContainer.parent){
+			this.parent.removeChild(this.rainContainer);
 		}
 	},
 	createRain: function(){

@@ -321,6 +321,30 @@ var Application = AbstractApplication.extend({
     setPosition: function(x, y) {
         this.container.position.x = x, this.container.position.y = y;
     }
+}), BoxHUD1 = Class.extend({
+    init: function(width, height) {
+        this.text = "default", this.container = new PIXI.DisplayObjectContainer(), this.width = width, 
+        this.height = height, this.backShape = new PIXI.Graphics(), this.backShape.beginFill(0), 
+        this.backShape.drawRect(0, 0, width, height), this.container.addChild(this.backShape);
+    },
+    setColor: function(color) {
+        this.backShape && this.container.removeChild(this.backShape), this.backShape = new PIXI.Graphics(), 
+        this.backShape.beginFill(color), this.backShape.drawRect(0, 0, this.width, this.height), 
+        this.container.addChild(this.backShape);
+    },
+    setText: function(text) {
+        this.text !== text && (this.label ? this.label.setText(text) : (this.label = new PIXI.Text(text, {
+            fill: "white",
+            align: "left",
+            font: "bold 20px Arial"
+        }), this.container.addChild(this.label)));
+    },
+    getContent: function() {
+        return this.container;
+    },
+    setPosition: function(x, y) {
+        this.container.position.x = x, this.container.position.y = y;
+    }
 }), PopUpText = Class.extend({
     init: function(color) {
         this.color = color ? color : "white", this.label = new PIXI.Text("", {
@@ -1150,6 +1174,9 @@ var Application = AbstractApplication.extend({
         this.parent.doorDown.build(), this.parent.doorDown.setPosition(this.parent.mapPosition.x + this.parent.levelBounds.x / 2, this.parent.levelBounds.y + this.parent.mapPosition.y), 
         this.parent.doorDown.node = this.parent.currentNode.childrenSides[3], this.parent.environmentLayer.addChild(this.parent.doorDown));
     },
+    removeRain: function() {
+        this.rainContainer && this.rainContainer.parent && this.parent.removeChild(this.rainContainer);
+    },
     createRain: function() {
         var tempRain = null;
         this.rainContainer && this.rainContainer.parent && this.parent.removeChild(this.rainContainer), 
@@ -1238,13 +1265,15 @@ var Application = AbstractApplication.extend({
         }), this.levelLabel = new PIXI.Text("", {
             fill: "white",
             align: "left",
-            font: "bold 20px Arial"
+            font: "bold 15px Arial"
         }), console.log("HUD", APP.getHUD()), APP.getHUD().addChild(this.levelLabel), this.minimap = new Minimap(), 
-        APP.getHUD().addChild(this.minimap.getContent()), this.minimap.build(), this.minimap.setPosition(windowWidth - 100, 5), 
-        this.minimap.getContent().scale.x = .3, this.minimap.getContent().scale.y = .3, 
-        this.collisionSystem = new BoundCollisionSystem(this, !0), this.effectsContainer = new PIXI.DisplayObjectContainer(), 
-        this.addChild(this.effectsContainer), this.levelGenerator = new LevelGenerator(this), 
-        this.resetLevel();
+        APP.getHUD().addChild(this.minimap.getContent());
+        for (var tempBox = null, bi = 0; 5 > bi; bi++) tempBox = new BoxHUD1(80, 50), tempBox.setPosition(550 + 100 * bi, 20), 
+        APP.getHUD().addChild(tempBox.getContent()), 0 === bi ? tempBox.setText("potion\n1") : 1 === bi ? tempBox.setText("ether\n2") : 2 === bi ? tempBox.setText("haste\n3") : 3 === bi ? tempBox.setText("bolt1\n4") : 4 === bi && tempBox.setText("\n5");
+        this.minimap.build(), this.minimap.setPosition(windowWidth - 100, 5), this.minimap.getContent().scale.x = .3, 
+        this.minimap.getContent().scale.y = .3, this.collisionSystem = new BoundCollisionSystem(this, !0), 
+        this.effectsContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.effectsContainer), 
+        this.levelGenerator = new LevelGenerator(this), this.resetLevel();
     },
     removePosition: function(position) {
         for (var i = this.vecPositions.length - 1; i >= 0; i--) this.vecPositions[i] === position && this.vecPositions.splice(i, 1);
@@ -1337,9 +1366,10 @@ var Application = AbstractApplication.extend({
             y: 80 * this.tempSizeTiles.y - 2 * this.mapPosition.y
         }, this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : this.currentNode.bg = this.levelGenerator.createRoom(), 
         this.levelGenerator.debugBounds(), this.levelGenerator.createDoors(), this.levelGenerator.createHordes(), 
-        this.currentNode.getNextFloat() > .5 && this.levelGenerator.createRain(), this.player = new Player(this.playerModel), 
-        this.player.build(), this.player.setSpellModel(APP.spellList[0]), this.player.setArmorModel(APP.armorList[0]), 
-        this.player.setWeaponModel(APP.weaponList[0]), this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
+        this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
+        this.player = new Player(this.playerModel), this.player.build(), this.player.setSpellModel(APP.spellList[0]), 
+        this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
+        this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
         this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState + "   -    playerClass:" + this.playerModel.playerClass + "\nspell: " + this.player.spellModel.name + " - pow: " + this.player.spellModel.spellPower + " - mp: " + this.player.spellModel.mp + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status), 
         this.entityLayer.addChild(this.player), console.log(this.currentPlayerSide, "this.currentPlayerSide"), 
         "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.levelBounds.y + this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.mapPosition.y + this.mapPosition.y - this.player.height) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width, this.levelBounds.y / 2 + this.player.height) : "right" === this.currentPlayerSide && this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.player.height);

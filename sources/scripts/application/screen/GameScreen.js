@@ -106,7 +106,7 @@ var GameScreen = AbstractScreen.extend({
 
         TweenLite.to(this.blackShape, 1, {alpha:0});
 
-        this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 20px Arial'});
+        this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 15px Arial'});
         console.log('HUD',APP.getHUD());
         APP.getHUD().addChild(this.levelLabel);
 
@@ -116,6 +116,25 @@ var GameScreen = AbstractScreen.extend({
 
         this.minimap = new Minimap();
         APP.getHUD().addChild(this.minimap.getContent());
+        var tempBox = null;
+        for (var bi = 0; bi < 5; bi++) {
+            tempBox = new BoxHUD1(80,50);
+            tempBox.setPosition(550+bi*100, 20);
+            APP.getHUD().addChild(tempBox.getContent());
+            if(bi === 0){
+                tempBox.setText('potion\n1');
+            }else if(bi === 1){
+                tempBox.setText('ether\n2');
+            }else if(bi === 2){
+                tempBox.setText('haste\n3');
+            }else if(bi === 3){
+                tempBox.setText('bolt1\n4');
+            }else if(bi === 4){
+                tempBox.setText('\n5');
+            }
+        }
+
+
         this.minimap.build();
         this.minimap.setPosition(windowWidth - 100,5);
         this.minimap.getContent().scale.x = 0.3;
@@ -134,6 +153,14 @@ var GameScreen = AbstractScreen.extend({
 
         this.levelGenerator = new LevelGenerator(this);
         this.resetLevel();
+
+
+        // var octaveCount = options.octaveCount || 4;
+        // var amplitude = options.amplitude || 0.1;
+        // var persistence = options.persistence || 0.2;
+
+
+        // console.log(generatePerlinNoise(20,20));
 
     },
     removePosition:function(position){
@@ -351,8 +378,11 @@ var GameScreen = AbstractScreen.extend({
         this.levelGenerator.debugBounds();
         this.levelGenerator.createDoors();
         this.levelGenerator.createHordes();
+
         if(this.currentNode.getNextFloat() > 0.5){
             this.levelGenerator.createRain();
+        }else{
+            this.levelGenerator.removeRain();
         }
 
         this.player = new Player(this.playerModel);
