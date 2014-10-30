@@ -20,6 +20,16 @@ var BarView = Class.extend({
 
 		this.frontShape.scale.x = this.currentValue/this.maxValue;
 	},
+	setFrontColor: function(color){
+		if(this.frontShape){
+			this.container.removeChild(this.frontShape);
+		}
+		this.frontShape = new PIXI.Graphics();
+		this.frontShape.beginFill(color);
+		this.frontShape.drawRect(0,0,this.width, this.height);
+		this.container.addChild(this.frontShape);
+
+	},
 	setText: function(text){
 		if(this.text !== text){
 			if(!this.lifebar){

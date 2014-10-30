@@ -12,6 +12,7 @@ var NodeModel = Class.extend({
 		this.id = -1;
 		this.seed = -1;
 		this.tempAccSeed = this.seed;
+		this.bg = null;
 	},
 	applySeed:function(){
 		this.tempAccSeed = this.seed;

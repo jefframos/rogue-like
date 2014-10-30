@@ -102,8 +102,9 @@ var Fire = Entity.extend({
         // console.log('fireCollide', arrayCollide[0].type);
         if(this.collidable){
             if(arrayCollide[0].type === this.target){
-                this.getContent().tint = 0xff0000;
+               // if(this.fireType === 'physical'){
                 this.preKill();
+                //}
                 arrayCollide[0].hurt(this.power, this.fireType);
                 
             }
@@ -115,6 +116,8 @@ var Fire = Entity.extend({
             var self = this;
             this.updateable = false;
             this.collidable = false;
+            this.getContent().tint = 0xff0000;
+
             TweenLite.to(this.getContent().scale, 0.3, {x:0.2, y:0.2, onComplete:function(){self.kill = true;}});
             
             if(this.debugGraphic.parent){

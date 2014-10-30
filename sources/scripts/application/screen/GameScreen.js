@@ -49,7 +49,7 @@ var GameScreen = AbstractScreen.extend({
 
         this.playerModel = new PlayerModel(clss);
         this.playerModel.levelUp();
-        for (var i = 0; i < 0; i++) {
+        for (var i = 0; i < 20; i++) {
             this.playerModel.levelUp();
         }
         // this.playerModel.levelUp();
@@ -80,8 +80,6 @@ var GameScreen = AbstractScreen.extend({
         this.currentNode = APP.gen.firstNode;
         this.currentNode.applySeed();
 
-        this.rainContainer = new PIXI.DisplayObjectContainer();
-
         var self = this;
 
         this.vecPositions = [];
@@ -97,9 +95,14 @@ var GameScreen = AbstractScreen.extend({
         this.blackShape.drawRect(0,0,windowWidth, windowHeight);
         APP.getHUD().addChild(this.blackShape);
 
-        this.lifeBarView = new BarView(200,30, 100,50);
-        this.lifeBarView.setPosition(100,100);
-        APP.getHUD().addChild(this.lifeBarView.getContent());
+        this.HPView = new BarView(200,20, 100,100);
+        this.HPView.setPosition(20,150);
+        APP.getHUD().addChild(this.HPView.getContent());
+
+        this.MPView = new BarView(200,20, 100,100);
+        this.MPView.setPosition(20,180);
+        this.MPView.setFrontColor(0x0000FF);
+        APP.getHUD().addChild(this.MPView.getContent());
 
         TweenLite.to(this.blackShape, 1, {alpha:0});
 
@@ -111,7 +114,6 @@ var GameScreen = AbstractScreen.extend({
         // APP.getHUD().addChild(this.lifebar);
         // this.lifebar.position.x = windowWidth - 200;
 
-        this.resetLevel();
         this.minimap = new Minimap();
         APP.getHUD().addChild(this.minimap.getContent());
         this.minimap.build();
@@ -121,13 +123,7 @@ var GameScreen = AbstractScreen.extend({
 
 
 
-        var tempRain = null;
-        this.vecRain = [];
-        for (var j = 300; j >= 0; j--) {
-            tempRain = new RainParticle(50, 5, this.levelBounds.x + 200, this.levelBounds.y, 'left');
-            this.rainContainer.addChild(tempRain.content);
-            this.vecRain.push(tempRain);
-        }
+        
         // console.log(new BoundCollisionSystem(),'col system BoundCollisionSystem');
 
         this.collisionSystem = new BoundCollisionSystem(this, true);
@@ -136,6 +132,8 @@ var GameScreen = AbstractScreen.extend({
         this.effectsContainer = new PIXI.DisplayObjectContainer();
         this.addChild(this.effectsContainer);
 
+        this.levelGenerator = new LevelGenerator(this);
+        this.resetLevel();
 
     },
     removePosition:function(position){
@@ -199,6 +197,9 @@ var GameScreen = AbstractScreen.extend({
 
         }
     },
+    spell:function(){
+        this.player.spell(APP.stage.getMousePosition());
+    },
     //colocar isso dentro do personagem
     shoot:function(){
         this.player.shoot(APP.stage.getMousePosition());
@@ -230,8 +231,6 @@ var GameScreen = AbstractScreen.extend({
             //     ((this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > windowHeight -  this.mapPosition.y)&& this.player.virtualVelocity.y > 0)){
             //     this.player.virtualVelocity.y = 0;
             // } ----<< OLD
-
-
             // RETIREI AS mapPosition, VER ACIMA COMO ERA
             if(((this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x ) && this.player.virtualVelocity.x < 0) ||
                 ((this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > this.levelBounds.x  +  this.mapPosition.x)&& this.player.virtualVelocity.x > 0)){
@@ -254,15 +253,16 @@ var GameScreen = AbstractScreen.extend({
         this._super();
 
         this.entityLayer.getContent().children.sort(this.depthCompare);
-        // if(this.vecRain){
-        //     for (var i = this.vecRain.length - 1; i >= 0; i--) {
-        //         this.vecRain[i].update();
-        //     }
-        // }
-        // console.log('entity childs', this.entityLayer.childs.length);
-        if(this.lifeBarView && this.player){
-            this.lifeBarView.updateBar(Math.floor(this.player.hp),Math.floor(this.player.hpMax));
-            this.lifeBarView.setText(Math.floor(this.player.hp)+'/ '+Math.floor(this.player.hpMax));
+        if(this.levelGenerator){
+            this.levelGenerator.update();
+        }
+       
+        if(this.HPView && this.player){
+            this.HPView.updateBar(Math.floor(this.player.hp),Math.floor(this.player.hpMax));
+            this.HPView.setText(Math.floor(this.player.hp)+'/ '+Math.floor(this.player.hpMax));
+
+            this.MPView.updateBar(Math.floor(this.player.mp),Math.floor(this.player.mpMax));
+            this.MPView.setText(Math.floor(this.player.mp)+'/ '+Math.floor(this.player.mpMax));
 
             // this.lifebar.position.x = this.player.getPosition().x;
             // this.lifebar.position.y = this.player.getPosition().y - this.player.height / 2;
@@ -305,41 +305,9 @@ var GameScreen = AbstractScreen.extend({
     },
     resetLevel:function()
     {
-
-       
-
-
         this.vecPositions = [];
         this.blackShape.alpha = 1;
         TweenLite.to(this.blackShape, 1, {alpha:0});
-
-
-        while(this.bgContainer.children.length){
-            this.bgContainer.removeChildAt(0);
-        }
-        if(this.currentNode.mode === 1){
-            this.tempSizeTiles = {x: Math.floor(windowWidth / 80), y:Math.floor(windowHeight / 80)};
-        }else{
-            this.tempSizeTiles = {x:9 + Math.floor(this.currentNode.getNextFloat() * 15), y:9+Math.floor(this.currentNode.getNextFloat() * 15)};
-        }
-        this.levelBounds = {x: this.tempSizeTiles.x * 80 - this.mapPosition.x*2, y: this.tempSizeTiles.y * 80 - this.mapPosition.y * 2};
-        console.log('this.tempSizeTiles',this.tempSizeTiles);
-        for (var ii = 0; ii < this.tempSizeTiles.x; ii++) {
-            for (var jj = 0; jj < this.tempSizeTiles.y; jj++) {
-                var tempTile = new SimpleSprite(this.currentNode.getNextFloat() < 0.5 ? '_dist/img/tile1.png':'_dist/img/tile2.png');
-                tempTile.setPosition(ii * 80,jj * 80);
-                tempTile.getContent().cacheAsBitmap = true;
-                this.bgContainer.addChild(tempTile.getContent());
-            }
-        }
-        if(this.levelBoundsGraph && this.levelBoundsGraph.parent){
-            this.levelBoundsGraph.parent.removeChild(this.levelBoundsGraph);
-        }
-        this.levelBoundsGraph = new PIXI.Graphics();
-        this.levelBoundsGraph.lineStyle(1,0xff0000);
-        this.levelBoundsGraph.drawRect(this.mapPosition.x,this.mapPosition.y,this.levelBounds.x, this.levelBounds.y);
-        this.addChild(this.levelBoundsGraph);
-
         var roomState = 'first room';
         switch(this.currentNode.mode)
         {
@@ -361,16 +329,49 @@ var GameScreen = AbstractScreen.extend({
         }
         //console.log(this, 'ESSE É O ID DO LEVEL ATUAL -> ', this.currentNode);
         this.level = getRandomLevel();
+        this.currentNode.applySeed();
 
-        
+        while(this.bgContainer.children.length){
+            this.bgContainer.removeChildAt(0);
+        }
+        //seta o tamanho novamente, sempre
+        if(this.currentNode.mode === 1){
+            this.tempSizeTiles = {x: Math.floor(windowWidth / 80), y:Math.floor(windowHeight / 80)};
+        }else{
+            this.tempSizeTiles = {x:9 + Math.floor(this.currentNode.getNextFloat() * 15), y:9+Math.floor(this.currentNode.getNextFloat() * 15)};
+        }
+        this.levelBounds = {x: this.tempSizeTiles.x * 80 - this.mapPosition.x*2, y: this.tempSizeTiles.y * 80 - this.mapPosition.y * 2};
+
+        if(this.currentNode.bg){
+            this.bgContainer.addChild(this.currentNode.bg);
+        }else{
+            this.currentNode.bg = this.levelGenerator.createRoom();
+        }
+
+        this.levelGenerator.debugBounds();
+        this.levelGenerator.createDoors();
+        this.levelGenerator.createHordes();
+        if(this.currentNode.getNextFloat() > 0.5){
+            this.levelGenerator.createRain();
+        }
+
         this.player = new Player(this.playerModel);
         this.player.build();
-        this.player.setArmorModel(APP.armorList[Math.floor(APP.armorList.length * Math.random())]);
-        this.player.setWeaponModel(APP.weaponList[Math.floor(APP.weaponList.length * Math.random())]);
+        // this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]);
+        // this.player.setArmorModel(APP.armorList[Math.floor(APP.armorList.length * Math.random())]);
+        // this.player.setWeaponModel(APP.weaponList[Math.floor(APP.weaponList.length * Math.random())]);
+        // this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
+
+        this.player.setSpellModel(APP.spellList[0]);
+        this.player.setArmorModel(APP.armorList[0]);
+        this.player.setWeaponModel(APP.weaponList[0]);
+        this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
 
         this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+roomState+'   -    playerClass:'+this.playerModel.playerClass+
+            '\nspell: '+this.player.spellModel.name +' - pow: '+this.player.spellModel.spellPower +' - mp: '+this.player.spellModel.mp+
             '\narmor: '+this.player.armorModel.name +' - def: '+this.player.armorModel.defenseArmor +' - magDef: '+this.player.armorModel.magicDefenseArmor+
-            '\nweapon: '+this.player.weaponModel.name +' - pow: '+this.player.weaponModel.battlePower +' - hitRate: '+this.player.weaponModel.hitRate
+            '\nweapon: '+this.player.weaponModel.name +' - pow: '+this.player.weaponModel.battlePower +' - hitRate: '+this.player.weaponModel.hitRate+
+            '\nrelic: '+this.player.relicModel.name +' - stat: '+this.player.relicModel.status
             );
 
         // if(this.currentPlayerSide === 'up')
@@ -387,104 +388,34 @@ var GameScreen = AbstractScreen.extend({
         // {
         //     this.player.setPosition(this.mapPosition.x,windowHeight/2- this.player.height/2);
         // } ---<<< OLD
+
+
+
         
         
-
-        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
-        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
-        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
-        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
-        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
-        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
-        // console.log('currentNode getNextFloat', this.currentNode.getNextFloat());
-
-
-
-        for (var o = 0; o < 5; o++) {
-            APP.monsterList[0].level = this.playerModel.level + 10;
-            this.heart = new Enemy(this.player, APP.monsterList[0]);
-            this.heart.build();
-            this.heart.setPosition(this.levelBounds.x * this.currentNode.getNextFloat() + this.mapPosition.x,this.levelBounds.y * this.currentNode.getNextFloat() + this.mapPosition.y);
-            this.entityLayer.addChild(this.heart);
-        }
-        
-       
-        // this.fly = new FlightEnemy(500,500);
-        // this.fly.build();
-        // this.fly.setPosition(100,200);
         
         this.entityLayer.addChild(this.player);
-        // this.entityLayer.addChild(this.fly);
-        
-
-        for (var i = this.level.length - 1; i >= 0; i--) {
-            for (var j = this.level[i].length - 1; j >= 0; j--) {
-                if(this.level[i][j] > 0)
-                {
-                    var obs = new Obstacle(this.level[i][j] - 1);
-                    obs.build();
-                    obs.setPosition((j)* APP.tileSize.x+ this.mapPosition.x, (i+1)* APP.tileSize.y+ this.mapPosition.y);
-                    this.entityLayer.addChild(obs);
-                }
-            }
-        }
 
 
-        this.createDoors();
-
+        console.log(this.currentPlayerSide,'this.currentPlayerSide');
 
         if(this.currentPlayerSide === 'up')
         {
-            this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y - this.mapPosition.y- this.player.height);
+            this.player.setPosition(this.levelBounds.x/2 + this.player.width,this.levelBounds.y + this.mapPosition.y- this.player.height);
 
         }else if(this.currentPlayerSide === 'down')
         {
-            this.player.setPosition(this.levelBounds.x/2,this.mapPosition.y );
+            this.player.setPosition(this.levelBounds.x/2 + this.player.width,this.mapPosition.y+ this.mapPosition.y- this.player.height );
         }else if(this.currentPlayerSide === 'left')
         {
-            this.player.setPosition(this.levelBounds.x - this.mapPosition.x - this.player.width ,this.levelBounds.y/2 - this.player.height/2);
+            this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width ,this.levelBounds.y/2 + this.player.height);
         }else if(this.currentPlayerSide === 'right')
         {
-            this.player.setPosition(this.mapPosition.x,this.levelBounds.y/2- this.player.height/2);
+            this.player.setPosition(this.mapPosition.x,this.levelBounds.y/2+ this.player.height);
         }
     },
-    createDoors:function(){
-        if(this.currentNode.childrenSides[0]){
-            this.doorLeft = new Door('left');
-            this.doorLeft.build();
-            this.doorLeft.setPosition(this.mapPosition.x,this.levelBounds.y/2 + this.doorLeft.height);
-
-            this.doorLeft.node = this.currentNode.childrenSides[0];
-            this.environmentLayer.addChild(this.doorLeft);
-
-        }
-        if(this.currentNode.childrenSides[1]){
-            this.doorRight = new Door('right');
-            this.doorRight.build();
-            this.doorRight.setPosition(this.levelBounds.x + this.mapPosition.x,this.levelBounds.y/2  + this.doorRight.height);
-
-            this.doorRight.node = this.currentNode.childrenSides[1];
-            this.environmentLayer.addChild(this.doorRight);
-
-        }
-        if(this.currentNode.childrenSides[2]){
-            this.doorUp = new Door('up');
-            this.doorUp.build();
-            this.doorUp.setPosition(this.mapPosition.x + this.levelBounds.x / 2,this.mapPosition.y);
-
-            this.doorUp.node = this.currentNode.childrenSides[2];
-            this.environmentLayer.addChild(this.doorUp);
-
-        }
-        if(this.currentNode.childrenSides[3]){
-            this.doorDown = new Door('down');
-            this.doorDown.build();
-            this.doorDown.setPosition(this.mapPosition.x + this.levelBounds.x / 2,this.levelBounds.y + this.mapPosition.y);
-
-            this.doorDown.node = this.currentNode.childrenSides[3];
-            this.environmentLayer.addChild(this.doorDown);
-
-        }
+    useItem:function(itemID){
+        this.player.useItem(APP.itemList[itemID]);
     },
     depthCompare:function(a,b) {
         var yA = a.position.y;

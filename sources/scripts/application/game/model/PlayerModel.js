@@ -21,14 +21,16 @@ var PlayerModel = Class.extend({
 			this.magicDefense = 20;
 			this.baseHPModifier = 1.32;
 			this.baseHP = this.level* (20 / this.baseHPModifier);
+			this.baseMPModifier = 15.2;
+
 			//modifiers
 			this.vigorModifier = 0.0065;
-	        this.speedModifier = 0.004;
+	        this.speedModifier = 0.0045;
 	        this.staminaModifier = 0.007;
-			this.magicPowerModifier = 0.0035;
+			this.magicPowerModifier = 0.0025;
 	        this.battlePowerModifier = 0.0055;
-			this.defenseModifier = 0.006;
-			this.magicDefenseModifier = 0.0035;
+			this.defenseModifier = 0.0065;
+			this.magicDefenseModifier = 0.0025;
 
 		}else if(this.playerClass === 'mage'){
 			this.vigor = 31;
@@ -40,6 +42,7 @@ var PlayerModel = Class.extend({
 			this.magicDefense = 33;
 			this.baseHPModifier = 1.32;
 			this.baseHP = this.level* (20 / this.baseHPModifier);
+			this.baseMPModifier = 7.8;
 
 			this.vigorModifier = 0.004;
 	        this.speedModifier = 0.005;
@@ -59,6 +62,7 @@ var PlayerModel = Class.extend({
 			this.magicDefense = 23;
 			this.baseHPModifier = 1.32;
 			this.baseHP = this.level* (20 / this.baseHPModifier);
+			this.baseMPModifier = 10.2;
 
 			this.vigorModifier = 0.005;
 	        this.speedModifier = 0.007;
@@ -85,7 +89,10 @@ var PlayerModel = Class.extend({
 		this.magicDefenseArmor = 0;//no armor
 		this.hp = (this.baseHP*(this.stamina + 32))/32;
 
+		this.baseMP = this.level* (20 / this.baseMPModifier);
+		this.mp = (this.baseMP*(this.magicPower+32))/32;
 
+		console.log(this.baseMP, this.mp);
 		this.critialChance = 0.0;
 		this.speedStatus = 'normal';
         this.vigor2 = this.vigor*2;
@@ -102,9 +109,10 @@ var PlayerModel = Class.extend({
         this.entity = null;
 
 
-		this.csvStr = 'level,hp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n';
+		this.csvStr = 'level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n';
 		this.csvStr += this.level+','+
 		Math.floor(this.hp)+','+
+		Math.floor(this.mp)+','+
 		Math.floor(this.vigor)+','+
 		Math.floor(this.speed)+','+
 		Math.floor(this.stamina)+','+
@@ -124,6 +132,7 @@ var PlayerModel = Class.extend({
 		console.log('class,', this.playerClass);
 		console.log('level,',Math.floor(this.level));
 		console.log('hp,',Math.floor(this.hp));
+		console.log('mp,',Math.floor(this.mp));
 		console.log('vigor,',Math.floor(this.vigor));
 		console.log('speed,',Math.floor(this.speed));
 		console.log('stamina,',Math.floor(this.stamina));
@@ -223,12 +232,16 @@ var PlayerModel = Class.extend({
 			this.magicDefense = 255;
 		}
 
-
+// this.baseMP = this.level* (20 / this.baseMPModifier);
+// 		this.mp = (this.baseMP*(this.magicPower-32))/32;
 
 		// this.baseHPModifier -= 0.0085;
 		this.baseHPModifier -= 0.008;
+		this.baseMPModifier += 0.02;
 		this.baseHP = this.level* (20 / this.baseHPModifier);
+		this.baseMP = this.level* (20 / this.baseMPModifier);
 		this.hp += (this.baseHP*(this.stamina+32))/32;
+		this.mp += (this.baseMP*(this.magicPower+32))/32;
 		this.velocity = 8 - (255 - this.speed) / 25 + 5;
 		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * (1.1 + (this.speedModifier*1000));
 		if(this.fireFreq <= 4)
@@ -253,6 +266,7 @@ var PlayerModel = Class.extend({
 
 		this.csvStr += this.level+','+
 		Math.floor(this.hp)+','+
+		Math.floor(this.mp)+','+
 		Math.floor(this.vigor)+','+
 		Math.floor(this.speed)+','+
 		Math.floor(this.stamina)+','+

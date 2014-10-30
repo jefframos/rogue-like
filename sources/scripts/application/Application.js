@@ -152,13 +152,13 @@ var Application = AbstractApplication.extend({
 
 
         this.weaponList = [];
+        this.weaponList.push(new WeaponModel('MithrilKnife',30,180,300));
         this.weaponList.push(new WeaponModel('AirLancet',76,180,950));
         this.weaponList.push(new WeaponModel('Assassin',106,180,2));
         this.weaponList.push(new WeaponModel('Dirk',26,180,150));
         this.weaponList.push(new WeaponModel('Graedus',204,180,2));
         this.weaponList.push(new WeaponModel('Guardian',59,180,2));
         this.weaponList.push(new WeaponModel('ManEater',146,180,11000));
-        this.weaponList.push(new WeaponModel('MithrilKnife',30,180,300));
         this.weaponList.push(new WeaponModel('SwordBreaker',164,180,16000));
         this.weaponList.push(new WeaponModel('ThiefKnife',88,180,2));
         this.weaponList.push(new WeaponModel('ValiantKnife',145,180,2));
@@ -317,8 +317,14 @@ var Application = AbstractApplication.extend({
 
         this.itemList = [];
         this.itemList.push(new ItemModel('Minor Potion' ,'regen HP' ,35 ,100));
-        this.itemList.push(new ItemModel('Minor Ether' ,'regen MP' ,0 ,100));
+        this.itemList.push(new ItemModel('Minor Ether' ,'regen MP' ,35 ,100));
         this.itemList.push(new ItemModel('Haste' ,'haste' ,0 ,100));
+
+        this.relicList = [];
+        this.relicList.push(new RelicModel('relic 1' ,'2shots' ,0 ,100));
+        this.relicList.push(new RelicModel('relic 2' ,'3shots' ,0 ,100));
+        this.relicList.push(new RelicModel('power' ,'powershot' ,0 ,100));
+        this.relicList.push(new RelicModel('speed' ,'speedshot' ,0 ,100));
 
 
         this._super();

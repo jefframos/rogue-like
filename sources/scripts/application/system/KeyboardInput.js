@@ -14,6 +14,7 @@ var KeyboardInput = Class.extend({
 			}
 		});
 		document.body.addEventListener('keyup', function(e){
+			// console.log(e.keyCode);
 			if(self.player){
 				if(e.keyCode === 87 || e.keyCode === 38 && self.player.velocity.y < 0){
 					self.removePosition('up');
@@ -29,6 +30,17 @@ var KeyboardInput = Class.extend({
 				}
 				else if(e.keyCode === 32){
 					self.player.hurt(10);
+				}
+				else if(e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51){
+					var id = 1;
+					if(e.keyCode === 50){
+						id = 2;
+					}else if(e.keyCode === 51){
+						id = 3;
+					}
+					self.useItem(id - 1);
+				}else if(e.keyCode === 52){
+					self.spell();
 				}
 				self.updatePlayerVel();
 			}
