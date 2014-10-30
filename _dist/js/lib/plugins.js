@@ -1,5 +1,5 @@
 /*! goyabpd 30-10-2014 */
-function generatePerlinNoise(width, height, options) {
+function generatePerlinNoise(width, height, options, seed) {
     function generateSmoothNoise(octave) {
         for (var noise = new Array(width * height), samplePeriod = Math.pow(2, octave), sampleFrequency = 1 / samplePeriod, noiseIndex = 0, y = 0; height > y; ++y) for (var sampleY0 = Math.floor(y / samplePeriod) * samplePeriod, sampleY1 = (sampleY0 + samplePeriod) % height, vertBlend = (y - sampleY0) * sampleFrequency, x = 0; width > x; ++x) {
             var sampleX0 = Math.floor(x / samplePeriod) * samplePeriod, sampleX1 = (sampleX0 + samplePeriod) % width, horizBlend = (x - sampleX0) * sampleFrequency, top = interpolate(whiteNoise[sampleY0 * width + sampleX0], whiteNoise[sampleY1 * width + sampleX0], vertBlend), bottom = interpolate(whiteNoise[sampleY0 * width + sampleX1], whiteNoise[sampleY1 * width + sampleX1], vertBlend);
@@ -8,7 +8,7 @@ function generatePerlinNoise(width, height, options) {
         return noise;
     }
     options = options || {};
-    var i, octaveCount = options.octaveCount || 4, amplitude = options.amplitude || .1, persistence = options.persistence || .2, whiteNoise = generateWhiteNoise(width, height), smoothNoiseList = new Array(octaveCount);
+    var i, octaveCount = options.octaveCount || 4, amplitude = options.amplitude || .1, persistence = options.persistence || .2, whiteNoise = generateWhiteNoise(width, height, seed), smoothNoiseList = new Array(octaveCount);
     for (i = 0; octaveCount > i; ++i) smoothNoiseList[i] = generateSmoothNoise(i);
     var perlinNoise = new Array(width * height), totalAmplitude = 0;
     for (i = octaveCount - 1; i >= 0; --i) {
@@ -20,8 +20,12 @@ function generatePerlinNoise(width, height, options) {
     return perlinNoise;
 }
 
-function generateWhiteNoise(width, height) {
-    for (var noise = new Array(width * height), i = 0; i < noise.length; ++i) noise[i] = Math.random();
+function generateWhiteNoise(width, height, seed) {
+    function getNextFloat() {
+        var x = 1e4 * Math.sin(tSeed++);
+        return x - Math.floor(x);
+    }
+    for (var noise = new Array(width * height), tSeed = seed, i = 0; i < noise.length; ++i) noise[i] = getNextFloat();
     return noise;
 }
 

@@ -6,12 +6,12 @@ var LevelGenerator = Class.extend({
 	createHordes: function(){
 		var tempMonster = null;
 		for (var i = 0; i < 5; i++) {
-            APP.monsterList[0].level = this.parent.playerModel.level + 10;
-            tempMonster = new Enemy(this.parent.player, APP.monsterList[0]);
-            tempMonster.build();
-            tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.x,this.parent.levelBounds.y * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.y);
-            this.parent.entityLayer.addChild(tempMonster);
-        }
+			APP.monsterList[0].level = this.parent.playerModel.level + 10;
+			tempMonster = new Enemy(this.parent.player, APP.monsterList[0]);
+			tempMonster.build();
+			tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.x,this.parent.levelBounds.y * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.y);
+			this.parent.entityLayer.addChild(tempMonster);
+		}
 	},
 	putObstacles: function(){
 		for (var i = this.parent.level.length - 1; i >= 0; i--) {
@@ -27,25 +27,56 @@ var LevelGenerator = Class.extend({
 		}
 	},
 	createRoom: function(){
+
+		
+	//     var octaveCount = options.octaveCount || 4;
+		// var amplitude = options.amplitude || 0.1;
+		// var persistence = options.persistence || 0.2;
+		var opt = {
+			octaveCount: 2,
+			amplitude: 0.8,
+			persistence:0.2
+		};
+		var noise = generatePerlinNoise(this.parent.tempSizeTiles.x,this.parent.tempSizeTiles.y,opt,this.parent.currentNode.getNextFloat());
 		var ii = 0;
 		var jj = 0;
 		var tempTile = null;
 		var tempContainer = new PIXI.DisplayObjectContainer();
+		var maxDist = this.parent.tempSizeTiles.x > this.parent.tempSizeTiles.y ? this.parent.tempSizeTiles.x/2 : this.parent.tempSizeTiles.y/2;
+
 		for (ii = 0; ii < this.parent.tempSizeTiles.x; ii++) {
 			for (jj = 0; jj < this.parent.tempSizeTiles.y; jj++) {
+
+				
+
 				tempTile = new SimpleSprite(this.parent.currentNode.getNextFloat() < 0.5 ? '_dist/img/tile1.png':'_dist/img/tile2.png');
 				tempTile.setPosition(ii * 80,jj * 80);
+
+				if(ii < this.parent.marginTiles.x || ii >= this.parent.tempSizeTiles.x - this.parent.marginTiles.x ||
+					jj < this.parent.marginTiles.y || jj >= this.parent.tempSizeTiles.y - this.parent.marginTiles.y )
+				{
+					var noiseID = (jj + Math.floor(ii * this.parent.tempSizeTiles.y));
+					var alphaacc = 0;
+					var distance = (this.pointDistance(ii,jj, Math.floor(this.parent.tempSizeTiles.x/2), Math.floor(this.parent.tempSizeTiles.y/2)) / maxDist);
+					if(noise[noiseID] < 0.5){
+						alphaacc = 0.1;//noise[noiseID];
+						// tempTile.getContent().alpha = 0.1 + 1 - (this.pointDistance(ii,jj, this.parent.tempSizeTiles.x/2, this.parent.tempSizeTiles.y/2) / maxDist);//noise[noiseID];
+					}
+					
+					tempTile.getContent().alpha = 0.5 + (1 - distance) - alphaacc;
+				}
+
 				// tempTile.getContent().cacheAsBitmap = true;
 				tempContainer.addChild(tempTile.getContent());
 			}
 		}
 		// var noise = new ClassicalNoise(Math);
-  //       console.log('noise',noise.p);
-        var nacum = 0;
-		for (ii = 0; ii < this.parent.tempSizeTiles.x; ii++) {
-			for (jj = 0; jj < this.parent.tempSizeTiles.y; jj++) {
+  
+		var nacum = 0;
+		for (ii = this.parent.marginTiles.x; ii < this.parent.tempSizeTiles.x-this.parent.marginTiles.x; ii++) {
+			for (jj = this.parent.marginTiles.y; jj < this.parent.tempSizeTiles.y-this.parent.marginTiles.y; jj++) {
 				if(this.parent.currentNode.getNextFloat() < 0.2){
-				// if(noise.p[++nacum] < 128){
+				// if(noise[(jj + Math.floor(ii * this.parent.tempSizeTiles.y))] < 0.5){
 					tempTile = new SimpleSprite('_dist/img/grama1.png');
 					tempTile.setPosition(ii * 80,jj * 80);
 					tempTile.getContent().cacheAsBitmap = true;
@@ -89,7 +120,7 @@ var LevelGenerator = Class.extend({
 		if(this.parent.currentNode.childrenSides[0]){
 			this.parent.doorLeft = new Door('left');
 			this.parent.doorLeft.build();
-			this.parent.doorLeft.setPosition(this.parent.mapPosition.x,this.parent.levelBounds.y/2 + this.parent.doorLeft.height);
+			this.parent.doorLeft.setPosition(this.parent.mapPosition.x,this.parent.levelBounds.y/2 + this.parent.mapPosition.y);
 
 			this.parent.doorLeft.node = this.parent.currentNode.childrenSides[0];
 			this.parent.environmentLayer.addChild(this.parent.doorLeft);
@@ -98,7 +129,7 @@ var LevelGenerator = Class.extend({
 		if(this.parent.currentNode.childrenSides[1]){
 			this.parent.doorRight = new Door('right');
 			this.parent.doorRight.build();
-			this.parent.doorRight.setPosition(this.parent.levelBounds.x + this.parent.mapPosition.x,this.parent.levelBounds.y/2  + this.parent.doorRight.height);
+			this.parent.doorRight.setPosition(this.parent.levelBounds.x + this.parent.mapPosition.x,this.parent.levelBounds.y/2  + this.parent.mapPosition.y);
 
 			this.parent.doorRight.node = this.parent.currentNode.childrenSides[1];
 			this.parent.environmentLayer.addChild(this.parent.doorRight);
@@ -152,5 +183,8 @@ var LevelGenerator = Class.extend({
 				this.vecRain[i].update();
 			}
 		}
-	}
+	},
+	pointDistance: function(x, y, x0, y0){
+		return Math.sqrt((x -= x0) * x + (y -= y0) * y);
+	},
 });

@@ -30,10 +30,12 @@ var GameScreen = AbstractScreen.extend({
 
         this.layerManager.addLayer(this.entityLayer);
         this.addChild(this.layerManager);
-        this.mapPosition = {x:APP.tileSize.x / 2 * 3,y:160 / 2};
+        // this.mapPosition = {x:APP.tileSize.x / 2 * 3,y:160 / 2};
+        this.mapPosition = {x:200,y:200};
 
         this.tempSizeTiles = {x:12, y:10};
         //POR ENQUANTO 80 é o tamanho do tile
+        // this.levelBounds = {x: this.tempSizeTiles.x * 80 - this.mapPosition.x*2, y: this.tempSizeTiles.y * 80 - this.mapPosition.y * 2};
         this.levelBounds = {x: this.tempSizeTiles.x * 80 - this.mapPosition.x*2, y: this.tempSizeTiles.y * 80 - this.mapPosition.y * 2};
 
         this.mouseDown = false;
@@ -136,9 +138,9 @@ var GameScreen = AbstractScreen.extend({
 
 
         this.minimap.build();
-        this.minimap.setPosition(windowWidth - 100,5);
-        this.minimap.getContent().scale.x = 0.3;
-        this.minimap.getContent().scale.y = 0.3;
+        this.minimap.setPosition(windowWidth - this.minimap.getContent().width * 0.5 - 5, 10);
+        this.minimap.getContent().scale.x = 0.5;
+        this.minimap.getContent().scale.y = 0.5;
 
 
 
@@ -160,7 +162,6 @@ var GameScreen = AbstractScreen.extend({
         // var persistence = options.persistence || 0.2;
 
 
-        // console.log(generatePerlinNoise(20,20));
 
     },
     removePosition:function(position){
@@ -362,12 +363,14 @@ var GameScreen = AbstractScreen.extend({
             this.bgContainer.removeChildAt(0);
         }
         //seta o tamanho novamente, sempre
+        this.marginTiles = {x:Math.floor(this.mapPosition.x/ 80), y:Math.floor(this.mapPosition.y/ 80)};
         if(this.currentNode.mode === 1){
-            this.tempSizeTiles = {x: Math.floor(windowWidth / 80), y:Math.floor(windowHeight / 80)};
+            this.tempSizeTiles = {x: Math.floor(windowWidth / 80) + this.marginTiles.x , y:Math.floor(windowHeight / 80) +this.marginTiles.y};
         }else{
-            this.tempSizeTiles = {x:9 + Math.floor(this.currentNode.getNextFloat() * 15), y:9+Math.floor(this.currentNode.getNextFloat() * 15)};
+            this.tempSizeTiles = {x:14 + this.marginTiles.x + Math.floor(this.currentNode.getNextFloat() * 15) , y:7+ this.marginTiles.y+Math.floor(this.currentNode.getNextFloat() * 15)};
         }
-        this.levelBounds = {x: this.tempSizeTiles.x * 80 - this.mapPosition.x*2, y: this.tempSizeTiles.y * 80 - this.mapPosition.y * 2};
+        console.log(this.tempSizeTiles, this.mapPosition);
+        this.levelBounds = {x: this.tempSizeTiles.x * 80 - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * 80 - Math.floor(this.mapPosition.y*2)};
 
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
@@ -384,6 +387,9 @@ var GameScreen = AbstractScreen.extend({
         }else{
             this.levelGenerator.removeRain();
         }
+
+        this.getContent().position.x = -this.mapPosition.x;
+        this.getContent().position.y = -this.mapPosition.y;
 
         this.player = new Player(this.playerModel);
         this.player.build();
@@ -442,6 +448,8 @@ var GameScreen = AbstractScreen.extend({
         }else if(this.currentPlayerSide === 'right')
         {
             this.player.setPosition(this.mapPosition.x,this.levelBounds.y/2+ this.player.height);
+        }else{
+            this.player.setPosition(this.mapPosition.x + this.levelBounds.x/2,this.mapPosition.y + this.levelBounds.y/2);
         }
     },
     useItem:function(itemID){

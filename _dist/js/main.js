@@ -859,8 +859,8 @@ var Application = AbstractApplication.extend({
         this.setVelocity(0, 0), this.updateable = !0;
     },
     collide: function(arrayCollide) {
-        "door" === arrayCollide[0].type && (console.log("door collider"), ("up" === arrayCollide[0].side && this.virtualVelocity.y < 0 || "down" === arrayCollide[0].side && this.virtualVelocity.y > 0 || "left" === arrayCollide[0].side && this.virtualVelocity.x < 0 || "right" === arrayCollide[0].side && this.virtualVelocity.x > 0) && (this.endLevel = !0, 
-        this.nextNode = arrayCollide[0].node, this.nextDoorSide = arrayCollide[0].side));
+        "door" === arrayCollide[0].type && ("up" === arrayCollide[0].side && this.virtualVelocity.y < 0 || "down" === arrayCollide[0].side && this.virtualVelocity.y > 0 || "left" === arrayCollide[0].side && this.virtualVelocity.x < 0 || "right" === arrayCollide[0].side && this.virtualVelocity.x > 0) && (this.endLevel = !0, 
+        this.nextNode = arrayCollide[0].node, this.nextDoorSide = arrayCollide[0].side);
     },
     touch: function(collection) {
         this.isTouch = !0, console.log(collection), (collection.left || collection.right && 0 !== this.virtualVelocity.x) && (this.velocity.x = 0), 
@@ -1145,10 +1145,20 @@ var Application = AbstractApplication.extend({
         }
     },
     createRoom: function() {
-        var ii = 0, jj = 0, tempTile = null, tempContainer = new PIXI.DisplayObjectContainer();
-        for (ii = 0; ii < this.parent.tempSizeTiles.x; ii++) for (jj = 0; jj < this.parent.tempSizeTiles.y; jj++) tempTile = new SimpleSprite(this.parent.currentNode.getNextFloat() < .5 ? "_dist/img/tile1.png" : "_dist/img/tile2.png"), 
-        tempTile.setPosition(80 * ii, 80 * jj), tempContainer.addChild(tempTile.getContent());
-        for (ii = 0; ii < this.parent.tempSizeTiles.x; ii++) for (jj = 0; jj < this.parent.tempSizeTiles.y; jj++) this.parent.currentNode.getNextFloat() < .2 && (tempTile = new SimpleSprite("_dist/img/grama1.png"), 
+        var opt = {
+            octaveCount: 2,
+            amplitude: .8,
+            persistence: .2
+        }, noise = generatePerlinNoise(this.parent.tempSizeTiles.x, this.parent.tempSizeTiles.y, opt, this.parent.currentNode.getNextFloat()), ii = 0, jj = 0, tempTile = null, tempContainer = new PIXI.DisplayObjectContainer(), maxDist = this.parent.tempSizeTiles.x > this.parent.tempSizeTiles.y ? this.parent.tempSizeTiles.x / 2 : this.parent.tempSizeTiles.y / 2;
+        for (ii = 0; ii < this.parent.tempSizeTiles.x; ii++) for (jj = 0; jj < this.parent.tempSizeTiles.y; jj++) {
+            if (tempTile = new SimpleSprite(this.parent.currentNode.getNextFloat() < .5 ? "_dist/img/tile1.png" : "_dist/img/tile2.png"), 
+            tempTile.setPosition(80 * ii, 80 * jj), ii < this.parent.marginTiles.x || ii >= this.parent.tempSizeTiles.x - this.parent.marginTiles.x || jj < this.parent.marginTiles.y || jj >= this.parent.tempSizeTiles.y - this.parent.marginTiles.y) {
+                var noiseID = jj + Math.floor(ii * this.parent.tempSizeTiles.y), alphaacc = 0, distance = this.pointDistance(ii, jj, Math.floor(this.parent.tempSizeTiles.x / 2), Math.floor(this.parent.tempSizeTiles.y / 2)) / maxDist;
+                noise[noiseID] < .5 && (alphaacc = .1), tempTile.getContent().alpha = .5 + (1 - distance) - alphaacc;
+            }
+            tempContainer.addChild(tempTile.getContent());
+        }
+        for (ii = this.parent.marginTiles.x; ii < this.parent.tempSizeTiles.x - this.parent.marginTiles.x; ii++) for (jj = this.parent.marginTiles.y; jj < this.parent.tempSizeTiles.y - this.parent.marginTiles.y; jj++) this.parent.currentNode.getNextFloat() < .2 && (tempTile = new SimpleSprite("_dist/img/grama1.png"), 
         tempTile.setPosition(80 * ii, 80 * jj), tempTile.getContent().cacheAsBitmap = !0, 
         tempContainer.addChild(tempTile.getContent()));
         return this.parent.bgContainer.addChild(tempContainer), this.parent.currentNode.bg = tempContainer, 
@@ -1162,10 +1172,10 @@ var Application = AbstractApplication.extend({
     },
     createDoors: function() {
         this.parent.currentNode.childrenSides[0] && (this.parent.doorLeft = new Door("left"), 
-        this.parent.doorLeft.build(), this.parent.doorLeft.setPosition(this.parent.mapPosition.x, this.parent.levelBounds.y / 2 + this.parent.doorLeft.height), 
+        this.parent.doorLeft.build(), this.parent.doorLeft.setPosition(this.parent.mapPosition.x, this.parent.levelBounds.y / 2 + this.parent.mapPosition.y), 
         this.parent.doorLeft.node = this.parent.currentNode.childrenSides[0], this.parent.environmentLayer.addChild(this.parent.doorLeft)), 
         this.parent.currentNode.childrenSides[1] && (this.parent.doorRight = new Door("right"), 
-        this.parent.doorRight.build(), this.parent.doorRight.setPosition(this.parent.levelBounds.x + this.parent.mapPosition.x, this.parent.levelBounds.y / 2 + this.parent.doorRight.height), 
+        this.parent.doorRight.build(), this.parent.doorRight.setPosition(this.parent.levelBounds.x + this.parent.mapPosition.x, this.parent.levelBounds.y / 2 + this.parent.mapPosition.y), 
         this.parent.doorRight.node = this.parent.currentNode.childrenSides[1], this.parent.environmentLayer.addChild(this.parent.doorRight)), 
         this.parent.currentNode.childrenSides[2] && (this.parent.doorUp = new Door("up"), 
         this.parent.doorUp.build(), this.parent.doorUp.setPosition(this.parent.mapPosition.x + this.parent.levelBounds.x / 2, this.parent.mapPosition.y), 
@@ -1187,6 +1197,9 @@ var Application = AbstractApplication.extend({
     },
     update: function() {
         if (this.vecRain) for (var i = this.vecRain.length - 1; i >= 0; i--) this.vecRain[i].update();
+    },
+    pointDistance: function(x, y, x0, y0) {
+        return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     }
 }), AppModel = Class.extend({
     init: function() {
@@ -1229,8 +1242,8 @@ var Application = AbstractApplication.extend({
         this.layerManager = new LayerManager(), this.layerManager.addLayer(this.environmentLayer), 
         this.layerManager.addLayer(this.entityLayer), this.addChild(this.layerManager), 
         this.mapPosition = {
-            x: APP.tileSize.x / 2 * 3,
-            y: 80
+            x: 200,
+            y: 200
         }, this.tempSizeTiles = {
             x: 12,
             y: 10
@@ -1270,10 +1283,11 @@ var Application = AbstractApplication.extend({
         APP.getHUD().addChild(this.minimap.getContent());
         for (var tempBox = null, bi = 0; 5 > bi; bi++) tempBox = new BoxHUD1(80, 50), tempBox.setPosition(550 + 100 * bi, 20), 
         APP.getHUD().addChild(tempBox.getContent()), 0 === bi ? tempBox.setText("potion\n1") : 1 === bi ? tempBox.setText("ether\n2") : 2 === bi ? tempBox.setText("haste\n3") : 3 === bi ? tempBox.setText("bolt1\n4") : 4 === bi && tempBox.setText("\n5");
-        this.minimap.build(), this.minimap.setPosition(windowWidth - 100, 5), this.minimap.getContent().scale.x = .3, 
-        this.minimap.getContent().scale.y = .3, this.collisionSystem = new BoundCollisionSystem(this, !0), 
-        this.effectsContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.effectsContainer), 
-        this.levelGenerator = new LevelGenerator(this), this.resetLevel();
+        this.minimap.build(), this.minimap.setPosition(windowWidth - .5 * this.minimap.getContent().width - 5, 10), 
+        this.minimap.getContent().scale.x = .5, this.minimap.getContent().scale.y = .5, 
+        this.collisionSystem = new BoundCollisionSystem(this, !0), this.effectsContainer = new PIXI.DisplayObjectContainer(), 
+        this.addChild(this.effectsContainer), this.levelGenerator = new LevelGenerator(this), 
+        this.resetLevel();
     },
     removePosition: function(position) {
         for (var i = this.vecPositions.length - 1; i >= 0; i--) this.vecPositions[i] === position && this.vecPositions.splice(i, 1);
@@ -1355,24 +1369,28 @@ var Application = AbstractApplication.extend({
             roomState = "key";
         }
         for (this.level = getRandomLevel(), this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
-        this.tempSizeTiles = 1 === this.currentNode.mode ? {
-            x: Math.floor(windowWidth / 80),
-            y: Math.floor(windowHeight / 80)
+        this.marginTiles = {
+            x: Math.floor(this.mapPosition.x / 80),
+            y: Math.floor(this.mapPosition.y / 80)
+        }, this.tempSizeTiles = 1 === this.currentNode.mode ? {
+            x: Math.floor(windowWidth / 80) + this.marginTiles.x,
+            y: Math.floor(windowHeight / 80) + this.marginTiles.y
         } : {
-            x: 9 + Math.floor(15 * this.currentNode.getNextFloat()),
-            y: 9 + Math.floor(15 * this.currentNode.getNextFloat())
-        }, this.levelBounds = {
-            x: 80 * this.tempSizeTiles.x - 2 * this.mapPosition.x,
-            y: 80 * this.tempSizeTiles.y - 2 * this.mapPosition.y
+            x: 14 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
+            y: 7 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
+        }, console.log(this.tempSizeTiles, this.mapPosition), this.levelBounds = {
+            x: 80 * this.tempSizeTiles.x - Math.floor(2 * this.mapPosition.x),
+            y: 80 * this.tempSizeTiles.y - Math.floor(2 * this.mapPosition.y)
         }, this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : this.currentNode.bg = this.levelGenerator.createRoom(), 
         this.levelGenerator.debugBounds(), this.levelGenerator.createDoors(), this.levelGenerator.createHordes(), 
         this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
+        this.getContent().position.x = -this.mapPosition.x, this.getContent().position.y = -this.mapPosition.y, 
         this.player = new Player(this.playerModel), this.player.build(), this.player.setSpellModel(APP.spellList[0]), 
         this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
         this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState + "   -    playerClass:" + this.playerModel.playerClass + "\nspell: " + this.player.spellModel.name + " - pow: " + this.player.spellModel.spellPower + " - mp: " + this.player.spellModel.mp + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status), 
         this.entityLayer.addChild(this.player), console.log(this.currentPlayerSide, "this.currentPlayerSide"), 
-        "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.levelBounds.y + this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.mapPosition.y + this.mapPosition.y - this.player.height) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width, this.levelBounds.y / 2 + this.player.height) : "right" === this.currentPlayerSide && this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.player.height);
+        "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.levelBounds.y + this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.mapPosition.y + this.mapPosition.y - this.player.height) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width, this.levelBounds.y / 2 + this.player.height) : "right" === this.currentPlayerSide ? this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.player.height) : this.player.setPosition(this.mapPosition.x + this.levelBounds.x / 2, this.mapPosition.y + this.levelBounds.y / 2);
     },
     useItem: function(itemID) {
         this.player.useItem(APP.itemList[itemID]);

@@ -324,7 +324,7 @@ var Player = SpritesheetEntity.extend({
         // console.log('playerCollide', arrayCollide[0].type);
 
         if(arrayCollide[0].type === 'door'){
-            console.log('door collider');
+            // console.log('door collider');
             if(arrayCollide[0].side === 'up' && this.virtualVelocity.y < 0 ||
                 arrayCollide[0].side === 'down' && this.virtualVelocity.y > 0 ||
                 arrayCollide[0].side === 'left' && this.virtualVelocity.x < 0 ||

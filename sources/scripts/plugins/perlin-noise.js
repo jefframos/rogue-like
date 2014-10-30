@@ -1,9 +1,10 @@
-function generatePerlinNoise(width, height, options) {
+function generatePerlinNoise(width, height, options, seed) {
   options = options || {};
   var octaveCount = options.octaveCount || 4;
   var amplitude = options.amplitude || 0.1;
   var persistence = options.persistence || 0.2;
-  var whiteNoise = generateWhiteNoise(width, height);
+
+  var whiteNoise = generateWhiteNoise(width, height, seed);
 
   var smoothNoiseList = new Array(octaveCount);
   var i;
@@ -55,11 +56,16 @@ function generatePerlinNoise(width, height, options) {
     return noise;
   }
 }
-function generateWhiteNoise(width, height) {
+function generateWhiteNoise(width, height , seed) {
   var noise = new Array(width * height);
+  var tSeed = seed;
   for (var i = 0; i < noise.length; ++i) {
-    noise[i] = Math.random();
+    noise[i] = getNextFloat();
   }
+  function getNextFloat(){
+        var x = Math.sin(tSeed++) * 10000;
+        return x - Math.floor(x);
+    };
   return noise;
 }
 function interpolate(x0, x1, alpha) {

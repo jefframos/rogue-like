@@ -13,17 +13,17 @@
 		<!-- <link rel="shortcut icon" href="favicon.ico"> -->
 
 		<link rel="stylesheet" href="_dist/css/main.css">
-
+		<!-- #201E3B -->
 		<style type="text/css">	
 		body{
 			margin: 0;
 			padding: 0;
-			background-color: #201E3B;
+			background-color: #010101;
 			font-family: sans-serif;
 		}
 
 		.game {
-			background-color: #201E3B;
+			background-color: #010101;
 		}
 		canvas {
 			position:  absolute;
