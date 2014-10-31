@@ -30,10 +30,11 @@ var Enemy = SpritesheetEntity.extend({
         pop.initMotion(-10 - (Math.random() * 10), 0.5);
         this.getTexture().tint = 0xFF0000;
 
-        console.log(this.hp ,trueDemage);
+        // console.log(this.hp ,trueDemage);
         if(this.hp <= 0){
             this.preKill();
             var trueXP = this.monsterModel.xp + ((this.monsterModel.level - this.player.playerModel.level)*0.15*this.monsterModel.xp) + 1;
+            // console.log(this.monsterModel.xp, trueXP);
             this.player.playerModel.updateXp(trueXP);
         }
     },

@@ -167,7 +167,7 @@ var Application = AbstractApplication.extend({
         this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(0), this.stage.removeChild(this.loadText), 
         this.isMobile = testMobile(), this.appContainer = document.getElementById("rect"), 
         this.id = parseInt(1e11 * Math.random()), this.gen = new DungeonGenerator(), this.gen.generate(16777215 * Math.random(), 1, [ 10, 15 ], [ 12, 12 ], 5), 
-        this.gen.log(), this.tileSize = {
+        this.tileSize = {
             x: 80,
             y: 80
         };
@@ -185,7 +185,7 @@ var Application = AbstractApplication.extend({
         return this.HUD;
     },
     build: function() {
-        this.monsterList = [], this.monsterList.push(new MonsterModel(1, 10, 50, 55, 13, 13, 70, 70, 10)), 
+        this.monsterList = [], this.monsterList.push(new MonsterModel(10, 1, 50, 55, 13, 13, 70, 70, 10)), 
         this.monsterList.push(new MonsterModel(10, 80, 50, 55, 13, 13, 70, 70, 10)), this.monsterList.push(new MonsterModel(20, 80, 50, 55, 13, 13, 70, 70, 10)), 
         this.spellList = [], this.spellList.push(new SpellModel(1, "bolt1", 6, 20)), this.spellList.push(new SpellModel(1, "fire1", 4, 21)), 
         this.spellList.push(new SpellModel(1, "ice1", 5, 22)), this.spellList.push(new SpellModel(1, "poison", 3, 25)), 
@@ -741,7 +741,7 @@ var Application = AbstractApplication.extend({
         }), this.spritesheet = new Spritesheet(), this.spritesheet.addAnimation(animationIdle), 
         this.spritesheet.addAnimation(animationDead), this.spritesheet.play("idle"), this.reset(), 
         this.counter = 0, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
-        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), console.log("level", this.playerModel.level);
+        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill();
     },
     getBounds: function() {
         return this.bounds = {
@@ -868,7 +868,7 @@ var Application = AbstractApplication.extend({
         this.nextNode = arrayCollide[0].node, this.nextDoorSide = arrayCollide[0].side);
     },
     touch: function(collection) {
-        this.isTouch = !0, console.log(collection), (collection.left || collection.right && 0 !== this.virtualVelocity.x) && (this.velocity.x = 0), 
+        this.isTouch = !0, (collection.left || collection.right && 0 !== this.virtualVelocity.x) && (this.velocity.x = 0), 
         (collection.up || collection.down && 0 !== this.virtualVelocity.y) && (this.velocity.y = 0);
     },
     debug: function() {
@@ -912,7 +912,7 @@ var Application = AbstractApplication.extend({
         if (pop.setText(Math.floor(trueDemage)), APP.getEffectsContainer().addChild(pop.getContent()), 
         pop.setPosition(this.getPosition().x - 10 + 20 * Math.random(), this.getPosition().y - 5 + 10 * Math.random() - this.height / 2), 
         pop.initMotion(-10 - 10 * Math.random(), .5), this.getTexture().tint = 16711680, 
-        console.log(this.hp, trueDemage), this.hp <= 0) {
+        this.hp <= 0) {
             this.preKill();
             var trueXP = this.monsterModel.xp + .15 * (this.monsterModel.level - this.player.playerModel.level) * this.monsterModel.xp + 1;
             this.player.playerModel.updateXp(trueXP);
@@ -1056,9 +1056,8 @@ var Application = AbstractApplication.extend({
         this.attack > 255 && (this.attack = 255), this.magicDefense > 255 && (this.magicDefense = 255), 
         this.baseHP = level * (20 / this.baseHPModifier), this.hpMax += this.baseHP * (this.stamina + 32) / 32 * (level / 2), 
         this.hp = this.hpMax, this.velocity = 8 - (255 - this.speed) / 25 + 5, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * (1.8 + 1e3 * this.speedModifier), 
-        console.log("enemy HP", this.hp, this.defenseModifier, level, this.fireFreq), this.fireFreq <= 4 && (this.fireFreq = 4), 
-        this.fireFreq >= 150 && (this.fireFreq = 150), this.velocity >= 10 && (this.velocity = 10), 
-        this.velocity <= 3 && (this.velocity = 3);
+        this.fireFreq <= 4 && (this.fireFreq = 4), this.fireFreq >= 150 && (this.fireFreq = 150), 
+        this.velocity >= 10 && (this.velocity = 10), this.velocity <= 3 && (this.velocity = 3);
         var curveAcentValue = .15;
         this.xp += Math.floor((level * (level / 3) + level + 3) / 5 * this.xp * level * curveAcentValue);
     },
@@ -1098,11 +1097,10 @@ var Application = AbstractApplication.extend({
         this.defenseModifier = .004, this.magicDefenseModifier = .004), this.spellPower = 20, 
         this.weaponPower = 30, this.defenseArmor = 0, this.magicDefenseArmor = 0, this.hpMax = this.baseHP * (this.stamina + 32) / 32, 
         this.hp = this.hpMax, this.baseMP = this.level * (20 / this.baseMPModifier), this.mpMax = this.baseMP * (this.magicPower + 32) / 32, 
-        this.mp = this.mpMax, console.log(this.baseMP, this.mpMax), this.critialChance = 0, 
-        this.speedStatus = "normal", this.vigor2 = 2 * this.vigor, this.vigor >= 128 && (this.vigor2 = 255), 
-        this.attack = this.battlePower + this.vigor2, this.xp = 0, this.velocity = 8 - (255 - this.speed) / 25 + 5, 
-        this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.5, this.entity = null, 
-        this.csvStr = "level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n", 
+        this.mp = this.mpMax, this.critialChance = 0, this.speedStatus = "normal", this.vigor2 = 2 * this.vigor, 
+        this.vigor >= 128 && (this.vigor2 = 255), this.attack = this.battlePower + this.vigor2, 
+        this.xp = 0, this.velocity = 8 - (255 - this.speed) / 25 + 5, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.5, 
+        this.entity = null, this.csvStr = "level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n", 
         this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n";
     },
     log: function() {
@@ -1146,13 +1144,13 @@ var Application = AbstractApplication.extend({
         this.velocity = 8 - (255 - this.speed) / 25 + 5, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * (1.1 + 1e3 * this.speedModifier), 
         this.fireFreq <= 4 && (this.fireFreq = 4), this.fireFreq >= 25 && (this.fireFreq = 25), 
         this.velocity >= 10 && (this.velocity = 10), this.velocity <= 3 && (this.velocity = 3), 
-        console.log(this.level, "<- levelUp, xp ->", this.xp), this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n", 
+        this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n", 
         this.entity && this.entity.levelUp();
     },
     updateLevel: function() {
         for (var i = this.level; 99 >= i; i++) {
             var calcXP = (i * i + i + 3) / 4 * 20 * i;
-            if (console.log(this.xp, calcXP, "level", i), !(this.xp > calcXP)) break;
+            if (!(this.xp > calcXP)) break;
             this.levelUp();
         }
     },
@@ -1160,7 +1158,7 @@ var Application = AbstractApplication.extend({
         this.hp = this.hpMax, this.mp = this.mpMax;
     },
     updateXp: function(xp) {
-        console.log("xp", xp), this.xp += xp, this.updateLevel(), this.entity && this.entity.updateXP(xp);
+        this.xp += xp, this.updateLevel(), this.entity && this.entity.updateXP(xp);
     },
     getDemage: function(type) {
         var damageMultiplierCritical = Math.random() < this.critialChance ? .5 : 2, damageMultiplier = Math.random() / 2 + 1, demage = 0;
@@ -1336,8 +1334,7 @@ var Application = AbstractApplication.extend({
             fill: "white",
             align: "left",
             font: "bold 15px Arial"
-        }), console.log("HUD", APP.getHUD()), APP.getHUD().addChild(this.levelLabel), this.minimap = new Minimap(), 
-        APP.getHUD().addChild(this.minimap.getContent());
+        }), APP.getHUD().addChild(this.levelLabel), this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent());
         for (var tempBox = null, bi = 0; 5 > bi; bi++) tempBox = new BoxHUD1(80, 50), tempBox.setPosition(550 + 100 * bi, 20), 
         APP.getHUD().addChild(tempBox.getContent()), 0 === bi ? tempBox.setText("potion\n1") : 1 === bi ? tempBox.setText("ether\n2") : 2 === bi ? tempBox.setText("haste\n3") : 3 === bi ? tempBox.setText("bolt1\n4") : 4 === bi && tempBox.setText("\n5");
         this.minimap.build(), this.minimap.setPosition(windowWidth - .5 * this.minimap.getContent().width - 5, 10), 
@@ -1440,7 +1437,7 @@ var Application = AbstractApplication.extend({
         } : {
             x: 14 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
             y: 7 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
-        }, console.log(this.tempSizeTiles, this.mapPosition), this.levelBounds = {
+        }, this.levelBounds = {
             x: 80 * this.tempSizeTiles.x - Math.floor(2 * this.mapPosition.x),
             y: 80 * this.tempSizeTiles.y - Math.floor(2 * this.mapPosition.y)
         }, this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : this.currentNode.bg = this.levelGenerator.createRoom(), 
@@ -1450,8 +1447,7 @@ var Application = AbstractApplication.extend({
         this.player.build(), this.player.setSpellModel(APP.spellList[1]), this.player.setArmorModel(APP.armorList[0]), 
         this.player.setWeaponModel(APP.weaponList[0]), this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
         this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState + "   -    playerClass:" + this.playerModel.playerClass + "\nspell: " + this.player.spellModel.name + " - pow: " + this.player.spellModel.spellPower + " - mp: " + this.player.spellModel.mp + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status + "\nLEVEL: " + this.playerModel.level), 
-        this.entityLayer.addChild(this.player), console.log(this.currentPlayerSide, "this.currentPlayerSide"), 
-        "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.levelBounds.y + this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.mapPosition.y + this.mapPosition.y - this.player.height) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width, this.levelBounds.y / 2 + this.player.height) : "right" === this.currentPlayerSide ? this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.player.height) : this.player.setPosition(this.mapPosition.x + this.levelBounds.x / 2, this.mapPosition.y + this.levelBounds.y / 2);
+        this.entityLayer.addChild(this.player), "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.levelBounds.y + this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.mapPosition.y + this.mapPosition.y - this.player.height) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width, this.levelBounds.y / 2 + this.player.height) : "right" === this.currentPlayerSide ? this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.player.height) : this.player.setPosition(this.mapPosition.x + this.levelBounds.x / 2, this.mapPosition.y + this.levelBounds.y / 2);
     },
     useItem: function(itemID) {
         this.player.useItem(APP.itemList[itemID]);

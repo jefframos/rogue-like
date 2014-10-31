@@ -74,7 +74,7 @@ var MonsterModel = Class.extend({
 		this.hp = this.hpMax;
 		this.velocity = 8 - (255 - this.speed) / 25 + 5;
 		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * (1.8 + (this.speedModifier*1000));
-		console.log('enemy HP', this.hp, this.defenseModifier, level, this.fireFreq);
+		// console.log('enemy HP', this.hp, this.defenseModifier, level, this.fireFreq);
 
 		if(this.fireFreq <= 4)
 		{

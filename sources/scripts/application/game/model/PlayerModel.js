@@ -97,7 +97,7 @@ var PlayerModel = Class.extend({
 		this.mpMax = (this.baseMP*(this.magicPower+32))/32;
 		this.mp = this.mpMax;
 
-		console.log(this.baseMP, this.mpMax);
+		// console.log(this.baseMP, this.mpMax);
 		this.critialChance = 0.0;
 		this.speedStatus = 'normal';
         this.vigor2 = this.vigor*2;
@@ -276,7 +276,7 @@ var PlayerModel = Class.extend({
 			this.velocity = 3;
 		}
 
-		console.log(this.level,'<- levelUp, xp ->',this.xp);
+		// console.log(this.level,'<- levelUp, xp ->',this.xp);
 
 
 		this.csvStr += this.level+','+
@@ -304,7 +304,7 @@ var PlayerModel = Class.extend({
 		// console.log((this.level*this.level+this.level+3)/4, 'compare');
 		for (var i = this.level; i <= 99; i++) {
 			var calcXP = (i*i+i+3)/4* 20 * i;
-			console.log(this.xp, calcXP, 'level', i);
+			// console.log(this.xp, calcXP, 'level', i);
 
 			if(this.xp > calcXP){
 				this.levelUp();
@@ -319,7 +319,7 @@ var PlayerModel = Class.extend({
 		this.mp = this.mpMax;
 	},
 	updateXp: function(xp){
-		console.log('xp', xp);
+		// console.log('xp', xp);
 		this.xp += xp;
 		this.updateLevel();
 		if(this.entity){

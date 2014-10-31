@@ -17,7 +17,7 @@ var Application = AbstractApplication.extend({
 
         this.gen = new DungeonGenerator();
         this.gen.generate(Math.random() * 0xFFFFFF, 1, [10, 15], [12,12], 5);
-        this.gen.log();
+        // this.gen.log();
         this.tileSize = {x:80, y: 80};
 
        //  var model1 = new PlayerModel('warrior');
@@ -129,7 +129,7 @@ var Application = AbstractApplication.extend({
         // this.monsterList.push(new MonsterModel(1,150,55,55,13,140,160, 20));
         //level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp
         // this.monsterList.push(new MonsterModel(1,150,30,55,55,13,140,160, 20));
-        this.monsterList.push(new MonsterModel(1,10,50,55,13,13,70,70, 10));
+        this.monsterList.push(new MonsterModel(10,1,50,55,13,13,70,70, 10));
         this.monsterList.push(new MonsterModel(10,80,50,55,13,13,70,70, 10));
         this.monsterList.push(new MonsterModel(20,80,50,55,13,13,70,70, 10));
         // this.monsterList.push(new MonsterModel(1,150,30,55,55,13,140,160, 10));

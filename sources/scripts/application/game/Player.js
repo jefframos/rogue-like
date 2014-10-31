@@ -107,7 +107,7 @@ var Player = SpritesheetEntity.extend({
         this.debugGraphic.beginFill(0xFF3300);
         this.debugGraphic.lineStyle(1, 0xffd900, 1);
         this.debugGraphic.endFill();
-        console.log('level', this.playerModel.level);
+        // console.log('level', this.playerModel.level);
 
     },
     getBounds: function(){
@@ -347,7 +347,7 @@ var Player = SpritesheetEntity.extend({
     },
     touch: function(collection){
         this.isTouch = true;
-        console.log(collection);
+        // console.log(collection);
         if(collection.left||collection.right && this.virtualVelocity.x !== 0)
         {
             this.velocity.x = 0;

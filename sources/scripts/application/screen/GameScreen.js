@@ -114,7 +114,7 @@ var GameScreen = AbstractScreen.extend({
         TweenLite.to(this.blackShape, 1, {alpha:0});
 
         this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 15px Arial'});
-        console.log('HUD',APP.getHUD());
+        // console.log('HUD',APP.getHUD());
         APP.getHUD().addChild(this.levelLabel);
 
         // this.lifebar = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
@@ -392,7 +392,7 @@ var GameScreen = AbstractScreen.extend({
         }else{
             this.tempSizeTiles = {x:14 + this.marginTiles.x + Math.floor(this.currentNode.getNextFloat() * 15) , y:7+ this.marginTiles.y+Math.floor(this.currentNode.getNextFloat() * 15)};
         }
-        console.log(this.tempSizeTiles, this.mapPosition);
+        // console.log(this.tempSizeTiles, this.mapPosition);
         this.levelBounds = {x: this.tempSizeTiles.x * 80 - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * 80 - Math.floor(this.mapPosition.y*2)};
 
         if(this.currentNode.bg){
@@ -461,7 +461,7 @@ var GameScreen = AbstractScreen.extend({
         this.entityLayer.addChild(this.player);
 
 
-        console.log(this.currentPlayerSide,'this.currentPlayerSide');
+        // console.log(this.currentPlayerSide,'this.currentPlayerSide');
 
         if(this.currentPlayerSide === 'up')
         {
