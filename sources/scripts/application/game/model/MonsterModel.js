@@ -31,11 +31,12 @@ var MonsterModel = Class.extend({
 		this.magicDefenseModifier = 0.004;
 		this.baseHPModifier = 1.62;
 		this.staminaModifier = 0.008;
-
+		this.level = level;
+		
 		this.updateLevel(level);
 	},
 	updateLevel: function(level){
-
+		this.level = level;
         this.speed += level * ((this.speed*this.speed+this.speed+3)/4*this.speedModifier);
 		this.magicPower += level * ((this.magicPower*this.magicPower+this.magicPower+3)/4*this.magicPowerModifier);
         this.battlePower += level * ((this.battlePower*this.battlePower+this.battlePower+3)/4*this.battlePowerModifier);

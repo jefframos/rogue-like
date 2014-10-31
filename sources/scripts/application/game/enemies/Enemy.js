@@ -15,21 +15,26 @@ var Enemy = SpritesheetEntity.extend({
         this.fireFreq = this.monsterModel.fireFreq;
         this.defaultVelocity = this.monsterModel.speed/10;
         this.behaviour = new DefaultBehaviour(this, player);
+        this.hp = this.monsterModel.hp;
     },
     hurt:function(demage, type){
+        
+
+        var trueDemage = this.monsterModel.getHurt(demage, type);
+        this.hp -= trueDemage;
+
         var pop = new PopUpText('red');
-        pop.setText(Math.floor(demage));
+        pop.setText(Math.floor(trueDemage));
         APP.getEffectsContainer().addChild(pop.getContent());
         pop.setPosition(this.getPosition().x -10 + Math.random() * 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2);
         pop.initMotion(-10 - (Math.random() * 10), 0.5);
         this.getTexture().tint = 0xFF0000;
 
-        var trueDemage = this.monsterModel.getHurt(demage, type);
-        this.monsterModel.hp -= trueDemage;
-
-        if(this.monsterModel.hp <= 0){
+        console.log(this.hp ,trueDemage);
+        if(this.hp <= 0){
             this.preKill();
-            this.player.playerModel.updateXp(this.monsterModel.xp);
+            var trueXP = this.monsterModel.xp + ((this.monsterModel.level - this.player.playerModel.level)*0.15*this.monsterModel.xp) + 1;
+            this.player.playerModel.updateXp(trueXP);
         }
     },
     build: function(){

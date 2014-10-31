@@ -247,6 +247,16 @@ var GameScreen = AbstractScreen.extend({
             this.getContent().position.y = windowHeight/2 - this.player.getPosition().y;
             this.player.fireFreqAcum --;
 
+            if(this.levelLabel){
+                this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+'roomState'+'   -    playerClass:'+this.playerModel.playerClass+
+                    '\nspell: '+this.player.spellModel.name +' - pow: '+this.player.spellModel.spellPower +' - mp: '+this.player.spellModel.mp+
+                    '\narmor: '+this.player.armorModel.name +' - def: '+this.player.armorModel.defenseArmor +' - magDef: '+this.player.armorModel.magicDefenseArmor+
+                    '\nweapon: '+this.player.weaponModel.name +' - pow: '+this.player.weaponModel.battlePower +' - hitRate: '+this.player.weaponModel.hitRate+
+                    '\nrelic: '+this.player.relicModel.name +' - stat: '+this.player.relicModel.status+
+                    '\nLEVEL: '+this.playerModel.level
+                    );
+            }
+
             if(this.mouseDown){
                 if(this.player.fireFreqAcum <= 0){
                     this.shoot();
@@ -393,7 +403,11 @@ var GameScreen = AbstractScreen.extend({
 
         this.levelGenerator.debugBounds();
         this.levelGenerator.createDoors();
-        this.levelGenerator.createHordes();
+        if(this.currentNode.mode !== 1){
+            //definir um valor de level de hora a ser gerado, pode ser o ID ou a distancia até o centro
+            //ou até mesmo o proprio level do player
+            this.levelGenerator.createHordes();
+        }
 
         if(this.currentNode.getNextFloat() > 0.5){
             this.levelGenerator.createRain();
@@ -420,7 +434,8 @@ var GameScreen = AbstractScreen.extend({
             '\nspell: '+this.player.spellModel.name +' - pow: '+this.player.spellModel.spellPower +' - mp: '+this.player.spellModel.mp+
             '\narmor: '+this.player.armorModel.name +' - def: '+this.player.armorModel.defenseArmor +' - magDef: '+this.player.armorModel.magicDefenseArmor+
             '\nweapon: '+this.player.weaponModel.name +' - pow: '+this.player.weaponModel.battlePower +' - hitRate: '+this.player.weaponModel.hitRate+
-            '\nrelic: '+this.player.relicModel.name +' - stat: '+this.player.relicModel.status
+            '\nrelic: '+this.player.relicModel.name +' - stat: '+this.player.relicModel.status+
+            '\nLEVEL: '+this.playerModel.level
             );
 
         // if(this.currentPlayerSide === 'up')

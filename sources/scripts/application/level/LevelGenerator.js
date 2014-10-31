@@ -5,7 +5,7 @@ var LevelGenerator = Class.extend({
 	},
 	createHordes: function(){
 		var tempMonster = null;
-		for (var i = 0; i < 5; i++) {
+		for (var i = 0; i < 1; i++) {
 			// APP.monsterList[0].level = this.parent.playerModel.level;
 			tempMonster = new Enemy(this.parent.player, APP.monsterList[0]);
 			tempMonster.build();
