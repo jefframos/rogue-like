@@ -7,8 +7,8 @@ var DefaultBehaviour = Class.extend({
 		this.entity.setVelocity(-2,(Math.random()-0.5)*3);
 		this.sideAcum = 0;
 		this.sideMaxAcum = 200;
-		this.fireFreq = 25 + Math.random() * 30;
-		this.maxFireFreq = 100;
+		this.fireFreq = entity.fireFreq + Math.random() * 30;
+		this.maxFireFreq = entity.fireFreq;
 		this.fireAcum = 0;
 		this.fireSpeed = 6;
 	},
@@ -50,7 +50,7 @@ var DefaultBehaviour = Class.extend({
 			}
 			var tempFire = new Fire({x:tempFireSpeed * Math.sin(tempAngle), y: tempFireSpeed * Math.cos(tempAngle)});
 			tempFire.timeLive = 50;
-			tempFire.power = this.entity.monsterModel.getDemage('physical');
+			tempFire.power = this.entity.monsterModel.getDemage(this.entity.monsterModel.attackType);
 			// console.log('tempFire.power', tempFire.power);
 			tempFire.build();
 			tempFire.target = 'player';

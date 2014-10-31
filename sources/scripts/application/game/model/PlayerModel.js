@@ -313,14 +313,6 @@ var PlayerModel = Class.extend({
 				break;
 			}
 		}
-
-		// console.log('to next level',this.level,this.xp, (nextl*nextl+nextl+3)/4* 20 * nextl);
-
-		// if(this.xp > (this.level*this.level+this.level+3)/4* 100){
-
-		// 	this.levelUp();
-		// }
-		//console.log(this.level,'<- level, xp ->',this.xp);
 	},
 	resetPoints: function(){
 		this.hp = this.hpMax;

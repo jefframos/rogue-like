@@ -411,7 +411,7 @@ var GameScreen = AbstractScreen.extend({
         // this.player.setWeaponModel(APP.weaponList[Math.floor(APP.weaponList.length * Math.random())]);
         // this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
 
-        this.player.setSpellModel(APP.spellList[0]);
+        this.player.setSpellModel(APP.spellList[1]);
         this.player.setArmorModel(APP.armorList[0]);
         this.player.setWeaponModel(APP.weaponList[0]);
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);

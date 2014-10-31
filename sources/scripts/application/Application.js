@@ -126,7 +126,13 @@ var Application = AbstractApplication.extend({
         this.monsterList = [];
 
         // this.monsterList.push(new MonsterModel(6,800,55,55,13,140,160, 94));
-        this.monsterList.push(new MonsterModel(1,150,55,55,13,140,160, 20));
+        // this.monsterList.push(new MonsterModel(1,150,55,55,13,140,160, 20));
+        //level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp
+        // this.monsterList.push(new MonsterModel(1,150,30,55,55,13,140,160, 20));
+        this.monsterList.push(new MonsterModel(1,50,30,55,13,13,140,160, 10));
+        this.monsterList.push(new MonsterModel(10,50,30,55,13,13,140,160, 10));
+        this.monsterList.push(new MonsterModel(20,50,30,55,13,13,140,160, 10));
+        // this.monsterList.push(new MonsterModel(1,150,30,55,55,13,140,160, 10));
 
 
         this.spellList = [];

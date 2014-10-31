@@ -11,11 +11,9 @@ var Enemy = SpritesheetEntity.extend({
         this.node = null;
         this.boundsCollision = true;
         this.player = player;
-        console.log('player', this.player);
-
         this.monsterModel = model;
+        this.fireFreq = this.monsterModel.fireFreq;
         this.defaultVelocity = this.monsterModel.speed/10;
-        this.hp = this.monsterModel.hp;
         this.behaviour = new DefaultBehaviour(this, player);
     },
     hurt:function(demage, type){
@@ -27,13 +25,9 @@ var Enemy = SpritesheetEntity.extend({
         this.getTexture().tint = 0xFF0000;
 
         var trueDemage = this.monsterModel.getHurt(demage, type);
+        this.monsterModel.hp -= trueDemage;
 
-        this.hp -= trueDemage;
-
-        // console.log(demage,'hurt',trueDemage, this.hp, this.monsterModel.level);
-
-
-        if(this.hp <= 0){
+        if(this.monsterModel.hp <= 0){
             this.preKill();
             this.player.playerModel.updateXp(this.monsterModel.xp);
         }
@@ -60,11 +54,7 @@ var Enemy = SpritesheetEntity.extend({
         this._super();
         this.getBounds();
         if(this.getTexture()){
-            // this.width = 0;
-            // this.height = 0;
             this.getContent().position.x = 20;
-            // this.getContent().position.y = -20;
-            // this.range = this.bounds.w / 2;
         }
 
     },

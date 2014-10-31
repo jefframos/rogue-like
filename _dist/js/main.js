@@ -185,7 +185,8 @@ var Application = AbstractApplication.extend({
         return this.HUD;
     },
     build: function() {
-        this.monsterList = [], this.monsterList.push(new MonsterModel(1, 150, 55, 55, 13, 140, 160, 20)), 
+        this.monsterList = [], this.monsterList.push(new MonsterModel(1, 50, 30, 55, 13, 13, 140, 160, 10)), 
+        this.monsterList.push(new MonsterModel(10, 50, 30, 55, 13, 13, 140, 160, 10)), this.monsterList.push(new MonsterModel(20, 50, 30, 55, 13, 13, 140, 160, 10)), 
         this.spellList = [], this.spellList.push(new SpellModel(1, "bolt1", 6, 20)), this.spellList.push(new SpellModel(1, "fire1", 4, 21)), 
         this.spellList.push(new SpellModel(1, "ice1", 5, 22)), this.spellList.push(new SpellModel(1, "poison", 3, 25)), 
         this.spellList.push(new SpellModel(1, "wind", 75, 25)), this.spellList.push(new SpellModel(2, "bolt2", 22, 26)), 
@@ -900,9 +901,9 @@ var Application = AbstractApplication.extend({
     init: function(player, model) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = APP.tileSize.x / 2, 
         this.width = .9 * APP.tileSize.x, this.height = .9 * APP.tileSize.y, this.type = "enemy", 
-        this.node = null, this.boundsCollision = !0, this.player = player, console.log("player", this.player), 
-        this.monsterModel = model, this.defaultVelocity = this.monsterModel.speed / 10, 
-        this.hp = this.monsterModel.hp, this.behaviour = new DefaultBehaviour(this, player);
+        this.node = null, this.boundsCollision = !0, this.player = player, this.monsterModel = model, 
+        this.fireFreq = this.monsterModel.fireFreq, this.defaultVelocity = this.monsterModel.speed / 10, 
+        this.behaviour = new DefaultBehaviour(this, player);
     },
     hurt: function(demage, type) {
         var pop = new PopUpText("red");
@@ -910,7 +911,8 @@ var Application = AbstractApplication.extend({
         pop.setPosition(this.getPosition().x - 10 + 20 * Math.random(), this.getPosition().y - 5 + 10 * Math.random() - this.height / 2), 
         pop.initMotion(-10 - 10 * Math.random(), .5), this.getTexture().tint = 16711680;
         var trueDemage = this.monsterModel.getHurt(demage, type);
-        this.hp -= trueDemage, this.hp <= 0 && (this.preKill(), this.player.playerModel.updateXp(this.monsterModel.xp));
+        this.monsterModel.hp -= trueDemage, this.monsterModel.hp <= 0 && (this.preKill(), 
+        this.player.playerModel.updateXp(this.monsterModel.xp));
     },
     build: function() {
         var motionArray = this.getFramesByRange("dragon10", 0, 14), animationIdle = new SpritesheetAnimation();
@@ -986,8 +988,8 @@ var Application = AbstractApplication.extend({
 }), DefaultBehaviour = Class.extend({
     init: function(entity, player) {
         this.player = player, this.entity = entity, this.life = 8, this.entity.setVelocity(-2, 3 * (Math.random() - .5)), 
-        this.sideAcum = 0, this.sideMaxAcum = 200, this.fireFreq = 25 + 30 * Math.random(), 
-        this.maxFireFreq = 100, this.fireAcum = 0, this.fireSpeed = 6;
+        this.sideAcum = 0, this.sideMaxAcum = 200, this.fireFreq = entity.fireFreq + 30 * Math.random(), 
+        this.maxFireFreq = entity.fireFreq, this.fireAcum = 0, this.fireSpeed = 6;
     },
     update: function() {
         this.fireFreq--, this.fireFreq < 0 && (this.shoot(), this.fireFreq = this.maxFireFreq);
@@ -1001,7 +1003,7 @@ var Application = AbstractApplication.extend({
                 x: tempFireSpeed * Math.sin(tempAngle),
                 y: tempFireSpeed * Math.cos(tempAngle)
             });
-            tempFire.timeLive = 50, tempFire.power = this.entity.monsterModel.getDemage("physical"), 
+            tempFire.timeLive = 50, tempFire.power = this.entity.monsterModel.getDemage(this.entity.monsterModel.attackType), 
             tempFire.build(), tempFire.target = "player", tempFire.setPosition(this.entity.getPosition().x + 40, this.entity.getPosition().y + 10), 
             this.entity.layer.addChild(tempFire);
         }
@@ -1028,14 +1030,37 @@ var Application = AbstractApplication.extend({
         this.name = name, this.effect = effect, this.baseValue = baseValue, this.price = price;
     }
 }), MonsterModel = Class.extend({
-    init: function(level, hp, speed, magicPower, battlePower, defense, magicDefense, xp) {
-        this.level = level, this.hp = hp, this.speed = speed, this.magicPower = magicPower, 
+    init: function(level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp) {
+        this.level = level, this.hpMax = hp, this.speed = speed, this.magicPower = magicPower, 
         this.battlePower = battlePower, this.defense = defense, this.magicDefense = magicDefense, 
-        this.critialChance = 0, this.speedStatus = "normal", this.xp = xp ? xp : 100, this.spellPower = 20;
+        this.stamina = stamina, this.critialChance = 0, this.speedStatus = "normal", this.attackType = "physical", 
+        magicPower > battlePower && (this.attackType = "magical"), this.xp = xp ? xp : 100, 
+        this.spellPower = 9, this.speedModifier = .007, this.magicPowerModifier = .004, 
+        this.battlePowerModifier = .005, this.defenseModifier = .004, this.magicDefenseModifier = .004, 
+        this.baseHPModifier = 1.62, this.staminaModifier = .008, this.updateLevel(level);
+    },
+    updateLevel: function(level) {
+        this.speed += level * ((this.speed * this.speed + this.speed + 3) / 4) * this.speedModifier, 
+        this.magicPower += level * ((this.magicPower * this.magicPower + this.magicPower + 3) / 4) * this.magicPowerModifier, 
+        this.battlePower += level * ((this.battlePower * this.battlePower + this.battlePower + 3) / 4) * this.battlePowerModifier, 
+        this.defense += level * ((this.defense * this.defense + this.defense + 3) / 4) * this.defenseModifier, 
+        this.magicDefense += level * ((this.magicDefense * this.magicDefense + this.magicDefense + 3) / 4) * this.magicDefenseModifier, 
+        this.stamina += (this.stamina * this.stamina + this.stamina + 3) / 4 * this.staminaModifier, 
+        this.attack = this.battlePower * level, this.speed > 255 && (this.speed = 255), 
+        this.stamina > 255 && (this.stamina = 255), this.magicPower > 255 && (this.magicPower = 255), 
+        this.battlePower > 255 && (this.battlePower = 255), this.defense > 255 && (this.defense = 255), 
+        this.attack > 255 && (this.attack = 255), this.magicDefense > 255 && (this.magicDefense = 255), 
+        this.baseHP = level * (20 / this.baseHPModifier), this.hpMax += this.baseHP * (this.stamina + 32) / 32 * (level / 2), 
+        this.hp = this.hpMax, this.velocity = 8 - (255 - this.speed) / 25 + 5, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * (1.8 + 1e3 * this.speedModifier), 
+        console.log("enemy HP", this.hp, this.defenseModifier, level, this.fireFreq), this.fireFreq <= 4 && (this.fireFreq = 4), 
+        this.fireFreq >= 150 && (this.fireFreq = 150), this.velocity >= 10 && (this.velocity = 10), 
+        this.velocity <= 3 && (this.velocity = 3);
+        var curveAcentValue = .15;
+        this.xp += Math.floor((level * (level / 3) + level + 3) / 5 * this.xp * level * curveAcentValue);
     },
     getDemage: function(type) {
-        var damageMultiplier = Math.random() < this.critialChance ? .5 : 2, demage = 0;
-        return "physical" === type ? demage = this.battlePower * this.level + this.level * this.level * this.battlePower / 256 * 4 / 2 : "magical" === type && (demage = 4 * this.spellPower + this.level * (3 * this.magicPower / 2) * this.spellPower / 32), 
+        var damageMultiplier = 0, demage = 0;
+        return "physical" === type ? demage = this.battlePower * this.level + this.level * this.level * this.battlePower / 2 / 256 * 2.5 / 2 : "magical" === type && (demage = this.spellPower * this.level + this.level * (3 * this.magicPower / 2) * this.spellPower / 32), 
         demage += demage / 2 * damageMultiplier;
     },
     getHurt: function(demage, type) {
@@ -1418,7 +1443,7 @@ var Application = AbstractApplication.extend({
         this.levelGenerator.debugBounds(), this.levelGenerator.createDoors(), this.levelGenerator.createHordes(), 
         this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
         this.getContent().position.x = -this.mapPosition.x, this.getContent().position.y = -this.mapPosition.y, 
-        this.player.build(), this.player.setSpellModel(APP.spellList[0]), this.player.setArmorModel(APP.armorList[0]), 
+        this.player.build(), this.player.setSpellModel(APP.spellList[1]), this.player.setArmorModel(APP.armorList[0]), 
         this.player.setWeaponModel(APP.weaponList[0]), this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
         this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState + "   -    playerClass:" + this.playerModel.playerClass + "\nspell: " + this.player.spellModel.name + " - pow: " + this.player.spellModel.spellPower + " - mp: " + this.player.spellModel.mp + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status), 
         this.entityLayer.addChild(this.player), console.log(this.currentPlayerSide, "this.currentPlayerSide"), 
