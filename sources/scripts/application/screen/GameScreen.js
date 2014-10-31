@@ -50,12 +50,12 @@ var GameScreen = AbstractScreen.extend({
         }
 
         this.playerModel = new PlayerModel(clss);
-        this.playerModel.levelUp();
-        for (var i = 0; i < 20; i++) {
-            this.playerModel.levelUp();
-        }
         // this.playerModel.levelUp();
-        this.playerModel.logCSV();
+        // for (var i = 0; i < 20; i++) {
+        //     this.playerModel.levelUp();ddw
+        // }
+        // this.playerModel.levelUp();
+        // this.playerModel.logCSV();
     },
     destroy: function () {
         this._super();
@@ -65,7 +65,6 @@ var GameScreen = AbstractScreen.extend({
         var assetsToLoader = [
             '_dist/img/spritesheet/dragon.json',
             '_dist/img/spritesheet/dragon.png',
-        // '_dist/img/chinesa.png',
             '_dist/img/dragao-perdido.png',
             '_dist/img/drop.png',
             '_dist/img/fireball.png',
@@ -105,6 +104,12 @@ var GameScreen = AbstractScreen.extend({
         this.MPView.setPosition(20,180);
         this.MPView.setFrontColor(0x0000FF);
         APP.getHUD().addChild(this.MPView.getContent());
+
+        this.XPBar = new BarView(200,20, 100,100);
+        this.XPBar.setPosition(20,210);
+        this.XPBar.setFrontColor(0x555555);
+        this.XPBar.setBackColor(0x000000);
+        APP.getHUD().addChild(this.XPBar.getContent());
 
         TweenLite.to(this.blackShape, 1, {alpha:0});
 
@@ -286,11 +291,17 @@ var GameScreen = AbstractScreen.extend({
         }
        
         if(this.HPView && this.player){
-            this.HPView.updateBar(Math.floor(this.player.hp),Math.floor(this.player.hpMax));
-            this.HPView.setText(Math.floor(this.player.hp)+'/ '+Math.floor(this.player.hpMax));
+            this.HPView.updateBar(Math.floor(this.playerModel.hp),Math.floor(this.playerModel.hpMax));
+            this.HPView.setText(Math.floor(this.playerModel.hp)+'/ '+Math.floor(this.playerModel.hpMax));
 
-            this.MPView.updateBar(Math.floor(this.player.mp),Math.floor(this.player.mpMax));
-            this.MPView.setText(Math.floor(this.player.mp)+'/ '+Math.floor(this.player.mpMax));
+            this.MPView.updateBar(Math.floor(this.playerModel.mp),Math.floor(this.playerModel.mpMax));
+            this.MPView.setText(Math.floor(this.playerModel.mp)+'/ '+Math.floor(this.playerModel.mpMax));
+
+            var tempXP = Math.floor(this.playerModel.xp)- Math.floor(this.playerModel.toBeforeLevel);
+            var tempNext = Math.floor(this.playerModel.toNextLevel)- Math.floor(this.playerModel.toBeforeLevel);
+            this.XPBar.updateBar(tempXP,tempNext);
+            this.XPBar.setText(tempXP+'/ '+tempNext);
+            // console.log(tempXP,tempNext);
 
             // this.lifebar.position.x = this.player.getPosition().x;
             // this.lifebar.position.y = this.player.getPosition().y - this.player.height / 2;
@@ -308,6 +319,7 @@ var GameScreen = AbstractScreen.extend({
             // this.player.endLevel = false;
             // this.currentNode = this.player.nextNode;
             // this.currentPlayerSide = this.player.nextDoorSide;
+            this.playerModel.resetPoints();
             this.killLevel(this.resetLevel);
             this.player = null;
         }
@@ -355,6 +367,7 @@ var GameScreen = AbstractScreen.extend({
                 roomState = 'key';
 
         }
+        this.player = new Player(this.playerModel);
         //console.log(this, 'ESSE É O ID DO LEVEL ATUAL -> ', this.currentNode);
         this.level = getRandomLevel();
         this.currentNode.applySeed();
@@ -391,7 +404,7 @@ var GameScreen = AbstractScreen.extend({
         this.getContent().position.x = -this.mapPosition.x;
         this.getContent().position.y = -this.mapPosition.y;
 
-        this.player = new Player(this.playerModel);
+        
         this.player.build();
         // this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]);
         // this.player.setArmorModel(APP.armorList[Math.floor(APP.armorList.length * Math.random())]);

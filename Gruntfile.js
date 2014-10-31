@@ -42,22 +42,22 @@ module.exports = function(grunt) {
                 }
             },
 
-            plugins: {
-                dest: '<%= globalConfig.dest %>js/lib/plugins.js',
-                src: [
-                    '<%= globalConfig.src %>scripts/plugins/fpsmeter.js',
-                    '<%= globalConfig.src %>scripts/plugins/qrcode.min.js',
-                    '<%= globalConfig.src %>scripts/plugins/microevent.js',
-                    '<%= globalConfig.src %>scripts/plugins/proton.js',
-                    '<%= globalConfig.src %>scripts/plugins/hammer.min.js',
-                    '<%= globalConfig.src %>scripts/plugins/pixi.js',                   
-                    '<%= globalConfig.src %>scripts/plugins/modernizr-2.7.1.min.js',
-                    '<%= globalConfig.src %>scripts/plugins/jquery-1.11.0.min.js',
-                    '<%= globalConfig.src %>scripts/plugins/class.js',
-                    '<%= globalConfig.src %>scripts/plugins/perlin-noise.js',
-                    '<%= globalConfig.src %>scripts/plugins/easegame/**/*.js'
-                ]
-            }
+            // plugins: {
+            //     dest: '<%= globalConfig.dest %>js/lib/plugins.js',
+            //     src: [
+            //         '<%= globalConfig.src %>scripts/plugins/fpsmeter.js',
+            //         '<%= globalConfig.src %>scripts/plugins/qrcode.min.js',
+            //         '<%= globalConfig.src %>scripts/plugins/microevent.js',
+            //         '<%= globalConfig.src %>scripts/plugins/proton.js',
+            //         '<%= globalConfig.src %>scripts/plugins/hammer.min.js',
+            //         '<%= globalConfig.src %>scripts/plugins/pixi.js',
+            //         '<%= globalConfig.src %>scripts/plugins/modernizr-2.7.1.min.js',
+            //         '<%= globalConfig.src %>scripts/plugins/jquery-1.11.0.min.js',
+            //         '<%= globalConfig.src %>scripts/plugins/class.js',
+            //         '<%= globalConfig.src %>scripts/plugins/perlin-noise.js',
+            //         '<%= globalConfig.src %>scripts/plugins/easegame/**/*.js'
+            //     ]
+            // }
         },
 
         // css preprocessor compiler, compression and concatenation

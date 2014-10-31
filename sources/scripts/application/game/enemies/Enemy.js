@@ -11,6 +11,8 @@ var Enemy = SpritesheetEntity.extend({
         this.node = null;
         this.boundsCollision = true;
         this.player = player;
+        console.log('player', this.player);
+
         this.monsterModel = model;
         this.defaultVelocity = this.monsterModel.speed/10;
         this.hp = this.monsterModel.hp;

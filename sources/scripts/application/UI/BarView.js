@@ -30,6 +30,16 @@ var BarView = Class.extend({
 		this.container.addChild(this.frontShape);
 
 	},
+	setBackColor: function(color){
+		if(this.backShape){
+			this.container.removeChild(this.backShape);
+		}
+		this.backShape = new PIXI.Graphics();
+		this.backShape.beginFill(color);
+		this.backShape.drawRect(0,0,this.width, this.height);
+		this.container.addChildAt(this.backShape,0);
+
+	},
 	setText: function(text){
 		if(this.text !== text){
 			if(!this.lifebar){

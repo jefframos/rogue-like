@@ -46,10 +46,10 @@ var Player = SpritesheetEntity.extend({
         this.weaponModel = wModel;
     },
     updateAtt: function(){
-        this.hpMax = this.playerModel.hp;
-        this.hp = this.playerModel.hp;
-        this.mp = this.playerModel.mp;
-        this.mpMax = this.playerModel.mp;
+        // this.hpMax = this.playerModel.hpMax;
+        // this.hp = this.playerModel.hpMax;
+        // this.mp = this.playerModel.mp;
+        // this.mpMax = this.playerModel.mp;
 
         this.defaultVelocity = this.playerModel.velocity;
 
@@ -154,7 +154,7 @@ var Player = SpritesheetEntity.extend({
         }
     },
     spell: function(mousePos){
-        if(this.spellModel.mp > this.mp){
+        if(this.spellModel.mp > this.playerModel.mp){
             var pop = new PopUpText('red');
             pop.setText('sem mp');
             APP.getEffectsContainer().addChild(pop.getContent());
@@ -162,7 +162,7 @@ var Player = SpritesheetEntity.extend({
             pop.initMotion(-15 - (Math.random() * 10), 0.8);
             return;
         }else{
-            this.mp -= this.spellModel.mp;
+            this.playerModel.mp -= this.spellModel.mp;
             var pop2 = new PopUpText('blue');
             pop2.setText('-' + this.spellModel.mp+' MP');
             APP.getEffectsContainer().addChild(pop2.getContent());
@@ -263,13 +263,13 @@ var Player = SpritesheetEntity.extend({
         }
     },
     regenHP:function(value){
-        if(value + this.hp > this.hpMax){
-            value = Math.floor(this.hpMax - this.hp);
+        if(value + this.playerModel.hp > this.playerModel.hpMax){
+            value = Math.floor(this.playerModel.hpMax - this.playerModel.hp);
         }
         if(value === 0){
             return;
         }
-        this.hp += value;
+        this.playerModel.hp += value;
         var pop = new PopUpText('green');
         pop.setText('+'+value + 'HP');
         APP.getEffectsContainer().addChild(pop.getContent());
@@ -278,13 +278,13 @@ var Player = SpritesheetEntity.extend({
         //dar baixa no inventório
     },
     regenMP:function(value){
-        if(value + this.mp > this.mpMax){
-            value = Math.floor(this.mpMax - this.mp);
+        if(value + this.playerModel.mp > this.playerModel.mpMax){
+            value = Math.floor(this.playerModel.mpMax - this.playerModel.mp);
         }
         if(value === 0){
             return;
         }
-        this.mp += value;
+        this.playerModel.mp += value;
         var pop = new PopUpText('blue');
         pop.setText('+'+value + 'MP');
         APP.getEffectsContainer().addChild(pop.getContent());
@@ -374,7 +374,7 @@ var Player = SpritesheetEntity.extend({
         this.debugGraphic.endFill();
     },
     hurt:function(demage, type){
-        if(this.hp < 0){
+        if(this.playerModel.hp < 0){
             return;
         }
         if(!type){
@@ -395,12 +395,12 @@ var Player = SpritesheetEntity.extend({
         this.getTexture().tint = 0xFF0000;
 
 
-        this.hp -= trueDemage;
-        if(this.hp < 0){
-            this.hp = 0;
+        this.playerModel.hp -= trueDemage;
+        if(this.playerModel.hp < 0){
+            this.playerModel.hp = 0;
         }
 
-        if(this.hp <= 0){
+        if(this.playerModel.hp <= 0){
             this.preKill();
         }
     },

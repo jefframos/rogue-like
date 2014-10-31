@@ -10,6 +10,9 @@ var PlayerModel = Class.extend({
 		}
 
 		this.level = 1;
+		var nextl = this.level;
+		this.toNextLevel = (nextl*nextl+nextl+3)/4* 20 * nextl;
+		this.toBeforeLevel = 0;
 
 		if(this.playerClass === 'warrior'){
 			this.vigor = 40;
@@ -87,12 +90,14 @@ var PlayerModel = Class.extend({
 		this.weaponPower = 30; //mithirl knife
 		this.defenseArmor = 0;//no armor
 		this.magicDefenseArmor = 0;//no armor
-		this.hp = (this.baseHP*(this.stamina + 32))/32;
+		this.hpMax = (this.baseHP*(this.stamina + 32))/32;
+		this.hp = this.hpMax;
 
 		this.baseMP = this.level* (20 / this.baseMPModifier);
-		this.mp = (this.baseMP*(this.magicPower+32))/32;
+		this.mpMax = (this.baseMP*(this.magicPower+32))/32;
+		this.mp = this.mpMax;
 
-		console.log(this.baseMP, this.mp);
+		console.log(this.baseMP, this.mpMax);
 		this.critialChance = 0.0;
 		this.speedStatus = 'normal';
         this.vigor2 = this.vigor*2;
@@ -111,8 +116,8 @@ var PlayerModel = Class.extend({
 
 		this.csvStr = 'level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n';
 		this.csvStr += this.level+','+
-		Math.floor(this.hp)+','+
-		Math.floor(this.mp)+','+
+		Math.floor(this.hpMax)+','+
+		Math.floor(this.mpMax)+','+
 		Math.floor(this.vigor)+','+
 		Math.floor(this.speed)+','+
 		Math.floor(this.stamina)+','+
@@ -131,8 +136,8 @@ var PlayerModel = Class.extend({
 		console.log('stats');
 		console.log('class,', this.playerClass);
 		console.log('level,',Math.floor(this.level));
-		console.log('hp,',Math.floor(this.hp));
-		console.log('mp,',Math.floor(this.mp));
+		console.log('hp,',Math.floor(this.hpMax));
+		console.log('mp,',Math.floor(this.mpMax));
 		console.log('vigor,',Math.floor(this.vigor));
 		console.log('speed,',Math.floor(this.speed));
 		console.log('stamina,',Math.floor(this.stamina));
@@ -153,6 +158,11 @@ var PlayerModel = Class.extend({
 	levelUp: function(){
 		this.level ++;
 		
+		var nextl = this.level;
+		var befl = this.level - 1;
+		this.toNextLevel = (nextl*nextl+nextl+3)/4* 20 * nextl;
+		this.toBeforeLevel = (befl*befl+befl+3)/4* 20 * befl;
+
 		this.vigor += (this.vigor*this.vigor+this.vigor+3)/4*this.vigorModifier;
         this.speed += (this.speed*this.speed+this.speed+3)/4*this.speedModifier;
         this.stamina += (this.stamina*this.stamina+this.stamina+3)/4*this.staminaModifier;
@@ -233,15 +243,20 @@ var PlayerModel = Class.extend({
 		}
 
 // this.baseMP = this.level* (20 / this.baseMPModifier);
-// 		this.mp = (this.baseMP*(this.magicPower-32))/32;
+// 		this.mpMax = (this.baseMP*(this.magicPower-32))/32;
 
 		// this.baseHPModifier -= 0.0085;
 		this.baseHPModifier -= 0.008;
 		this.baseMPModifier += 0.02;
 		this.baseHP = this.level* (20 / this.baseHPModifier);
 		this.baseMP = this.level* (20 / this.baseMPModifier);
-		this.hp += (this.baseHP*(this.stamina+32))/32;
-		this.mp += (this.baseMP*(this.magicPower+32))/32;
+
+		this.hpMax += (this.baseHP*(this.stamina+32))/32;
+		this.hp = this.hpMax;
+
+		this.mpMax += (this.baseMP*(this.magicPower+32))/32;
+		this.mp = this.mpMax;
+
 		this.velocity = 8 - (255 - this.speed) / 25 + 5;
 		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * (1.1 + (this.speedModifier*1000));
 		if(this.fireFreq <= 4)
@@ -265,8 +280,8 @@ var PlayerModel = Class.extend({
 
 
 		this.csvStr += this.level+','+
-		Math.floor(this.hp)+','+
-		Math.floor(this.mp)+','+
+		Math.floor(this.hpMax)+','+
+		Math.floor(this.mpMax)+','+
 		Math.floor(this.vigor)+','+
 		Math.floor(this.speed)+','+
 		Math.floor(this.stamina)+','+
@@ -298,11 +313,18 @@ var PlayerModel = Class.extend({
 				break;
 			}
 		}
+
+		// console.log('to next level',this.level,this.xp, (nextl*nextl+nextl+3)/4* 20 * nextl);
+
 		// if(this.xp > (this.level*this.level+this.level+3)/4* 100){
 
 		// 	this.levelUp();
 		// }
 		//console.log(this.level,'<- level, xp ->',this.xp);
+	},
+	resetPoints: function(){
+		this.hp = this.hpMax;
+		this.mp = this.mpMax;
 	},
 	updateXp: function(xp){
 		console.log('xp', xp);
