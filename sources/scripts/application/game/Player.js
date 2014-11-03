@@ -16,7 +16,7 @@ var Player = SpritesheetEntity.extend({
         this.armorModel = null;
         this.weaponModel = null;
         this.relicModel = null;
-        this.spellModel = null;
+        // this.spellModel = null;
         this.playerModel = model;
         this.playerModel.entity = this;
         this.fireModel = new FireModel();
@@ -33,9 +33,9 @@ var Player = SpritesheetEntity.extend({
         this.updateAtt();
 
     },
-    setSpellModel: function(sModel){
-        this.spellModel = sModel;
-    },
+    // setSpellModel: function(sModel){
+    //     this.spellModel = sModel;
+    // },
     setArmorModel: function(aModel){
         this.armorModel = aModel;
     },
@@ -54,10 +54,12 @@ var Player = SpritesheetEntity.extend({
         this.defaultVelocity = this.playerModel.velocity;
 
         this.fireFreq = this.playerModel.fireFreq - 3;
-        if(this.fireSpeed < this.defaultVelocity + 3){
-            this.fireSpeed = this.defaultVelocity + 3;
-        }
+
         this.fireSpeed = this.fireModel.fireSpeed;
+
+        if(this.fireSpeed < this.defaultVelocity * 1.4){
+            this.fireSpeed = this.defaultVelocity * 1.4;
+        }
        
         this.fireStepLive = this.fireModel.fireStepLive;
     },
@@ -212,6 +214,7 @@ var Player = SpritesheetEntity.extend({
             tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y +10);
             this.layer.addChild(tempFire);
             this.fireFreqAcum = tempFireFreq;
+            // tempFire.getContent().rotation = -tempAngle + (180 * Math.PI / 180);
         }
     },
     shoot: function(mousePos, weaponModel){
@@ -257,19 +260,21 @@ var Player = SpritesheetEntity.extend({
                     odd ++;
                 }
                 tempAngle = angle + tempAcc * 10 * Math.PI / 180;
-
             }
             // var tempFire = new Fire({x:this.fireSpeed * Math.sin(angle * i), y: this.fireSpeed * Math.cos(angle * i)});
             var tempFire = new Fire({x:tempFireSpeed * Math.sin(tempAngle), y: tempFireSpeed * Math.cos(tempAngle)});
             tempFire.timeLive = this.fireStepLive;
             if(weaponModel){
                 this.playerModel.weaponPower = weaponModel.battlePower;
+                tempFire.imgSource = weaponModel.srcImg;
             }
             tempFire.power = this.playerModel.getDemage('physical');
             tempFire.build();
             tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y +10);
             this.layer.addChild(tempFire);
             this.fireFreqAcum = tempFireFreq;
+            tempFire.getContent().rotation = -tempAngle + (180 * Math.PI / 180);
+
         }
     },
     preKill:function(){

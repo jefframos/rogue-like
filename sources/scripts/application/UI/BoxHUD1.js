@@ -24,13 +24,26 @@ var BoxHUD1 = Class.extend({
 	setText: function(text){
 		if(this.text !== text){
 			if(!this.label){
-				this.label = new PIXI.Text(text, {fill:'white', align:'left', font:'bold 20px Arial'});
-				this.container.addChild(this.label);
+				this.label = new PIXI.Text(text, {fill:'white', align:'left', font:'14px Arial'});
+				this.container.addChildAt(this.label,1);
 			}else
 			{
 				this.label.setText(text);
 			}
 		}
+	},
+	update: function(){
+		if(this.img && this.img.parent){
+			this.img.setPosition(this.width / 2 - this.img.getContent().width / 2, this.height / 2 -  this.img.getContent().height / 2);
+		}
+	},
+	addImage: function(src){
+		if(this.img && this.img.parent){
+			this.img.parent.removeChild(this.img);
+		}
+		this.img = new SimpleSprite(src);
+		this.container.addChild(this.img.getContent());
+		this.img.setPosition(this.width / 2 - 30 / 2, this.height / 2 - 30 / 2);
 	},
 	getContent: function(){
 		return this.container;

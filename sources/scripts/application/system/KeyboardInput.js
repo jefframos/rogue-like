@@ -29,18 +29,22 @@ var KeyboardInput = Class.extend({
 					self.removePosition('right');
 				}
 				else if(e.keyCode === 32){
-					self.player.hurt(10);
+					self.useShortcut(5);
 				}
-				else if(e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51){
+				else if(e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51  || e.keyCode === 52  || e.keyCode === 53){
 					var id = 1;
 					if(e.keyCode === 50){
 						id = 2;
 					}else if(e.keyCode === 51){
 						id = 3;
+					}else if(e.keyCode === 52){
+						id = 4;
+					}else if(e.keyCode === 53){
+						id = 5;
 					}
-					self.useItem(id - 1);
-				}else if(e.keyCode === 52){
-					self.spell();
+
+
+					self.useShortcut(id - 1);
 				}
 				self.updatePlayerVel();
 			}

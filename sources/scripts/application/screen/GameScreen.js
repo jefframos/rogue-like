@@ -123,35 +123,43 @@ var GameScreen = AbstractScreen.extend({
         // this.lifebar = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
         // APP.getHUD().addChild(this.lifebar);
         // this.lifebar.position.x = windowWidth - 200;
+        this.shortcuts = [null,null,null,null,null,null];
+        this.shortcuts[0] = APP.itemList[0];
+        this.shortcuts[1] = APP.itemList[1];
+        this.shortcuts[2] = APP.itemList[2];
+        this.shortcuts[3] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
+        this.shortcuts[4] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
+        this.shortcuts[5] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
+        var tempBox = null;
+        var icosTotalWidth = (120 * this.shortcuts.length);
+        for (var bi = 0; bi < this.shortcuts.length; bi++) {
+            tempBox = new BoxHUD1(100,70);
+            tempBox.setPosition(windowWidth / 2 - icosTotalWidth / 2 +bi*120, windowHeight - 90);
+            APP.getHUD().addChild(tempBox.getContent());
+            var tempText = '';
+            var shortcut = bi + 1;
+            if(bi === 5){
+                shortcut = 'SPACE';
+            }
+            if(this.shortcuts[bi]){
+                tempBox.addImage(this.shortcuts[bi].icoImg);
+                tempText = this.shortcuts[bi].name;
+            }
+            if(this.shortcuts[bi] instanceof SpellModel)
+            {
+                tempBox.setText(tempText + '\n\n\n'+ shortcut+'--MP: '+this.shortcuts[bi].mp);
+            }else{
+                tempBox.setText(tempText + '\n\n\n' + shortcut);
+            }
+
+        }
 
         this.minimap = new Minimap();
         APP.getHUD().addChild(this.minimap.getContent());
-        var tempBox = null;
-        for (var bi = 0; bi < 5; bi++) {
-            tempBox = new BoxHUD1(80,50);
-            tempBox.setPosition(550+bi*100, 20);
-            APP.getHUD().addChild(tempBox.getContent());
-            if(bi === 0){
-                tempBox.setText('potion\n1');
-            }else if(bi === 1){
-                tempBox.setText('ether\n2');
-            }else if(bi === 2){
-                tempBox.setText('haste\n3');
-            }else if(bi === 3){
-                tempBox.setText('bolt1\n4');
-            }else if(bi === 4){
-                tempBox.setText('\n5');
-            }
-        }
-
-
         this.minimap.build();
         this.minimap.setPosition(windowWidth - this.minimap.getContent().width * 0.5 - 5, 10);
         this.minimap.getContent().scale.x = 0.5;
         this.minimap.getContent().scale.y = 0.5;
-
-
-
         
         // console.log(new BoundCollisionSystem(),'col system BoundCollisionSystem');
 
@@ -171,6 +179,26 @@ var GameScreen = AbstractScreen.extend({
 
 
 
+    },
+    useItem:function(itemModel){
+        this.player.useItem(itemModel);
+    },
+    spell:function(spellModel){
+        console.log('usou spell', spellModel);
+        this.player.spell(APP.stage.getMousePosition(), spellModel);
+    },
+    //colocar isso dentro do personagem
+    shoot:function(){
+        this.player.shoot(APP.stage.getMousePosition(), this.player.weaponModel);
+    },
+    useShortcut:function(id){
+        if(this.shortcuts[id]){
+            if(this.shortcuts[id] instanceof ItemModel){
+                this.useItem(this.shortcuts[id]);
+            }else if(this.shortcuts[id] instanceof SpellModel){
+                this.spell(this.shortcuts[id]);
+            }
+        }
     },
     removePosition:function(position){
         for (var i = this.vecPositions.length - 1; i >= 0; i--) {
@@ -233,13 +261,6 @@ var GameScreen = AbstractScreen.extend({
 
         }
     },
-    spell:function(){
-        this.player.spell(APP.stage.getMousePosition(), this.player.spellModel);
-    },
-    //colocar isso dentro do personagem
-    shoot:function(){
-        this.player.shoot(APP.stage.getMousePosition(), this.player.weaponModel);
-    },
     update:function()
     {
        // console.log(this.mouseDown);
@@ -252,7 +273,7 @@ var GameScreen = AbstractScreen.extend({
 
             if(this.levelLabel){
                 this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+'roomState'+'   -    playerClass:'+this.playerModel.playerClass+
-                    '\nspell: '+this.player.spellModel.name +' - pow: '+this.player.spellModel.spellPower +' - mp: '+this.player.spellModel.mp+
+                    // '\nspell: '+this.player.spellModel.name +' - pow: '+this.player.spellModel.spellPower +' - mp: '+this.player.spellModel.mp+
                     '\narmor: '+this.player.armorModel.name +' - def: '+this.player.armorModel.defenseArmor +' - magDef: '+this.player.armorModel.magicDefenseArmor+
                     '\nweapon: '+this.player.weaponModel.name +' - pow: '+this.player.weaponModel.battlePower +' - hitRate: '+this.player.weaponModel.hitRate+
                     '\nrelic: '+this.player.relicModel.name +' - stat: '+this.player.relicModel.status+
@@ -423,7 +444,7 @@ var GameScreen = AbstractScreen.extend({
 
         
         this.player.build();
-        this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]);
+        // this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]);
         // this.player.setArmorModel(APP.armorList[Math.floor(APP.armorList.length * Math.random())]);
         // this.player.setWeaponModel(APP.weaponList[Math.floor(APP.weaponList.length * Math.random())]);
         // this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
@@ -434,7 +455,7 @@ var GameScreen = AbstractScreen.extend({
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
 
         this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+roomState+'   -    playerClass:'+this.playerModel.playerClass+
-            '\nspell: '+this.player.spellModel.name +' - pow: '+this.player.spellModel.spellPower +' - mp: '+this.player.spellModel.mp+
+            // '\nspell: '+this.player.spellModel.name +' - pow: '+this.player.spellModel.spellPower +' - mp: '+this.player.spellModel.mp+
             '\narmor: '+this.player.armorModel.name +' - def: '+this.player.armorModel.defenseArmor +' - magDef: '+this.player.armorModel.magicDefenseArmor+
             '\nweapon: '+this.player.weaponModel.name +' - pow: '+this.player.weaponModel.battlePower +' - hitRate: '+this.player.weaponModel.hitRate+
             '\nrelic: '+this.player.relicModel.name +' - stat: '+this.player.relicModel.status+
@@ -482,9 +503,6 @@ var GameScreen = AbstractScreen.extend({
         }else{
             this.player.setPosition(this.mapPosition.x + this.levelBounds.x/2,this.mapPosition.y + this.levelBounds.y/2);
         }
-    },
-    useItem:function(itemID){
-        this.player.useItem(APP.itemList[itemID]);
     },
     depthCompare:function(a,b) {
         var yA = a.position.y;

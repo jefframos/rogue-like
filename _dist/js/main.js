@@ -188,110 +188,190 @@ var Application = AbstractApplication.extend({
         this.monsterList = [], this.monsterList.push(new MonsterModel(1, 80, 50, 55, 13, 13, 70, 70, 10)), 
         this.monsterList.push(new MonsterModel(5, 80, 50, 55, 13, 13, 70, 70, 10)), this.monsterList.push(new MonsterModel(10, 80, 50, 55, 13, 13, 70, 70, 10)), 
         this.monsterList.push(new MonsterModel(20, 80, 50, 55, 13, 13, 70, 70, 10)), this.spellList = [], 
-        this.spellList.push(new SpellModel(1, "bolt1", 6, 20, "_dist/img/spells/bolt1.png")), 
-        this.spellList.push(new SpellModel(1, "fire1", 4, 21, "_dist/img/spells/fire1.png")), 
-        this.spellList.push(new SpellModel(1, "ice1", 5, 22, "_dist/img/spells/ice1.png")), 
-        this.spellList.push(new SpellModel(1, "poison", 3, 25, "_dist/img/spells/poison.png")), 
-        this.spellList.push(new SpellModel(1, "wind", 75, 25, "_dist/img/spells/wind.png", !0)), 
-        this.spellList.push(new SpellModel(2, "bolt2", 22, 26, "_dist/img/spells/bolt2.png")), 
-        this.spellList.push(new SpellModel(2, "fire2", 20, 60, "_dist/img/spells/fire2.png")), 
-        this.spellList.push(new SpellModel(2, "ice2", 21, 62, "_dist/img/spells/ice2.png")), 
-        this.spellList.push(new SpellModel(2, "drain", 15, 38, "_dist/img/spells/drain.png")), 
-        this.spellList.push(new SpellModel(3, "meteor", 62, 36, "_dist/img/spells/meteor.png", !0)), 
-        this.spellList.push(new SpellModel(3, "bio", 26, 53, "_dist/img/spells/bio.png")), 
-        this.spellList.push(new SpellModel(3, "flare", 45, 60, "_dist/img/spells/flare.png")), 
-        this.spellList.push(new SpellModel(4, "quake", 50, 111, "_dist/img/spells/quake.png", !0)), 
-        this.spellList.push(new SpellModel(5, "bolt3", 53, 120, "_dist/img/spells/bolt3.png")), 
-        this.spellList.push(new SpellModel(5, "fire3", 51, 121, "_dist/img/spells/fire3.png")), 
-        this.spellList.push(new SpellModel(5, "ice3", 52, 122, "_dist/img/spells/ice3.png")), 
-        this.spellList.push(new SpellModel(6, "merton", 85, 138, "_dist/img/spells/merton.png")), 
-        this.spellList.push(new SpellModel(7, "ultima", 80, 150, "_dist/img/spells/ultima.png", !0)), 
-        this.weaponList = [], this.weaponList.push(new WeaponModel("MithrilKnife", 30, 180, 300)), 
-        this.weaponList.push(new WeaponModel("AirLancet", 76, 180, 950)), this.weaponList.push(new WeaponModel("Assassin", 106, 180, 2)), 
-        this.weaponList.push(new WeaponModel("Dirk", 26, 180, 150)), this.weaponList.push(new WeaponModel("Graedus", 204, 180, 2)), 
-        this.weaponList.push(new WeaponModel("Guardian", 59, 180, 2)), this.weaponList.push(new WeaponModel("ManEater", 146, 180, 11e3)), 
-        this.weaponList.push(new WeaponModel("SwordBreaker", 164, 180, 16e3)), this.weaponList.push(new WeaponModel("ThiefKnife", 88, 180, 2)), 
-        this.weaponList.push(new WeaponModel("ValiantKnife", 145, 180, 2)), this.weaponList.push(new WeaponModel("Atma,WeaponBat", 255, 150, 2)), 
-        this.weaponList.push(new WeaponModel("Blizzard", 108, 150, 7e3)), this.weaponList.push(new WeaponModel("Break Blade", 117, 150, 12e3)), 
-        this.weaponList.push(new WeaponModel("Crystal", 167, 150, 15e3)), this.weaponList.push(new WeaponModel("Drainer", 121, 150, 2)), 
-        this.weaponList.push(new WeaponModel("Enhancer", 135, 150, 1e4)), this.weaponList.push(new WeaponModel("Epee", 98, 150, 3e3)), 
-        this.weaponList.push(new WeaponModel("Excalibur", 217, 150, 2)), this.weaponList.push(new WeaponModel("Falchion", 176, 150, 17e3)), 
-        this.weaponList.push(new WeaponModel("Flame,Sabre", 108, 150, 7e3)), this.weaponList.push(new WeaponModel("Illumina", 255, 255, 2)), 
-        this.weaponList.push(new WeaponModel("MithrilBlade", 38, 150, 450)), this.weaponList.push(new WeaponModel("Ogre Nix", 182, 150, 2)), 
-        this.weaponList.push(new WeaponModel("Ragnarok", 255, 150, 2)), this.weaponList.push(new WeaponModel("RegalCutlass", 54, 150, 800)), 
-        this.weaponList.push(new WeaponModel("Rune,Edge", 55, 150, 7500)), this.weaponList.push(new WeaponModel("Scimitar", 208, 150, 2)), 
-        this.weaponList.push(new WeaponModel("Soul,Sabre", 125, 150, 2)), this.weaponList.push(new WeaponModel("ThunderBlade", 108, 150, 7e3)), 
-        this.weaponList.push(new WeaponModel("Aura,Lance", 227, 180, 2)), this.weaponList.push(new WeaponModel("Gold,Lance", 139, 150, 12e3)), 
-        this.weaponList.push(new WeaponModel("Imp,Halberd", 253, 150, 2)), this.weaponList.push(new WeaponModel("Mithril,Pike", 70, 150, 800)), 
-        this.weaponList.push(new WeaponModel("Partisan", 150, 150, 13e3)), this.weaponList.push(new WeaponModel("Pearl,Lance", 194, 150, 2)), 
-        this.weaponList.push(new WeaponModel("Stout,Spear", 112, 150, 1e4)), this.weaponList.push(new WeaponModel("Trident", 93, 150, 1700)), 
-        this.weaponList.push(new WeaponModel("Blossom", 112, 180, 3200)), this.weaponList.push(new WeaponModel("Hardened", 121, 180, 2)), 
-        this.weaponList.push(new WeaponModel("Imperial", 82, 180, 600)), this.weaponList.push(new WeaponModel("Kodachi", 93, 180, 1200)), 
-        this.weaponList.push(new WeaponModel("Striker", 190, 180, 2)), this.weaponList.push(new WeaponModel("Stunner", 220, 180, 2)), 
-        this.weaponList.push(new WeaponModel("Ashura", 57, 150, 500)), this.weaponList.push(new WeaponModel("Aura", 162, 150, 2)), 
-        this.weaponList.push(new WeaponModel("Forged", 81, 150, 1200)), this.weaponList.push(new WeaponModel("Kotetsu", 66, 150, 800)), 
-        this.weaponList.push(new WeaponModel("Murasame", 110, 150, 9e3)), this.weaponList.push(new WeaponModel("Sky,Render", 215, 150, 2)), 
-        this.weaponList.push(new WeaponModel("Strato", 199, 150, 2)), this.weaponList.push(new WeaponModel("Tempest", 101, 150, 8e3)), 
-        this.weaponList.push(new WeaponModel("Fire,Rod", 79, 135, 3e3)), this.weaponList.push(new WeaponModel("Gravity,Rod", 120, 135, 13e3)), 
-        this.weaponList.push(new WeaponModel("Heal,Rod", 200, 255, 2)), this.weaponList.push(new WeaponModel("Ice,Rod", 79, 135, 3e3)), 
-        this.weaponList.push(new WeaponModel("Magus,Rod", 168, 135, 2)), this.weaponList.push(new WeaponModel("Mithril,Rod", 60, 135, 500)), 
-        this.weaponList.push(new WeaponModel("Pearl,Rod", 124, 135, 12e3)), this.weaponList.push(new WeaponModel("Poison,Rod", 86, 135, 1500)), 
-        this.weaponList.push(new WeaponModel("Punisher", 111, 150, 2)), this.weaponList.push(new WeaponModel("Thunder,Rod", 79, 135, 3e3)), 
-        this.weaponList.push(new WeaponModel("Chocobo,Brsh", 60, 135, 600)), this.weaponList.push(new WeaponModel("DaVinci,Brsh", 100, 135, 7e3)), 
-        this.weaponList.push(new WeaponModel("Magical,Brsh", 130, 135, 1e4)), this.weaponList.push(new WeaponModel("Rainbow,Brsh", 146, 135, 2)), 
-        this.weaponList.push(new WeaponModel("Ninja,Star", 132, 230, 500)), this.weaponList.push(new WeaponModel("Shuriken", 86, 230, 30)), 
-        this.weaponList.push(new WeaponModel("Tack,Star", 190, 230, 2)), this.weaponList.push(new WeaponModel("Bone,Club", 151, 150, 2e4)), 
-        this.weaponList.push(new WeaponModel("Boomerang", 102, 230, 4500)), this.weaponList.push(new WeaponModel("Flail", 86, 150, 2e3)), 
-        this.weaponList.push(new WeaponModel("Full,Moon", 95, 230, 2500)), this.weaponList.push(new WeaponModel("Hawk,Eye", 111, 180, 6e3)), 
-        this.weaponList.push(new WeaponModel("Morning,Star", 109, 150, 5e3)), this.weaponList.push(new WeaponModel("Rising,Sun", 98, 230, 2)), 
-        this.weaponList.push(new WeaponModel("Cards", 104, 230, 1e3)), this.weaponList.push(new WeaponModel("Darts", 115, 230, 1e4)), 
-        this.weaponList.push(new WeaponModel("Doom,Darts", 187, 230, 2)), this.weaponList.push(new WeaponModel("Trump", 133, 230, 13e3)), 
-        this.weaponList.push(new WeaponModel("ClawDragon,Claw", 188, 200, 2)), this.weaponList.push(new WeaponModel("ClawFire,Knuckle", 122, 200, 1e4)), 
-        this.weaponList.push(new WeaponModel("ClawKaiser", 83, 200, 1e3)), this.weaponList.push(new WeaponModel("ClawMetalKnuckle", 55, 200, 500)), 
-        this.weaponList.push(new WeaponModel("ClawMithril,Claw", 65, 200, 800)), this.weaponList.push(new WeaponModel("ClawPoison,Claw", 95, 200, 2500)), 
-        this.weaponList.push(new WeaponModel("ClawTiger,Fangs", 215, 200, 2)), this.armorList = [], 
-        this.armorList.push(new ArmorModel("Aegis Shld", 46, 52, 2)), this.armorList.push(new ArmorModel("Buckler", 16, 10, 200)), 
-        this.armorList.push(new ArmorModel("Crystal Shld", 50, 34, 7e3)), this.armorList.push(new ArmorModel("Diamond Shld", 40, 27, 3500)), 
-        this.armorList.push(new ArmorModel("Flame Shld", 41, 28, 2)), this.armorList.push(new ArmorModel("Force Shld", 0, 70, 2)), 
-        this.armorList.push(new ArmorModel("Genji Shld", 54, 50, 2)), this.armorList.push(new ArmorModel("Gold Shld", 34, 23, 2500)), 
-        this.armorList.push(new ArmorModel("Heavy Shld", 22, 14, 400)), this.armorList.push(new ArmorModel("Ice Shld", 42, 28, 2)), 
-        this.armorList.push(new ArmorModel("Mithril Shld", 27, 18, 1200)), this.armorList.push(new ArmorModel("Paladin Shld", 59, 59, 2)), 
-        this.armorList.push(new ArmorModel("Thunder Shld", 43, 28, 2)), this.armorList.push(new ArmorModel("TortoiseShld", 66, 66, 2)), 
-        this.armorList.push(new ArmorModel("Bandana", 16, 10, 800)), this.armorList.push(new ArmorModel("Bards Hat", 19, 21, 3e3)), 
-        this.armorList.push(new ArmorModel("Beret", 21, 21, 3500)), this.armorList.push(new ArmorModel("Cat Hood", 33, 33, 2)), 
-        this.armorList.push(new ArmorModel("Circlet", 25, 19, 7e3)), this.armorList.push(new ArmorModel("Coronet", 23, 23, 2)), 
-        this.armorList.push(new ArmorModel("Crystal Helm", 29, 19, 1e4)), this.armorList.push(new ArmorModel("Dark Hood", 26, 17, 7500)), 
-        this.armorList.push(new ArmorModel("Diamond Helm", 27, 18, 8e3)), this.armorList.push(new ArmorModel("Genji Helmet", 36, 38, 2)), 
-        this.armorList.push(new ArmorModel("Gold Helmet", 22, 15, 4e3)), this.armorList.push(new ArmorModel("Green Beret", 19, 13, 3e3)), 
-        this.armorList.push(new ArmorModel("Hair Band", 12, 81, 50)), this.armorList.push(new ArmorModel("Head Band", 16, 10, 1600)), 
-        this.armorList.push(new ArmorModel("Iron Helmet", 18, 12, 1e3)), this.armorList.push(new ArmorModel("Leather Hat", 11, 7, 50)), 
-        this.armorList.push(new ArmorModel("Magus Hat", 15, 16, 600)), this.armorList.push(new ArmorModel("Mithril Helm", 20, 13, 2e3)), 
-        this.armorList.push(new ArmorModel("Mystery Veil", 24, 25, 5500)), this.armorList.push(new ArmorModel("Oath Veil", 32, 31, 9e3)), 
-        this.armorList.push(new ArmorModel("Plumed Hat", 14, 9, 250)), this.armorList.push(new ArmorModel("Red Cap", 24, 17, 2)), 
-        this.armorList.push(new ArmorModel("Regal Crown", 28, 23, 2)), this.armorList.push(new ArmorModel("Thornlet", 38, 0, 2)), 
-        this.armorList.push(new ArmorModel("Tiara", 22, 20, 3e3)), this.armorList.push(new ArmorModel("Tiger Mask", 21, 13, 2500)), 
-        this.armorList.push(new ArmorModel("Titanium", 42, 42, 2)), this.armorList.push(new ArmorModel("BehemothSuit", 94, 73, 2)), 
-        this.armorList.push(new ArmorModel("Chocobo Suit", 56, 38, 2)), this.armorList.push(new ArmorModel("Cotton Robe", 32, 21, 200)), 
-        this.armorList.push(new ArmorModel("Crystal Mail", 72, 49, 17e3)), this.armorList.push(new ArmorModel("Czarina Gown", 70, 64, 2)), 
-        this.armorList.push(new ArmorModel("Dark Gear", 68, 46, 13e3)), this.armorList.push(new ArmorModel("Diamond Vest", 65, 44, 12e3)), 
-        this.armorList.push(new ArmorModel("DiamondArmor", 70, 47, 15e3)), this.armorList.push(new ArmorModel("Force Armor", 69, 68, 2)), 
-        this.armorList.push(new ArmorModel("Gaia Gear", 53, 43, 6e3)), this.armorList.push(new ArmorModel("Genji Armor", 90, 80, 2)), 
-        this.armorList.push(new ArmorModel("Gold Armor", 55, 37, 1e4)), this.armorList.push(new ArmorModel("Imps Armor", 100, 100, 2)), 
-        this.armorList.push(new ArmorModel("Iron Armor", 40, 27, 700)), this.armorList.push(new ArmorModel("Kung Fu Suit", 34, 23, 250)), 
-        this.armorList.push(new ArmorModel("LeatherArmor", 28, 19, 150)), this.armorList.push(new ArmorModel("Light Robe", 60, 43, 11e3)), 
-        this.armorList.push(new ArmorModel("Minerva", 88, 70, 2)), this.armorList.push(new ArmorModel("Mirage Vest", 48, 36, 2)), 
-        this.armorList.push(new ArmorModel("Mithril Mail", 51, 34, 3500)), this.armorList.push(new ArmorModel("Mithril Vest", 45, 30, 1200)), 
-        this.armorList.push(new ArmorModel("Moogle Suit", 58, 52, 2)), this.armorList.push(new ArmorModel("Ninja Gear", 47, 32, 1100)), 
-        this.armorList.push(new ArmorModel("Nutkin Suit", 86, 67, 2)), this.armorList.push(new ArmorModel("Power Sash", 52, 35, 5e3)), 
-        this.armorList.push(new ArmorModel("Red Jacket", 78, 55, 2)), this.armorList.push(new ArmorModel("Silk Robe", 39, 29, 600)), 
-        this.armorList.push(new ArmorModel("Snow Muffler", 128, 90, 2)), this.armorList.push(new ArmorModel("Tabby Suit", 54, 36, 2)), 
-        this.armorList.push(new ArmorModel("Tao Robe", 68, 50, 13e3)), this.armorList.push(new ArmorModel("White Dress", 47, 35, 2200)), 
-        this.itemList = [], this.itemList.push(new ItemModel("Minor Potion", "regen HP", 35, 100)), 
-        this.itemList.push(new ItemModel("Minor Ether", "regen MP", 35, 100)), this.itemList.push(new ItemModel("Haste", "haste", 0, 100)), 
-        this.relicList = [], this.relicList.push(new RelicModel("relic 1", "2shots", 0, 100)), 
-        this.relicList.push(new RelicModel("relic 2", "3shots", 0, 100)), this.relicList.push(new RelicModel("power", "powershot", 0, 100)), 
-        this.relicList.push(new RelicModel("speed", "speedshot", 0, 100)), this._super(), 
-        this.onAssetsLoaded();
+        this.spellList.push(new SpellModel(1, "bolt1", 6, 20, "_dist/img/spells/icos/bolt1.png", "_dist/img/spells/bolt1.png")), 
+        this.spellList.push(new SpellModel(1, "fire1", 4, 21, "_dist/img/spells/icos/fire1.png", "_dist/img/spells/fire1.png")), 
+        this.spellList.push(new SpellModel(1, "ice1", 5, 22, "_dist/img/spells/icos/ice1.png", "_dist/img/spells/ice1.png")), 
+        this.spellList.push(new SpellModel(1, "poison", 3, 25, "_dist/img/spells/icos/poison.png", "_dist/img/spells/poison.png")), 
+        this.spellList.push(new SpellModel(1, "wind", 75, 25, "_dist/img/spells/icos/wind.png", "_dist/img/spells/wind.png", !0)), 
+        this.spellList.push(new SpellModel(2, "bolt2", 22, 26, "_dist/img/spells/icos/bolt2.png", "_dist/img/spells/bolt2.png")), 
+        this.spellList.push(new SpellModel(2, "fire2", 20, 60, "_dist/img/spells/icos/fire2.png", "_dist/img/spells/fire2.png")), 
+        this.spellList.push(new SpellModel(2, "ice2", 21, 62, "_dist/img/spells/icos/ice2.png", "_dist/img/spells/ice2.png")), 
+        this.spellList.push(new SpellModel(2, "drain", 15, 38, "_dist/img/spells/icos/drain.png", "_dist/img/spells/drain.png")), 
+        this.spellList.push(new SpellModel(3, "meteor", 62, 36, "_dist/img/spells/icos/meteor.png", "_dist/img/spells/meteor.png", !0)), 
+        this.spellList.push(new SpellModel(3, "bio", 26, 53, "_dist/img/spells/icos/bio.png", "_dist/img/spells/bio.png")), 
+        this.spellList.push(new SpellModel(3, "flare", 45, 60, "_dist/img/spells/icos/flare.png", "_dist/img/spells/flare.png")), 
+        this.spellList.push(new SpellModel(4, "quake", 50, 111, "_dist/img/spells/icos/quake.png", "_dist/img/spells/quake.png", !0)), 
+        this.spellList.push(new SpellModel(5, "bolt3", 53, 120, "_dist/img/spells/icos/bolt3.png", "_dist/img/spells/bolt3.png")), 
+        this.spellList.push(new SpellModel(5, "fire3", 51, 121, "_dist/img/spells/icos/fire3.png", "_dist/img/spells/fire3.png")), 
+        this.spellList.push(new SpellModel(5, "ice3", 52, 122, "_dist/img/spells/icos/ice3.png", "_dist/img/spells/ice3.png")), 
+        this.spellList.push(new SpellModel(6, "merton", 85, 138, "_dist/img/spells/icos/merton.png", "_dist/img/spells/merton.png")), 
+        this.spellList.push(new SpellModel(7, "ultima", 80, 150, "_dist/img/spells/icos/ultima.png", "_dist/img/spells/ultima.png", !0)), 
+        this.weaponList = [], this.weaponList.push(new WeaponModel("MithrilKnife", 30, 180, 300, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("AirLancet", 76, 180, 950, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Assassin", 106, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Dirk", 26, 180, 150, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Graedus", 204, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Guardian", 59, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ManEater", 146, 180, 11e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("SwordBreaker", 164, 180, 16e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ThiefKnife", 88, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ValiantKnife", 145, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Atma,WeaponBat", 255, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Blizzard", 108, 150, 7e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Break Blade", 117, 150, 12e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Crystal", 167, 150, 15e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Drainer", 121, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Enhancer", 135, 150, 1e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Epee", 98, 150, 3e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Excalibur", 217, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Falchion", 176, 150, 17e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Flame,Sabre", 108, 150, 7e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Illumina", 255, 255, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("MithrilBlade", 38, 150, 450, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Ogre Nix", 182, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Ragnarok", 255, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("RegalCutlass", 54, 150, 800, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Rune,Edge", 55, 150, 7500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Scimitar", 208, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Soul,Sabre", 125, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ThunderBlade", 108, 150, 7e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Aura,Lance", 227, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Gold,Lance", 139, 150, 12e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Imp,Halberd", 253, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Mithril,Pike", 70, 150, 800, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Partisan", 150, 150, 13e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Pearl,Lance", 194, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Stout,Spear", 112, 150, 1e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Trident", 93, 150, 1700, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Blossom", 112, 180, 3200, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Hardened", 121, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Imperial", 82, 180, 600, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Kodachi", 93, 180, 1200, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Striker", 190, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Stunner", 220, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Ashura", 57, 150, 500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Aura", 162, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Forged", 81, 150, 1200, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Kotetsu", 66, 150, 800, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Murasame", 110, 150, 9e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Sky,Render", 215, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Strato", 199, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Tempest", 101, 150, 8e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Fire,Rod", 79, 135, 3e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Gravity,Rod", 120, 135, 13e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Heal,Rod", 200, 255, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Ice,Rod", 79, 135, 3e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Magus,Rod", 168, 135, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Mithril,Rod", 60, 135, 500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Pearl,Rod", 124, 135, 12e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Poison,Rod", 86, 135, 1500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Punisher", 111, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Thunder,Rod", 79, 135, 3e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Chocobo,Brsh", 60, 135, 600, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("DaVinci,Brsh", 100, 135, 7e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Magical,Brsh", 130, 135, 1e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Rainbow,Brsh", 146, 135, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Ninja,Star", 132, 230, 500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Shuriken", 86, 230, 30, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Tack,Star", 190, 230, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Bone,Club", 151, 150, 2e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Boomerang", 102, 230, 4500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Flail", 86, 150, 2e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Full,Moon", 95, 230, 2500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Hawk,Eye", 111, 180, 6e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Morning,Star", 109, 150, 5e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Rising,Sun", 98, 230, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Cards", 104, 230, 1e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Darts", 115, 230, 1e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Doom,Darts", 187, 230, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("Trump", 133, 230, 13e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ClawDragon,Claw", 188, 200, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ClawFire,Knuckle", 122, 200, 1e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ClawKaiser", 83, 200, 1e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ClawMetalKnuckle", 55, 200, 500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ClawMithril,Claw", 65, 200, 800, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ClawPoison,Claw", 95, 200, 2500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.weaponList.push(new WeaponModel("ClawTiger,Fangs", 215, 200, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
+        this.armorList = [], this.armorList.push(new ArmorModel("Aegis Shld", 46, 52, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Buckler", 16, 10, 200, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Crystal Shld", 50, 34, 7e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Diamond Shld", 40, 27, 3500, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Flame Shld", 41, 28, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Force Shld", 0, 70, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Genji Shld", 54, 50, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Gold Shld", 34, 23, 2500, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Heavy Shld", 22, 14, 400, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Ice Shld", 42, 28, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Mithril Shld", 27, 18, 1200, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Paladin Shld", 59, 59, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Thunder Shld", 43, 28, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("TortoiseShld", 66, 66, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Bandana", 16, 10, 800, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Bards Hat", 19, 21, 3e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Beret", 21, 21, 3500, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Cat Hood", 33, 33, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Circlet", 25, 19, 7e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Coronet", 23, 23, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Crystal Helm", 29, 19, 1e4, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Dark Hood", 26, 17, 7500, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Diamond Helm", 27, 18, 8e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Genji Helmet", 36, 38, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Gold Helmet", 22, 15, 4e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Green Beret", 19, 13, 3e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Hair Band", 12, 81, 50, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Head Band", 16, 10, 1600, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Iron Helmet", 18, 12, 1e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Leather Hat", 11, 7, 50, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Magus Hat", 15, 16, 600, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Mithril Helm", 20, 13, 2e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Mystery Veil", 24, 25, 5500, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Oath Veil", 32, 31, 9e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Plumed Hat", 14, 9, 250, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Red Cap", 24, 17, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Regal Crown", 28, 23, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Thornlet", 38, 0, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Tiara", 22, 20, 3e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Tiger Mask", 21, 13, 2500, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Titanium", 42, 42, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("BehemothSuit", 94, 73, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Chocobo Suit", 56, 38, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Cotton Robe", 32, 21, 200, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Crystal Mail", 72, 49, 17e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Czarina Gown", 70, 64, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Dark Gear", 68, 46, 13e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Diamond Vest", 65, 44, 12e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("DiamondArmor", 70, 47, 15e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Force Armor", 69, 68, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Gaia Gear", 53, 43, 6e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Genji Armor", 90, 80, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Gold Armor", 55, 37, 1e4, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Imps Armor", 100, 100, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Iron Armor", 40, 27, 700, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Kung Fu Suit", 34, 23, 250, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("LeatherArmor", 28, 19, 150, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Light Robe", 60, 43, 11e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Minerva", 88, 70, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Mirage Vest", 48, 36, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Mithril Mail", 51, 34, 3500, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Mithril Vest", 45, 30, 1200, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Moogle Suit", 58, 52, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Ninja Gear", 47, 32, 1100, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Nutkin Suit", 86, 67, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Power Sash", 52, 35, 5e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Red Jacket", 78, 55, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Silk Robe", 39, 29, 600, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Snow Muffler", 128, 90, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Tabby Suit", 54, 36, 2, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("Tao Robe", 68, 50, 13e3, "_dist/img/armor/armor1.png")), 
+        this.armorList.push(new ArmorModel("White Dress", 47, 35, 2200, "_dist/img/armor/armor1.png")), 
+        this.itemList = [], this.itemList.push(new ItemModel("Minor Potion", "regen HP", 35, 100, "_dist/img/potions/hpPotion.png")), 
+        this.itemList.push(new ItemModel("Minor Ether", "regen MP", 35, 100, "_dist/img/potions/mpPotion.png")), 
+        this.itemList.push(new ItemModel("Haste", "haste", 0, 100, "_dist/img/potions/hastePotion.png")), 
+        this.relicList = [], this.relicList.push(new RelicModel("relic 1", "2shots", 0, 100, "_dist/img/relics/relic1.png")), 
+        this.relicList.push(new RelicModel("relic 2", "3shots", 0, 100, "_dist/img/relics/relic1.png")), 
+        this.relicList.push(new RelicModel("power", "powershot", 0, 100, "_dist/img/relics/relic1.png")), 
+        this.relicList.push(new RelicModel("speed", "speedshot", 0, 100, "_dist/img/relics/relic1.png")), 
+        this._super(), this.onAssetsLoaded();
     },
     onAssetsLoaded: function() {
         this.mainApp = new GameScreen("Main"), this.screenManager.addScreen(this.mainApp), 
@@ -352,8 +432,15 @@ var Application = AbstractApplication.extend({
         this.text !== text && (this.label ? this.label.setText(text) : (this.label = new PIXI.Text(text, {
             fill: "white",
             align: "left",
-            font: "bold 20px Arial"
-        }), this.container.addChild(this.label)));
+            font: "14px Arial"
+        }), this.container.addChildAt(this.label, 1)));
+    },
+    update: function() {
+        this.img && this.img.parent && this.img.setPosition(this.width / 2 - this.img.getContent().width / 2, this.height / 2 - this.img.getContent().height / 2);
+    },
+    addImage: function(src) {
+        this.img && this.img.parent && this.img.parent.removeChild(this.img), this.img = new SimpleSprite(src), 
+        this.container.addChild(this.img.getContent()), this.img.setPosition(this.width / 2 - 15, this.height / 2 - 15);
     },
     getContent: function() {
         return this.container;
@@ -703,15 +790,12 @@ var Application = AbstractApplication.extend({
         this._super(!0), this.updateable = !1, this.deading = !1, this.collidable = !0, 
         this.range = APP.tileSize.x / 2, this.width = .8 * APP.tileSize.x, this.height = .8 * APP.tileSize.y, 
         this.type = "player", this.collisionPointsMarginDivide = 0, this.isTouch = !1, this.boundsCollision = !0, 
-        this.armorModel = null, this.weaponModel = null, this.relicModel = null, this.spellModel = null, 
-        this.playerModel = model, this.playerModel.entity = this, this.fireModel = new FireModel(), 
-        this.endLevel = !1, this.playerDead = !1, this.hasteAcum = 0, this.centerPosition = {
+        this.armorModel = null, this.weaponModel = null, this.relicModel = null, this.playerModel = model, 
+        this.playerModel.entity = this, this.fireModel = new FireModel(), this.endLevel = !1, 
+        this.playerDead = !1, this.hasteAcum = 0, this.centerPosition = {
             x: this.width / 2,
             y: this.height / 4
         }, this.fireFreqAcum = 0, this.returnCollider = 0, this.updateAtt();
-    },
-    setSpellModel: function(sModel) {
-        this.spellModel = sModel;
     },
     setArmorModel: function(aModel) {
         this.armorModel = aModel;
@@ -724,8 +808,8 @@ var Application = AbstractApplication.extend({
     },
     updateAtt: function() {
         this.defaultVelocity = this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3, 
-        this.fireSpeed < this.defaultVelocity + 3 && (this.fireSpeed = this.defaultVelocity + 3), 
-        this.fireSpeed = this.fireModel.fireSpeed, this.fireStepLive = this.fireModel.fireStepLive;
+        this.fireSpeed = this.fireModel.fireSpeed, this.fireSpeed < 1.4 * this.defaultVelocity && (this.fireSpeed = 1.4 * this.defaultVelocity), 
+        this.fireStepLive = this.fireModel.fireStepLive;
     },
     levelUp: function() {
         var pop = new PopUpText("white");
@@ -834,9 +918,10 @@ var Application = AbstractApplication.extend({
                 x: tempFireSpeed * Math.sin(tempAngle),
                 y: tempFireSpeed * Math.cos(tempAngle)
             });
-            tempFire.timeLive = this.fireStepLive, weaponModel && (this.playerModel.weaponPower = weaponModel.battlePower), 
-            tempFire.power = this.playerModel.getDemage("physical"), tempFire.build(), tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y + 10), 
-            this.layer.addChild(tempFire), this.fireFreqAcum = tempFireFreq;
+            tempFire.timeLive = this.fireStepLive, weaponModel && (this.playerModel.weaponPower = weaponModel.battlePower, 
+            tempFire.imgSource = weaponModel.srcImg), tempFire.power = this.playerModel.getDemage("physical"), 
+            tempFire.build(), tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y + 10), 
+            this.layer.addChild(tempFire), this.fireFreqAcum = tempFireFreq, tempFire.getContent().rotation = -tempAngle + 180 * Math.PI / 180;
         }
     },
     preKill: function() {
@@ -1032,18 +1117,19 @@ var Application = AbstractApplication.extend({
     },
     update: function() {}
 }), ArmorModel = Class.extend({
-    init: function(name, defenseArmor, magicDefenseArmor, price) {
+    init: function(name, defenseArmor, magicDefenseArmor, price, srcImg) {
         this.name = name, this.defenseArmor = defenseArmor, this.magicDefenseArmor = magicDefenseArmor, 
-        this.price = price;
+        this.price = price, this.srcImg = srcImg;
     }
 }), FireModel = Class.extend({
     init: function() {
-        this.fireSpeed = 10, this.fireStepLive = 45;
+        this.fireSpeed = 10, this.fireStepLive = 65;
     },
     update: function() {}
 }), ItemModel = Class.extend({
-    init: function(name, effect, baseValue, price) {
-        this.name = name, this.effect = effect, this.baseValue = baseValue, this.price = price;
+    init: function(name, effect, baseValue, price, icoImg) {
+        this.name = name, this.effect = effect, this.baseValue = baseValue, this.price = price, 
+        this.icoImg = icoImg;
     }
 }), MonsterModel = Class.extend({
     init: function(level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp) {
@@ -1187,17 +1273,19 @@ var Application = AbstractApplication.extend({
         currentSpeed;
     }
 }), RelicModel = Class.extend({
-    init: function(name, status, baseValue, price) {
-        this.name = name, this.status = status, this.baseValue = baseValue, this.price = price;
+    init: function(name, status, baseValue, price, srcImg) {
+        this.name = name, this.status = status, this.baseValue = baseValue, this.price = price, 
+        this.srcImg = srcImg;
     }
 }), SpellModel = Class.extend({
-    init: function(level, name, mp, spellPower, srcImg, isMultiple) {
+    init: function(level, name, mp, spellPower, icoImg, srcImg, isMultiple) {
         this.level = level, this.name = name, this.mp = mp, this.spellPower = spellPower, 
-        this.srcImg = srcImg, this.isMultiple = isMultiple;
+        this.icoImg = icoImg, this.srcImg = srcImg, this.isMultiple = isMultiple;
     }
 }), WeaponModel = Class.extend({
-    init: function(name, battlePower, hitRate, price) {
-        this.name = name, this.battlePower = battlePower, this.hitRate = hitRate, this.price = price;
+    init: function(name, battlePower, hitRate, price, icoImg, srcImg) {
+        this.name = name, this.battlePower = battlePower, this.hitRate = hitRate, this.price = price, 
+        this.srcImg = srcImg, this.icoImg = icoImg;
     }
 }), LevelGenerator = Class.extend({
     init: function(parent) {
@@ -1349,14 +1437,36 @@ var Application = AbstractApplication.extend({
             fill: "white",
             align: "left",
             font: "bold 15px Arial"
-        }), APP.getHUD().addChild(this.levelLabel), this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent());
-        for (var tempBox = null, bi = 0; 5 > bi; bi++) tempBox = new BoxHUD1(80, 50), tempBox.setPosition(550 + 100 * bi, 20), 
-        APP.getHUD().addChild(tempBox.getContent()), 0 === bi ? tempBox.setText("potion\n1") : 1 === bi ? tempBox.setText("ether\n2") : 2 === bi ? tempBox.setText("haste\n3") : 3 === bi ? tempBox.setText("bolt1\n4") : 4 === bi && tempBox.setText("\n5");
+        }), APP.getHUD().addChild(this.levelLabel), this.shortcuts = [ null, null, null, null, null, null ], 
+        this.shortcuts[0] = APP.itemList[0], this.shortcuts[1] = APP.itemList[1], this.shortcuts[2] = APP.itemList[2], 
+        this.shortcuts[3] = APP.spellList[Math.floor(APP.spellList.length * Math.random())], 
+        this.shortcuts[4] = APP.spellList[Math.floor(APP.spellList.length * Math.random())], 
+        this.shortcuts[5] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
+        for (var tempBox = null, icosTotalWidth = 120 * this.shortcuts.length, bi = 0; bi < this.shortcuts.length; bi++) {
+            tempBox = new BoxHUD1(100, 70), tempBox.setPosition(windowWidth / 2 - icosTotalWidth / 2 + 120 * bi, windowHeight - 90), 
+            APP.getHUD().addChild(tempBox.getContent());
+            var tempText = "", shortcut = bi + 1;
+            5 === bi && (shortcut = "SPACE"), this.shortcuts[bi] && (tempBox.addImage(this.shortcuts[bi].icoImg), 
+            tempText = this.shortcuts[bi].name), tempBox.setText(this.shortcuts[bi] instanceof SpellModel ? tempText + "\n\n\n" + shortcut + "--MP: " + this.shortcuts[bi].mp : tempText + "\n\n\n" + shortcut);
+        }
+        this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent()), 
         this.minimap.build(), this.minimap.setPosition(windowWidth - .5 * this.minimap.getContent().width - 5, 10), 
         this.minimap.getContent().scale.x = .5, this.minimap.getContent().scale.y = .5, 
         this.collisionSystem = new BoundCollisionSystem(this, !0), this.effectsContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.effectsContainer), this.levelGenerator = new LevelGenerator(this), 
         this.resetLevel();
+    },
+    useItem: function(itemModel) {
+        this.player.useItem(itemModel);
+    },
+    spell: function(spellModel) {
+        console.log("usou spell", spellModel), this.player.spell(APP.stage.getMousePosition(), spellModel);
+    },
+    shoot: function() {
+        this.player.shoot(APP.stage.getMousePosition(), this.player.weaponModel);
+    },
+    useShortcut: function(id) {
+        this.shortcuts[id] && (this.shortcuts[id] instanceof ItemModel ? this.useItem(this.shortcuts[id]) : this.shortcuts[id] instanceof SpellModel && this.spell(this.shortcuts[id]));
     },
     removePosition: function(position) {
         for (var i = this.vecPositions.length - 1; i >= 0; i--) this.vecPositions[i] === position && this.vecPositions.splice(i, 1);
@@ -1377,16 +1487,10 @@ var Application = AbstractApplication.extend({
             hasAxysY || (this.player.virtualVelocity.y = 0), hasAxysX || (this.player.virtualVelocity.x = 0);
         }
     },
-    spell: function() {
-        this.player.spell(APP.stage.getMousePosition(), this.player.spellModel);
-    },
-    shoot: function() {
-        this.player.shoot(APP.stage.getMousePosition(), this.player.weaponModel);
-    },
     update: function() {
         if (this.player) {
             this.getContent().position.x = windowWidth / 2 - this.player.getPosition().x, this.getContent().position.y = windowHeight / 2 - this.player.getPosition().y, 
-            this.player.fireFreqAcum--, this.levelLabel && this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:roomState   -    playerClass:" + this.playerModel.playerClass + "\nspell: " + this.player.spellModel.name + " - pow: " + this.player.spellModel.spellPower + " - mp: " + this.player.spellModel.mp + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status + "\nLEVEL: " + this.playerModel.level), 
+            this.player.fireFreqAcum--, this.levelLabel && this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:roomState   -    playerClass:" + this.playerModel.playerClass + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status + "\nLEVEL: " + this.playerModel.level), 
             this.mouseDown && this.player.fireFreqAcum <= 0 && this.shoot(), this.entityLayer.collideChilds(this.player), 
             this.environmentLayer.collideChilds(this.player), (this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x && this.player.virtualVelocity.x < 0 || this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > this.levelBounds.x + this.mapPosition.x && this.player.virtualVelocity.x > 0) && (this.player.virtualVelocity.x = 0), 
             (this.player.getPosition().y + this.player.virtualVelocity.y < this.mapPosition.y && this.player.virtualVelocity.y < 0 || this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > this.levelBounds.y + this.mapPosition.y && this.player.virtualVelocity.y > 0) && (this.player.virtualVelocity.y = 0);
@@ -1459,14 +1563,10 @@ var Application = AbstractApplication.extend({
         this.levelGenerator.debugBounds(), this.levelGenerator.createDoors(), 1 !== this.currentNode.mode && this.levelGenerator.createHordes(), 
         this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
         this.getContent().position.x = -this.mapPosition.x, this.getContent().position.y = -this.mapPosition.y, 
-        this.player.build(), this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]), 
-        this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
+        this.player.build(), this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
-        this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState + "   -    playerClass:" + this.playerModel.playerClass + "\nspell: " + this.player.spellModel.name + " - pow: " + this.player.spellModel.spellPower + " - mp: " + this.player.spellModel.mp + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status + "\nLEVEL: " + this.playerModel.level), 
+        this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState + "   -    playerClass:" + this.playerModel.playerClass + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status + "\nLEVEL: " + this.playerModel.level), 
         this.entityLayer.addChild(this.player), "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.levelBounds.y + this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.mapPosition.y + this.mapPosition.y - this.player.height) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width, this.levelBounds.y / 2 + this.player.height) : "right" === this.currentPlayerSide ? this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.player.height) : this.player.setPosition(this.mapPosition.x + this.levelBounds.x / 2, this.mapPosition.y + this.levelBounds.y / 2);
-    },
-    useItem: function(itemID) {
-        this.player.useItem(APP.itemList[itemID]);
     },
     depthCompare: function(a, b) {
         var yA = a.position.y, yB = b.position.y;
@@ -1536,10 +1636,11 @@ var Application = AbstractApplication.extend({
             self.player && (self.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
             if (self.player) {
-                if (87 === e.keyCode || 38 === e.keyCode && self.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && self.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && self.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && self.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) self.player.hurt(10); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode) {
+                if (87 === e.keyCode || 38 === e.keyCode && self.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && self.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && self.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && self.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) self.useShortcut(5); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode || 52 === e.keyCode || 53 === e.keyCode) {
                     var id = 1;
-                    50 === e.keyCode ? id = 2 : 51 === e.keyCode && (id = 3), self.useItem(id - 1);
-                } else 52 === e.keyCode && self.spell();
+                    50 === e.keyCode ? id = 2 : 51 === e.keyCode ? id = 3 : 52 === e.keyCode ? id = 4 : 53 === e.keyCode && (id = 5), 
+                    self.useShortcut(id - 1);
+                }
                 self.updatePlayerVel();
             }
         }), document.body.addEventListener("keydown", function(e) {
