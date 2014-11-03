@@ -132,27 +132,45 @@ var GameScreen = AbstractScreen.extend({
         this.shortcuts[5] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
         var tempBox = null;
         var icosTotalWidth = (120 * this.shortcuts.length);
-        for (var bi = 0; bi < this.shortcuts.length; bi++) {
-            tempBox = new BoxHUD1(100,70);
-            tempBox.setPosition(windowWidth / 2 - icosTotalWidth / 2 +bi*120, windowHeight - 90);
+        for (var i = 0; i < this.shortcuts.length; i++) {
+            tempBox = new BoxHUD1(100,70, 3);
+            tempBox.setPosition(windowWidth / 2 - icosTotalWidth / 2 +i*120, windowHeight - 90);
             APP.getHUD().addChild(tempBox.getContent());
             var tempText = '';
-            var shortcut = bi + 1;
-            if(bi === 5){
+            var shortcut = i + 1;
+            if(i === 5){
                 shortcut = 'SPACE';
             }
-            if(this.shortcuts[bi]){
-                tempBox.addImage(this.shortcuts[bi].icoImg);
-                tempText = this.shortcuts[bi].name;
+            if(this.shortcuts[i]){
+                tempBox.addImage(this.shortcuts[i].icoImg);
+                tempText = this.shortcuts[i].name;
+                tempBox.addModel(this.shortcuts[i]);
             }
-            if(this.shortcuts[bi] instanceof SpellModel)
-            {
-                tempBox.setText(tempText + '\n\n\n'+ shortcut+'--MP: '+this.shortcuts[bi].mp);
-            }else{
-                tempBox.setText(tempText + '\n\n\n' + shortcut);
-            }
-
+            // if(this.shortcuts[i] instanceof SpellModel)
+            // {
+            //     tempBox.setText(tempText + '\n\n\n'+ shortcut+'--MP: '+this.shortcuts[i].mp);
+            // }else{
+                
+            // }
+            tempBox.setText(tempText + '\n\n\n' + shortcut);
         }
+
+        this.equips = [null,null,null];
+        this.equipsBoxHud = [];
+        for (i = 0; i < this.equips.length; i++) {
+            tempBox = new BoxHUD1(100,70,1);
+            tempBox.setPosition(windowWidth - 120, windowHeight / 2.5 + 90*i);
+            if(i === 0){
+                tempBox.setText('Weapon');
+            }else if(i === 1){
+                tempBox.setText('Armor');
+            }else if(i === 2){
+                tempBox.setText('Relic');
+            }
+            APP.getHUD().addChild(tempBox.getContent());
+            this.equipsBoxHud.push(tempBox);
+        }
+
 
         this.minimap = new Minimap();
         APP.getHUD().addChild(this.minimap.getContent());
@@ -179,6 +197,15 @@ var GameScreen = AbstractScreen.extend({
 
 
 
+    },
+    updateHUD:function(itemModel){
+        this.equips[0] = this.player.weaponModel;
+        this.equips[1] = this.player.armorModel;
+        this.equips[2] = this.player.relicModel;
+
+        for (var i = 0; i < this.equipsBoxHud.length; i++) {
+            this.equipsBoxHud[i].addModel(this.equips[i]);
+        }
     },
     useItem:function(itemModel){
         this.player.useItem(itemModel);
@@ -454,6 +481,11 @@ var GameScreen = AbstractScreen.extend({
         this.player.setWeaponModel(APP.weaponList[0]);
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
 
+        // this.equips = [null,null,null];
+        this.equips[0] = this.player.weaponModel;
+        this.equips[1] = this.player.armorModel;
+        this.equips[2] = this.player.relicModel;
+        this.updateHUD();
         this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+roomState+'   -    playerClass:'+this.playerModel.playerClass+
             // '\nspell: '+this.player.spellModel.name +' - pow: '+this.player.spellModel.spellPower +' - mp: '+this.player.spellModel.mp+
             '\narmor: '+this.player.armorModel.name +' - def: '+this.player.armorModel.defenseArmor +' - magDef: '+this.player.armorModel.magicDefenseArmor+

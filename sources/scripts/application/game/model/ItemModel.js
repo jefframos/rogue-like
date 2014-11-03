@@ -2,6 +2,7 @@
 var ItemModel = Class.extend({
 	init: function (name,effect,baseValue,price,icoImg){
 		this.name = name;
+		this.label = name;
 		this.effect = effect;
 		this.baseValue = baseValue;
 		this.price = price;
