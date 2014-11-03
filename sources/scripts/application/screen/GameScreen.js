@@ -50,6 +50,9 @@ var GameScreen = AbstractScreen.extend({
         }
 
         this.playerModel = new PlayerModel(clss);
+
+        this.playerModel.mp = 8000;
+        this.playerModel.mpMax = 8000;
         // this.playerModel.levelUp();
         // for (var i = 0; i < 20; i++) {
         //     this.playerModel.levelUp();ddw
@@ -67,7 +70,7 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/spritesheet/dragon.png',
             '_dist/img/dragao-perdido.png',
             '_dist/img/drop.png',
-            '_dist/img/fireball.png',
+            // '_dist/img/fireball.png',
             '_dist/img/spritesheet/chinesa.json',
             '_dist/img/spritesheet/chinesa.png'
         ];
@@ -231,11 +234,11 @@ var GameScreen = AbstractScreen.extend({
         }
     },
     spell:function(){
-        this.player.spell(APP.stage.getMousePosition());
+        this.player.spell(APP.stage.getMousePosition(), this.player.spellModel);
     },
     //colocar isso dentro do personagem
     shoot:function(){
-        this.player.shoot(APP.stage.getMousePosition());
+        this.player.shoot(APP.stage.getMousePosition(), this.player.weaponModel);
     },
     update:function()
     {
@@ -420,12 +423,12 @@ var GameScreen = AbstractScreen.extend({
 
         
         this.player.build();
-        // this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]);
+        this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]);
         // this.player.setArmorModel(APP.armorList[Math.floor(APP.armorList.length * Math.random())]);
         // this.player.setWeaponModel(APP.weaponList[Math.floor(APP.weaponList.length * Math.random())]);
         // this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
 
-        this.player.setSpellModel(APP.spellList[1]);
+        // this.player.setSpellModel(APP.spellList[1]);
         this.player.setArmorModel(APP.armorList[0]);
         this.player.setWeaponModel(APP.weaponList[0]);
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);

@@ -16,6 +16,7 @@ var Fire = Entity.extend({
         this.timeLive = 10;
         this.power = 1;
         this.defaultVelocity = 1;
+        this.imgSource = '_dist/img/spells/fire1.png';
 
     },
     getBounds: function(){
@@ -64,7 +65,7 @@ var Fire = Entity.extend({
         }
     },
     build: function(){
-        this._super('_dist/img/fireball.png');
+        this._super(this.imgSource);
         this.updateable = true;
         this.collidable = true;
         // var self = this;

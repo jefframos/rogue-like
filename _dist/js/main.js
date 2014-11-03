@@ -1,4 +1,4 @@
-/*! goyabpd 31-10-2014 */
+/*! goyabpd 03-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -185,17 +185,27 @@ var Application = AbstractApplication.extend({
         return this.HUD;
     },
     build: function() {
-        this.monsterList = [], this.monsterList.push(new MonsterModel(10, 1, 50, 55, 13, 13, 70, 70, 10)), 
-        this.monsterList.push(new MonsterModel(10, 80, 50, 55, 13, 13, 70, 70, 10)), this.monsterList.push(new MonsterModel(20, 80, 50, 55, 13, 13, 70, 70, 10)), 
-        this.spellList = [], this.spellList.push(new SpellModel(1, "bolt1", 6, 20)), this.spellList.push(new SpellModel(1, "fire1", 4, 21)), 
-        this.spellList.push(new SpellModel(1, "ice1", 5, 22)), this.spellList.push(new SpellModel(1, "poison", 3, 25)), 
-        this.spellList.push(new SpellModel(1, "wind", 75, 25)), this.spellList.push(new SpellModel(2, "bolt2", 22, 26)), 
-        this.spellList.push(new SpellModel(2, "fire2", 20, 60)), this.spellList.push(new SpellModel(2, "ice2", 21, 62)), 
-        this.spellList.push(new SpellModel(2, "drain", 15, 38)), this.spellList.push(new SpellModel(3, "meteor", 62, 36)), 
-        this.spellList.push(new SpellModel(3, "bio", 26, 53)), this.spellList.push(new SpellModel(3, "flare", 45, 60)), 
-        this.spellList.push(new SpellModel(4, "quake", 50, 111)), this.spellList.push(new SpellModel(5, "bolt3", 53, 120)), 
-        this.spellList.push(new SpellModel(5, "fire3", 51, 121)), this.spellList.push(new SpellModel(5, "ice3", 52, 122)), 
-        this.spellList.push(new SpellModel(6, "merton", 85, 138)), this.spellList.push(new SpellModel(7, "ultima", 80, 150)), 
+        this.monsterList = [], this.monsterList.push(new MonsterModel(1, 80, 50, 55, 13, 13, 70, 70, 10)), 
+        this.monsterList.push(new MonsterModel(5, 80, 50, 55, 13, 13, 70, 70, 10)), this.monsterList.push(new MonsterModel(10, 80, 50, 55, 13, 13, 70, 70, 10)), 
+        this.monsterList.push(new MonsterModel(20, 80, 50, 55, 13, 13, 70, 70, 10)), this.spellList = [], 
+        this.spellList.push(new SpellModel(1, "bolt1", 6, 20, "_dist/img/spells/bolt1.png")), 
+        this.spellList.push(new SpellModel(1, "fire1", 4, 21, "_dist/img/spells/fire1.png")), 
+        this.spellList.push(new SpellModel(1, "ice1", 5, 22, "_dist/img/spells/ice1.png")), 
+        this.spellList.push(new SpellModel(1, "poison", 3, 25, "_dist/img/spells/poison.png")), 
+        this.spellList.push(new SpellModel(1, "wind", 75, 25, "_dist/img/spells/wind.png", !0)), 
+        this.spellList.push(new SpellModel(2, "bolt2", 22, 26, "_dist/img/spells/bolt2.png")), 
+        this.spellList.push(new SpellModel(2, "fire2", 20, 60, "_dist/img/spells/fire2.png")), 
+        this.spellList.push(new SpellModel(2, "ice2", 21, 62, "_dist/img/spells/ice2.png")), 
+        this.spellList.push(new SpellModel(2, "drain", 15, 38, "_dist/img/spells/drain.png")), 
+        this.spellList.push(new SpellModel(3, "meteor", 62, 36, "_dist/img/spells/meteor.png", !0)), 
+        this.spellList.push(new SpellModel(3, "bio", 26, 53, "_dist/img/spells/bio.png")), 
+        this.spellList.push(new SpellModel(3, "flare", 45, 60, "_dist/img/spells/flare.png")), 
+        this.spellList.push(new SpellModel(4, "quake", 50, 111, "_dist/img/spells/quake.png", !0)), 
+        this.spellList.push(new SpellModel(5, "bolt3", 53, 120, "_dist/img/spells/bolt3.png")), 
+        this.spellList.push(new SpellModel(5, "fire3", 51, 121, "_dist/img/spells/fire3.png")), 
+        this.spellList.push(new SpellModel(5, "ice3", 52, 122, "_dist/img/spells/ice3.png")), 
+        this.spellList.push(new SpellModel(6, "merton", 85, 138, "_dist/img/spells/merton.png")), 
+        this.spellList.push(new SpellModel(7, "ultima", 80, 150, "_dist/img/spells/ultima.png", !0)), 
         this.weaponList = [], this.weaponList.push(new WeaponModel("MithrilKnife", 30, 180, 300)), 
         this.weaponList.push(new WeaponModel("AirLancet", 76, 180, 950)), this.weaponList.push(new WeaponModel("Assassin", 106, 180, 2)), 
         this.weaponList.push(new WeaponModel("Dirk", 26, 180, 150)), this.weaponList.push(new WeaponModel("Graedus", 204, 180, 2)), 
@@ -445,7 +455,7 @@ var Application = AbstractApplication.extend({
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = 60, this.width = 1, 
         this.height = 1, this.type = "fire", this.target = "enemy", this.fireType = "physical", 
         this.node = null, this.velocity.x = vel.x, this.velocity.y = vel.y, this.timeLive = 10, 
-        this.power = 1, this.defaultVelocity = 1;
+        this.power = 1, this.defaultVelocity = 1, this.imgSource = "_dist/img/spells/fire1.png";
     },
     getBounds: function() {
         return this.bounds = {
@@ -495,8 +505,8 @@ var Application = AbstractApplication.extend({
         }
     },
     build: function() {
-        this._super("_dist/img/fireball.png"), this.updateable = !0, this.collidable = !0, 
-        this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(1127168), this.debugGraphic.lineStyle(1, 16767232, 1), 
+        this._super(this.imgSource), this.updateable = !0, this.collidable = !0, this.debugGraphic = new PIXI.Graphics(), 
+        this.debugGraphic.beginFill(1127168), this.debugGraphic.lineStyle(1, 16767232, 1), 
         this.debugGraphic.endFill();
     },
     update: function() {
@@ -783,32 +793,34 @@ var Application = AbstractApplication.extend({
         this.returnCollider > 0 && this.returnCollider--, this.deading && this.setVelocity(0, 0), 
         this._super(), this.debugPolygon(5596740, !0), this.getTexture() && (this.getContent().position.x = 20);
     },
-    spell: function(mousePos) {
-        if (this.spellModel.mp > this.playerModel.mp) {
+    spell: function(mousePos, spellModel) {
+        if (spellModel.mp > this.playerModel.mp) {
             var pop = new PopUpText("red");
-            return pop.setText("sem mp"), APP.getEffectsContainer().addChild(pop.getContent()), 
+            return pop.setText("NO MP"), APP.getEffectsContainer().addChild(pop.getContent()), 
             pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
             void pop.initMotion(-15 - 10 * Math.random(), .8);
         }
-        this.playerModel.mp -= this.spellModel.mp;
+        this.playerModel.mp -= spellModel.mp;
         var pop2 = new PopUpText("blue");
-        pop2.setText("-" + this.spellModel.mp + " MP"), APP.getEffectsContainer().addChild(pop2.getContent()), 
+        pop2.setText("-" + spellModel.mp + " MP"), APP.getEffectsContainer().addChild(pop2.getContent()), 
         pop2.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
         pop2.initMotion(-15 - 10 * Math.random(), .8);
-        for (var numFires = 10, tempFireSpeed = 2 * this.fireSpeed, tempFireFreq = this.fireFreq, angle = Math.atan2(windowHeight / 2 - mousePos.y + this.centerPosition.y, windowWidth / 2 - mousePos.x + this.centerPosition.x), tempAngle = angle, i = 0; numFires > i; i++) {
-            tempAngle = angle + 360 / numFires * i * Math.PI / 180;
+        var numFires = spellModel.isMultiple ? 10 : 3, tempFireSpeed = 2 * this.fireSpeed, tempFireFreq = this.fireFreq, angle = Math.atan2(windowHeight / 2 - mousePos.y + this.centerPosition.y, windowWidth / 2 - mousePos.x + this.centerPosition.x);
+        angle = 180 * angle / Math.PI * -1, angle += 270, angle = angle / 180 * Math.PI;
+        for (var pair = 1, odd = 1, tempAcc = 0, tempAngle = angle, angleAcc = spellModel.isMultiple ? 360 : 90, i = 0; numFires > i; i++) {
+            i > 0 && (i % 2 === 0 ? (tempAcc = pair, pair++) : (tempAcc = -odd, odd++), tempAngle = angle + tempAcc * (angleAcc / numFires) * Math.PI / 180);
             var tempFire = new Fire({
                 x: tempFireSpeed * Math.sin(tempAngle),
                 y: tempFireSpeed * Math.cos(tempAngle)
             });
-            tempFire.timeLive = this.fireStepLive / 5, this.spellModel && (this.playerModel.spellPower = this.spellModel.spellPower), 
-            tempFire.fireType = "magical", tempFire.power = this.playerModel.getDemage("magical"), 
+            tempFire.timeLive = this.fireStepLive / 5, spellModel && (this.playerModel.spellPower = spellModel.spellPower, 
+            tempFire.imgSource = spellModel.srcImg), tempFire.fireType = "magical", tempFire.power = this.playerModel.getDemage("magical"), 
             tempFire.range *= 1.5, tempFire.build(), tempFire.getContent().scale.x = 2, tempFire.getContent().scale.y = 2, 
             tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y + 10), this.layer.addChild(tempFire), 
             this.fireFreqAcum = tempFireFreq;
         }
     },
-    shoot: function(mousePos) {
+    shoot: function(mousePos, weaponModel) {
         var angle = (-APP.getGameContent().position.x + windowWidth / 2 + mousePos.x, -APP.getGameContent().position.y + windowHeight / 2 + mousePos.y, 
         Math.atan2(windowHeight / 2 - mousePos.y + this.centerPosition.y, windowWidth / 2 - mousePos.x + this.centerPosition.x));
         angle = 180 * angle / Math.PI * -1, angle += 270, angle = angle / 180 * Math.PI;
@@ -822,7 +834,7 @@ var Application = AbstractApplication.extend({
                 x: tempFireSpeed * Math.sin(tempAngle),
                 y: tempFireSpeed * Math.cos(tempAngle)
             });
-            tempFire.timeLive = this.fireStepLive, this.weaponModel && (this.playerModel.weaponPower = this.weaponModel.battlePower), 
+            tempFire.timeLive = this.fireStepLive, weaponModel && (this.playerModel.weaponPower = weaponModel.battlePower), 
             tempFire.power = this.playerModel.getDemage("physical"), tempFire.build(), tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y + 10), 
             this.layer.addChild(tempFire), this.fireFreqAcum = tempFireFreq;
         }
@@ -1059,7 +1071,8 @@ var Application = AbstractApplication.extend({
         this.fireFreq <= 4 && (this.fireFreq = 4), this.fireFreq >= 150 && (this.fireFreq = 150), 
         this.velocity >= 10 && (this.velocity = 10), this.velocity <= 3 && (this.velocity = 3);
         var curveAcentValue = .15;
-        this.xp += Math.floor((level * (level / 3) + level + 3) / 5 * this.xp * level * curveAcentValue);
+        this.xp += Math.floor((level * (level / 3) + level + 3) / 5 * this.xp * level * curveAcentValue), 
+        console.log("enemy HP", this.hp, this.defenseModifier, level, this.fireFreq, this.xp);
     },
     getDemage: function(type) {
         var damageMultiplier = 0, demage = 0;
@@ -1178,8 +1191,9 @@ var Application = AbstractApplication.extend({
         this.name = name, this.status = status, this.baseValue = baseValue, this.price = price;
     }
 }), SpellModel = Class.extend({
-    init: function(level, name, mp, spellPower) {
-        this.level = level, this.name = name, this.mp = mp, this.spellPower = spellPower;
+    init: function(level, name, mp, spellPower, srcImg, isMultiple) {
+        this.level = level, this.name = name, this.mp = mp, this.spellPower = spellPower, 
+        this.srcImg = srcImg, this.isMultiple = isMultiple;
     }
 }), WeaponModel = Class.extend({
     init: function(name, battlePower, hitRate, price) {
@@ -1309,14 +1323,15 @@ var Application = AbstractApplication.extend({
             y: 80 * this.tempSizeTiles.y - 2 * this.mapPosition.y
         }, this.mouseDown = !1;
         var clss = "thief", rnd = Math.random();
-        .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = new PlayerModel(clss);
+        .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = new PlayerModel(clss), 
+        this.playerModel.mp = 8e3, this.playerModel.mpMax = 8e3;
     },
     destroy: function() {
         this._super();
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/spritesheet/dragon.json", "_dist/img/spritesheet/dragon.png", "_dist/img/dragao-perdido.png", "_dist/img/drop.png", "_dist/img/fireball.png", "_dist/img/spritesheet/chinesa.json", "_dist/img/spritesheet/chinesa.png" ];
+        var assetsToLoader = [ "_dist/img/spritesheet/dragon.json", "_dist/img/spritesheet/dragon.png", "_dist/img/dragao-perdido.png", "_dist/img/drop.png", "_dist/img/spritesheet/chinesa.json", "_dist/img/spritesheet/chinesa.png" ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad();
     },
     onAssetsLoaded: function() {
@@ -1363,10 +1378,10 @@ var Application = AbstractApplication.extend({
         }
     },
     spell: function() {
-        this.player.spell(APP.stage.getMousePosition());
+        this.player.spell(APP.stage.getMousePosition(), this.player.spellModel);
     },
     shoot: function() {
-        this.player.shoot(APP.stage.getMousePosition());
+        this.player.shoot(APP.stage.getMousePosition(), this.player.weaponModel);
     },
     update: function() {
         if (this.player) {
@@ -1444,8 +1459,9 @@ var Application = AbstractApplication.extend({
         this.levelGenerator.debugBounds(), this.levelGenerator.createDoors(), 1 !== this.currentNode.mode && this.levelGenerator.createHordes(), 
         this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
         this.getContent().position.x = -this.mapPosition.x, this.getContent().position.y = -this.mapPosition.y, 
-        this.player.build(), this.player.setSpellModel(APP.spellList[1]), this.player.setArmorModel(APP.armorList[0]), 
-        this.player.setWeaponModel(APP.weaponList[0]), this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
+        this.player.build(), this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]), 
+        this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
+        this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
         this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState + "   -    playerClass:" + this.playerModel.playerClass + "\nspell: " + this.player.spellModel.name + " - pow: " + this.player.spellModel.spellPower + " - mp: " + this.player.spellModel.mp + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status + "\nLEVEL: " + this.playerModel.level), 
         this.entityLayer.addChild(this.player), "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.levelBounds.y + this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.mapPosition.y + this.mapPosition.y - this.player.height) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width, this.levelBounds.y / 2 + this.player.height) : "right" === this.currentPlayerSide ? this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.player.height) : this.player.setPosition(this.mapPosition.x + this.levelBounds.x / 2, this.mapPosition.y + this.levelBounds.y / 2);
     },

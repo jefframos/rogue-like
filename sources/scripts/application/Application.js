@@ -20,95 +20,7 @@ var Application = AbstractApplication.extend({
         // this.gen.log();
         this.tileSize = {x:80, y: 80};
 
-       //  var model1 = new PlayerModel('warrior');
-       //  //model1.log();
-       //  model1.levelUp();
-       // // model1.log();
-       //  model1.levelUp();
-       // // model1.log();
-       //  model1.levelUp();
-       //  //model1.log();
-       //  model1.levelUp();
-       //  //model1.log();
-       //  model1.levelUp();
-       //  //model1.log();
-       //  model1.levelUp();
-       //  //model1.log();
-       //  model1.levelUp();
-       //  model1.log();
-
-       //  var model2 = new PlayerModel('mage');
-       //  //model2.log();
-       //  model2.levelUp();
-       // // model2.log();
-       //  model2.levelUp();
-       // // model2.log();
-       //  model2.levelUp();
-       //  //model2.log();
-       //  model2.levelUp();
-       //  //model2.log();
-       //  model2.levelUp();
-       //  //model2.log();
-       //  model2.levelUp();
-       //  //model2.log();
-       //  model2.levelUp();
-       //  model2.log();
-
-
-       //  var model3 = new PlayerModel('thief');
-       //  //model3.log();
-       //  model3.levelUp();
-       // // model3.log();
-       //  model3.levelUp();
-       // // model3.log();
-       //  model3.levelUp();
-       //  //model3.log();
-       //  model3.levelUp();
-       //  //model3.log();
-       //  model3.levelUp();
-       //  //model3.log();
-       //  model3.levelUp();
-       //  //model3.log();
-       //  model3.levelUp();
-        
-
-       //  model3.levelUp();
-       //  model3.levelUp();
-       //  model3.levelUp();
-       //  model3.levelUp();
-       //  model3.levelUp();
-       //  model3.levelUp();
-       //  model3.levelUp();
-       //  model3.levelUp();
-       //  model3.levelUp();
-       //  model3.levelUp();
-       //  model3.levelUp();
-       //  model3.log();
-
-        // var model2 = new MonsterModel();
-        //level,hp,speed,magicPower,battlePower,defense, magDef
-        // var monster = new MonsterModel(8,860,35,10,16,125,150);
-        // var monster = new MonsterModel(12,230,35,10,13,150,100);
-        // var monster = new MonsterModel(24,1305,40,10,22,225,45);
-        // var monster = new MonsterModel(19,8000,55,55,13,140,160);
-
-        // console.log('thief');
-        // console.log('player physical attack', monster.getHurt(model3.getDemage('physical'),'physical'));
-        // console.log('player magical attack', monster.getHurt(model3.getDemage('magical'),'magical'));
-        // console.log('monster physical attack', model3.getHurt(monster.getDemage('physical'),'physical'));
-        // console.log('monster magical attack', model3.getHurt(monster.getDemage('magical'),'magical'));
-
-        // console.log('warrior');
-        // console.log('player physical attack', monster.getHurt(model1.getDemage('physical'),'physical'));
-        // console.log('player magical attack', monster.getHurt(model1.getDemage('magical'),'magical'));
-        // console.log('monster physical attack', model1.getHurt(monster.getDemage('physical'),'physical'));
-        // console.log('monster magical attack', model1.getHurt(monster.getDemage('magical'),'magical'));
-
-        // console.log('mage');
-        // console.log('player physical attack', monster.getHurt(model2.getDemage('physical'),'physical'));
-        // console.log('player magical attack', monster.getHurt(model2.getDemage('magical'),'magical'));
-        // console.log('monster physical attack', model2.getHurt(monster.getDemage('physical'),'physical'));
-        // console.log('monster magical attack', model2.getHurt(monster.getDemage('magical'),'magical'));
+     
 	},
     getEffectsContainer:function(){
         return this.mainApp.effectsContainer;
@@ -129,31 +41,32 @@ var Application = AbstractApplication.extend({
         // this.monsterList.push(new MonsterModel(1,150,55,55,13,140,160, 20));
         //level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp
         // this.monsterList.push(new MonsterModel(1,150,30,55,55,13,140,160, 20));
-        this.monsterList.push(new MonsterModel(10,1,50,55,13,13,70,70, 10));
+        this.monsterList.push(new MonsterModel(1,80,50,55,13,13,70,70, 10));
+        this.monsterList.push(new MonsterModel(5,80,50,55,13,13,70,70, 10));
         this.monsterList.push(new MonsterModel(10,80,50,55,13,13,70,70, 10));
         this.monsterList.push(new MonsterModel(20,80,50,55,13,13,70,70, 10));
         // this.monsterList.push(new MonsterModel(1,150,30,55,55,13,140,160, 10));
 
 
         this.spellList = [];
-        this.spellList.push(new SpellModel(1,'bolt1',6,20));
-        this.spellList.push(new SpellModel(1,'fire1',4,21));
-        this.spellList.push(new SpellModel(1,'ice1',5,22));
-        this.spellList.push(new SpellModel(1,'poison',3,25));
-        this.spellList.push(new SpellModel(1,'wind',75,25));//multiple1
-        this.spellList.push(new SpellModel(2,'bolt2',22,26));
-        this.spellList.push(new SpellModel(2,'fire2',20,60));
-        this.spellList.push(new SpellModel(2,'ice2',21,62));
-        this.spellList.push(new SpellModel(2,'drain',15,38));//drain
-        this.spellList.push(new SpellModel(3,'meteor',62,36));//multiple
-        this.spellList.push(new SpellModel(3,'bio',26,53));
-        this.spellList.push(new SpellModel(3,'flare',45,60));
-        this.spellList.push(new SpellModel(4,'quake',50,111));//multiple
-        this.spellList.push(new SpellModel(5,'bolt3',53,120));
-        this.spellList.push(new SpellModel(5,'fire3',51,121));
-        this.spellList.push(new SpellModel(5,'ice3',52,122));
-        this.spellList.push(new SpellModel(6,'merton',85,138));
-        this.spellList.push(new SpellModel(7,'ultima',80,150));//multiple
+        this.spellList.push(new SpellModel(1,'bolt1',6,20, '_dist/img/spells/bolt1.png'));
+        this.spellList.push(new SpellModel(1,'fire1',4,21, '_dist/img/spells/fire1.png'));
+        this.spellList.push(new SpellModel(1,'ice1',5,22, '_dist/img/spells/ice1.png'));
+        this.spellList.push(new SpellModel(1,'poison',3,25, '_dist/img/spells/poison.png'));
+        this.spellList.push(new SpellModel(1,'wind',75,25, '_dist/img/spells/wind.png', true));//multiple1
+        this.spellList.push(new SpellModel(2,'bolt2',22,26, '_dist/img/spells/bolt2.png'));
+        this.spellList.push(new SpellModel(2,'fire2',20,60, '_dist/img/spells/fire2.png'));
+        this.spellList.push(new SpellModel(2,'ice2',21,62, '_dist/img/spells/ice2.png'));
+        this.spellList.push(new SpellModel(2,'drain',15,38, '_dist/img/spells/drain.png'));//drain
+        this.spellList.push(new SpellModel(3,'meteor',62,36, '_dist/img/spells/meteor.png', true));//multiple
+        this.spellList.push(new SpellModel(3,'bio',26,53, '_dist/img/spells/bio.png'));
+        this.spellList.push(new SpellModel(3,'flare',45,60, '_dist/img/spells/flare.png'));
+        this.spellList.push(new SpellModel(4,'quake',50,111, '_dist/img/spells/quake.png', true));//multiple
+        this.spellList.push(new SpellModel(5,'bolt3',53,120, '_dist/img/spells/bolt3.png'));
+        this.spellList.push(new SpellModel(5,'fire3',51,121, '_dist/img/spells/fire3.png'));
+        this.spellList.push(new SpellModel(5,'ice3',52,122, '_dist/img/spells/ice3.png'));
+        this.spellList.push(new SpellModel(6,'merton',85,138, '_dist/img/spells/merton.png'));
+        this.spellList.push(new SpellModel(7,'ultima',80,150, '_dist/img/spells/ultima.png', true));//multiple
 
 
 

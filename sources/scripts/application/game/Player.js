@@ -153,37 +153,54 @@ var Player = SpritesheetEntity.extend({
             this.getContent().position.x = 20;
         }
     },
-    spell: function(mousePos){
-        if(this.spellModel.mp > this.playerModel.mp){
+    spell: function(mousePos, spellModel){
+        if(spellModel.mp > this.playerModel.mp){
             var pop = new PopUpText('red');
-            pop.setText('sem mp');
+            pop.setText('NO MP');
             APP.getEffectsContainer().addChild(pop.getContent());
             pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2 - 20);
             pop.initMotion(-15 - (Math.random() * 10), 0.8);
             return;
         }else{
-            this.playerModel.mp -= this.spellModel.mp;
+            this.playerModel.mp -= spellModel.mp;
             var pop2 = new PopUpText('blue');
-            pop2.setText('-' + this.spellModel.mp+' MP');
+            pop2.setText('-' + spellModel.mp+' MP');
             APP.getEffectsContainer().addChild(pop2.getContent());
             pop2.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2 - 20);
             pop2.initMotion(-15 - (Math.random() * 10), 0.8);
         }
-        var numFires = 10;
+
+        var numFires = spellModel.isMultiple?10 :3;
         var tempFireSpeed = this.fireSpeed * 2;
         var tempFireFreq = this.fireFreq;
-
         var angle = Math.atan2( windowHeight/2 - mousePos.y + this.centerPosition.y,  windowWidth/2-mousePos.x+ this.centerPosition.x);
-        var tempAngle = angle;
+        // var angle = Math.atan2(this.getPosition().y-mousePos.y,  this.getPosition().x-mousePos.x);
+        angle = angle * 180 / Math.PI * -1;
+        angle += 90 + 180;
+        angle = angle / 180 * Math.PI;
 
+        var pair = 1;
+        var odd = 1;
+        var tempAcc = 0;
+        var tempAngle = angle;
+        var angleAcc = spellModel.isMultiple?360 :90;
         for (var i = 0; i < numFires; i++) {
-            
-            tempAngle = angle + ((360 / numFires)*i) * Math.PI / 180;
-            // var tempFire = new Fire({x:this.fireSpeed * Math.sin(angle * i), y: this.fireSpeed * Math.cos(angle * i)});
+            if(i > 0){
+                if(i % 2 === 0){
+                    tempAcc = pair;
+                    pair ++;
+                }else
+                {
+                    tempAcc = -odd;
+                    odd ++;
+                }
+                tempAngle = angle + tempAcc * (angleAcc / numFires) * Math.PI / 180;
+            }
             var tempFire = new Fire({x:tempFireSpeed * Math.sin(tempAngle), y: tempFireSpeed * Math.cos(tempAngle)});
             tempFire.timeLive = this.fireStepLive / 5;
-            if(this.spellModel){
-                this.playerModel.spellPower = this.spellModel.spellPower;
+            if(spellModel){
+                this.playerModel.spellPower = spellModel.spellPower;
+                tempFire.imgSource = spellModel.srcImg;
             }
 
             tempFire.fireType = 'magical';
@@ -197,7 +214,7 @@ var Player = SpritesheetEntity.extend({
             this.fireFreqAcum = tempFireFreq;
         }
     },
-    shoot: function(mousePos){
+    shoot: function(mousePos, weaponModel){
         var self = this;
         var mouseX = -APP.getGameContent().position.x + windowWidth/2  + mousePos.x;
         var mouseY = -APP.getGameContent().position.y + windowHeight/2  + mousePos.y;
@@ -245,8 +262,8 @@ var Player = SpritesheetEntity.extend({
             // var tempFire = new Fire({x:this.fireSpeed * Math.sin(angle * i), y: this.fireSpeed * Math.cos(angle * i)});
             var tempFire = new Fire({x:tempFireSpeed * Math.sin(tempAngle), y: tempFireSpeed * Math.cos(tempAngle)});
             tempFire.timeLive = this.fireStepLive;
-            if(this.weaponModel){
-                this.playerModel.weaponPower = this.weaponModel.battlePower;
+            if(weaponModel){
+                this.playerModel.weaponPower = weaponModel.battlePower;
             }
             tempFire.power = this.playerModel.getDemage('physical');
             tempFire.build();

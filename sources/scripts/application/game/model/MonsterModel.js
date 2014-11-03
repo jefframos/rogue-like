@@ -32,7 +32,7 @@ var MonsterModel = Class.extend({
 		this.baseHPModifier = 1.62;
 		this.staminaModifier = 0.008;
 		this.level = level;
-		
+
 		this.updateLevel(level);
 	},
 	updateLevel: function(level){
@@ -74,7 +74,6 @@ var MonsterModel = Class.extend({
 		this.hp = this.hpMax;
 		this.velocity = 8 - (255 - this.speed) / 25 + 5;
 		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * (1.8 + (this.speedModifier*1000));
-		// console.log('enemy HP', this.hp, this.defenseModifier, level, this.fireFreq);
 
 		if(this.fireFreq <= 4)
 		{
@@ -98,6 +97,7 @@ var MonsterModel = Class.extend({
 		var curveAcentValue = 0.15;
 		this.xp += Math.floor((level*(level/3)+level+3)/5 * this.xp * (level * curveAcentValue));
 
+		console.log('enemy HP', this.hp, this.defenseModifier, level, this.fireFreq, this.xp);
 
 		// var calcXP = (level*level+level+3)/4* 20 * level;
 		// console.log(calcXP, 'level', level);
