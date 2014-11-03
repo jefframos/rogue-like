@@ -181,7 +181,7 @@ var GameScreen = AbstractScreen.extend({
         
         // console.log(new BoundCollisionSystem(),'col system BoundCollisionSystem');
 
-        this.collisionSystem = new BoundCollisionSystem(this, true);
+        this.collisionSystem = new BoundCollisionSystem(this, false);
         // console.log(this.collisionSystem,'col system');
 
         this.effectsContainer = new PIXI.DisplayObjectContainer();
@@ -300,10 +300,6 @@ var GameScreen = AbstractScreen.extend({
 
             if(this.levelLabel){
                 this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+'roomState'+'   -    playerClass:'+this.playerModel.playerClass+
-                    // '\nspell: '+this.player.spellModel.name +' - pow: '+this.player.spellModel.spellPower +' - mp: '+this.player.spellModel.mp+
-                    '\narmor: '+this.player.armorModel.name +' - def: '+this.player.armorModel.defenseArmor +' - magDef: '+this.player.armorModel.magicDefenseArmor+
-                    '\nweapon: '+this.player.weaponModel.name +' - pow: '+this.player.weaponModel.battlePower +' - hitRate: '+this.player.weaponModel.hitRate+
-                    '\nrelic: '+this.player.relicModel.name +' - stat: '+this.player.relicModel.status+
                     '\nLEVEL: '+this.playerModel.level
                     );
             }
@@ -316,6 +312,7 @@ var GameScreen = AbstractScreen.extend({
 
             this.entityLayer.collideChilds(this.player);
             this.environmentLayer.collideChilds(this.player);
+            this.boundsCollision();
             //zera as posições aqui, caso encontre uma porte, por isso a colisao antes
             // if(((this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x ) && this.player.virtualVelocity.x < 0) ||
             //     ((this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > windowWidth -  this.mapPosition.x)&& this.player.virtualVelocity.x > 0)){
@@ -326,14 +323,6 @@ var GameScreen = AbstractScreen.extend({
             //     this.player.virtualVelocity.y = 0;
             // } ----<< OLD
             // RETIREI AS mapPosition, VER ACIMA COMO ERA
-            if(((this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x ) && this.player.virtualVelocity.x < 0) ||
-                ((this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > this.levelBounds.x  +  this.mapPosition.x)&& this.player.virtualVelocity.x > 0)){
-                this.player.virtualVelocity.x = 0;
-            }
-            if(((this.player.getPosition().y + this.player.virtualVelocity.y < this.mapPosition.y) && this.player.virtualVelocity.y < 0) ||
-                ((this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > this.levelBounds.y +  this.mapPosition.y)&& this.player.virtualVelocity.y > 0)){
-                this.player.virtualVelocity.y = 0;
-            }
 
             for (var i = 0; i < this.entityLayer.childs.length; i++) {
                 if(this.entityLayer.childs[i].type === 'fire'){
@@ -384,6 +373,28 @@ var GameScreen = AbstractScreen.extend({
             this.killLevel(this.resetLevel);
             this.player = null;
         }
+    },
+    boundsCollision:function(){
+
+        for (var i = 0; i < this.entityLayer.childs.length; i++) {
+            var tempEntity = this.entityLayer.childs[i];
+            if(((tempEntity.getPosition().x + tempEntity.virtualVelocity.x < this.mapPosition.x ) && tempEntity.virtualVelocity.x < 0) ||
+            ((tempEntity.getPosition().x + tempEntity.width + tempEntity.virtualVelocity.x > this.levelBounds.x  +  this.mapPosition.x)&& tempEntity.virtualVelocity.x > 0)){
+                tempEntity.virtualVelocity.x = 0;
+            }
+            if(((tempEntity.getPosition().y + tempEntity.virtualVelocity.y < this.mapPosition.y) && tempEntity.virtualVelocity.y < 0) ||
+                ((tempEntity.getPosition().y + tempEntity.height + tempEntity.virtualVelocity.y > this.levelBounds.y +  this.mapPosition.y)&& tempEntity.virtualVelocity.y > 0)){
+                tempEntity.virtualVelocity.y = 0;
+            }
+        }
+        // if(((this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x ) && this.player.virtualVelocity.x < 0) ||
+        //     ((this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > this.levelBounds.x  +  this.mapPosition.x)&& this.player.virtualVelocity.x > 0)){
+        //     this.player.virtualVelocity.x = 0;
+        // }
+        // if(((this.player.getPosition().y + this.player.virtualVelocity.y < this.mapPosition.y) && this.player.virtualVelocity.y < 0) ||
+        //     ((this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > this.levelBounds.y +  this.mapPosition.y)&& this.player.virtualVelocity.y > 0)){
+        //     this.player.virtualVelocity.y = 0;
+        // }
     },
     killLevel:function(callback){
         // console.log('kill here');
@@ -454,6 +465,7 @@ var GameScreen = AbstractScreen.extend({
 
         this.levelGenerator.debugBounds();
         this.levelGenerator.createDoors();
+        this.levelGenerator.putObstacles();
         if(this.currentNode.mode !== 1){
             //definir um valor de level de hora a ser gerado, pode ser o ID ou a distancia até o centro
             //ou até mesmo o proprio level do player
@@ -486,33 +498,8 @@ var GameScreen = AbstractScreen.extend({
         this.equips[1] = this.player.armorModel;
         this.equips[2] = this.player.relicModel;
         this.updateHUD();
-        this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+roomState+'   -    playerClass:'+this.playerModel.playerClass+
-            // '\nspell: '+this.player.spellModel.name +' - pow: '+this.player.spellModel.spellPower +' - mp: '+this.player.spellModel.mp+
-            '\narmor: '+this.player.armorModel.name +' - def: '+this.player.armorModel.defenseArmor +' - magDef: '+this.player.armorModel.magicDefenseArmor+
-            '\nweapon: '+this.player.weaponModel.name +' - pow: '+this.player.weaponModel.battlePower +' - hitRate: '+this.player.weaponModel.hitRate+
-            '\nrelic: '+this.player.relicModel.name +' - stat: '+this.player.relicModel.status+
-            '\nLEVEL: '+this.playerModel.level
-            );
+ 
 
-        // if(this.currentPlayerSide === 'up')
-        // {
-        //     this.player.setPosition(windowWidth/2,windowHeight - this.mapPosition.y- this.player.height);
-
-        // }else if(this.currentPlayerSide === 'down')
-        // {
-        //     this.player.setPosition(windowWidth/2,this.mapPosition.y );
-        // }else if(this.currentPlayerSide === 'left')
-        // {
-        //     this.player.setPosition(windowWidth - this.mapPosition.x - this.player.width ,windowHeight/2 - this.player.height/2);
-        // }else if(this.currentPlayerSide === 'right')
-        // {
-        //     this.player.setPosition(this.mapPosition.x,windowHeight/2- this.player.height/2);
-        // } ---<<< OLD
-
-
-
-        
-        
         
         this.entityLayer.addChild(this.player);
 

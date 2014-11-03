@@ -1,6 +1,18 @@
 /*jshint undef:false */
 var MonsterModel = Class.extend({
 	init: function (level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp){
+
+		this.initiallevel = level;
+		this.initialhp = hp;
+		this.initialstamina = stamina;
+		this.initialspeed = speed;
+		this.initialmagicPower = magicPower;
+		this.initialbattlePower = battlePower;
+		this.initialdefense = defense;
+		this.initialmagicDefense = magicDefense;
+		this.initialxp = xp;
+
+
 		this.level = level;
 		this.hpMax = hp;
 		this.speed = speed;
@@ -24,7 +36,7 @@ var MonsterModel = Class.extend({
 		this.spellPower = 9; //speel do bolt
 
 
-        this.speedModifier = 0.007;
+        this.speedModifier = 0.005;
 		this.magicPowerModifier = 0.004;
         this.battlePowerModifier = 0.005;
 		this.defenseModifier = 0.004;
@@ -33,11 +45,24 @@ var MonsterModel = Class.extend({
 		this.staminaModifier = 0.008;
 		this.level = level;
 
-		this.updateLevel(level);
+		// this.updateLevel(level);
+	},
+	clone: function(){
+		return new MonsterModel(this.initiallevel,
+		this.initialhp,
+		this.initialstamina,
+		this.initialspeed,
+		this.initialmagicPower,
+		this.initialbattlePower,
+		this.initialdefense,
+		this.initialmagicDefense,
+		this.initialxp);
 	},
 	updateLevel: function(level){
+		console.log('updateLevel', level);
 		this.level = level;
         this.speed += level * ((this.speed*this.speed+this.speed+3)/4*this.speedModifier);
+        console.log(this.speed);
 		this.magicPower += level * ((this.magicPower*this.magicPower+this.magicPower+3)/4*this.magicPowerModifier);
         this.battlePower += level * ((this.battlePower*this.battlePower+this.battlePower+3)/4*this.battlePowerModifier);
 		this.defense += level * ((this.defense*this.defense+this.defense+3)/4*this.defenseModifier);
@@ -92,10 +117,9 @@ var MonsterModel = Class.extend({
 			this.velocity = 3;
 		}
 
-
-
 		var curveAcentValue = 0.15;
 		this.xp += Math.floor((level*(level/3)+level+3)/5 * this.xp * (level * curveAcentValue));
+
 
 		console.log('enemy HP', this.hp, this.defenseModifier, level, this.fireFreq, this.xp);
 

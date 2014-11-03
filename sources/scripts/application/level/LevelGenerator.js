@@ -6,19 +6,36 @@ var LevelGenerator = Class.extend({
 	createHordes: function(){
 		var tempMonster = null;
 		for (var i = 0; i < 1; i++) {
-			// APP.monsterList[0].level = this.parent.playerModel.level;
-			tempMonster = new Enemy(this.parent.player, APP.monsterList[0]);
+			
+			tempMonster = new Enemy(this.parent.player, APP.monsterList[0].clone());
+			if(this.parent.currentNode.id >= 10){
+				// tempMonster.monsterModel.level = 10;
+				tempMonster.monsterModel.updateLevel(10);
+			}else{
+				tempMonster.monsterModel.updateLevel(1);
+			}
 			tempMonster.build();
 			tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.x,this.parent.levelBounds.y * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.y);
 			this.parent.entityLayer.addChild(tempMonster);
 		}
 	},
 	putObstacles: function(){
-		for (var i = this.parent.level.length - 1; i >= 0; i--) {
-			for (var j = this.parent.level[i].length - 1; j >= 0; j--) {
-				if(this.parent.level[i][j] > 0)
+		// for (var i = this.parent.level.length - 1; i >= 0; i--) {
+		// 	for (var j = this.parent.level[i].length - 1; j >= 0; j--) {
+		// 		if(this.parent.level[i][j] > 0)
+		// 		{
+		// 			var obs = new Obstacle(this.parent.level[i][j] - 1);
+		// 			obs.build();
+		// 			obs.setPosition((j)* APP.tileSize.x+ this.parent.mapPosition.x, (i+1)* APP.tileSize.y+ this.parent.mapPosition.y);
+		// 			this.parent.entityLayer.addChild(obs);
+		// 		}
+		// 	}
+		// }
+		for (var i = this.parent.marginTiles.x + 1; i < this.parent.tempSizeTiles.x-this.parent.marginTiles.x + 1; i++) {
+			for (var j = this.parent.marginTiles.y + 1; j < this.parent.tempSizeTiles.y-this.parent.marginTiles.y + 1; j++) {
+				if(this.parent.currentNode.getNextFloat() > 0.95)
 				{
-					var obs = new Obstacle(this.parent.level[i][j] - 1);
+					var obs = new Obstacle(1);
 					obs.build();
 					obs.setPosition((j)* APP.tileSize.x+ this.parent.mapPosition.x, (i+1)* APP.tileSize.y+ this.parent.mapPosition.y);
 					this.parent.entityLayer.addChild(obs);

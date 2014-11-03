@@ -12,10 +12,6 @@ var Enemy = SpritesheetEntity.extend({
         this.boundsCollision = true;
         this.player = player;
         this.monsterModel = model;
-        this.fireFreq = this.monsterModel.fireFreq;
-        this.defaultVelocity = this.monsterModel.speed/10;
-        this.behaviour = new DefaultBehaviour(this, player);
-        this.hp = this.monsterModel.hp;
     },
     hurt:function(demage, type){
         
@@ -30,16 +26,23 @@ var Enemy = SpritesheetEntity.extend({
         pop.initMotion(-10 - (Math.random() * 10), 0.5);
         this.getTexture().tint = 0xFF0000;
 
-        // console.log(this.hp ,trueDemage);
         if(this.hp <= 0){
             this.preKill();
             var trueXP = this.monsterModel.xp + ((this.monsterModel.level - this.player.playerModel.level)*0.15*this.monsterModel.xp) + 1;
-            // console.log(this.monsterModel.xp, trueXP);
             this.player.playerModel.updateXp(trueXP);
         }
     },
     build: function(){
         // console.log('criou o Heart');
+        this.fireFreq = this.monsterModel.fireFreq;
+        this.defaultVelocity = this.monsterModel.speed/15;
+        if(this.defaultVelocity < 4){
+            this.defaultVelocity = 4;
+        }
+        this.hp = this.monsterModel.hp;
+        this.behaviour = new DefaultBehaviour(this, this.player);
+        console.log('HP', this.hp);
+
         var self = this;
         var motionArray = this.getFramesByRange('dragon10',0,14);
         var animationIdle = new SpritesheetAnimation();
@@ -53,7 +56,9 @@ var Enemy = SpritesheetEntity.extend({
         this.collidable = true;
     },
     update: function(){
-        this.behaviour.update();
+        if(this.behaviour){
+            this.behaviour.update();
+        }
         if(!this.isTouch){
             this.velocity = this.virtualVelocity;
         }

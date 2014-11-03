@@ -16,6 +16,10 @@ function update() {
     meter.tick();
 }
 
+function pointDistance(x, y, x0, y0) {
+    return Math.sqrt((x -= x0) * x + (y -= y0) * y);
+}
+
 var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ], [ [ 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 2 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ] ], [ [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ] ], [ [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ] ], [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ] ], DungeonGenerator = Class.extend({
     init: function() {
         this.random = 0, this.numActivesNodes = 0, this.maxDist = 5, this.minNodes = 5, 
@@ -186,9 +190,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this.monsterList = [], this.monsterList.push(new MonsterModel(1, 80, 50, 55, 13, 13, 70, 70, 10)), 
-        this.monsterList.push(new MonsterModel(5, 80, 50, 55, 13, 13, 70, 70, 10)), this.monsterList.push(new MonsterModel(10, 80, 50, 55, 13, 13, 70, 70, 10)), 
-        this.monsterList.push(new MonsterModel(20, 80, 50, 55, 13, 13, 70, 70, 10)), this.spellList = [], 
-        this.spellList.push(new SpellModel(1, "bolt1", 6, 20, "_dist/img/spells/icos/bolt1.png", "_dist/img/spells/bolt1.png")), 
+        this.spellList = [], this.spellList.push(new SpellModel(1, "bolt1", 6, 20, "_dist/img/spells/icos/bolt1.png", "_dist/img/spells/bolt1.png")), 
         this.spellList.push(new SpellModel(1, "fire1", 4, 21, "_dist/img/spells/icos/fire1.png", "_dist/img/spells/fire1.png")), 
         this.spellList.push(new SpellModel(1, "ice1", 5, 22, "_dist/img/spells/icos/ice1.png", "_dist/img/spells/ice1.png")), 
         this.spellList.push(new SpellModel(1, "poison", 3, 25, "_dist/img/spells/icos/poison.png", "_dist/img/spells/poison.png")), 
@@ -1031,9 +1033,7 @@ var Application = AbstractApplication.extend({
     init: function(player, model) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = APP.tileSize.x / 2, 
         this.width = .9 * APP.tileSize.x, this.height = .9 * APP.tileSize.y, this.type = "enemy", 
-        this.node = null, this.boundsCollision = !0, this.player = player, this.monsterModel = model, 
-        this.fireFreq = this.monsterModel.fireFreq, this.defaultVelocity = this.monsterModel.speed / 10, 
-        this.behaviour = new DefaultBehaviour(this, player), this.hp = this.monsterModel.hp;
+        this.node = null, this.boundsCollision = !0, this.player = player, this.monsterModel = model;
     },
     hurt: function(demage, type) {
         var trueDemage = this.monsterModel.getHurt(demage, type);
@@ -1049,6 +1049,9 @@ var Application = AbstractApplication.extend({
         }
     },
     build: function() {
+        this.fireFreq = this.monsterModel.fireFreq, this.defaultVelocity = this.monsterModel.speed / 15, 
+        this.defaultVelocity < 4 && (this.defaultVelocity = 4), this.hp = this.monsterModel.hp, 
+        this.behaviour = new DefaultBehaviour(this, this.player), console.log("HP", this.hp);
         var motionArray = this.getFramesByRange("dragon10", 0, 14), animationIdle = new SpritesheetAnimation();
         animationIdle.build("idle", motionArray, 1, !0, null), this.spritesheet = new Spritesheet(), 
         this.spritesheet.addAnimation(animationIdle), this.spritesheet.play("idle"), this.centerPosition = {
@@ -1057,7 +1060,7 @@ var Application = AbstractApplication.extend({
         }, this.updateable = !0, this.collidable = !0;
     },
     update: function() {
-        this.behaviour.update(), this.isTouch || (this.velocity = this.virtualVelocity), 
+        this.behaviour && this.behaviour.update(), this.isTouch || (this.velocity = this.virtualVelocity), 
         this._super(), this.getBounds(), this.getTexture() && (this.getContent().position.x = 20);
     },
     preKill: function() {
@@ -1121,23 +1124,25 @@ var Application = AbstractApplication.extend({
     }
 }), DefaultBehaviour = Class.extend({
     init: function(entity, player) {
-        this.player = player, this.entity = entity, this.life = 8, this.entity.setVelocity(-2, 3 * (Math.random() - .5)), 
-        this.sideAcum = 0, this.sideMaxAcum = 200, this.fireFreq = entity.fireFreq + 30 * Math.random(), 
-        this.maxFireFreq = entity.fireFreq, this.fireAcum = 0, this.fireSpeed = 6;
+        this.player = player, this.entity = entity, this.fireFreq = entity.fireFreq + 30 * Math.random(), 
+        this.maxFireFreq = entity.fireFreq, this.fireAcum = 0, this.walkAccum = 0, this.fireTimeLive = 50, 
+        this.velocity = entity.defaultVelocity, this.maxWalkAccum = 5 * this.velocity, this.fireSpeed = 1.5 * this.velocity;
     },
     update: function() {
-        this.fireFreq--, this.fireFreq < 0 && (this.shoot(), this.fireFreq = this.maxFireFreq);
+        this.walkAccum--, this.walkAccum < 0 && (this.entity.setVelocity(Math.sin(360 * Math.random() / 180 * Math.PI) * this.velocity * .8, Math.cos(360 * Math.random() / 180 * Math.PI) * this.velocity * .8), 
+        this.walkAccum = this.maxWalkAccum), this.fireFreq--, this.fireFreq < 0 && pointDistance(this.entity.getPosition().x, this.entity.getPosition().y, this.player.getPosition().x, this.player.getPosition().y) < this.fireTimeLive * this.fireSpeed * 2 && (this.shoot(), 
+        this.fireFreq = this.maxFireFreq);
     },
     shoot: function() {
         var angle = Math.atan2(this.entity.getPosition().y + this.entity.centerPosition.y - this.player.getPosition().y, this.entity.getPosition().x + this.entity.centerPosition.x - this.player.getPosition().x);
         angle = 180 * angle / Math.PI * -1, angle += 270, angle = angle / 180 * Math.PI;
-        for (var numFires = 1, tempFireSpeed = 5, pair = 1, odd = 1, tempAcc = 0, tempAngle = angle, i = 0; numFires > i; i++) {
+        for (var numFires = 1, tempFireSpeed = this.fireSpeed, pair = 1, odd = 1, tempAcc = 0, tempAngle = angle, i = 0; numFires > i; i++) {
             i > 0 && (i % 2 === 0 ? (tempAcc = pair, pair++) : (tempAcc = -odd, odd++), tempAngle = angle + 10 * tempAcc * Math.PI / 180);
             var tempFire = new Fire({
                 x: tempFireSpeed * Math.sin(tempAngle),
                 y: tempFireSpeed * Math.cos(tempAngle)
             });
-            tempFire.timeLive = 50, tempFire.power = this.entity.monsterModel.getDemage(this.entity.monsterModel.attackType), 
+            tempFire.timeLive = this.fireTimeLive, tempFire.power = this.entity.monsterModel.getDemage(this.entity.monsterModel.attackType), 
             tempFire.build(), tempFire.target = "player", tempFire.setPosition(this.entity.getPosition().x + 40, this.entity.getPosition().y + 10), 
             this.entity.layer.addChild(tempFire);
         }
@@ -1166,17 +1171,23 @@ var Application = AbstractApplication.extend({
     }
 }), MonsterModel = Class.extend({
     init: function(level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp) {
-        this.level = level, this.hpMax = hp, this.speed = speed, this.magicPower = magicPower, 
-        this.battlePower = battlePower, this.defense = defense, this.magicDefense = magicDefense, 
-        this.stamina = stamina, this.critialChance = 0, this.speedStatus = "normal", this.attackType = "physical", 
+        this.initiallevel = level, this.initialhp = hp, this.initialstamina = stamina, this.initialspeed = speed, 
+        this.initialmagicPower = magicPower, this.initialbattlePower = battlePower, this.initialdefense = defense, 
+        this.initialmagicDefense = magicDefense, this.initialxp = xp, this.level = level, 
+        this.hpMax = hp, this.speed = speed, this.magicPower = magicPower, this.battlePower = battlePower, 
+        this.defense = defense, this.magicDefense = magicDefense, this.stamina = stamina, 
+        this.critialChance = 0, this.speedStatus = "normal", this.attackType = "physical", 
         magicPower > battlePower && (this.attackType = "magical"), this.xp = xp ? xp : 100, 
-        this.spellPower = 9, this.speedModifier = .007, this.magicPowerModifier = .004, 
+        this.spellPower = 9, this.speedModifier = .005, this.magicPowerModifier = .004, 
         this.battlePowerModifier = .005, this.defenseModifier = .004, this.magicDefenseModifier = .004, 
-        this.baseHPModifier = 1.62, this.staminaModifier = .008, this.level = level, this.updateLevel(level);
+        this.baseHPModifier = 1.62, this.staminaModifier = .008, this.level = level;
+    },
+    clone: function() {
+        return new MonsterModel(this.initiallevel, this.initialhp, this.initialstamina, this.initialspeed, this.initialmagicPower, this.initialbattlePower, this.initialdefense, this.initialmagicDefense, this.initialxp);
     },
     updateLevel: function(level) {
-        this.level = level, this.speed += level * ((this.speed * this.speed + this.speed + 3) / 4) * this.speedModifier, 
-        this.magicPower += level * ((this.magicPower * this.magicPower + this.magicPower + 3) / 4) * this.magicPowerModifier, 
+        console.log("updateLevel", level), this.level = level, this.speed += level * ((this.speed * this.speed + this.speed + 3) / 4) * this.speedModifier, 
+        console.log(this.speed), this.magicPower += level * ((this.magicPower * this.magicPower + this.magicPower + 3) / 4) * this.magicPowerModifier, 
         this.battlePower += level * ((this.battlePower * this.battlePower + this.battlePower + 3) / 4) * this.battlePowerModifier, 
         this.defense += level * ((this.defense * this.defense + this.defense + 3) / 4) * this.defenseModifier, 
         this.magicDefense += level * ((this.magicDefense * this.magicDefense + this.magicDefense + 3) / 4) * this.magicDefenseModifier, 
@@ -1325,13 +1336,14 @@ var Application = AbstractApplication.extend({
         this.parent = parent;
     },
     createHordes: function() {
-        for (var tempMonster = null, i = 0; 1 > i; i++) tempMonster = new Enemy(this.parent.player, APP.monsterList[0]), 
+        for (var tempMonster = null, i = 0; 1 > i; i++) tempMonster = new Enemy(this.parent.player, APP.monsterList[0].clone()), 
+        tempMonster.monsterModel.updateLevel(this.parent.currentNode.id >= 10 ? 10 : 1), 
         tempMonster.build(), tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.x, this.parent.levelBounds.y * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.y), 
         this.parent.entityLayer.addChild(tempMonster);
     },
     putObstacles: function() {
-        for (var i = this.parent.level.length - 1; i >= 0; i--) for (var j = this.parent.level[i].length - 1; j >= 0; j--) if (this.parent.level[i][j] > 0) {
-            var obs = new Obstacle(this.parent.level[i][j] - 1);
+        for (var i = this.parent.marginTiles.x + 1; i < this.parent.tempSizeTiles.x - this.parent.marginTiles.x + 1; i++) for (var j = this.parent.marginTiles.y + 1; j < this.parent.tempSizeTiles.y - this.parent.marginTiles.y + 1; j++) if (this.parent.currentNode.getNextFloat() > .95) {
+            var obs = new Obstacle(1);
             obs.build(), obs.setPosition(j * APP.tileSize.x + this.parent.mapPosition.x, (i + 1) * APP.tileSize.y + this.parent.mapPosition.y), 
             this.parent.entityLayer.addChild(obs);
         }
@@ -1488,7 +1500,7 @@ var Application = AbstractApplication.extend({
         this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent()), 
         this.minimap.build(), this.minimap.setPosition(windowWidth - .5 * this.minimap.getContent().width - 5, 10), 
         this.minimap.getContent().scale.x = .5, this.minimap.getContent().scale.y = .5, 
-        this.collisionSystem = new BoundCollisionSystem(this, !0), this.effectsContainer = new PIXI.DisplayObjectContainer(), 
+        this.collisionSystem = new BoundCollisionSystem(this, !1), this.effectsContainer = new PIXI.DisplayObjectContainer(), 
         this.addChild(this.effectsContainer), this.levelGenerator = new LevelGenerator(this), 
         this.resetLevel();
     },
@@ -1531,10 +1543,9 @@ var Application = AbstractApplication.extend({
     update: function() {
         if (this.player) {
             this.getContent().position.x = windowWidth / 2 - this.player.getPosition().x, this.getContent().position.y = windowHeight / 2 - this.player.getPosition().y, 
-            this.player.fireFreqAcum--, this.levelLabel && this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:roomState   -    playerClass:" + this.playerModel.playerClass + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status + "\nLEVEL: " + this.playerModel.level), 
+            this.player.fireFreqAcum--, this.levelLabel && this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:roomState   -    playerClass:" + this.playerModel.playerClass + "\nLEVEL: " + this.playerModel.level), 
             this.mouseDown && this.player.fireFreqAcum <= 0 && this.shoot(), this.entityLayer.collideChilds(this.player), 
-            this.environmentLayer.collideChilds(this.player), (this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x && this.player.virtualVelocity.x < 0 || this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > this.levelBounds.x + this.mapPosition.x && this.player.virtualVelocity.x > 0) && (this.player.virtualVelocity.x = 0), 
-            (this.player.getPosition().y + this.player.virtualVelocity.y < this.mapPosition.y && this.player.virtualVelocity.y < 0 || this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > this.levelBounds.y + this.mapPosition.y && this.player.virtualVelocity.y > 0) && (this.player.virtualVelocity.y = 0);
+            this.environmentLayer.collideChilds(this.player), this.boundsCollision();
             for (var i = 0; i < this.entityLayer.childs.length; i++) "fire" === this.entityLayer.childs[i].type && this.entityLayer.collideChilds(this.entityLayer.childs[i]);
             this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs);
         }
@@ -1551,6 +1562,13 @@ var Application = AbstractApplication.extend({
         this.currentNode.applySeed(), this.currentPlayerSide = this.player.nextDoorSide, 
         this.killLevel(this.resetLevel), this.player = null) : this.player && this.player.playerDead && (this.playerModel.resetPoints(), 
         this.killLevel(this.resetLevel), this.player = null);
+    },
+    boundsCollision: function() {
+        for (var i = 0; i < this.entityLayer.childs.length; i++) {
+            var tempEntity = this.entityLayer.childs[i];
+            (tempEntity.getPosition().x + tempEntity.virtualVelocity.x < this.mapPosition.x && tempEntity.virtualVelocity.x < 0 || tempEntity.getPosition().x + tempEntity.width + tempEntity.virtualVelocity.x > this.levelBounds.x + this.mapPosition.x && tempEntity.virtualVelocity.x > 0) && (tempEntity.virtualVelocity.x = 0), 
+            (tempEntity.getPosition().y + tempEntity.virtualVelocity.y < this.mapPosition.y && tempEntity.virtualVelocity.y < 0 || tempEntity.getPosition().y + tempEntity.height + tempEntity.virtualVelocity.y > this.levelBounds.y + this.mapPosition.y && tempEntity.virtualVelocity.y > 0) && (tempEntity.virtualVelocity.y = 0);
+        }
     },
     killLevel: function() {
         for (var self = this, k = this.entityLayer.childs.length - 1; k >= 0; k--) this.entityLayer.childs[k].preKill();
@@ -1601,14 +1619,14 @@ var Application = AbstractApplication.extend({
             x: 80 * this.tempSizeTiles.x - Math.floor(2 * this.mapPosition.x),
             y: 80 * this.tempSizeTiles.y - Math.floor(2 * this.mapPosition.y)
         }, this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : this.currentNode.bg = this.levelGenerator.createRoom(), 
-        this.levelGenerator.debugBounds(), this.levelGenerator.createDoors(), 1 !== this.currentNode.mode && this.levelGenerator.createHordes(), 
-        this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
+        this.levelGenerator.debugBounds(), this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), 
+        1 !== this.currentNode.mode && this.levelGenerator.createHordes(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
         this.getContent().position.x = -this.mapPosition.x, this.getContent().position.y = -this.mapPosition.y, 
         this.player.build(), this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
         this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
-        this.equips[2] = this.player.relicModel, this.updateHUD(), this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:" + roomState + "   -    playerClass:" + this.playerModel.playerClass + "\narmor: " + this.player.armorModel.name + " - def: " + this.player.armorModel.defenseArmor + " - magDef: " + this.player.armorModel.magicDefenseArmor + "\nweapon: " + this.player.weaponModel.name + " - pow: " + this.player.weaponModel.battlePower + " - hitRate: " + this.player.weaponModel.hitRate + "\nrelic: " + this.player.relicModel.name + " - stat: " + this.player.relicModel.status + "\nLEVEL: " + this.playerModel.level), 
-        this.entityLayer.addChild(this.player), "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.levelBounds.y + this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.mapPosition.y + this.mapPosition.y - this.player.height) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width, this.levelBounds.y / 2 + this.player.height) : "right" === this.currentPlayerSide ? this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.player.height) : this.player.setPosition(this.mapPosition.x + this.levelBounds.x / 2, this.mapPosition.y + this.levelBounds.y / 2);
+        this.equips[2] = this.player.relicModel, this.updateHUD(), this.entityLayer.addChild(this.player), 
+        "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.levelBounds.y + this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.mapPosition.y + this.mapPosition.y - this.player.height) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width, this.levelBounds.y / 2 + this.player.height) : "right" === this.currentPlayerSide ? this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.player.height) : this.player.setPosition(this.mapPosition.x + this.levelBounds.x / 2, this.mapPosition.y + this.levelBounds.y / 2);
     },
     depthCompare: function(a, b) {
         var yA = a.position.y, yB = b.position.y;

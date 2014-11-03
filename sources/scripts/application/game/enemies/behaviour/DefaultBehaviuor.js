@@ -3,20 +3,26 @@ var DefaultBehaviour = Class.extend({
 	init: function (entity, player){
 		this.player = player;
 		this.entity = entity;
-		this.life = 8;
-		this.entity.setVelocity(-2,(Math.random()-0.5)*3);
-		this.sideAcum = 0;
-		this.sideMaxAcum = 200;
 		this.fireFreq = entity.fireFreq + Math.random() * 30;
 		this.maxFireFreq = entity.fireFreq;
 		this.fireAcum = 0;
-		this.fireSpeed = 6;
+		this.walkAccum = 0;
+		this.fireTimeLive = 50;
+		this.velocity = entity.defaultVelocity;
+		this.maxWalkAccum = this.velocity * 5;
+		this.fireSpeed = this.velocity * 1.5;
 	},
 	update: function(){
-
+		this.walkAccum --;
+		if(this.walkAccum < 0){
+			this.entity.setVelocity(Math.sin((Math.random()* 360) / 180 * Math.PI) * this.velocity * 0.8,Math.cos((Math.random()* 360) / 180 * Math.PI) * this.velocity * 0.8);
+			this.walkAccum = this.maxWalkAccum;
+			// console.log(this.entity.velocity);
+		}
 		this.fireFreq --;
-		if(this.fireFreq < 0)
+		if(this.fireFreq < 0 && pointDistance(this.entity.getPosition().x, this.entity.getPosition().y, this.player.getPosition().x, this.player.getPosition().y) < (this.fireTimeLive * this.fireSpeed * 2))
 		{
+			// console.log(pointDistance(this.entity.getPosition().x, this.entity.getPosition().y, this.player.getPosition().x, this.player.getPosition().y));
 			this.shoot();
 			this.fireFreq = this.maxFireFreq;
 		}
@@ -30,7 +36,7 @@ var DefaultBehaviour = Class.extend({
 		angle = angle / 180 * Math.PI;
 
 		var numFires = 1;
-		var tempFireSpeed = 5;
+		var tempFireSpeed = this.fireSpeed;
 		var pair = 1;
 		var odd = 1;
 		var tempAcc = 0;
@@ -49,7 +55,7 @@ var DefaultBehaviour = Class.extend({
 
 			}
 			var tempFire = new Fire({x:tempFireSpeed * Math.sin(tempAngle), y: tempFireSpeed * Math.cos(tempAngle)});
-			tempFire.timeLive = 50;
+			tempFire.timeLive = this.fireTimeLive;
 			tempFire.power = this.entity.monsterModel.getDemage(this.entity.monsterModel.attackType);
 			// console.log('tempFire.power', tempFire.power);
 			tempFire.build();
