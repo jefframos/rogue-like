@@ -54,7 +54,7 @@ var LevelGenerator = Class.extend({
 			amplitude: 0.8,
 			persistence:0.2
 		};
-		var noise = generatePerlinNoise(this.parent.tempSizeTiles.x,this.parent.tempSizeTiles.y,opt,this.parent.currentNode.getNextFloat());
+		// var noise = generatePerlinNoise(this.parent.tempSizeTiles.x,this.parent.tempSizeTiles.y,opt,this.parent.currentNode.getNextFloat());
 		var ii = 0;
 		var jj = 0;
 		var tempTile = null;
@@ -75,10 +75,10 @@ var LevelGenerator = Class.extend({
 					var noiseID = (jj + Math.floor(ii * this.parent.tempSizeTiles.y));
 					var alphaacc = 0;
 					var distance = (this.pointDistance(ii,jj, Math.floor(this.parent.tempSizeTiles.x/2), Math.floor(this.parent.tempSizeTiles.y/2)) / maxDist);
-					if(noise[noiseID] < 0.5){
-						alphaacc = 0.1;//noise[noiseID];
-						// tempTile.getContent().alpha = 0.1 + 1 - (this.pointDistance(ii,jj, this.parent.tempSizeTiles.x/2, this.parent.tempSizeTiles.y/2) / maxDist);//noise[noiseID];
-					}
+					// if(noise[noiseID] < 0.5){
+					// 	alphaacc = 0.1;//noise[noiseID];
+					// 	// tempTile.getContent().alpha = 0.1 + 1 - (this.pointDistance(ii,jj, this.parent.tempSizeTiles.x/2, this.parent.tempSizeTiles.y/2) / maxDist);//noise[noiseID];
+					// }
 					
 					tempTile.getContent().alpha = 0.5 + (1 - distance) - alphaacc;
 				}
@@ -87,26 +87,146 @@ var LevelGenerator = Class.extend({
 				tempContainer.addChild(tempTile.getContent());
 			}
 		}
-		// var noise = new ClassicalNoise(Math);
-  
-		var nacum = 0;
-		for (ii = this.parent.marginTiles.x; ii < this.parent.tempSizeTiles.x-this.parent.marginTiles.x; ii++) {
-			for (jj = this.parent.marginTiles.y; jj < this.parent.tempSizeTiles.y-this.parent.marginTiles.y; jj++) {
-				if(this.parent.currentNode.getNextFloat() < 0.2){
-				// if(noise[(jj + Math.floor(ii * this.parent.tempSizeTiles.y))] < 0.5){
-					tempTile = new SimpleSprite('_dist/img/grama1.png');
-					tempTile.setPosition(ii * 80,jj * 80);
-					tempTile.getContent().cacheAsBitmap = true;
-					tempContainer.addChild(tempTile.getContent());
-				}
-			}
+
+
+
+		var mapMaker = null;
+		if(this.parent.currentNode.getNextFloat()< 0.3){
+			mapMaker = voronoiMap.islandShape.makeBlob(this.parent.currentNode.getNextFloat(), 0.5);
 		}
+		else if(this.parent.currentNode.getNextFloat()< 0.6){
+			mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), 0.5);
+		}
+		else{// if(this.parent.currentNode.getNextFloat()< 0.3){
+			mapMaker = voronoiMap.islandShape.makeSquare(this.parent.currentNode.getNextFloat(), 0.5);
+		}
+		var map = voronoiMap.map({width: this.parent.tempSizeTiles.x*80, height:this.parent.tempSizeTiles.y*80});
+		map.newIsland(mapMaker, 2);
+		console.log(map.newIsland);
+
+		console.log(map, this.parent.tempSizeTiles, this.parent.tempSizeTiles.x*this.parent.tempSizeTiles.y );
+		//map.mapRandom.seed
+		map.go0PlacePoints( this.parent.tempSizeTiles.x*this.parent.tempSizeTiles.y , voronoiMap.pointSelector.generateRandom(map.SIZE.width, map.SIZE.height, this.parent.currentNode.getNextFloat()));
+		// map.go0PlacePoints( this.parent.tempSizeTiles.x*this.parent.tempSizeTiles.y, voronoiMap.pointSelector.generateSquare(1, 1));
+		map.go1BuildGraph();
+		map.assignBiomes();
+		map.go2AssignElevations();
+		map.go3AssignMoisture();
+		map.go4DecorateMap();
+
+		console.log(map);
+		var nacum = 0;
+
+		for (ii = 0; ii < map.centers.length; ii++) {
+			//var centerID = (jj + Math.floor(ii * this.parent.tempSizeTiles.y));
+			console.log(map.centers[ii].point,map.centers[ii].biome);
+			
+			var tempX = Math.floor(map.centers[ii].point.y / 80)* 80;
+			var tempY = Math.floor(map.centers[ii].point.x / 80)* 80;
+
+			// var tempX = Math.floor(ii /  this.parent.tempSizeTiles.x);
+			// var tempY = ii - tempX * this.parent.tempSizeTiles.x;
+
+			// var tempX = Math.floor(ii /  Math.sqrt(map.centers.length));
+			// var tempY = ii - tempX * Math.sqrt(map.centers.length);
+
+			tempTile = new SimpleSprite('_dist/img/tile1.png');
+			if(map.centers[ii].biome === 'OCEAN')
+			{
+				tempTile.getContent().tint = 0x54354;
+			}
+			else if(map.centers[ii].biome === 'TEMPERATE_DECIDUOUS_FOREST'){
+				tempTile.getContent().tint = 0x27884a;
+			}
+			else if(map.centers[ii].biome === 'GRASSLAND'){
+				tempTile.getContent().tint = 0x2cca63;
+			}
+			else if(map.centers[ii].biome === 'TEMPERATE_RAIN_FOREST'){
+				tempTile.getContent().tint = 0x17604a;
+			}
+			else if(map.centers[ii].biome === 'TROPICAL_RAIN_FOREST'){
+				tempTile.getContent().tint = 0x27886b;
+			}
+			else if(map.centers[ii].biome === 'TROPICAL_SEASONAL_FOREST'){
+				tempTile.getContent().tint = 0x328827;
+			}
+			else if(map.centers[ii].biome === 'SUBTROPICAL_DESERT'){
+				tempTile.getContent().tint = 0xaab274;
+			}
+			else if(map.centers[ii].biome === 'TEMPERATE_DESERT'){
+				tempTile.getContent().tint = 0xb2aa74;
+			}
+			else if(map.centers[ii].biome === 'BEACH'){
+				tempTile.getContent().tint = 0x87bacd;
+			}
+			else if(map.centers[ii].biome === 'SHRUBLAND'){
+				tempTile.getContent().tint = 0x5e8769;
+			}
+			else if(map.centers[ii].biome === 'BARE'){
+				tempTile.getContent().tint = 0xa7a7a7;
+			}
+			else if(map.centers[ii].biome === 'TAIGA'){
+				tempTile.getContent().tint = 0xcccccc;
+			}
+			else if(map.centers[ii].biome === 'SCORCHED'){
+				tempTile.getContent().tint = 0xdddddd;
+			}
+			else if(map.centers[ii].biome === 'TUNDRA'){
+				tempTile.getContent().tint = 0x8bba97;
+			}
+			else if(map.centers[ii].biome === 'SNOW '){
+				tempTile.getContent().tint = 0xffffff;
+			}
+			else
+			{
+				tempTile.getContent().tint = 0x00000;
+				console.log('WHATS', map.centers[ii].point,map.centers[ii].biome);
+			}
+
+			// tempTile.getContent().alpha = 0.2;
+
+			// tempTile.setPosition(Math.floor(map.centers[ii].point.x/80)*80,Math.floor(map.centers[ii].point.y/80)*80);
+			// tempTile.setPosition(map.centers[ii].point.x,map.centers[ii].point.y);
+			var sz = 80;
+			var scl = 0.4;
+
+
+			// tempTile.setPosition(tempY*sz*scl,tempX*sz*scl);
+			tempTile.setPosition(tempY*scl,tempX*scl);
+
+
+			tempTile.getContent().scale.x = scl;
+			tempTile.getContent().scale.y = scl;
+			// console.log(Math.floor(map.centers[ii].point.x/80)*80,Math.floor(map.centers[ii].point.y/80)*80);
+			// console.log(map.centers[ii].point.x*80,map.centers[ii].point.y*80);
+			// tempTile.getContent().cacheAsBitmap = true;
+			tempContainer.addChild(tempTile.getContent());
+			nacum ++;
+			// }
+		}
+		console.log(nacum);
+		tempContainer.position.x = 200;
+		tempContainer.position.y = 200;
+
+		// var nacum = 0;
+		// for (ii = this.parent.marginTiles.x; ii < this.parent.tempSizeTiles.x-this.parent.marginTiles.x; ii++) {
+		// 	for (jj = this.parent.marginTiles.y; jj < this.parent.tempSizeTiles.y-this.parent.marginTiles.y; jj++) {
+		// 		if(this.parent.currentNode.getNextFloat() < 0.2){
+		// 		// if(noise[(jj + Math.floor(ii * this.parent.tempSizeTiles.y))] < 0.5){
+		// 			tempTile = new SimpleSprite('_dist/img/grama1.png');
+		// 			tempTile.setPosition(ii * 80,jj * 80);
+		// 			tempTile.getContent().cacheAsBitmap = true;
+		// 			tempContainer.addChild(tempTile.getContent());
+		// 		}
+		// 	}
+		// }
 
 		// var bgTexture = new PIXI.RenderTexture();
 		// bgTexture.render(tempContainer);
 
 		// var background = new PIXI.Sprite(bgTexture);
-		// background.cacheAsBitmap = true;
+		// tempContainer.cacheAsBitmap = true;
+
 		this.parent.bgContainer.addChild(tempContainer);
 
 		this.parent.currentNode.bg = tempContainer;

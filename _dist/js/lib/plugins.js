@@ -1,4 +1,4 @@
-/*! goyabpd 31-10-2014 */
+/*! jefframos 04-11-2014 */
 function generatePerlinNoise(width, height, options, seed) {
     function generateSmoothNoise(octave) {
         for (var noise = new Array(width * height), samplePeriod = Math.pow(2, octave), sampleFrequency = 1 / samplePeriod, noiseIndex = 0, y = 0; height > y; ++y) for (var sampleY0 = Math.floor(y / samplePeriod) * samplePeriod, sampleY1 = (sampleY0 + samplePeriod) % height, vertBlend = (y - sampleY0) * sampleFrequency, x = 0; width > x; ++x) {

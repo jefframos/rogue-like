@@ -20,7 +20,12 @@ var Application = AbstractApplication.extend({
         // this.gen.log();
         this.tileSize = {x:80, y: 80};
 
-     
+        // var mapModule = require('voronoi-map/src/map');
+        // console.log(mapModule);
+       
+
+        // var map = mapModule({width: 1000.0, height: 1000.0});
+        // map.newIsland(islandShape.makeRadial(1), 1);
 	},
     getEffectsContainer:function(){
         return this.mainApp.effectsContainer;
@@ -40,7 +45,6 @@ var Application = AbstractApplication.extend({
         // this.monsterList.push(new MonsterModel(6,800,55,55,13,140,160, 94));
         // this.monsterList.push(new MonsterModel(1,150,55,55,13,140,160, 20));
         //level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp
-        // this.monsterList.push(new MonsterModel(1,150,30,55,55,13,140,160, 20));
         this.monsterList.push(new MonsterModel(1,80,50,55,13,13,70,70, 10));
         // this.monsterList.push(new MonsterModel(5,80,50,55,13,13,70,70, 10));
         // this.monsterList.push(new MonsterModel(10,80,50,55,13,13,70,70, 10));

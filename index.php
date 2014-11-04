@@ -40,6 +40,7 @@
 	</head>
 	<body>
 		<script src="_dist/js/lib/plugins.js"></script>
+		<script src="_dist/js/lib/voronoi-map-min.js"></script>
 		<script src="_dist/js/main.js"></script>
 
 		<!-- <img src="https://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&amp;size=100x100" alt="" title="" /> -->

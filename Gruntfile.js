@@ -55,6 +55,7 @@ module.exports = function(grunt) {
             //         '<%= globalConfig.src %>scripts/plugins/jquery-1.11.0.min.js',
             //         '<%= globalConfig.src %>scripts/plugins/class.js',
             //         '<%= globalConfig.src %>scripts/plugins/perlin-noise.js',
+            //         // '<%= globalConfig.src %>scripts/plugins/voronoi-map-min.js',
             //         '<%= globalConfig.src %>scripts/plugins/easegame/**/*.js'
             //     ]
             // }
