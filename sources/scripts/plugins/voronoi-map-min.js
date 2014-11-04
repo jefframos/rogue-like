@@ -9281,6 +9281,7 @@ var mapModule = function (size) {
         numberOfPoints = core.def(numberOfPoints, mapModule.DEFAULT_NUMBER_OF_POINTS);
         pub.reset();
         pub.points = pointSelector(numberOfPoints);
+        console.log('pointSelector',pointSelector(numberOfPoints));
     };
 
     // Create a graph structure from the Voronoi edge list. The

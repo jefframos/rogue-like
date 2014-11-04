@@ -106,7 +106,9 @@ var LevelGenerator = Class.extend({
 
 		console.log(map, this.parent.tempSizeTiles, this.parent.tempSizeTiles.x*this.parent.tempSizeTiles.y );
 		//map.mapRandom.seed
-		map.go0PlacePoints( this.parent.tempSizeTiles.x*this.parent.tempSizeTiles.y , voronoiMap.pointSelector.generateRandom(map.SIZE.width, map.SIZE.height, this.parent.currentNode.getNextFloat()));
+		map.go0PlacePoints( this.parent.tempSizeTiles.x*this.parent.tempSizeTiles.y ,
+			voronoiMap.pointSelector.generateRandom(map.SIZE.width, map.SIZE.height, this.parent.currentNode.getNextFloat()),
+			this.parent.tempSizeTiles.x,this.parent.tempSizeTiles.y,80);
 		// map.go0PlacePoints( this.parent.tempSizeTiles.x*this.parent.tempSizeTiles.y, voronoiMap.pointSelector.generateSquare(1, 1));
 		map.go1BuildGraph();
 		map.assignBiomes();
@@ -174,8 +176,11 @@ var LevelGenerator = Class.extend({
 			else if(map.centers[ii].biome === 'TUNDRA'){
 				tempTile.getContent().tint = 0x8bba97;
 			}
-			else if(map.centers[ii].biome === 'SNOW '){
+			else if(map.centers[ii].biome === 'SNOW'){
 				tempTile.getContent().tint = 0xffffff;
+			}
+			else if(map.centers[ii].biome === 'LAKE'){
+				tempTile.getContent().tint = 0x34bad7;
 			}
 			else
 			{
