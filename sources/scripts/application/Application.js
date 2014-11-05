@@ -19,10 +19,11 @@ var Application = AbstractApplication.extend({
         this.gen.generate(Math.random() * 0xFFFFFF, 1, [10, 15], [12,12], 5);
         // this.gen.log();
         this.tileSize = {x:80, y: 80};
+        this.nTileSize = 80;
 
         // var mapModule = require('voronoi-map/src/map');
         // console.log(mapModule);
-       
+
 
         // var map = mapModule({width: 1000.0, height: 1000.0});
         // map.newIsland(islandShape.makeRadial(1), 1);

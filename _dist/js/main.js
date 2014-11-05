@@ -1,4 +1,4 @@
-/*! jefframos 04-11-2014 */
+/*! jefframos 05-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -174,7 +174,7 @@ var Application = AbstractApplication.extend({
         this.tileSize = {
             x: 80,
             y: 80
-        };
+        }, this.nTileSize = 80;
     },
     getEffectsContainer: function() {
         return this.mainApp.effectsContainer;
@@ -1341,46 +1341,26 @@ var Application = AbstractApplication.extend({
         tempMonster.build(), tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.x, this.parent.levelBounds.y * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.y), 
         this.parent.entityLayer.addChild(tempMonster);
     },
-    putObstacles: function() {
-        for (var i = this.parent.marginTiles.x + 1; i < this.parent.tempSizeTiles.x - this.parent.marginTiles.x + 1; i++) for (var j = this.parent.marginTiles.y + 1; j < this.parent.tempSizeTiles.y - this.parent.marginTiles.y + 1; j++) if (this.parent.currentNode.getNextFloat() > .95) {
-            var obs = new Obstacle(1);
-            obs.build(), obs.setPosition(j * APP.tileSize.x + this.parent.mapPosition.x, (i + 1) * APP.tileSize.y + this.parent.mapPosition.y), 
-            this.parent.entityLayer.addChild(obs);
-        }
-    },
+    putObstacles: function() {},
     createRoom: function() {
-        var ii = 0, jj = 0, tempTile = null, tempContainer = new PIXI.DisplayObjectContainer(), maxDist = this.parent.tempSizeTiles.x > this.parent.tempSizeTiles.y ? this.parent.tempSizeTiles.x / 2 : this.parent.tempSizeTiles.y / 2;
-        for (ii = 0; ii < this.parent.tempSizeTiles.x; ii++) for (jj = 0; jj < this.parent.tempSizeTiles.y; jj++) {
-            if (tempTile = new SimpleSprite(this.parent.currentNode.getNextFloat() < .5 ? "_dist/img/tile1.png" : "_dist/img/tile2.png"), 
-            tempTile.setPosition(80 * ii, 80 * jj), ii < this.parent.marginTiles.x || ii >= this.parent.tempSizeTiles.x - this.parent.marginTiles.x || jj < this.parent.marginTiles.y || jj >= this.parent.tempSizeTiles.y - this.parent.marginTiles.y) {
-                var alphaacc = (jj + Math.floor(ii * this.parent.tempSizeTiles.y), 0), distance = this.pointDistance(ii, jj, Math.floor(this.parent.tempSizeTiles.x / 2), Math.floor(this.parent.tempSizeTiles.y / 2)) / maxDist;
-                tempTile.getContent().alpha = .5 + (1 - distance) - alphaacc;
-            }
-            tempContainer.addChild(tempTile.getContent());
-        }
-        var mapMaker = null;
-        mapMaker = this.parent.currentNode.getNextFloat() < .3 ? voronoiMap.islandShape.makeBlob(this.parent.currentNode.getNextFloat(), .5) : this.parent.currentNode.getNextFloat() < .6 ? voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), .5) : voronoiMap.islandShape.makeSquare(this.parent.currentNode.getNextFloat(), .5);
-        var map = voronoiMap.map({
-            width: 80 * this.parent.tempSizeTiles.x,
-            height: 80 * this.parent.tempSizeTiles.y
-        });
-        map.newIsland(mapMaker, 2), console.log(map.newIsland), console.log(map, this.parent.tempSizeTiles, this.parent.tempSizeTiles.x * this.parent.tempSizeTiles.y), 
-        map.go0PlacePoints(this.parent.tempSizeTiles.x * this.parent.tempSizeTiles.y, voronoiMap.pointSelector.generateRandom(map.SIZE.width, map.SIZE.height, this.parent.currentNode.getNextFloat()), this.parent.tempSizeTiles.x, this.parent.tempSizeTiles.y, 80), 
+        var ii = 0, tempTile = null, tempContainer = new PIXI.DisplayObjectContainer(), mapMaker = null;
+        mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), .5), 
+        this.parent.tempSizeTiles.x *= 4, this.parent.tempSizeTiles.y *= 4;
+        var tempMapSize = {
+            width: this.parent.tempSizeTiles.x * APP.nTileSize,
+            height: this.parent.tempSizeTiles.y * APP.nTileSize
+        }, numberOfPoints = this.parent.tempSizeTiles.x * this.parent.tempSizeTiles.y, map = voronoiMap.map(tempMapSize);
+        map.newIsland(mapMaker, this.parent.currentNode.getNextFloat()), map.go0PlaceUniformPoints(numberOfPoints, this.parent.tempSizeTiles.x, this.parent.tempSizeTiles.y, APP.nTileSize), 
         map.go1BuildGraph(), map.assignBiomes(), map.go2AssignElevations(), map.go3AssignMoisture(), 
         map.go4DecorateMap(), console.log(map);
-        var nacum = 0;
-        for (ii = 0; ii < map.centers.length; ii++) {
-            console.log(map.centers[ii].point, map.centers[ii].biome);
-            var tempX = 80 * Math.floor(map.centers[ii].point.y / 80), tempY = 80 * Math.floor(map.centers[ii].point.x / 80);
-            tempTile = new SimpleSprite("_dist/img/tile1.png"), "OCEAN" === map.centers[ii].biome ? tempTile.getContent().tint = 344916 : "TEMPERATE_DECIDUOUS_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 2590794 : "GRASSLAND" === map.centers[ii].biome ? tempTile.getContent().tint = 2935395 : "TEMPERATE_RAIN_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 1531978 : "TROPICAL_RAIN_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 2590827 : "TROPICAL_SEASONAL_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 3311655 : "SUBTROPICAL_DESERT" === map.centers[ii].biome ? tempTile.getContent().tint = 11186804 : "TEMPERATE_DESERT" === map.centers[ii].biome ? tempTile.getContent().tint = 11709044 : "BEACH" === map.centers[ii].biome ? tempTile.getContent().tint = 8895181 : "SHRUBLAND" === map.centers[ii].biome ? tempTile.getContent().tint = 6195049 : "BARE" === map.centers[ii].biome ? tempTile.getContent().tint = 10987431 : "TAIGA" === map.centers[ii].biome ? tempTile.getContent().tint = 13421772 : "SCORCHED" === map.centers[ii].biome ? tempTile.getContent().tint = 14540253 : "TUNDRA" === map.centers[ii].biome ? tempTile.getContent().tint = 9157271 : "SNOW" === map.centers[ii].biome ? tempTile.getContent().tint = 16777215 : "LAKE" === map.centers[ii].biome ? tempTile.getContent().tint = 3455703 : (tempTile.getContent().tint = 0, 
-            console.log("WHATS", map.centers[ii].point, map.centers[ii].biome));
-            var scl = .4;
-            tempTile.setPosition(tempY * scl, tempX * scl), tempTile.getContent().scale.x = scl, 
-            tempTile.getContent().scale.y = scl, tempContainer.addChild(tempTile.getContent()), 
-            nacum++;
-        }
-        return console.log(nacum), tempContainer.position.x = 200, tempContainer.position.y = 200, 
-        this.parent.bgContainer.addChild(tempContainer), this.parent.currentNode.bg = tempContainer, 
+        var nacum = 0, scl = (APP.nTileSize, .25), tempX = 0, tempY = 0;
+        for (ii = 0; ii < map.centers.length; ii++) tempX = Math.floor(map.centers[ii].point.y / APP.nTileSize) * APP.nTileSize, 
+        tempY = Math.floor(map.centers[ii].point.x / APP.nTileSize) * APP.nTileSize, tempTile = new SimpleSprite("_dist/img/tile1.png"), 
+        "OCEAN" === map.centers[ii].biome ? tempTile.getContent().tint = 344916 : "TEMPERATE_DECIDUOUS_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 2590794 : "GRASSLAND" === map.centers[ii].biome ? tempTile.getContent().tint = 2935395 : "TEMPERATE_RAIN_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 1531978 : "TROPICAL_RAIN_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 2590827 : "TROPICAL_SEASONAL_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 3311655 : "SUBTROPICAL_DESERT" === map.centers[ii].biome ? tempTile.getContent().tint = 11186804 : "TEMPERATE_DESERT" === map.centers[ii].biome ? tempTile.getContent().tint = 11709044 : "BEACH" === map.centers[ii].biome ? tempTile.getContent().tint = 8895181 : "SHRUBLAND" === map.centers[ii].biome ? tempTile.getContent().tint = 6195049 : "BARE" === map.centers[ii].biome ? tempTile.getContent().tint = 10987431 : "TAIGA" === map.centers[ii].biome ? tempTile.getContent().tint = 13421772 : "SCORCHED" === map.centers[ii].biome ? tempTile.getContent().tint = 14540253 : "TUNDRA" === map.centers[ii].biome ? tempTile.getContent().tint = 9157271 : "SNOW" === map.centers[ii].biome ? tempTile.getContent().tint = 16777215 : "LAKE" === map.centers[ii].biome ? tempTile.getContent().tint = 3455703 : (tempTile.getContent().tint = 0, 
+        console.log("WHATS", map.centers[ii].point, map.centers[ii].biome)), tempTile.setPosition(tempY * scl, tempX * scl), 
+        tempTile.getContent().scale.x = scl, tempTile.getContent().scale.y = scl, tempContainer.addChild(tempTile.getContent()), 
+        nacum++;
+        return this.parent.bgContainer.addChild(tempContainer), this.parent.currentNode.bg = tempContainer, 
         tempContainer;
     },
     debugBounds: function() {

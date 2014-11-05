@@ -9276,19 +9276,23 @@ var mapModule = function (size) {
     };
 
     // Generate the initial random set of points.
-    pub.go0PlacePoints = function (numberOfPoints, pointSelector ,x,y,tilesize) {
+    pub.go0PlacePoints = function (numberOfPoints, pointSelector) {
         pub.needsMoreRandomness = pointSelectorModule.needsMoreRandomness(pointSelector);
         numberOfPoints = core.def(numberOfPoints, mapModule.DEFAULT_NUMBER_OF_POINTS);
         pub.reset();
-        // pub.points = pointSelector(numberOfPoints);
+        pub.points = pointSelector(numberOfPoints);
+    };
+        // Generate the initial random set of points.
+    pub.go0PlaceUniformPoints = function (numberOfPoints,x,y,tilesize) {
+        // pub.needsMoreRandomness = pointSelectorModule.needsMoreRandomness(pointSelector);
+        numberOfPoints = core.def(numberOfPoints, mapModule.DEFAULT_NUMBER_OF_POINTS);
+        pub.reset();
         for (var i = 0; i < x; i++) {
           for (var j = 0; j < y; j++) {
             pub.points.push({x: i * tilesize, y: j * tilesize})
           }
         };
-        // console.log('points', pub.points);
     };
-
     // Create a graph structure from the Voronoi edge list. The
     // methods in the Voronoi object are somewhat inconvenient for
     // my needs, so I transform that data into the data I actually
