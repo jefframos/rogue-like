@@ -347,10 +347,10 @@ var Player = SpritesheetEntity.extend({
 
         if(arrayCollide[0].type === 'door'){
             // console.log('door collider');
-            if(arrayCollide[0].side === 'up' && this.virtualVelocity.y < 0 ||
-                arrayCollide[0].side === 'down' && this.virtualVelocity.y > 0 ||
-                arrayCollide[0].side === 'left' && this.virtualVelocity.x < 0 ||
-                arrayCollide[0].side === 'right' && this.virtualVelocity.x > 0)
+            // if(arrayCollide[0].side === 'up' && this.virtualVelocity.y < 0 ||
+            //     arrayCollide[0].side === 'down' && this.virtualVelocity.y > 0 ||
+            //     arrayCollide[0].side === 'left' && this.virtualVelocity.x < 0 ||
+            //     arrayCollide[0].side === 'right' && this.virtualVelocity.x > 0)
             {
 
                 this.endLevel = true;

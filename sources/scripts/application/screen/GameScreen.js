@@ -34,9 +34,9 @@ var GameScreen = AbstractScreen.extend({
         this.mapPosition = {x:200,y:200};
 
         this.tempSizeTiles = {x:12, y:10};
-        //POR ENQUANTO 80 é o tamanho do tile
-        // this.levelBounds = {x: this.tempSizeTiles.x * 80 - this.mapPosition.x*2, y: this.tempSizeTiles.y * 80 - this.mapPosition.y * 2};
-        this.levelBounds = {x: this.tempSizeTiles.x * 80 - this.mapPosition.x*2, y: this.tempSizeTiles.y * 80 - this.mapPosition.y * 2};
+        //POR ENQUANTO APP.nTileSize é o tamanho do tile
+        // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - this.mapPosition.x*2, y: this.tempSizeTiles.y * APP.nTileSize - this.mapPosition.y * 2};
+        // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - this.mapPosition.x*2, y: this.tempSizeTiles.y * APP.nTileSize - this.mapPosition.y * 2};
 
         this.mouseDown = false;
 
@@ -374,27 +374,56 @@ var GameScreen = AbstractScreen.extend({
             this.player = null;
         }
     },
+    //faz a colisão por tile map
     boundsCollision:function(){
+        for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
+            tempEntity = this.entityLayer.childs[i];
+            if(tempEntity.type !== 'fire'){
+        
+                var centerPositionPlayer = {x:tempEntity.getPosition().x + tempEntity.centerPosition.x,
+                    y:tempEntity.getPosition().y + tempEntity.centerPosition.y};
 
-        for (var i = 0; i < this.entityLayer.childs.length; i++) {
-            var tempEntity = this.entityLayer.childs[i];
-            if(((tempEntity.getPosition().x + tempEntity.virtualVelocity.x < this.mapPosition.x ) && tempEntity.virtualVelocity.x < 0) ||
-            ((tempEntity.getPosition().x + tempEntity.width + tempEntity.virtualVelocity.x > this.levelBounds.x  +  this.mapPosition.x)&& tempEntity.virtualVelocity.x > 0)){
-                tempEntity.virtualVelocity.x = 0;
-            }
-            if(((tempEntity.getPosition().y + tempEntity.virtualVelocity.y < this.mapPosition.y) && tempEntity.virtualVelocity.y < 0) ||
-                ((tempEntity.getPosition().y + tempEntity.height + tempEntity.virtualVelocity.y > this.levelBounds.y +  this.mapPosition.y)&& tempEntity.virtualVelocity.y > 0)){
-                tempEntity.virtualVelocity.y = 0;
+
+                var nextStep = {x:centerPositionPlayer.x + tempEntity.virtualVelocity.x,
+                    y:centerPositionPlayer.y + tempEntity.virtualVelocity.y};
+
+
+                var nextStepDown = {x:nextStep.x,y:nextStep.y + tempEntity.height};
+                var nextStepUp = {x:nextStep.x,y:nextStep.y - tempEntity.height};
+                var nextStepLeft = {x:nextStep.x - tempEntity.width,y:nextStep.y};
+                var nextStepRight = {x:nextStep.x + tempEntity.width,y:nextStep.y};
+
+
+                var tilePositionDown = {x:Math.floor(nextStepDown.x / APP.nTileSize),y:Math.floor(nextStepDown.y / APP.nTileSize)};
+                var tilePositionUp = {x:Math.floor(nextStepUp.x / APP.nTileSize),y:Math.floor(nextStepUp.y / APP.nTileSize)};
+                var tilePositionLeft = {x:Math.floor(nextStepLeft.x / APP.nTileSize),y:Math.floor(nextStepLeft.y / APP.nTileSize)};
+                var tilePositionRight = {x:Math.floor(nextStepRight.x / APP.nTileSize),y:Math.floor(nextStepRight.y / APP.nTileSize)};
+
+                var pass = this.currentNode.mapData[tilePositionDown.x] &&this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y];
+                if(pass &&
+                    this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y] === 'OCEAN' && tempEntity.virtualVelocity.y > 0){
+                    tempEntity.virtualVelocity.y = 0;
+                }
+
+                pass = this.currentNode.mapData[tilePositionUp.x] &&this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y];
+                if(pass &&
+                    this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y] === 'OCEAN' && tempEntity.virtualVelocity.y < 0){
+                    tempEntity.virtualVelocity.y = 0;
+                }
+                
+                pass = this.currentNode.mapData[tilePositionRight.x] &&this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y];
+                if(this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] &&
+                    this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] === 'OCEAN' && tempEntity.virtualVelocity.x > 0){
+                    tempEntity.virtualVelocity.x = 0;
+                }
+
+                pass = this.currentNode.mapData[tilePositionLeft.x] &&this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y];
+                if(this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] &&
+                    this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] === 'OCEAN' && tempEntity.virtualVelocity.x < 0){
+                    tempEntity.virtualVelocity.x = 0;
+                }
             }
         }
-        // if(((this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x ) && this.player.virtualVelocity.x < 0) ||
-        //     ((this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > this.levelBounds.x  +  this.mapPosition.x)&& this.player.virtualVelocity.x > 0)){
-        //     this.player.virtualVelocity.x = 0;
-        // }
-        // if(((this.player.getPosition().y + this.player.virtualVelocity.y < this.mapPosition.y) && this.player.virtualVelocity.y < 0) ||
-        //     ((this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > this.levelBounds.y +  this.mapPosition.y)&& this.player.virtualVelocity.y > 0)){
-        //     this.player.virtualVelocity.y = 0;
-        // }
     },
     killLevel:function(callback){
         // console.log('kill here');
@@ -448,14 +477,14 @@ var GameScreen = AbstractScreen.extend({
             this.bgContainer.removeChildAt(0);
         }
         //seta o tamanho novamente, sempre
-        this.marginTiles = {x:Math.floor(this.mapPosition.x/ 80), y:Math.floor(this.mapPosition.y/ 80)};
+        this.marginTiles = {x:Math.floor(this.mapPosition.x/ APP.nTileSize), y:Math.floor(this.mapPosition.y/ APP.nTileSize)};
         if(this.currentNode.mode === 1){
-            this.tempSizeTiles = {x: Math.floor(windowWidth / 80) + this.marginTiles.x , y:Math.floor(windowHeight / 80) +this.marginTiles.y};
+            this.tempSizeTiles = {x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x , y:Math.floor(windowHeight / APP.nTileSize) +this.marginTiles.y};
         }else{
-            this.tempSizeTiles = {x:14 + this.marginTiles.x + Math.floor(this.currentNode.getNextFloat() * 15) , y:7+ this.marginTiles.y+Math.floor(this.currentNode.getNextFloat() * 15)};
+            this.tempSizeTiles = {x:24 + this.marginTiles.x + Math.floor(this.currentNode.getNextFloat() * 15) , y:20+ this.marginTiles.y+Math.floor(this.currentNode.getNextFloat() * 15)};
         }
         // console.log(this.tempSizeTiles, this.mapPosition);
-        this.levelBounds = {x: this.tempSizeTiles.x * 80 - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * 80 - Math.floor(this.mapPosition.y*2)};
+        // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * APP.nTileSize - Math.floor(this.mapPosition.y*2)};
 
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
@@ -463,7 +492,9 @@ var GameScreen = AbstractScreen.extend({
             this.currentNode.bg = this.levelGenerator.createRoom();
         }
 
-        this.levelGenerator.debugBounds();
+        this.levelBounds= {x: this.currentNode.bg.width, y: this.currentNode.bg.height};
+
+        // this.levelGenerator.debugBounds();
         this.levelGenerator.createDoors();
         this.levelGenerator.putObstacles();
         if(this.currentNode.mode !== 1){
@@ -503,25 +534,27 @@ var GameScreen = AbstractScreen.extend({
         
         this.entityLayer.addChild(this.player);
 
-
+        console.log(this.currentPlayerSide);
         // console.log(this.currentPlayerSide,'this.currentPlayerSide');
 
-        if(this.currentPlayerSide === 'up')
-        {
-            this.player.setPosition(this.levelBounds.x/2 + this.player.width,this.levelBounds.y + this.mapPosition.y- this.player.height);
+        // if(this.currentPlayerSide === 'up')
+        // {
+        //     this.player.setPosition(this.levelBounds.x/2 + this.player.width,this.levelBounds.y + this.mapPosition.y- this.player.height);
 
-        }else if(this.currentPlayerSide === 'down')
-        {
-            this.player.setPosition(this.levelBounds.x/2 + this.player.width,this.mapPosition.y+ this.mapPosition.y- this.player.height );
-        }else if(this.currentPlayerSide === 'left')
-        {
-            this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width ,this.levelBounds.y/2 + this.player.height);
-        }else if(this.currentPlayerSide === 'right')
-        {
-            this.player.setPosition(this.mapPosition.x,this.levelBounds.y/2+ this.player.height);
-        }else{
-            this.player.setPosition(this.mapPosition.x + this.levelBounds.x/2,this.mapPosition.y + this.levelBounds.y/2);
-        }
+        // }else if(this.currentPlayerSide === 'down')
+        // {
+        //     this.player.setPosition(this.levelBounds.x/2 + this.player.width,this.mapPosition.y+ this.mapPosition.y- this.player.height );
+        // }else if(this.currentPlayerSide === 'left')
+        // {
+        //     this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width ,this.levelBounds.y/2 + this.player.height);
+        // }else if(this.currentPlayerSide === 'right')
+        // {
+        //     this.player.setPosition(this.mapPosition.x,this.levelBounds.y/2+ this.player.height);
+        // }else{
+        //     this.player.setPosition(this.mapPosition.x + this.levelBounds.x/2,this.mapPosition.y + this.levelBounds.y/2);
+        // }
+
+        this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y/2);
     },
     depthCompare:function(a,b) {
         var yA = a.position.y;

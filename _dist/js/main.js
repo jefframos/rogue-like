@@ -113,7 +113,20 @@ var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0,
     init: function() {
         this.position = [], this.dist = 0, this.parentPosition = [], this.childrenSides = [ null, null, null, null ], 
         this.parentId = -1, this.parent = null, this.active = !1, this.mode = 0, this.id = -1, 
-        this.seed = -1, this.tempAccSeed = this.seed, this.bg = null;
+        this.seed = -1, this.tempAccSeed = this.seed, this.bg = null, this.mapData = null, 
+        this.topTile = {
+            x: 0,
+            y: 0
+        }, this.bottomTile = {
+            x: 0,
+            y: 0
+        }, this.leftTile = {
+            x: 0,
+            y: 0
+        }, this.rightTile = {
+            x: 0,
+            y: 0
+        };
     },
     applySeed: function() {
         this.tempAccSeed = this.seed;
@@ -996,8 +1009,8 @@ var Application = AbstractApplication.extend({
         this.setVelocity(0, 0), this.updateable = !0;
     },
     collide: function(arrayCollide) {
-        "door" === arrayCollide[0].type && ("up" === arrayCollide[0].side && this.virtualVelocity.y < 0 || "down" === arrayCollide[0].side && this.virtualVelocity.y > 0 || "left" === arrayCollide[0].side && this.virtualVelocity.x < 0 || "right" === arrayCollide[0].side && this.virtualVelocity.x > 0) && (this.endLevel = !0, 
-        this.nextNode = arrayCollide[0].node, this.nextDoorSide = arrayCollide[0].side);
+        "door" === arrayCollide[0].type && (this.endLevel = !0, this.nextNode = arrayCollide[0].node, 
+        this.nextDoorSide = arrayCollide[0].side);
     },
     touch: function(collection) {
         this.isTouch = !0, (collection.left || collection.right && 0 !== this.virtualVelocity.x) && (this.velocity.x = 0), 
@@ -1180,7 +1193,7 @@ var Application = AbstractApplication.extend({
         magicPower > battlePower && (this.attackType = "magical"), this.xp = xp ? xp : 100, 
         this.spellPower = 9, this.speedModifier = .005, this.magicPowerModifier = .004, 
         this.battlePowerModifier = .005, this.defenseModifier = .004, this.magicDefenseModifier = .004, 
-        this.baseHPModifier = 1.62, this.staminaModifier = .008, this.level = level;
+        this.baseHPModifier = 1.62, this.staminaModifier = .008, this.level = level, this.updateLevel(level);
     },
     clone: function() {
         return new MonsterModel(this.initiallevel, this.initialhp, this.initialstamina, this.initialspeed, this.initialmagicPower, this.initialbattlePower, this.initialdefense, this.initialmagicDefense, this.initialxp);
@@ -1331,56 +1344,101 @@ var Application = AbstractApplication.extend({
         this.name = name, this.label = name, this.battlePower = battlePower, this.hitRate = hitRate, 
         this.price = price, this.srcImg = srcImg, this.icoImg = icoImg;
     }
-}), LevelGenerator = Class.extend({
+}), displayColors = {
+    OCEAN: 4473978,
+    COAST: 3355482,
+    LAKESHORE: 2250120,
+    LAKE: 3368601,
+    RIVER: 2250120,
+    MARSH: 3106406,
+    ICE: 10092543,
+    BEACH: 10522743,
+    ROAD1: 4465169,
+    ROAD2: 5583650,
+    ROAD3: 6702131,
+    BRIDGE: 6842464,
+    LAVA: 13382451,
+    SNOW: 16777215,
+    TUNDRA: 12303274,
+    BARE: 8947848,
+    SCORCHED: 5592405,
+    TAIGA: 10070647,
+    SHRUBLAND: 8952183,
+    TEMPERATE_DESERT: 13226651,
+    TEMPERATE_RAIN_FOREST: 4491349,
+    TEMPERATE_DECIDUOUS_FOREST: 6788185,
+    GRASSLAND: 8956501,
+    SUBTROPICAL_DESERT: 13810059,
+    TROPICAL_RAIN_FOREST: 3372885,
+    TROPICAL_SEASONAL_FOREST: 5609796
+}, LevelGenerator = Class.extend({
     init: function(parent) {
         this.parent = parent;
     },
     createHordes: function() {
         for (var tempMonster = null, i = 0; 1 > i; i++) tempMonster = new Enemy(this.parent.player, APP.monsterList[0].clone()), 
-        tempMonster.monsterModel.updateLevel(this.parent.currentNode.id >= 10 ? 10 : 1), 
         tempMonster.build(), tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.x, this.parent.levelBounds.y * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.y), 
         this.parent.entityLayer.addChild(tempMonster);
     },
     putObstacles: function() {},
     createRoom: function() {
-        var ii = 0, tempTile = null, tempContainer = new PIXI.DisplayObjectContainer(), mapMaker = null;
+        var i = 0, tempTile = null, tempContainer = new PIXI.DisplayObjectContainer(), mapMaker = null;
         mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), .5), 
-        this.parent.tempSizeTiles.x *= 4, this.parent.tempSizeTiles.y *= 4;
+        this.parent.currentNode.mapData = [];
+        var tempDataLine = [];
+        for (i = this.parent.tempSizeTiles.x - 1; i >= 0; i--) {
+            tempDataLine = [];
+            for (var j = this.parent.tempSizeTiles.y - 1; j >= 0; j--) tempDataLine.push({});
+            this.parent.currentNode.mapData.push(tempDataLine);
+        }
         var tempMapSize = {
             width: this.parent.tempSizeTiles.x * APP.nTileSize,
             height: this.parent.tempSizeTiles.y * APP.nTileSize
         }, numberOfPoints = this.parent.tempSizeTiles.x * this.parent.tempSizeTiles.y, map = voronoiMap.map(tempMapSize);
         map.newIsland(mapMaker, this.parent.currentNode.getNextFloat()), map.go0PlaceUniformPoints(numberOfPoints, this.parent.tempSizeTiles.x, this.parent.tempSizeTiles.y, APP.nTileSize), 
         map.go1BuildGraph(), map.assignBiomes(), map.go2AssignElevations(), map.go3AssignMoisture(), 
-        map.go4DecorateMap(), console.log(map);
-        var nacum = 0, scl = (APP.nTileSize, .25), tempX = 0, tempY = 0;
-        for (ii = 0; ii < map.centers.length; ii++) tempX = Math.floor(map.centers[ii].point.y / APP.nTileSize) * APP.nTileSize, 
-        tempY = Math.floor(map.centers[ii].point.x / APP.nTileSize) * APP.nTileSize, tempTile = new SimpleSprite("_dist/img/tile1.png"), 
-        "OCEAN" === map.centers[ii].biome ? tempTile.getContent().tint = 344916 : "TEMPERATE_DECIDUOUS_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 2590794 : "GRASSLAND" === map.centers[ii].biome ? tempTile.getContent().tint = 2935395 : "TEMPERATE_RAIN_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 1531978 : "TROPICAL_RAIN_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 2590827 : "TROPICAL_SEASONAL_FOREST" === map.centers[ii].biome ? tempTile.getContent().tint = 3311655 : "SUBTROPICAL_DESERT" === map.centers[ii].biome ? tempTile.getContent().tint = 11186804 : "TEMPERATE_DESERT" === map.centers[ii].biome ? tempTile.getContent().tint = 11709044 : "BEACH" === map.centers[ii].biome ? tempTile.getContent().tint = 8895181 : "SHRUBLAND" === map.centers[ii].biome ? tempTile.getContent().tint = 6195049 : "BARE" === map.centers[ii].biome ? tempTile.getContent().tint = 10987431 : "TAIGA" === map.centers[ii].biome ? tempTile.getContent().tint = 13421772 : "SCORCHED" === map.centers[ii].biome ? tempTile.getContent().tint = 14540253 : "TUNDRA" === map.centers[ii].biome ? tempTile.getContent().tint = 9157271 : "SNOW" === map.centers[ii].biome ? tempTile.getContent().tint = 16777215 : "LAKE" === map.centers[ii].biome ? tempTile.getContent().tint = 3455703 : (tempTile.getContent().tint = 0, 
-        console.log("WHATS", map.centers[ii].point, map.centers[ii].biome)), tempTile.setPosition(tempY * scl, tempX * scl), 
-        tempTile.getContent().scale.x = scl, tempTile.getContent().scale.y = scl, tempContainer.addChild(tempTile.getContent()), 
-        nacum++;
-        return this.parent.bgContainer.addChild(tempContainer), this.parent.currentNode.bg = tempContainer, 
+        map.go4DecorateMap();
+        var scl = (APP.nTileSize, 1), tempX = 0, tempY = 0, ix = 0, jy = 0, top = null, bot = {
+            x: 0,
+            y: -99999
+        }, lef = null, rig = {
+            x: -99999,
+            y: -99999
+        };
+        for (i = 0; i < map.centers.length; i++) ix = Math.floor(map.centers[i].point.y / APP.nTileSize), 
+        jy = Math.floor(map.centers[i].point.x / APP.nTileSize), ix === Math.floor(this.parent.tempSizeTiles.y / 2) && (top || "OCEAN" === map.centers[i].biome || (top = {
+            x: jy,
+            y: ix
+        }), bot.y < jy && (bot = {
+            x: jy,
+            y: ix
+        })), jy === Math.floor(this.parent.tempSizeTiles.x / 2) && (lef || "OCEAN" === map.centers[i].biome || (lef = {
+            x: jy,
+            y: ix
+        }, console.log("lef", lef)), console.log("ix", ix, jy), rig.x < ix && (rig = {
+            x: jy,
+            y: ix
+        }, console.log("rig", rig))), tempX = ix * APP.nTileSize, tempY = jy * APP.nTileSize, 
+        this.parent.currentNode.mapData[jy][ix] = map.centers[i].biome, tempTile = new SimpleSprite("_dist/img/tile1.png"), 
+        tempTile.setPosition(tempY * scl, tempX * scl), tempTile.getContent().tint = displayColors[map.centers[i].biome], 
+        tempTile.getContent().scale.x = scl, tempTile.getContent().scale.y = scl, tempContainer.addChild(tempTile.getContent());
+        return this.parent.currentNode.topTile = top, this.parent.currentNode.bottomTile = bot, 
+        this.parent.currentNode.leftTile = lef, this.parent.currentNode.rightTile = rig, 
+        this.parent.bgContainer.addChild(tempContainer), this.parent.currentNode.bg = tempContainer, 
         tempContainer;
     },
-    debugBounds: function() {
-        this.parent.levelBoundsGraph && this.parent.levelBoundsGraph.parent && this.parent.levelBoundsGraph.parent.removeChild(this.parent.levelBoundsGraph), 
-        this.parent.levelBoundsGraph = new PIXI.Graphics(), this.parent.levelBoundsGraph.lineStyle(1, 16711680), 
-        this.parent.levelBoundsGraph.drawRect(this.parent.mapPosition.x, this.parent.mapPosition.y, this.parent.levelBounds.x, this.parent.levelBounds.y), 
-        this.parent.addChild(this.parent.levelBoundsGraph);
-    },
     createDoors: function() {
-        this.parent.currentNode.childrenSides[0] && (this.parent.doorLeft = new Door("left"), 
-        this.parent.doorLeft.build(), this.parent.doorLeft.setPosition(this.parent.mapPosition.x, this.parent.levelBounds.y / 2 + this.parent.mapPosition.y), 
+        this.parent.currentNode.childrenSides[0] && this.parent.currentNode.leftTile && (this.parent.doorLeft = new Door("left"), 
+        this.parent.doorLeft.build(), this.parent.doorLeft.setPosition(this.parent.currentNode.leftTile.x * APP.nTileSize + this.parent.doorLeft.width / 2, this.parent.currentNode.leftTile.y * APP.nTileSize), 
         this.parent.doorLeft.node = this.parent.currentNode.childrenSides[0], this.parent.environmentLayer.addChild(this.parent.doorLeft)), 
-        this.parent.currentNode.childrenSides[1] && (this.parent.doorRight = new Door("right"), 
-        this.parent.doorRight.build(), this.parent.doorRight.setPosition(this.parent.levelBounds.x + this.parent.mapPosition.x, this.parent.levelBounds.y / 2 + this.parent.mapPosition.y), 
+        this.parent.currentNode.childrenSides[1] && this.parent.currentNode.rightTile && (this.parent.doorRight = new Door("right"), 
+        this.parent.doorRight.build(), this.parent.doorRight.setPosition(this.parent.currentNode.rightTile.x * APP.nTileSize - this.parent.doorRight.width / 2, this.parent.currentNode.rightTile.y * APP.nTileSize), 
         this.parent.doorRight.node = this.parent.currentNode.childrenSides[1], this.parent.environmentLayer.addChild(this.parent.doorRight)), 
-        this.parent.currentNode.childrenSides[2] && (this.parent.doorUp = new Door("up"), 
-        this.parent.doorUp.build(), this.parent.doorUp.setPosition(this.parent.mapPosition.x + this.parent.levelBounds.x / 2, this.parent.mapPosition.y), 
+        this.parent.currentNode.childrenSides[2] && this.parent.currentNode.topTile && (this.parent.doorUp = new Door("up"), 
+        this.parent.doorUp.build(), this.parent.doorUp.setPosition(this.parent.currentNode.topTile.x * APP.nTileSize, this.parent.currentNode.topTile.y * APP.nTileSize - this.parent.doorUp.height / 2), 
         this.parent.doorUp.node = this.parent.currentNode.childrenSides[2], this.parent.environmentLayer.addChild(this.parent.doorUp)), 
-        this.parent.currentNode.childrenSides[3] && (this.parent.doorDown = new Door("down"), 
-        this.parent.doorDown.build(), this.parent.doorDown.setPosition(this.parent.mapPosition.x + this.parent.levelBounds.x / 2, this.parent.levelBounds.y + this.parent.mapPosition.y), 
+        this.parent.currentNode.childrenSides[3] && this.parent.currentNode.downTile && (this.parent.doorDown = new Door("down"), 
+        this.parent.doorDown.build(), this.parent.doorDown.setPosition(this.parent.currentNode.downTile.x * APP.nTileSize, this.parent.currentNode.downTile.y * APP.nTileSize + this.parent.doorDown.height / 2), 
         this.parent.doorDown.node = this.parent.currentNode.childrenSides[3], this.parent.environmentLayer.addChild(this.parent.doorDown));
     },
     removeRain: function() {
@@ -1446,9 +1504,6 @@ var Application = AbstractApplication.extend({
         }, this.tempSizeTiles = {
             x: 12,
             y: 10
-        }, this.levelBounds = {
-            x: 80 * this.tempSizeTiles.x - 2 * this.mapPosition.x,
-            y: 80 * this.tempSizeTiles.y - 2 * this.mapPosition.y
         }, this.mouseDown = !1;
         var clss = "thief", rnd = Math.random();
         .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = new PlayerModel(clss), 
@@ -1559,10 +1614,46 @@ var Application = AbstractApplication.extend({
         this.killLevel(this.resetLevel), this.player = null);
     },
     boundsCollision: function() {
-        for (var i = 0; i < this.entityLayer.childs.length; i++) {
-            var tempEntity = this.entityLayer.childs[i];
-            (tempEntity.getPosition().x + tempEntity.virtualVelocity.x < this.mapPosition.x && tempEntity.virtualVelocity.x < 0 || tempEntity.getPosition().x + tempEntity.width + tempEntity.virtualVelocity.x > this.levelBounds.x + this.mapPosition.x && tempEntity.virtualVelocity.x > 0) && (tempEntity.virtualVelocity.x = 0), 
-            (tempEntity.getPosition().y + tempEntity.virtualVelocity.y < this.mapPosition.y && tempEntity.virtualVelocity.y < 0 || tempEntity.getPosition().y + tempEntity.height + tempEntity.virtualVelocity.y > this.levelBounds.y + this.mapPosition.y && tempEntity.virtualVelocity.y > 0) && (tempEntity.virtualVelocity.y = 0);
+        for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if (tempEntity = this.entityLayer.childs[i], 
+        "fire" !== tempEntity.type) {
+            var centerPositionPlayer = {
+                x: tempEntity.getPosition().x + tempEntity.centerPosition.x,
+                y: tempEntity.getPosition().y + tempEntity.centerPosition.y
+            }, nextStep = {
+                x: centerPositionPlayer.x + tempEntity.virtualVelocity.x,
+                y: centerPositionPlayer.y + tempEntity.virtualVelocity.y
+            }, nextStepDown = {
+                x: nextStep.x,
+                y: nextStep.y + tempEntity.height
+            }, nextStepUp = {
+                x: nextStep.x,
+                y: nextStep.y - tempEntity.height
+            }, nextStepLeft = {
+                x: nextStep.x - tempEntity.width,
+                y: nextStep.y
+            }, nextStepRight = {
+                x: nextStep.x + tempEntity.width,
+                y: nextStep.y
+            }, tilePositionDown = {
+                x: Math.floor(nextStepDown.x / APP.nTileSize),
+                y: Math.floor(nextStepDown.y / APP.nTileSize)
+            }, tilePositionUp = {
+                x: Math.floor(nextStepUp.x / APP.nTileSize),
+                y: Math.floor(nextStepUp.y / APP.nTileSize)
+            }, tilePositionLeft = {
+                x: Math.floor(nextStepLeft.x / APP.nTileSize),
+                y: Math.floor(nextStepLeft.y / APP.nTileSize)
+            }, tilePositionRight = {
+                x: Math.floor(nextStepRight.x / APP.nTileSize),
+                y: Math.floor(nextStepRight.y / APP.nTileSize)
+            }, pass = this.currentNode.mapData[tilePositionDown.x] && this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y];
+            pass && "OCEAN" === this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y] && tempEntity.virtualVelocity.y > 0 && (tempEntity.virtualVelocity.y = 0), 
+            pass = this.currentNode.mapData[tilePositionUp.x] && this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y], 
+            pass && "OCEAN" === this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y] && tempEntity.virtualVelocity.y < 0 && (tempEntity.virtualVelocity.y = 0), 
+            pass = this.currentNode.mapData[tilePositionRight.x] && this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y], 
+            this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] && "OCEAN" === this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] && tempEntity.virtualVelocity.x > 0 && (tempEntity.virtualVelocity.x = 0), 
+            pass = this.currentNode.mapData[tilePositionLeft.x] && this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y], 
+            this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] && "OCEAN" === this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] && tempEntity.virtualVelocity.x < 0 && (tempEntity.virtualVelocity.x = 0);
         }
     },
     killLevel: function() {
@@ -1602,26 +1693,26 @@ var Application = AbstractApplication.extend({
         for (this.player = new Player(this.playerModel), this.level = getRandomLevel(), 
         this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
         this.marginTiles = {
-            x: Math.floor(this.mapPosition.x / 80),
-            y: Math.floor(this.mapPosition.y / 80)
+            x: Math.floor(this.mapPosition.x / APP.nTileSize),
+            y: Math.floor(this.mapPosition.y / APP.nTileSize)
         }, this.tempSizeTiles = 1 === this.currentNode.mode ? {
-            x: Math.floor(windowWidth / 80) + this.marginTiles.x,
-            y: Math.floor(windowHeight / 80) + this.marginTiles.y
+            x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x,
+            y: Math.floor(windowHeight / APP.nTileSize) + this.marginTiles.y
         } : {
-            x: 14 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
-            y: 7 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
-        }, this.levelBounds = {
-            x: 80 * this.tempSizeTiles.x - Math.floor(2 * this.mapPosition.x),
-            y: 80 * this.tempSizeTiles.y - Math.floor(2 * this.mapPosition.y)
+            x: 24 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
+            y: 20 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
         }, this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : this.currentNode.bg = this.levelGenerator.createRoom(), 
-        this.levelGenerator.debugBounds(), this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), 
-        1 !== this.currentNode.mode && this.levelGenerator.createHordes(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
+        this.levelBounds = {
+            x: this.currentNode.bg.width,
+            y: this.currentNode.bg.height
+        }, this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), 1 !== this.currentNode.mode && this.levelGenerator.createHordes(), 
+        this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
         this.getContent().position.x = -this.mapPosition.x, this.getContent().position.y = -this.mapPosition.y, 
         this.player.build(), this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
         this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
         this.equips[2] = this.player.relicModel, this.updateHUD(), this.entityLayer.addChild(this.player), 
-        "up" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.levelBounds.y + this.mapPosition.y - this.player.height) : "down" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x / 2 + this.player.width, this.mapPosition.y + this.mapPosition.y - this.player.height) : "left" === this.currentPlayerSide ? this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width, this.levelBounds.y / 2 + this.player.height) : "right" === this.currentPlayerSide ? this.player.setPosition(this.mapPosition.x, this.levelBounds.y / 2 + this.player.height) : this.player.setPosition(this.mapPosition.x + this.levelBounds.x / 2, this.mapPosition.y + this.levelBounds.y / 2);
+        console.log(this.currentPlayerSide), this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2);
     },
     depthCompare: function(a, b) {
         var yA = a.position.y, yB = b.position.y;

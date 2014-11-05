@@ -13,6 +13,11 @@ var NodeModel = Class.extend({
 		this.seed = -1;
 		this.tempAccSeed = this.seed;
 		this.bg = null;
+		this.mapData = null;
+		this.topTile = {x:0,y:0};
+		this.bottomTile = {x:0,y:0};
+		this.leftTile = {x:0,y:0};
+		this.rightTile = {x:0,y:0};
 	},
 	applySeed:function(){
 		this.tempAccSeed = this.seed;

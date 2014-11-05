@@ -44,7 +44,8 @@ var MonsterModel = Class.extend({
 		this.baseHPModifier = 1.62;
 		this.staminaModifier = 0.008;
 		this.level = level;
-
+		this.updateLevel(level);
+		
 		// this.updateLevel(level);
 	},
 	clone: function(){
@@ -120,7 +121,7 @@ var MonsterModel = Class.extend({
 		var curveAcentValue = 0.15;
 		this.xp += Math.floor((level*(level/3)+level+3)/5 * this.xp * (level * curveAcentValue));
 
-
+		
 		console.log('enemy HP', this.hp, this.defenseModifier, level, this.fireFreq, this.xp);
 
 		// var calcXP = (level*level+level+3)/4* 20 * level;

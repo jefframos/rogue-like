@@ -16,17 +16,17 @@ module.exports = function(grunt) {
         uglify : {
             options : {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
-                compress: {
-                    sequences: true, // join consecutive statemets with the “comma operator”
-                    properties: true, // optimize property access: a["foo"] → a.foo
-                    dead_code: true, // discard unreachable code
-                    conditionals: true, // optimize if-s and conditional expressions
-                    booleans: true, // optimize boolean expressions
-                    loops: true, // optimize loops
-                    unused: true, // drop unused variables/functions
-                    if_return: true, // optimize if-s followed by return/continue
-                    join_vars: true // join var declarations
-                },
+                // compress: {
+                //     sequences: true, // join consecutive statemets with the “comma operator”
+                //     properties: true, // optimize property access: a["foo"] → a.foo
+                //     dead_code: true, // discard unreachable code
+                //     conditionals: true, // optimize if-s and conditional expressions
+                //     booleans: true, // optimize boolean expressions
+                //     loops: true, // optimize loops
+                //     unused: true, // drop unused variables/functions
+                //     if_return: true, // optimize if-s followed by return/continue
+                //     join_vars: true // join var declarations
+                // },
                 mangle: false,
                 beautify: true
             },
@@ -62,16 +62,16 @@ module.exports = function(grunt) {
         },
 
         // css preprocessor compiler, compression and concatenation
-        stylus: {
-            options : {
-                banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
-            },
-            compile: {
-                files: {
-                    '<%= globalConfig.dest %>/css/main.css': ['sources/styles/main.styl']
-                }
-            }
-        },
+        // stylus: {
+        //     options : {
+        //         banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
+        //     },
+        //     compile: {
+        //         files: {
+        //             '<%= globalConfig.dest %>/css/main.css': ['sources/styles/main.styl']
+        //         }
+        //     }
+        // },
 
         jshint: {
             all: [
@@ -87,28 +87,28 @@ module.exports = function(grunt) {
         },
 
         // image compression
-        imagemin: {
-            options: {
-                cache: false
-            },
+        // imagemin: {
+        //     options: {
+        //         cache: false
+        //     },
 
-            dynamic: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= globalConfig.src %>/img/',
-                    src: ['**/*.{png,jpg,gif}'],
-                    dest: '<%= globalConfig.dest %>/img/'
-                }]
-            }
-        },
+        //     dynamic: {
+        //         files: [{
+        //             expand: true,
+        //             cwd: '<%= globalConfig.src %>/img/',
+        //             src: ['**/*.{png,jpg,gif}'],
+        //             dest: '<%= globalConfig.dest %>/img/'
+        //         }]
+        //     }
+        // },
 
         watch: {
-            css: {
-                files: [
-                    'sources/styles/*.styl'
-                ],
-                tasks: ['stylus']
-            },
+            // css: {
+            //     files: [
+            //         'sources/styles/*.styl'
+            //     ],
+            //     tasks: ['stylus']
+            // },
             js: {
                 files: ['<%= jshint.all %>'],
                 tasks: ['jshint','uglify']
@@ -121,7 +121,7 @@ module.exports = function(grunt) {
 
     // tasks
     grunt.registerTask('js', [ 'jshint', 'uglify' ]);
-    grunt.registerTask('css', ['stylus']);
-    grunt.registerTask('default', ['js','css']);
+    // grunt.registerTask('css', ['stylus']);
+    // grunt.registerTask('default', ['js','css']);
     grunt.registerTask('w', ['default', 'watch']);
 };
