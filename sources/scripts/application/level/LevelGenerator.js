@@ -161,13 +161,13 @@ var LevelGenerator = Class.extend({
 				if(!lef && map.centers[i].biome !== 'OCEAN')
 				{
 					lef = {x:jy,y:ix};
-					console.log('lef',lef);
+					// console.log('lef',lef);
 				}
-				console.log('ix',ix, jy);
+				// console.log('ix',ix, jy);
 
 				if(rig.x < ix){
 					rig = {x:jy,y:ix};
-					console.log('rig',rig);
+					// console.log('rig',rig);
 				}
 			}
 

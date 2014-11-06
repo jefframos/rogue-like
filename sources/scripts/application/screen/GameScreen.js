@@ -4,21 +4,10 @@ var GameScreen = AbstractScreen.extend({
         MicroEvent.mixin(this);
         this._super(label);
 
-        //var bg = new SimpleSprite('_dist/img/rascunho-mapa.jpg');
-        //this.addChild(bg);
-
         this.bgContainer = new PIXI.DisplayObjectContainer();
-        // var tempTile = new SimpleSprite('_dist/img/tile1.png');
-
-
-
-
         this.addChild(this.bgContainer);
-        
-        // bgContainer.cacheAsBitmap = true;
 
-        // bg.getContent().scale.x = 0.5;
-        // bg.getContent().scale.y = 0.5;
+        
         this.currentAppModel = new AppModel();
 
         this.mainLayer = new Layer('main');
@@ -30,14 +19,9 @@ var GameScreen = AbstractScreen.extend({
 
         this.layerManager.addLayer(this.entityLayer);
         this.addChild(this.layerManager);
-        // this.mapPosition = {x:APP.tileSize.x / 2 * 3,y:160 / 2};
         this.mapPosition = {x:200,y:200};
 
         this.tempSizeTiles = {x:12, y:10};
-        //POR ENQUANTO APP.nTileSize é o tamanho do tile
-        // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - this.mapPosition.x*2, y: this.tempSizeTiles.y * APP.nTileSize - this.mapPosition.y * 2};
-        // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - this.mapPosition.x*2, y: this.tempSizeTiles.y * APP.nTileSize - this.mapPosition.y * 2};
-
         this.mouseDown = false;
 
         var clss = 'thief';
@@ -70,7 +54,6 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/spritesheet/dragon.png',
             '_dist/img/dragao-perdido.png',
             '_dist/img/drop.png',
-            // '_dist/img/fireball.png',
             '_dist/img/spritesheet/chinesa.json',
             '_dist/img/spritesheet/chinesa.png'
         ];
@@ -87,9 +70,9 @@ var GameScreen = AbstractScreen.extend({
         var self = this;
 
         this.vecPositions = [];
-        this.keyboardInput = new KeyboardInput(this);
-        
 
+        //instacia gerenciador de inputs
+        this.keyboardInput = new InputManager(this);
 
         this.graphDebug = new PIXI.Graphics();
         this.addChild(this.graphDebug);
@@ -99,6 +82,24 @@ var GameScreen = AbstractScreen.extend({
         this.blackShape.drawRect(0,0,windowWidth, windowHeight);
         APP.getHUD().addChild(this.blackShape);
 
+
+        this.createHUD();
+
+        //instancia o sistema de colisões
+        this.collisionSystem = new BoundCollisionSystem(this, false);
+
+        //adiciona uma camada de efeitos
+        this.effectsContainer = new PIXI.DisplayObjectContainer();
+        this.addChild(this.effectsContainer);
+
+        //instancia o gerador de levels
+        this.levelGenerator = new LevelGenerator(this);
+        this.resetLevel();
+
+
+    },
+    //cria a HUD
+    createHUD:function(){
         this.HPView = new BarView(200,20, 100,100);
         this.HPView.setPosition(20,150);
         APP.getHUD().addChild(this.HPView.getContent());
@@ -114,15 +115,10 @@ var GameScreen = AbstractScreen.extend({
         this.XPBar.setBackColor(0x000000);
         APP.getHUD().addChild(this.XPBar.getContent());
 
-        TweenLite.to(this.blackShape, 1, {alpha:0});
-
         this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 15px Arial'});
-        // console.log('HUD',APP.getHUD());
         APP.getHUD().addChild(this.levelLabel);
 
-        // this.lifebar = new PIXI.Text('', {fill:'white', align:'center', font:'bold 20px Arial'});
-        // APP.getHUD().addChild(this.lifebar);
-        // this.lifebar.position.x = windowWidth - 200;
+        //adiciona os shortcuts
         this.shortcuts = [null,null,null,null,null,null];
         this.shortcuts[0] = APP.itemList[0];
         this.shortcuts[1] = APP.itemList[1];
@@ -138,7 +134,13 @@ var GameScreen = AbstractScreen.extend({
             APP.getHUD().addChild(tempBox.getContent());
             var tempText = '';
             var shortcut = i + 1;
-            if(i === 5){
+            if(i === 3){
+                shortcut = 'Q';
+            }
+            else if(i === 4){
+                shortcut = 'E';
+            }
+            else if(i === 5){
                 shortcut = 'SPACE';
             }
             if(this.shortcuts[i]){
@@ -146,12 +148,6 @@ var GameScreen = AbstractScreen.extend({
                 tempText = this.shortcuts[i].name;
                 tempBox.addModel(this.shortcuts[i]);
             }
-            // if(this.shortcuts[i] instanceof SpellModel)
-            // {
-            //     tempBox.setText(tempText + '\n\n\n'+ shortcut+'--MP: '+this.shortcuts[i].mp);
-            // }else{
-                
-            // }
             tempBox.setText(tempText + '\n\n\n' + shortcut);
         }
 
@@ -171,53 +167,15 @@ var GameScreen = AbstractScreen.extend({
             this.equipsBoxHud.push(tempBox);
         }
 
-
+        //adiciona minimap
         this.minimap = new Minimap();
         APP.getHUD().addChild(this.minimap.getContent());
         this.minimap.build();
         this.minimap.setPosition(windowWidth - this.minimap.getContent().width * 0.5 - 5, 10);
         this.minimap.getContent().scale.x = 0.5;
         this.minimap.getContent().scale.y = 0.5;
-        
-        // console.log(new BoundCollisionSystem(),'col system BoundCollisionSystem');
-
-        this.collisionSystem = new BoundCollisionSystem(this, false);
-        // console.log(this.collisionSystem,'col system');
-
-        this.effectsContainer = new PIXI.DisplayObjectContainer();
-        this.addChild(this.effectsContainer);
-
-        this.levelGenerator = new LevelGenerator(this);
-        this.resetLevel();
-
-
-        // var octaveCount = options.octaveCount || 4;
-        // var amplitude = options.amplitude || 0.1;
-        // var persistence = options.persistence || 0.2;
-
-
-
     },
-    updateHUD:function(itemModel){
-        this.equips[0] = this.player.weaponModel;
-        this.equips[1] = this.player.armorModel;
-        this.equips[2] = this.player.relicModel;
-
-        for (var i = 0; i < this.equipsBoxHud.length; i++) {
-            this.equipsBoxHud[i].addModel(this.equips[i]);
-        }
-    },
-    useItem:function(itemModel){
-        this.player.useItem(itemModel);
-    },
-    spell:function(spellModel){
-        console.log('usou spell', spellModel);
-        this.player.spell(APP.stage.getMousePosition(), spellModel);
-    },
-    //colocar isso dentro do personagem
-    shoot:function(){
-        this.player.shoot(APP.stage.getMousePosition(), this.player.weaponModel);
-    },
+    //verifica qual model está no atalho e executa a ação daquele model
     useShortcut:function(id){
         if(this.shortcuts[id]){
             if(this.shortcuts[id] instanceof ItemModel){
@@ -227,82 +185,35 @@ var GameScreen = AbstractScreen.extend({
             }
         }
     },
-    removePosition:function(position){
-        for (var i = this.vecPositions.length - 1; i >= 0; i--) {
-            if(this.vecPositions[i] === position)
-            {
-                this.vecPositions.splice(i,1);
-            }
+    //atualiza o inventorio
+    updateInventory:function(){
+        this.equips[0] = this.player.weaponModel;
+        this.equips[1] = this.player.armorModel;
+        this.equips[2] = this.player.relicModel;
+
+        for (var i = 0; i < this.equipsBoxHud.length; i++) {
+            this.equipsBoxHud[i].addModel(this.equips[i]);
         }
     },
-    addPosition:function(position){
-        var exists = false;
-
-        for (var i = this.vecPositions.length - 1; i >= 0; i--) {
-            if(this.vecPositions[i] === position)
-            {
-                exists = true;
-            }
-        }
-
-        if(!exists){
-            this.vecPositions.push(position);
-        }
+    //usa um item
+    useItem:function(itemModel){
+        this.player.useItem(itemModel);
     },
-    updatePlayerVel:function()
-    {
-        if(this.player && this.vecPositions){
-            var hasAxysY = false;
-            var hasAxysX = false;
-            if(this.vecPositions.length === 0){
-                this.player.virtualVelocity.x = 0;
-                this.player.virtualVelocity.y = 0;
-            }
-            for (var i = this.vecPositions.length - 1; i >= 0; i--) {
-
-                if(this.vecPositions[i] === 'up'){
-                    this.player.virtualVelocity.y = -this.player.defaultVelocity;
-                    hasAxysY = true;
-                }
-                else if(this.vecPositions[i] === 'down'){
-                    this.player.virtualVelocity.y = this.player.defaultVelocity;
-                    hasAxysY = true;
-                }
-
-                if(this.vecPositions[i] === 'left'){
-                    this.player.virtualVelocity.x = -this.player.defaultVelocity;
-                    hasAxysX = true;
-                }
-                else if(this.vecPositions[i] === 'right'){
-                    this.player.virtualVelocity.x = this.player.defaultVelocity;
-                    hasAxysX = true;
-                }
-            }
-
-            if(!hasAxysY){
-                this.player.virtualVelocity.y = 0;
-            }
-            if(!hasAxysX){
-                this.player.virtualVelocity.x = 0;
-            }
-
-        }
+    //dispara um spell
+    spell:function(spellModel){
+        this.player.spell(APP.stage.getMousePosition(), spellModel);
     },
+    //colocar isso dentro do personagem
+    shoot:function(){
+        this.player.shoot(APP.stage.getMousePosition(), this.player.weaponModel);
+    },
+    //update do game
     update:function()
     {
-       // console.log(this.mouseDown);
-
-
         if(this.player){
             this.getContent().position.x = windowWidth/2 - this.player.getPosition().x;
             this.getContent().position.y = windowHeight/2 - this.player.getPosition().y;
             this.player.fireFreqAcum --;
-
-            if(this.levelLabel){
-                this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+'roomState'+'   -    playerClass:'+this.playerModel.playerClass+
-                    '\nLEVEL: '+this.playerModel.level
-                    );
-            }
 
             if(this.mouseDown){
                 if(this.player.fireFreqAcum <= 0){
@@ -313,49 +224,30 @@ var GameScreen = AbstractScreen.extend({
             this.entityLayer.collideChilds(this.player);
             this.environmentLayer.collideChilds(this.player);
             this.boundsCollision();
-            //zera as posições aqui, caso encontre uma porte, por isso a colisao antes
-            // if(((this.player.getPosition().x + this.player.virtualVelocity.x < this.mapPosition.x ) && this.player.virtualVelocity.x < 0) ||
-            //     ((this.player.getPosition().x + this.player.width + this.player.virtualVelocity.x > windowWidth -  this.mapPosition.x)&& this.player.virtualVelocity.x > 0)){
-            //     this.player.virtualVelocity.x = 0;
-            // }
-            // if(((this.player.getPosition().y + this.player.virtualVelocity.y < this.mapPosition.y ) && this.player.virtualVelocity.y < 0) ||
-            //     ((this.player.getPosition().y + this.player.height + this.player.virtualVelocity.y > windowHeight -  this.mapPosition.y)&& this.player.virtualVelocity.y > 0)){
-            //     this.player.virtualVelocity.y = 0;
-            // } ----<< OLD
-            // RETIREI AS mapPosition, VER ACIMA COMO ERA
 
+            //collide os tiros com as entidades
             for (var i = 0; i < this.entityLayer.childs.length; i++) {
                 if(this.entityLayer.childs[i].type === 'fire'){
                     this.entityLayer.collideChilds(this.entityLayer.childs[i]);
                 }
             }
-            
+            //atualiza o sistema de colisão
             this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs);
         }
 
         this._super();
 
         this.entityLayer.getContent().children.sort(this.depthCompare);
+
+        //update em tudo que for atualizavel no level generator
         if(this.levelGenerator){
             this.levelGenerator.update();
         }
-       
+
         if(this.HPView && this.player){
-            this.HPView.updateBar(Math.floor(this.playerModel.hp),Math.floor(this.playerModel.hpMax));
-            this.HPView.setText(Math.floor(this.playerModel.hp)+'/ '+Math.floor(this.playerModel.hpMax));
-
-            this.MPView.updateBar(Math.floor(this.playerModel.mp),Math.floor(this.playerModel.mpMax));
-            this.MPView.setText(Math.floor(this.playerModel.mp)+'/ '+Math.floor(this.playerModel.mpMax));
-
-            var tempXP = Math.floor(this.playerModel.xp)- Math.floor(this.playerModel.toBeforeLevel);
-            var tempNext = Math.floor(this.playerModel.toNextLevel)- Math.floor(this.playerModel.toBeforeLevel);
-            this.XPBar.updateBar(tempXP,tempNext);
-            this.XPBar.setText(tempXP+'/ '+tempNext);
-            // console.log(tempXP,tempNext);
-
-            // this.lifebar.position.x = this.player.getPosition().x;
-            // this.lifebar.position.y = this.player.getPosition().y - this.player.height / 2;
+            this.updateHUD();
         }
+
         if(this.player && this.player.endLevel)
         {
             this.player.endLevel = false;
@@ -372,6 +264,25 @@ var GameScreen = AbstractScreen.extend({
             this.playerModel.resetPoints();
             this.killLevel(this.resetLevel);
             this.player = null;
+        }
+    },
+    //atualiza a HUD
+    updateHUD:function(){
+        this.HPView.updateBar(Math.floor(this.playerModel.hp),Math.floor(this.playerModel.hpMax));
+        this.HPView.setText(Math.floor(this.playerModel.hp)+'/ '+Math.floor(this.playerModel.hpMax));
+
+        this.MPView.updateBar(Math.floor(this.playerModel.mp),Math.floor(this.playerModel.mpMax));
+        this.MPView.setText(Math.floor(this.playerModel.mp)+'/ '+Math.floor(this.playerModel.mpMax));
+
+        var tempXP = Math.floor(this.playerModel.xp)- Math.floor(this.playerModel.toBeforeLevel);
+        var tempNext = Math.floor(this.playerModel.toNextLevel)- Math.floor(this.playerModel.toBeforeLevel);
+        this.XPBar.updateBar(tempXP,tempNext);
+        this.XPBar.setText(tempXP+'/ '+tempNext);
+        //atualiza label
+        if(this.levelLabel){
+            this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+'roomState'+'   -    playerClass:'+this.playerModel.playerClass+
+                '\nLEVEL: '+this.playerModel.level
+                );
         }
     },
     //faz a colisão por tile map
@@ -425,8 +336,8 @@ var GameScreen = AbstractScreen.extend({
             }
         }
     },
+    //destroy o level
     killLevel:function(callback){
-        // console.log('kill here');
         var self = this;
         for (var k = this.entityLayer.childs.length - 1; k >= 0; k--) {
             this.entityLayer.childs[k].preKill();
@@ -435,8 +346,6 @@ var GameScreen = AbstractScreen.extend({
         for (var t = this.environmentLayer.childs.length - 1; t >= 0; t--) {
             this.environmentLayer.childs[t].preKill();
         }
-
-        // this.blackShape.alpha = 0.5;
         TweenLite.to(this.blackShape, 0.5, {alpha:1});
 
         setTimeout(function(){
@@ -444,11 +353,13 @@ var GameScreen = AbstractScreen.extend({
         }, 700);
 
     },
+    //reseta o level
     resetLevel:function()
     {
-        this.vecPositions = [];
+        this.mouseDown = false;
         this.blackShape.alpha = 1;
         TweenLite.to(this.blackShape, 1, {alpha:0});
+
         var roomState = 'first room';
         switch(this.currentNode.mode)
         {
@@ -466,10 +377,9 @@ var GameScreen = AbstractScreen.extend({
                 break;
             case 6:
                 roomState = 'key';
-
         }
+
         this.player = new Player(this.playerModel);
-        //console.log(this, 'ESSE É O ID DO LEVEL ATUAL -> ', this.currentNode);
         this.level = getRandomLevel();
         this.currentNode.applySeed();
 
@@ -477,18 +387,19 @@ var GameScreen = AbstractScreen.extend({
             this.bgContainer.removeChildAt(0);
         }
         //seta o tamanho novamente, sempre
-        this.marginTiles = {x:Math.floor(this.mapPosition.x/ APP.nTileSize), y:Math.floor(this.mapPosition.y/ APP.nTileSize)};
-        if(this.currentNode.mode === 1){
-            this.tempSizeTiles = {x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x , y:Math.floor(windowHeight / APP.nTileSize) +this.marginTiles.y};
-        }else{
-            this.tempSizeTiles = {x:24 + this.marginTiles.x + Math.floor(this.currentNode.getNextFloat() * 15) , y:20+ this.marginTiles.y+Math.floor(this.currentNode.getNextFloat() * 15)};
-        }
+        
         // console.log(this.tempSizeTiles, this.mapPosition);
         // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * APP.nTileSize - Math.floor(this.mapPosition.y*2)};
 
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
         }else{
+            this.marginTiles = {x:Math.floor(this.mapPosition.x/ APP.nTileSize), y:Math.floor(this.mapPosition.y/ APP.nTileSize)};
+            if(this.currentNode.mode === 1){
+                this.tempSizeTiles = {x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x , y:Math.floor(windowHeight / APP.nTileSize) +this.marginTiles.y};
+            }else{
+                this.tempSizeTiles = {x:24 + this.marginTiles.x + Math.floor(this.currentNode.getNextFloat() * 15) , y:20+ this.marginTiles.y+Math.floor(this.currentNode.getNextFloat() * 15)};
+            }
             this.currentNode.bg = this.levelGenerator.createRoom();
         }
 
@@ -509,9 +420,6 @@ var GameScreen = AbstractScreen.extend({
             this.levelGenerator.removeRain();
         }
 
-        this.getContent().position.x = -this.mapPosition.x;
-        this.getContent().position.y = -this.mapPosition.y;
-
         
         this.player.build();
         // this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]);
@@ -528,34 +436,30 @@ var GameScreen = AbstractScreen.extend({
         this.equips[0] = this.player.weaponModel;
         this.equips[1] = this.player.armorModel;
         this.equips[2] = this.player.relicModel;
-        this.updateHUD();
- 
+        this.updateInventory();
 
-        
         this.entityLayer.addChild(this.player);
 
-        console.log(this.currentPlayerSide);
-        // console.log(this.currentPlayerSide,'this.currentPlayerSide');
 
-        // if(this.currentPlayerSide === 'up')
-        // {
-        //     this.player.setPosition(this.levelBounds.x/2 + this.player.width,this.levelBounds.y + this.mapPosition.y- this.player.height);
-
-        // }else if(this.currentPlayerSide === 'down')
-        // {
-        //     this.player.setPosition(this.levelBounds.x/2 + this.player.width,this.mapPosition.y+ this.mapPosition.y- this.player.height );
-        // }else if(this.currentPlayerSide === 'left')
-        // {
-        //     this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width ,this.levelBounds.y/2 + this.player.height);
-        // }else if(this.currentPlayerSide === 'right')
-        // {
-        //     this.player.setPosition(this.mapPosition.x,this.levelBounds.y/2+ this.player.height);
-        // }else{
-        //     this.player.setPosition(this.mapPosition.x + this.levelBounds.x/2,this.mapPosition.y + this.levelBounds.y/2);
-        // }
+        if(this.currentPlayerSide === 'up')
+        {
+            //this.player.setPosition(this.levelBounds.x/2 + this.player.width,this.levelBounds.y + this.mapPosition.y- this.player.height);
+        }else if(this.currentPlayerSide === 'down')
+        {
+            //this.player.setPosition(this.levelBounds.x/2 + this.player.width,this.mapPosition.y+ this.mapPosition.y- this.player.height );
+        }else if(this.currentPlayerSide === 'left')
+        {
+            //this.player.setPosition(this.levelBounds.x + this.mapPosition.x - this.player.width ,this.levelBounds.y/2 + this.player.height);
+        }else if(this.currentPlayerSide === 'right')
+        {
+            //this.player.setPosition(this.mapPosition.x,this.levelBounds.y/2+ this.player.height);
+        }else{
+            //this.player.setPosition(this.mapPosition.x + this.levelBounds.x/2,this.mapPosition.y + this.levelBounds.y/2);
+        }
 
         this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y/2);
     },
+    //atualiza o z index da layer
     depthCompare:function(a,b) {
         var yA = a.position.y;
         var yB = b.position.y;

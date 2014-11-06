@@ -132,6 +132,45 @@ var Player = SpritesheetEntity.extend({
             new PIXI.Point(this.bounds.x + this.bounds.w, this.bounds.y));
         return this.bounds;
     },
+    updatePlayerVel:function(vecPositions)
+    {
+        if(this && vecPositions){
+            var hasAxysY = false;
+            var hasAxysX = false;
+            if(vecPositions.length === 0){
+                this.virtualVelocity.x = 0;
+                this.virtualVelocity.y = 0;
+            }
+            for (var i = vecPositions.length - 1; i >= 0; i--) {
+
+                if(vecPositions[i] === 'up'){
+                    this.virtualVelocity.y = -this.defaultVelocity;
+                    hasAxysY = true;
+                }
+                else if(vecPositions[i] === 'down'){
+                    this.virtualVelocity.y = this.defaultVelocity;
+                    hasAxysY = true;
+                }
+
+                if(vecPositions[i] === 'left'){
+                    this.virtualVelocity.x = -this.defaultVelocity;
+                    hasAxysX = true;
+                }
+                else if(vecPositions[i] === 'right'){
+                    this.virtualVelocity.x = this.defaultVelocity;
+                    hasAxysX = true;
+                }
+            }
+
+            if(!hasAxysY){
+                this.virtualVelocity.y = 0;
+            }
+            if(!hasAxysX){
+                this.virtualVelocity.x = 0;
+            }
+
+        }
+    },
     update: function(){
         if(this.hasteAcum > 0){
             this.hasteAcum --;
@@ -155,6 +194,7 @@ var Player = SpritesheetEntity.extend({
             this.getContent().position.x = 20;
         }
     },
+    //spell
     spell: function(mousePos, spellModel){
         if(spellModel.mp > this.playerModel.mp){
             var pop = new PopUpText('red');
@@ -217,6 +257,7 @@ var Player = SpritesheetEntity.extend({
             // tempFire.getContent().rotation = -tempAngle + (180 * Math.PI / 180);
         }
     },
+    //tiro com dano fisico
     shoot: function(mousePos, weaponModel){
         var self = this;
         var mouseX = -APP.getGameContent().position.x + windowWidth/2  + mousePos.x;
@@ -261,7 +302,6 @@ var Player = SpritesheetEntity.extend({
                 }
                 tempAngle = angle + tempAcc * 10 * Math.PI / 180;
             }
-            // var tempFire = new Fire({x:this.fireSpeed * Math.sin(angle * i), y: this.fireSpeed * Math.cos(angle * i)});
             var tempFire = new Fire({x:tempFireSpeed * Math.sin(tempAngle), y: tempFireSpeed * Math.cos(tempAngle)});
             tempFire.timeLive = this.fireStepLive;
             if(weaponModel){
@@ -274,7 +314,6 @@ var Player = SpritesheetEntity.extend({
             this.layer.addChild(tempFire);
             this.fireFreqAcum = tempFireFreq;
             tempFire.getContent().rotation = -tempAngle + (180 * Math.PI / 180);
-
         }
     },
     preKill:function(){

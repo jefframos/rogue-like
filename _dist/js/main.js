@@ -1,4 +1,4 @@
-/*! jefframos 05-11-2014 */
+/*! jefframos 06-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -202,195 +202,54 @@ var Application = AbstractApplication.extend({
         return this.HUD;
     },
     build: function() {
-        this.monsterList = [], this.monsterList.push(new MonsterModel(1, 80, 50, 55, 13, 13, 70, 70, 10)), 
-        this.spellList = [], this.spellList.push(new SpellModel(1, "bolt1", 6, 20, "_dist/img/spells/icos/bolt1.png", "_dist/img/spells/bolt1.png")), 
-        this.spellList.push(new SpellModel(1, "fire1", 4, 21, "_dist/img/spells/icos/fire1.png", "_dist/img/spells/fire1.png")), 
-        this.spellList.push(new SpellModel(1, "ice1", 5, 22, "_dist/img/spells/icos/ice1.png", "_dist/img/spells/ice1.png")), 
-        this.spellList.push(new SpellModel(1, "poison", 3, 25, "_dist/img/spells/icos/poison.png", "_dist/img/spells/poison.png")), 
-        this.spellList.push(new SpellModel(1, "wind", 75, 25, "_dist/img/spells/icos/wind.png", "_dist/img/spells/wind.png", !0)), 
-        this.spellList.push(new SpellModel(2, "bolt2", 22, 26, "_dist/img/spells/icos/bolt2.png", "_dist/img/spells/bolt2.png")), 
-        this.spellList.push(new SpellModel(2, "fire2", 20, 60, "_dist/img/spells/icos/fire2.png", "_dist/img/spells/fire2.png")), 
-        this.spellList.push(new SpellModel(2, "ice2", 21, 62, "_dist/img/spells/icos/ice2.png", "_dist/img/spells/ice2.png")), 
-        this.spellList.push(new SpellModel(2, "drain", 15, 38, "_dist/img/spells/icos/drain.png", "_dist/img/spells/drain.png")), 
-        this.spellList.push(new SpellModel(3, "meteor", 62, 36, "_dist/img/spells/icos/meteor.png", "_dist/img/spells/meteor.png", !0)), 
-        this.spellList.push(new SpellModel(3, "bio", 26, 53, "_dist/img/spells/icos/bio.png", "_dist/img/spells/bio.png")), 
-        this.spellList.push(new SpellModel(3, "flare", 45, 60, "_dist/img/spells/icos/flare.png", "_dist/img/spells/flare.png")), 
-        this.spellList.push(new SpellModel(4, "quake", 50, 111, "_dist/img/spells/icos/quake.png", "_dist/img/spells/quake.png", !0)), 
-        this.spellList.push(new SpellModel(5, "bolt3", 53, 120, "_dist/img/spells/icos/bolt3.png", "_dist/img/spells/bolt3.png")), 
-        this.spellList.push(new SpellModel(5, "fire3", 51, 121, "_dist/img/spells/icos/fire3.png", "_dist/img/spells/fire3.png")), 
-        this.spellList.push(new SpellModel(5, "ice3", 52, 122, "_dist/img/spells/icos/ice3.png", "_dist/img/spells/ice3.png")), 
-        this.spellList.push(new SpellModel(6, "merton", 85, 138, "_dist/img/spells/icos/merton.png", "_dist/img/spells/merton.png")), 
-        this.spellList.push(new SpellModel(7, "ultima", 80, 150, "_dist/img/spells/icos/ultima.png", "_dist/img/spells/ultima.png", !0)), 
-        this.weaponList = [], this.weaponList.push(new WeaponModel("MithrilKnife", 30, 180, 300, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("AirLancet", 76, 180, 950, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Assassin", 106, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Dirk", 26, 180, 150, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Graedus", 204, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Guardian", 59, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ManEater", 146, 180, 11e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("SwordBreaker", 164, 180, 16e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ThiefKnife", 88, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ValiantKnife", 145, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Atma,WeaponBat", 255, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Blizzard", 108, 150, 7e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Break Blade", 117, 150, 12e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Crystal", 167, 150, 15e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Drainer", 121, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Enhancer", 135, 150, 1e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Epee", 98, 150, 3e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Excalibur", 217, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Falchion", 176, 150, 17e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Flame,Sabre", 108, 150, 7e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Illumina", 255, 255, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("MithrilBlade", 38, 150, 450, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Ogre Nix", 182, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Ragnarok", 255, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("RegalCutlass", 54, 150, 800, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Rune,Edge", 55, 150, 7500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Scimitar", 208, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Soul,Sabre", 125, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ThunderBlade", 108, 150, 7e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Aura,Lance", 227, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Gold,Lance", 139, 150, 12e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Imp,Halberd", 253, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Mithril,Pike", 70, 150, 800, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Partisan", 150, 150, 13e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Pearl,Lance", 194, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Stout,Spear", 112, 150, 1e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Trident", 93, 150, 1700, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Blossom", 112, 180, 3200, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Hardened", 121, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Imperial", 82, 180, 600, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Kodachi", 93, 180, 1200, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Striker", 190, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Stunner", 220, 180, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Ashura", 57, 150, 500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Aura", 162, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Forged", 81, 150, 1200, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Kotetsu", 66, 150, 800, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Murasame", 110, 150, 9e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Sky,Render", 215, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Strato", 199, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Tempest", 101, 150, 8e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Fire,Rod", 79, 135, 3e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Gravity,Rod", 120, 135, 13e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Heal,Rod", 200, 255, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Ice,Rod", 79, 135, 3e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Magus,Rod", 168, 135, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Mithril,Rod", 60, 135, 500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Pearl,Rod", 124, 135, 12e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Poison,Rod", 86, 135, 1500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Punisher", 111, 150, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Thunder,Rod", 79, 135, 3e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Chocobo,Brsh", 60, 135, 600, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("DaVinci,Brsh", 100, 135, 7e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Magical,Brsh", 130, 135, 1e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Rainbow,Brsh", 146, 135, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Ninja,Star", 132, 230, 500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Shuriken", 86, 230, 30, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Tack,Star", 190, 230, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Bone,Club", 151, 150, 2e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Boomerang", 102, 230, 4500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Flail", 86, 150, 2e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Full,Moon", 95, 230, 2500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Hawk,Eye", 111, 180, 6e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Morning,Star", 109, 150, 5e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Rising,Sun", 98, 230, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Cards", 104, 230, 1e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Darts", 115, 230, 1e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Doom,Darts", 187, 230, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("Trump", 133, 230, 13e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ClawDragon,Claw", 188, 200, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ClawFire,Knuckle", 122, 200, 1e4, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ClawKaiser", 83, 200, 1e3, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ClawMetalKnuckle", 55, 200, 500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ClawMithril,Claw", 65, 200, 800, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ClawPoison,Claw", 95, 200, 2500, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.weaponList.push(new WeaponModel("ClawTiger,Fangs", 215, 200, 2, "_dist/img/weapons/dagger.png", "_dist/img/weapons/dagger.png")), 
-        this.armorList = [], this.armorList.push(new ArmorModel("Aegis Shld", 46, 52, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Buckler", 16, 10, 200, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Crystal Shld", 50, 34, 7e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Diamond Shld", 40, 27, 3500, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Flame Shld", 41, 28, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Force Shld", 0, 70, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Genji Shld", 54, 50, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Gold Shld", 34, 23, 2500, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Heavy Shld", 22, 14, 400, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Ice Shld", 42, 28, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Mithril Shld", 27, 18, 1200, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Paladin Shld", 59, 59, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Thunder Shld", 43, 28, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("TortoiseShld", 66, 66, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Bandana", 16, 10, 800, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Bards Hat", 19, 21, 3e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Beret", 21, 21, 3500, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Cat Hood", 33, 33, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Circlet", 25, 19, 7e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Coronet", 23, 23, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Crystal Helm", 29, 19, 1e4, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Dark Hood", 26, 17, 7500, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Diamond Helm", 27, 18, 8e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Genji Helmet", 36, 38, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Gold Helmet", 22, 15, 4e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Green Beret", 19, 13, 3e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Hair Band", 12, 81, 50, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Head Band", 16, 10, 1600, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Iron Helmet", 18, 12, 1e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Leather Hat", 11, 7, 50, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Magus Hat", 15, 16, 600, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Mithril Helm", 20, 13, 2e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Mystery Veil", 24, 25, 5500, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Oath Veil", 32, 31, 9e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Plumed Hat", 14, 9, 250, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Red Cap", 24, 17, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Regal Crown", 28, 23, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Thornlet", 38, 0, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Tiara", 22, 20, 3e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Tiger Mask", 21, 13, 2500, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Titanium", 42, 42, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("BehemothSuit", 94, 73, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Chocobo Suit", 56, 38, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Cotton Robe", 32, 21, 200, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Crystal Mail", 72, 49, 17e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Czarina Gown", 70, 64, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Dark Gear", 68, 46, 13e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Diamond Vest", 65, 44, 12e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("DiamondArmor", 70, 47, 15e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Force Armor", 69, 68, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Gaia Gear", 53, 43, 6e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Genji Armor", 90, 80, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Gold Armor", 55, 37, 1e4, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Imps Armor", 100, 100, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Iron Armor", 40, 27, 700, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Kung Fu Suit", 34, 23, 250, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("LeatherArmor", 28, 19, 150, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Light Robe", 60, 43, 11e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Minerva", 88, 70, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Mirage Vest", 48, 36, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Mithril Mail", 51, 34, 3500, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Mithril Vest", 45, 30, 1200, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Moogle Suit", 58, 52, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Ninja Gear", 47, 32, 1100, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Nutkin Suit", 86, 67, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Power Sash", 52, 35, 5e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Red Jacket", 78, 55, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Silk Robe", 39, 29, 600, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Snow Muffler", 128, 90, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Tabby Suit", 54, 36, 2, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("Tao Robe", 68, 50, 13e3, "_dist/img/armor/armor1.png")), 
-        this.armorList.push(new ArmorModel("White Dress", 47, 35, 2200, "_dist/img/armor/armor1.png")), 
-        this.itemList = [], this.itemList.push(new ItemModel("Minor Potion", "regen HP", 35, 100, "_dist/img/potions/hpPotion.png")), 
-        this.itemList.push(new ItemModel("Minor Ether", "regen MP", 35, 100, "_dist/img/potions/mpPotion.png")), 
-        this.itemList.push(new ItemModel("Haste", "haste", 0, 100, "_dist/img/potions/hastePotion.png")), 
-        this.relicList = [], this.relicList.push(new RelicModel("relic 1", "2shots", 0, 100, "_dist/img/relics/relic1.png")), 
-        this.relicList.push(new RelicModel("relic 2", "3shots", 0, 100, "_dist/img/relics/relic1.png")), 
-        this.relicList.push(new RelicModel("power", "powershot", 0, 100, "_dist/img/relics/relic1.png")), 
-        this.relicList.push(new RelicModel("speed", "speedshot", 0, 100, "_dist/img/relics/relic1.png")), 
-        this._super(), this.onAssetsLoaded();
+        this.monsterList = [], this.spellList = [], this.weaponList = [], this.armorList = [], 
+        this.itemList = [], this.relicList = [], this._super();
+        var JSONToLoader = [ "_dist/img/relics/relics.JSON", "_dist/img/weapons/weapons.JSON", "_dist/img/spells/spells.JSON", "_dist/img/potions/potions.JSON", "_dist/img/enemies/enemies.JSON", "_dist/img/armor/armor.JSON" ];
+        this.assetsLoader = new PIXI.AssetLoader(JSONToLoader);
+        var self = this;
+        this.assetsLoader.onComplete = function() {
+            self.onAssetsLoaded();
+        }, this.assetsLoader.onProgress = function() {}, this.assetsLoader.load(), this.jsonLoads = JSONToLoader.length;
     },
-    onAssetsLoaded: function() {
+    updateLoad: function() {
+        this.jsonLoads--, this.jsonLoads <= 0 && this.initApplication();
+    },
+    initApplication: function() {
         this.mainApp = new GameScreen("Main"), this.screenManager.addScreen(this.mainApp), 
         this.HUD = new PIXI.DisplayObjectContainer(), this.stage.addChild(this.HUD), this.screenManager.change("Main");
+    },
+    onAssetsLoaded: function() {
+        console.log("assetsLoader");
+        var self = this, jsonLoaderMonsters = new PIXI.JsonLoader("_dist/img/enemies/enemies.JSON");
+        jsonLoaderMonsters.on("loaded", function(evt) {
+            for (var i = 0; i < evt.content.json.itens.length; i++) self.monsterList.push(new MonsterModel(evt.content.json.itens[i].name, evt.content.json.itens[i].level, evt.content.json.itens[i].hp, evt.content.json.itens[i].stamina, evt.content.json.itens[i].speed, evt.content.json.itens[i].magicPower, evt.content.json.itens[i].battlePower, evt.content.json.itens[i].defense, evt.content.json.itens[i].magicDefense, evt.content.json.itens[i].xp));
+            console.log("jsonLoaderMonsters", evt.content.json.itens[0]), self.updateLoad();
+        }), jsonLoaderMonsters.load();
+        var jsonLoaderRelics = new PIXI.JsonLoader("_dist/img/relics/relics.JSON");
+        jsonLoaderRelics.on("loaded", function(evt) {
+            for (var i = 0; i < evt.content.json.itens.length; i++) self.relicList.push(new RelicModel(evt.content.json.itens[i].name, evt.content.json.itens[i].status, evt.content.json.itens[i].baseValue, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg));
+            console.log("jsonLoaderRelics", evt.content.json.itens.length), self.updateLoad();
+        }), jsonLoaderRelics.load();
+        var jsonLoaderArmor = new PIXI.JsonLoader("_dist/img/armor/armor.JSON");
+        jsonLoaderArmor.on("loaded", function(evt) {
+            for (var i = 0; i < evt.content.json.itens.length; i++) self.armorList.push(new ArmorModel(evt.content.json.itens[i].name, evt.content.json.itens[i].defenseArmor, evt.content.json.itens[i].magicDefenseArmor, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg));
+            console.log("jsonLoaderArmor", evt.content.json.itens.length), self.updateLoad();
+        }), jsonLoaderArmor.load();
+        var jsonLoaderWeapon = new PIXI.JsonLoader("_dist/img/weapons/weapons.JSON");
+        jsonLoaderWeapon.on("loaded", function(evt) {
+            for (var i = 0; i < evt.content.json.itens.length; i++) self.weaponList.push(new WeaponModel(evt.content.json.itens[i].name, evt.content.json.itens[i].battlePower, evt.content.json.itens[i].hitRate, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg, evt.content.json.itens[i].srcImg));
+            console.log("jsonLoaderWeapon", evt.content.json.itens.length), self.updateLoad();
+        }), jsonLoaderWeapon.load();
+        var jsonLoaderSpell = new PIXI.JsonLoader("_dist/img/spells/spells.JSON");
+        jsonLoaderSpell.on("loaded", function(evt) {
+            for (var i = 0; i < evt.content.json.itens.length; i++) self.spellList.push(new SpellModel(evt.content.json.itens[i].level, evt.content.json.itens[i].name, evt.content.json.itens[i].mp, evt.content.json.itens[i].spellPower, evt.content.json.itens[i].icoImg, evt.content.json.itens[i].srcImg, evt.content.json.itens[i].isMultiple));
+            console.log("jsonLoaderSpell", evt.content.json.itens.length), self.updateLoad();
+        }), jsonLoaderSpell.load();
+        var jsonLoaderPotion = new PIXI.JsonLoader("_dist/img/potions/potions.JSON");
+        jsonLoaderPotion.on("loaded", function(evt) {
+            for (var i = 0; i < evt.content.json.itens.length; i++) self.itemList.push(new ItemModel(evt.content.json.itens[i].name, evt.content.json.itens[i].effect, evt.content.json.itens[i].baseValue, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg));
+            console.log("jsonLoaderPotion", evt.content.json.itens.length), self.updateLoad();
+        }), jsonLoaderPotion.load();
     },
     show: function() {},
     hide: function() {},
@@ -919,6 +778,18 @@ var Application = AbstractApplication.extend({
         }, this.polygon = new PIXI.Polygon(new PIXI.Point(this.bounds.x + this.bounds.w / 2, this.bounds.y), new PIXI.Point(this.bounds.x, this.bounds.y), new PIXI.Point(this.bounds.x, this.bounds.y + this.bounds.h), new PIXI.Point(this.bounds.x + this.bounds.w / 2, this.bounds.y + this.bounds.h), new PIXI.Point(this.bounds.x + this.bounds.w, this.bounds.y + this.bounds.h), new PIXI.Point(this.bounds.x + this.bounds.w, this.bounds.y)), 
         this.bounds;
     },
+    updatePlayerVel: function(vecPositions) {
+        if (this && vecPositions) {
+            var hasAxysY = !1, hasAxysX = !1;
+            0 === vecPositions.length && (this.virtualVelocity.x = 0, this.virtualVelocity.y = 0);
+            for (var i = vecPositions.length - 1; i >= 0; i--) "up" === vecPositions[i] ? (this.virtualVelocity.y = -this.defaultVelocity, 
+            hasAxysY = !0) : "down" === vecPositions[i] && (this.virtualVelocity.y = this.defaultVelocity, 
+            hasAxysY = !0), "left" === vecPositions[i] ? (this.virtualVelocity.x = -this.defaultVelocity, 
+            hasAxysX = !0) : "right" === vecPositions[i] && (this.virtualVelocity.x = this.defaultVelocity, 
+            hasAxysX = !0);
+            hasAxysY || (this.virtualVelocity.y = 0), hasAxysX || (this.virtualVelocity.x = 0);
+        }
+    },
     update: function() {
         this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = this.playerModel.velocity, 
         !this.isTouch && this.returnCollider <= 0 && (this.velocity = this.virtualVelocity), 
@@ -1183,20 +1054,21 @@ var Application = AbstractApplication.extend({
         this.price = price, this.icoImg = icoImg;
     }
 }), MonsterModel = Class.extend({
-    init: function(level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp) {
-        this.initiallevel = level, this.initialhp = hp, this.initialstamina = stamina, this.initialspeed = speed, 
-        this.initialmagicPower = magicPower, this.initialbattlePower = battlePower, this.initialdefense = defense, 
-        this.initialmagicDefense = magicDefense, this.initialxp = xp, this.level = level, 
-        this.hpMax = hp, this.speed = speed, this.magicPower = magicPower, this.battlePower = battlePower, 
-        this.defense = defense, this.magicDefense = magicDefense, this.stamina = stamina, 
-        this.critialChance = 0, this.speedStatus = "normal", this.attackType = "physical", 
+    init: function(name, level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp) {
+        console.log("name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp\n", name, level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp), 
+        this.name = name, this.initiallevel = level, this.initialhp = hp, this.initialstamina = stamina, 
+        this.initialspeed = speed, this.initialmagicPower = magicPower, this.initialbattlePower = battlePower, 
+        this.initialdefense = defense, this.initialmagicDefense = magicDefense, this.initialxp = xp, 
+        this.level = level, this.hpMax = hp, this.speed = speed, this.magicPower = magicPower, 
+        this.battlePower = battlePower, this.defense = defense, this.magicDefense = magicDefense, 
+        this.stamina = stamina, this.critialChance = 0, this.speedStatus = "normal", this.attackType = "physical", 
         magicPower > battlePower && (this.attackType = "magical"), this.xp = xp ? xp : 100, 
         this.spellPower = 9, this.speedModifier = .005, this.magicPowerModifier = .004, 
         this.battlePowerModifier = .005, this.defenseModifier = .004, this.magicDefenseModifier = .004, 
         this.baseHPModifier = 1.62, this.staminaModifier = .008, this.level = level, this.updateLevel(level);
     },
     clone: function() {
-        return new MonsterModel(this.initiallevel, this.initialhp, this.initialstamina, this.initialspeed, this.initialmagicPower, this.initialbattlePower, this.initialdefense, this.initialmagicDefense, this.initialxp);
+        return new MonsterModel(this.name, this.initiallevel, this.initialhp, this.initialstamina, this.initialspeed, this.initialmagicPower, this.initialbattlePower, this.initialdefense, this.initialmagicDefense, this.initialxp);
     },
     updateLevel: function(level) {
         console.log("updateLevel", level), this.level = level, this.speed += level * ((this.speed * this.speed + this.speed + 3) / 4) * this.speedModifier, 
@@ -1415,13 +1287,13 @@ var Application = AbstractApplication.extend({
         })), jy === Math.floor(this.parent.tempSizeTiles.x / 2) && (lef || "OCEAN" === map.centers[i].biome || (lef = {
             x: jy,
             y: ix
-        }, console.log("lef", lef)), console.log("ix", ix, jy), rig.x < ix && (rig = {
+        }), rig.x < ix && (rig = {
             x: jy,
             y: ix
-        }, console.log("rig", rig))), tempX = ix * APP.nTileSize, tempY = jy * APP.nTileSize, 
-        this.parent.currentNode.mapData[jy][ix] = map.centers[i].biome, tempTile = new SimpleSprite("_dist/img/tile1.png"), 
-        tempTile.setPosition(tempY * scl, tempX * scl), tempTile.getContent().tint = displayColors[map.centers[i].biome], 
-        tempTile.getContent().scale.x = scl, tempTile.getContent().scale.y = scl, tempContainer.addChild(tempTile.getContent());
+        })), tempX = ix * APP.nTileSize, tempY = jy * APP.nTileSize, this.parent.currentNode.mapData[jy][ix] = map.centers[i].biome, 
+        tempTile = new SimpleSprite("_dist/img/tile1.png"), tempTile.setPosition(tempY * scl, tempX * scl), 
+        tempTile.getContent().tint = displayColors[map.centers[i].biome], tempTile.getContent().scale.x = scl, 
+        tempTile.getContent().scale.y = scl, tempContainer.addChild(tempTile.getContent());
         return this.parent.currentNode.topTile = top, this.parent.currentNode.bottomTile = bot, 
         this.parent.currentNode.leftTile = lef, this.parent.currentNode.rightTile = rig, 
         this.parent.bgContainer.addChild(tempContainer), this.parent.currentNode.bg = tempContainer, 
@@ -1519,16 +1391,19 @@ var Application = AbstractApplication.extend({
     },
     onAssetsLoaded: function() {
         this._super(), this.currentNode = APP.gen.firstNode, this.currentNode.applySeed();
-        this.vecPositions = [], this.keyboardInput = new KeyboardInput(this), this.graphDebug = new PIXI.Graphics(), 
+        this.vecPositions = [], this.keyboardInput = new InputManager(this), this.graphDebug = new PIXI.Graphics(), 
         this.addChild(this.graphDebug), this.blackShape = new PIXI.Graphics(), this.blackShape.beginFill(0), 
         this.blackShape.drawRect(0, 0, windowWidth, windowHeight), APP.getHUD().addChild(this.blackShape), 
+        this.createHUD(), this.collisionSystem = new BoundCollisionSystem(this, !1), this.effectsContainer = new PIXI.DisplayObjectContainer(), 
+        this.addChild(this.effectsContainer), this.levelGenerator = new LevelGenerator(this), 
+        this.resetLevel();
+    },
+    createHUD: function() {
         this.HPView = new BarView(200, 20, 100, 100), this.HPView.setPosition(20, 150), 
         APP.getHUD().addChild(this.HPView.getContent()), this.MPView = new BarView(200, 20, 100, 100), 
         this.MPView.setPosition(20, 180), this.MPView.setFrontColor(255), APP.getHUD().addChild(this.MPView.getContent()), 
         this.XPBar = new BarView(200, 20, 100, 100), this.XPBar.setPosition(20, 210), this.XPBar.setFrontColor(5592405), 
-        this.XPBar.setBackColor(0), APP.getHUD().addChild(this.XPBar.getContent()), TweenLite.to(this.blackShape, 1, {
-            alpha: 0
-        }), this.levelLabel = new PIXI.Text("", {
+        this.XPBar.setBackColor(0), APP.getHUD().addChild(this.XPBar.getContent()), this.levelLabel = new PIXI.Text("", {
             fill: "white",
             align: "left",
             font: "bold 15px Arial"
@@ -1541,20 +1416,21 @@ var Application = AbstractApplication.extend({
             tempBox = new BoxHUD1(100, 70, 3), tempBox.setPosition(windowWidth / 2 - icosTotalWidth / 2 + 120 * i, windowHeight - 90), 
             APP.getHUD().addChild(tempBox.getContent());
             var tempText = "", shortcut = i + 1;
-            5 === i && (shortcut = "SPACE"), this.shortcuts[i] && (tempBox.addImage(this.shortcuts[i].icoImg), 
-            tempText = this.shortcuts[i].name, tempBox.addModel(this.shortcuts[i])), tempBox.setText(tempText + "\n\n\n" + shortcut);
+            3 === i ? shortcut = "Q" : 4 === i ? shortcut = "E" : 5 === i && (shortcut = "SPACE"), 
+            this.shortcuts[i] && (tempBox.addImage(this.shortcuts[i].icoImg), tempText = this.shortcuts[i].name, 
+            tempBox.addModel(this.shortcuts[i])), tempBox.setText(tempText + "\n\n\n" + shortcut);
         }
         for (this.equips = [ null, null, null ], this.equipsBoxHud = [], i = 0; i < this.equips.length; i++) tempBox = new BoxHUD1(100, 70, 1), 
         tempBox.setPosition(windowWidth - 120, windowHeight / 2.5 + 90 * i), 0 === i ? tempBox.setText("Weapon") : 1 === i ? tempBox.setText("Armor") : 2 === i && tempBox.setText("Relic"), 
         APP.getHUD().addChild(tempBox.getContent()), this.equipsBoxHud.push(tempBox);
         this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent()), 
         this.minimap.build(), this.minimap.setPosition(windowWidth - .5 * this.minimap.getContent().width - 5, 10), 
-        this.minimap.getContent().scale.x = .5, this.minimap.getContent().scale.y = .5, 
-        this.collisionSystem = new BoundCollisionSystem(this, !1), this.effectsContainer = new PIXI.DisplayObjectContainer(), 
-        this.addChild(this.effectsContainer), this.levelGenerator = new LevelGenerator(this), 
-        this.resetLevel();
+        this.minimap.getContent().scale.x = .5, this.minimap.getContent().scale.y = .5;
     },
-    updateHUD: function() {
+    useShortcut: function(id) {
+        this.shortcuts[id] && (this.shortcuts[id] instanceof ItemModel ? this.useItem(this.shortcuts[id]) : this.shortcuts[id] instanceof SpellModel && this.spell(this.shortcuts[id]));
+    },
+    updateInventory: function() {
         this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
         this.equips[2] = this.player.relicModel;
         for (var i = 0; i < this.equipsBoxHud.length; i++) this.equipsBoxHud[i].addModel(this.equips[i]);
@@ -1563,55 +1439,34 @@ var Application = AbstractApplication.extend({
         this.player.useItem(itemModel);
     },
     spell: function(spellModel) {
-        console.log("usou spell", spellModel), this.player.spell(APP.stage.getMousePosition(), spellModel);
+        this.player.spell(APP.stage.getMousePosition(), spellModel);
     },
     shoot: function() {
         this.player.shoot(APP.stage.getMousePosition(), this.player.weaponModel);
     },
-    useShortcut: function(id) {
-        this.shortcuts[id] && (this.shortcuts[id] instanceof ItemModel ? this.useItem(this.shortcuts[id]) : this.shortcuts[id] instanceof SpellModel && this.spell(this.shortcuts[id]));
-    },
-    removePosition: function(position) {
-        for (var i = this.vecPositions.length - 1; i >= 0; i--) this.vecPositions[i] === position && this.vecPositions.splice(i, 1);
-    },
-    addPosition: function(position) {
-        for (var exists = !1, i = this.vecPositions.length - 1; i >= 0; i--) this.vecPositions[i] === position && (exists = !0);
-        exists || this.vecPositions.push(position);
-    },
-    updatePlayerVel: function() {
-        if (this.player && this.vecPositions) {
-            var hasAxysY = !1, hasAxysX = !1;
-            0 === this.vecPositions.length && (this.player.virtualVelocity.x = 0, this.player.virtualVelocity.y = 0);
-            for (var i = this.vecPositions.length - 1; i >= 0; i--) "up" === this.vecPositions[i] ? (this.player.virtualVelocity.y = -this.player.defaultVelocity, 
-            hasAxysY = !0) : "down" === this.vecPositions[i] && (this.player.virtualVelocity.y = this.player.defaultVelocity, 
-            hasAxysY = !0), "left" === this.vecPositions[i] ? (this.player.virtualVelocity.x = -this.player.defaultVelocity, 
-            hasAxysX = !0) : "right" === this.vecPositions[i] && (this.player.virtualVelocity.x = this.player.defaultVelocity, 
-            hasAxysX = !0);
-            hasAxysY || (this.player.virtualVelocity.y = 0), hasAxysX || (this.player.virtualVelocity.x = 0);
-        }
-    },
     update: function() {
         if (this.player) {
             this.getContent().position.x = windowWidth / 2 - this.player.getPosition().x, this.getContent().position.y = windowHeight / 2 - this.player.getPosition().y, 
-            this.player.fireFreqAcum--, this.levelLabel && this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:roomState   -    playerClass:" + this.playerModel.playerClass + "\nLEVEL: " + this.playerModel.level), 
-            this.mouseDown && this.player.fireFreqAcum <= 0 && this.shoot(), this.entityLayer.collideChilds(this.player), 
-            this.environmentLayer.collideChilds(this.player), this.boundsCollision();
+            this.player.fireFreqAcum--, this.mouseDown && this.player.fireFreqAcum <= 0 && this.shoot(), 
+            this.entityLayer.collideChilds(this.player), this.environmentLayer.collideChilds(this.player), 
+            this.boundsCollision();
             for (var i = 0; i < this.entityLayer.childs.length; i++) "fire" === this.entityLayer.childs[i].type && this.entityLayer.collideChilds(this.entityLayer.childs[i]);
             this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs);
         }
-        if (this._super(), this.entityLayer.getContent().children.sort(this.depthCompare), 
-        this.levelGenerator && this.levelGenerator.update(), this.HPView && this.player) {
-            this.HPView.updateBar(Math.floor(this.playerModel.hp), Math.floor(this.playerModel.hpMax)), 
-            this.HPView.setText(Math.floor(this.playerModel.hp) + "/ " + Math.floor(this.playerModel.hpMax)), 
-            this.MPView.updateBar(Math.floor(this.playerModel.mp), Math.floor(this.playerModel.mpMax)), 
-            this.MPView.setText(Math.floor(this.playerModel.mp) + "/ " + Math.floor(this.playerModel.mpMax));
-            var tempXP = Math.floor(this.playerModel.xp) - Math.floor(this.playerModel.toBeforeLevel), tempNext = Math.floor(this.playerModel.toNextLevel) - Math.floor(this.playerModel.toBeforeLevel);
-            this.XPBar.updateBar(tempXP, tempNext), this.XPBar.setText(tempXP + "/ " + tempNext);
-        }
-        this.player && this.player.endLevel ? (this.player.endLevel = !1, this.currentNode = this.player.nextNode, 
-        this.currentNode.applySeed(), this.currentPlayerSide = this.player.nextDoorSide, 
+        this._super(), this.entityLayer.getContent().children.sort(this.depthCompare), this.levelGenerator && this.levelGenerator.update(), 
+        this.HPView && this.player && this.updateHUD(), this.player && this.player.endLevel ? (this.player.endLevel = !1, 
+        this.currentNode = this.player.nextNode, this.currentNode.applySeed(), this.currentPlayerSide = this.player.nextDoorSide, 
         this.killLevel(this.resetLevel), this.player = null) : this.player && this.player.playerDead && (this.playerModel.resetPoints(), 
         this.killLevel(this.resetLevel), this.player = null);
+    },
+    updateHUD: function() {
+        this.HPView.updateBar(Math.floor(this.playerModel.hp), Math.floor(this.playerModel.hpMax)), 
+        this.HPView.setText(Math.floor(this.playerModel.hp) + "/ " + Math.floor(this.playerModel.hpMax)), 
+        this.MPView.updateBar(Math.floor(this.playerModel.mp), Math.floor(this.playerModel.mpMax)), 
+        this.MPView.setText(Math.floor(this.playerModel.mp) + "/ " + Math.floor(this.playerModel.mpMax));
+        var tempXP = Math.floor(this.playerModel.xp) - Math.floor(this.playerModel.toBeforeLevel), tempNext = Math.floor(this.playerModel.toNextLevel) - Math.floor(this.playerModel.toBeforeLevel);
+        this.XPBar.updateBar(tempXP, tempNext), this.XPBar.setText(tempXP + "/ " + tempNext), 
+        this.levelLabel && this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:roomState   -    playerClass:" + this.playerModel.playerClass + "\nLEVEL: " + this.playerModel.level);
     },
     boundsCollision: function() {
         for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if (tempEntity = this.entityLayer.childs[i], 
@@ -1666,7 +1521,7 @@ var Application = AbstractApplication.extend({
         }, 700);
     },
     resetLevel: function() {
-        this.vecPositions = [], this.blackShape.alpha = 1, TweenLite.to(this.blackShape, 1, {
+        this.mouseDown = !1, this.blackShape.alpha = 1, TweenLite.to(this.blackShape, 1, {
             alpha: 0
         });
         var roomState = "first room";
@@ -1692,7 +1547,7 @@ var Application = AbstractApplication.extend({
         }
         for (this.player = new Player(this.playerModel), this.level = getRandomLevel(), 
         this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
-        this.marginTiles = {
+        this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : (this.marginTiles = {
             x: Math.floor(this.mapPosition.x / APP.nTileSize),
             y: Math.floor(this.mapPosition.y / APP.nTileSize)
         }, this.tempSizeTiles = 1 === this.currentNode.mode ? {
@@ -1701,18 +1556,17 @@ var Application = AbstractApplication.extend({
         } : {
             x: 24 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
             y: 20 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
-        }, this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : this.currentNode.bg = this.levelGenerator.createRoom(), 
-        this.levelBounds = {
+        }, this.currentNode.bg = this.levelGenerator.createRoom()), this.levelBounds = {
             x: this.currentNode.bg.width,
             y: this.currentNode.bg.height
         }, this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), 1 !== this.currentNode.mode && this.levelGenerator.createHordes(), 
         this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
-        this.getContent().position.x = -this.mapPosition.x, this.getContent().position.y = -this.mapPosition.y, 
         this.player.build(), this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
         this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
-        this.equips[2] = this.player.relicModel, this.updateHUD(), this.entityLayer.addChild(this.player), 
-        console.log(this.currentPlayerSide), this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2);
+        this.equips[2] = this.player.relicModel, this.updateInventory(), this.entityLayer.addChild(this.player), 
+        "up" === this.currentPlayerSide || "down" === this.currentPlayerSide || "left" === this.currentPlayerSide || "right" === this.currentPlayerSide, 
+        this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2);
     },
     depthCompare: function(a, b) {
         var yA = a.position.y, yB = b.position.y;
@@ -1773,28 +1627,36 @@ var Application = AbstractApplication.extend({
         this._super(obj), this.dataRef.update(obj);
     },
     destroy: function() {}
-}), KeyboardInput = Class.extend({
+}), InputManager = Class.extend({
     init: function(parent) {
-        var self = parent;
-        document.body.addEventListener("mouseup", function() {
-            self.player && (self.mouseDown = !1);
+        var game = parent, self = this;
+        this.vecPositions = [], document.body.addEventListener("mouseup", function() {
+            game.player && (game.mouseDown = !1);
         }), document.body.addEventListener("mousedown", function() {
-            self.player && (self.mouseDown = !0);
+            game.player && (game.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
-            if (self.player) {
-                if (87 === e.keyCode || 38 === e.keyCode && self.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && self.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && self.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && self.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) self.useShortcut(5); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode || 52 === e.keyCode || 53 === e.keyCode) {
+            if (game.player) {
+                if (87 === e.keyCode || 38 === e.keyCode && game.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && game.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && game.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && game.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) game.useShortcut(5); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode || 81 === e.keyCode || 69 === e.keyCode) {
                     var id = 1;
-                    50 === e.keyCode ? id = 2 : 51 === e.keyCode ? id = 3 : 52 === e.keyCode ? id = 4 : 53 === e.keyCode && (id = 5), 
-                    self.useShortcut(id - 1);
+                    50 === e.keyCode ? id = 2 : 51 === e.keyCode ? id = 3 : 81 === e.keyCode ? id = 4 : 69 === e.keyCode && (id = 5), 
+                    game.useShortcut(id - 1);
                 }
-                self.updatePlayerVel();
+                game.player.updatePlayerVel(self.vecPositions);
             }
         }), document.body.addEventListener("keydown", function(e) {
-            87 === e.keyCode || 38 === e.keyCode ? (self.removePosition("down"), self.addPosition("up")) : 83 === e.keyCode || 40 === e.keyCode ? (self.removePosition("up"), 
+            game.player && (87 === e.keyCode || 38 === e.keyCode ? (self.removePosition("down"), 
+            self.addPosition("up")) : 83 === e.keyCode || 40 === e.keyCode ? (self.removePosition("up"), 
             self.addPosition("down")) : 65 === e.keyCode || 37 === e.keyCode ? (self.removePosition("right"), 
             self.addPosition("left")) : (68 === e.keyCode || 39 === e.keyCode) && (self.removePosition("left"), 
-            self.addPosition("right")), self.updatePlayerVel();
+            self.addPosition("right")), game.player.updatePlayerVel(self.vecPositions));
         });
+    },
+    removePosition: function(position) {
+        for (var i = this.vecPositions.length - 1; i >= 0; i--) this.vecPositions[i] === position && this.vecPositions.splice(i, 1);
+    },
+    addPosition: function(position) {
+        for (var exists = !1, i = this.vecPositions.length - 1; i >= 0; i--) this.vecPositions[i] === position && (exists = !0);
+        exists || this.vecPositions.push(position);
     }
 }), meter = new FPSMeter(), SOCKET = null, windowWidth = 1280, windowHeight = 720;
 

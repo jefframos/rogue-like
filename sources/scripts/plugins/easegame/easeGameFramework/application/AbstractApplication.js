@@ -29,7 +29,6 @@ var AbstractApplication = Class.extend({
 	//inicia o carregamento dos assets
 	initLoad:function()
 	{
-		
 		var that = this;
 		this.loader.onComplete = function() {
 			that.onAssetsLoaded();
@@ -42,7 +41,7 @@ var AbstractApplication = Class.extend({
 	//evento chamado quando os assets forem carregados
 	onAssetsLoaded:function()
 	{
-		this.stage.removeChild(this.loadText);
+		// this.stage.removeChild(this.loadText);
 	},
 	//onProgress do loader
 	onProgress:function()
