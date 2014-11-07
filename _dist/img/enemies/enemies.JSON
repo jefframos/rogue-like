@@ -1,0 +1,20 @@
+{
+    "itens":
+    [
+        {
+            "name":"xurico",
+            "level":1,
+            "hp":80,
+            "stamina":50,
+            "speed":20,
+            "magicPower":13,
+            "battlePower":30,
+            "defense":70,
+            "magicDefense":70,
+            "xp":10,
+            "icoImg":"_dist/img/weapons/dagger.png",
+            "srcImg":"_dist/img/weapons/dagger.png",
+            "srcJson":"_dist/img/weapons/dagger.png"
+        }
+    ]
+}
