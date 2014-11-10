@@ -15,7 +15,7 @@ var Application = AbstractApplication.extend({
         // this.gen.log();
 
         //size utilizado no tilemap
-        this.nTileSize = 40;
+        this.nTileSize = 80;
         //size utilizado nos personagens
         this.tileSize = {x: this.nTileSize, y:  this.nTileSize};
         
@@ -101,7 +101,11 @@ var Application = AbstractApplication.extend({
                     evt.content.json.itens[i].battlePower,
                     evt.content.json.itens[i].defense,
                     evt.content.json.itens[i].magicDefense,
-                    evt.content.json.itens[i].xp
+                    evt.content.json.itens[i].xp,
+                    evt.content.json.itens[i].srcImg,
+                    evt.content.json.itens[i].srcJson,
+                    evt.content.json.itens[i].sourceLabel,
+                    evt.content.json.itens[i].frames
                 ));
             }
             console.log('jsonLoaderMonsters',evt.content.json.itens[0]);
@@ -145,6 +149,7 @@ var Application = AbstractApplication.extend({
             for (var i = 0; i < evt.content.json.itens.length; i++) {
                 self.weaponList.push(new WeaponModel(evt.content.json.itens[i].name,
                     evt.content.json.itens[i].battlePower,
+                    evt.content.json.itens[i].magicPower,
                     evt.content.json.itens[i].hitRate,
                     evt.content.json.itens[i].price,
                     evt.content.json.itens[i].icoImg,

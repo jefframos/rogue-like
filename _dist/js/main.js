@@ -1512,7 +1512,9 @@ var Application = AbstractApplication.extend({
                 x: Math.floor(centerPositionPlayer.x / APP.nTileSize),
                 y: Math.floor(centerPositionPlayer.y / APP.nTileSize)
             };
-            return tilePosition;
+            return this.miniPlayer && (this.miniPlayer.clear(), this.miniPlayer.beginFill(16711680), 
+            this.miniPlayer.drawRect(2 * tilePosition.x, 2 * tilePosition.y, 2, 2), console.log(2 * tilePosition.x, 2 * tilePosition.y, 2, 2), 
+            this.miniPlayer.endFill()), tilePosition;
         }
         return null;
     },
@@ -1595,6 +1597,7 @@ var Application = AbstractApplication.extend({
         }
         for (this.player = new Player(this.playerModel), this.level = getRandomLevel(), 
         this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
+        var i = 0, j = 0;
         this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : (this.marginTiles = {
             x: Math.floor(this.mapPosition.x / APP.nTileSize),
             y: Math.floor(this.mapPosition.y / APP.nTileSize)
@@ -1602,18 +1605,26 @@ var Application = AbstractApplication.extend({
             x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x,
             y: Math.floor(windowHeight / APP.nTileSize) + this.marginTiles.y
         } : {
-            x: 24 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
-            y: 20 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
+            x: 100 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
+            y: 120 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
         }, this.currentNode.bg = this.levelGenerator.createRoom(), this.bgContainer.addChild(this.currentNode.bg)), 
         this.levelBounds = {
             x: this.currentNode.mapData.length * APP.nTileSize,
             y: this.currentNode.mapData[0].length * APP.nTileSize
-        }, console.log(this.levelBounds, this.currentNode.mapData.length, this.currentNode.mapData[0].length), 
+        }, this.minimapContainer && this.minimapContainer.parent && this.minimapContainer.parent.removeChild(this.minimapContainer), 
+        this.minimapContainer = new PIXI.DisplayObjectContainer(), this.miniPlayer = new PIXI.Graphics();
+        var tempRect = new PIXI.Graphics(), tileMiniSize = 2;
+        for (this.miniPlayer.beginFill(16711680), this.miniPlayer.drawRect(tileMiniSize, tileMiniSize, 0, 0), 
+        i = this.currentNode.mapData.length - 1; i >= 0; i--) for (j = this.currentNode.mapData[i].length - 1; j >= 0; j--) tempRect.beginFill(displayColors[this.currentNode.mapData[i][j]]), 
+        tempRect.drawRect(i * tileMiniSize, j * tileMiniSize, tileMiniSize, tileMiniSize), 
+        tempRect.endFill(), this.minimapContainer.addChild(tempRect);
+        this.minimapContainer.addChild(this.miniPlayer), APP.getHUD().addChild(this.minimapContainer), 
+        this.minimapContainer.position.x = windowWidth - this.minimapContainer.width - 20, 
+        this.minimapContainer.position.y = windowHeight - this.minimapContainer.height - 20, 
         this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
         var monstersToLoaded = [], monstersAssets = [];
         if (1 !== this.currentNode.mode) {
-            monstersToLoaded = this.levelGenerator.createHordes();
-            for (var i = monstersToLoaded.length - 1; i >= 0; i--) monstersAssets.push(monstersToLoaded[i].monsterModel.srcJson), 
+            for (monstersToLoaded = this.levelGenerator.createHordes(), i = monstersToLoaded.length - 1; i >= 0; i--) monstersAssets.push(monstersToLoaded[i].monsterModel.srcJson), 
             monstersAssets.push(monstersToLoaded[i].monsterModel.srcImg);
             var monsterLoader = new PIXI.AssetLoader(monstersAssets), self = this;
             monsterLoader.onComplete = function() {

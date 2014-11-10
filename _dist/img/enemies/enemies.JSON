@@ -2,19 +2,44 @@
     "itens":
     [
         {
+            "name":"xuricao",
+            "level":1,
+            "hp":180,
+            "stamina":40,
+            "speed":60,
+            "magicPower":13,
+            "battlePower":30,
+            "defense":120,
+            "magicDefense":120,
+            "xp":20,
+            "icoImg":"_dist/img/weapons/dagger.png",
+            "srcImg":"_dist/img/enemies/sockets.png",
+            "srcJson":"_dist/img/enemies/sockets.JSON",
+            "sourceLabel":"sockets10",
+            "frames":{
+                "idleInit":0,
+                "idleEnd":14
+            }
+        },
+        {
             "name":"xurico",
             "level":1,
             "hp":80,
             "stamina":50,
-            "speed":20,
+            "speed":40,
             "magicPower":13,
             "battlePower":30,
             "defense":70,
             "magicDefense":70,
             "xp":10,
             "icoImg":"_dist/img/weapons/dagger.png",
-            "srcImg":"_dist/img/weapons/dagger.png",
-            "srcJson":"_dist/img/weapons/dagger.png"
+            "srcImg":"_dist/img/enemies/dragon.png",
+            "srcJson":"_dist/img/enemies/dragon.JSON",
+            "sourceLabel":"dragon10",
+            "frames":{
+                "idleInit":0,
+                "idleEnd":14
+            }
         }
     ]
 }

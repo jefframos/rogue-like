@@ -9,6 +9,7 @@ var BoxHUD1 = Class.extend({
 		this.height = height;
 		this.backShape = new PIXI.Graphics();
 		this.backShape.beginFill(0x000000);
+		this.backShape.lineStyle(1,0xEEEEEE);
 		this.backShape.drawRect(0,0,width, height);
 		this.container.addChild(this.backShape);
 		this.container.hitArea = new PIXI.Rectangle(0,0,width, height);
@@ -16,6 +17,7 @@ var BoxHUD1 = Class.extend({
 		if(infoSide !== 0){
 			this.infoContainer = new PIXI.DisplayObjectContainer();
 			this.backShapeInfo = new PIXI.Graphics();
+			this.backShapeInfo.lineStyle(1,0xEEEEEE);
 			this.backShapeInfo.beginFill(0x000000);
 
 			this.backShapeInfo.drawRect(0,0,width, height);
@@ -55,6 +57,12 @@ var BoxHUD1 = Class.extend({
 	hideInfo: function(){
 		this.infoContainer.alpha = 0;
 	},
+	setTextPos: function(x,y){
+		if(this.label){
+			this.label.position.x = x;
+			this.label.position.y = y;
+		}
+	},
 	setColor: function(color){
 		if(this.backShape){
 			this.container.removeChild(this.backShape);
@@ -73,20 +81,20 @@ var BoxHUD1 = Class.extend({
 			var text = '';
 			if(model instanceof WeaponModel)
 			{
-				text = 'Weapon' + '\n'+model.label + '\n' + 'pwr: +'+model.battlePower;
+				text = 'Weapon' + '\n'+model.label + '\n' + 'PWR: +'+model.battlePower+ '\n' + 'MPW: +'+model.magicPower;
 			}else if(model instanceof ArmorModel)
 			{
-				text = 'Armor' + '\n'+model.label + '\n' + 'def: +'+model.defenseArmor+ '\n' + 'mag def: +'+model.magicDefenseArmor;
+				text = 'Armor' + '\n'+model.label + '\n' + 'DEF: +'+model.defenseArmor+ '\n' + 'MDF: +'+model.magicDefenseArmor;
 			}else if(model instanceof RelicModel)
 			{
-				text = 'Relic' + '\n'+model.label + '\n' + 'status: '+model.status;
+				text = 'Relic' + '\n'+model.label + '\n' + 'STATUS: \n'+model.status;
 			}else if(model instanceof ItemModel)
 			{
 				var addicionalLabel = (model.baseValue !== 0)?('\n' + '+ '+model.baseValue):'';
 				text = model.label + '\n' + model.effect + addicionalLabel;
 			}else if(model instanceof SpellModel)
 			{
-				text = model.label + '\n' + 'mag pow: '+model.spellPower+ '\nMP: '+model.mp;
+				text = model.label + '\n' + 'MPW: '+model.spellPower+ '\nMP: '+model.mp;
 			}
 
 			if(!this.infoLabel){

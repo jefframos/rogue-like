@@ -12,6 +12,7 @@ var Enemy = SpritesheetEntity.extend({
         this.boundsCollision = true;
         this.player = player;
         this.monsterModel = model;
+        this.initialPosition = {x:0, y:0};
     },
     hurt:function(demage, type){
         
@@ -34,6 +35,8 @@ var Enemy = SpritesheetEntity.extend({
     },
     build: function(){
         // console.log('criou o Heart');
+        console.log(this.monsterModel, 'monsterModel');
+
         this.fireFreq = this.monsterModel.fireFreq;
         this.defaultVelocity = this.monsterModel.speed/15;
         if(this.defaultVelocity < 4){
@@ -41,10 +44,8 @@ var Enemy = SpritesheetEntity.extend({
         }
         this.hp = this.monsterModel.hp;
         this.behaviour = new DefaultBehaviour(this, this.player);
-        console.log('HP', this.hp);
-
         var self = this;
-        var motionArray = this.getFramesByRange('dragon10',0,14);
+        var motionArray = this.getFramesByRange(this.monsterModel.sourceLabel,this.monsterModel.frames.idleInit,this.monsterModel.frames.idleEnd);
         var animationIdle = new SpritesheetAnimation();
         animationIdle.build('idle', motionArray, 1, true, null);
         this.spritesheet = new Spritesheet();
@@ -56,18 +57,22 @@ var Enemy = SpritesheetEntity.extend({
         this.collidable = true;
     },
     update: function(){
-        if(this.behaviour){
-            this.behaviour.update();
-        }
-        if(!this.isTouch){
-            this.velocity = this.virtualVelocity;
-        }
-        this._super();
-        this.getBounds();
-        if(this.getTexture()){
-            this.getContent().position.x = 20;
-        }
+        if(this.pointDistance(this.getPosition().x, this.getPosition().y, this.player.getPosition().x, this.player.getPosition().y) < windowWidth * 1.5){
+            if(this.behaviour){
+                this.behaviour.update();
+            }
+            if(!this.isTouch){
+                this.velocity = this.virtualVelocity;
+            }
+            this._super();
+            this.getBounds();
+            if(this.getTexture()){
+                this.getContent().position.x = 20;
+                //console.log(this.getTexture().width);
+                this.range = this.getTexture().width / 2;
 
+            }
+        }
     },
     preKill:function(){
         //this._super();

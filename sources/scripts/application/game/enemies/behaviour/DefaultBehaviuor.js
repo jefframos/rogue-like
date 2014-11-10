@@ -3,7 +3,7 @@ var DefaultBehaviour = Class.extend({
 	init: function (entity, player){
 		this.player = player;
 		this.entity = entity;
-		this.fireFreq = entity.fireFreq + Math.random() * 30;
+		this.fireFreq = entity.fireFreq / 2;
 		this.maxFireFreq = entity.fireFreq;
 		this.fireAcum = 0;
 		this.walkAccum = 0;

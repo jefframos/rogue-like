@@ -36,6 +36,7 @@ var LevelGenerator = Class.extend({
 	},
 	createHordes: function(){
 		var tempMonster = null;
+		var monsters = [];
 		for (var i = 0; i < 1; i++) {
 			
 			tempMonster = new Enemy(this.parent.player, APP.monsterList[0].clone());
@@ -45,10 +46,15 @@ var LevelGenerator = Class.extend({
 			// }else{
 			// 	tempMonster.monsterModel.updateLevel(1);
 			// }
-			tempMonster.build();
-			tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.x,this.parent.levelBounds.y * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.y);
-			this.parent.entityLayer.addChild(tempMonster);
+			// tempMonster.build();
+			// tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat(),this.parent.levelBounds.y * this.parent.currentNode.getNextFloat());
+			var rndAngle = this.parent.currentNode.getNextFloat() * 360 / 180 * Math.PI;
+			tempMonster.initialPosition = {x:this.parent.levelBounds.x /2 + 300 * Math.sin(rndAngle),
+				y:this.parent.levelBounds.y /2 + 300 * Math.cos(rndAngle)};
+			// this.parent.entityLayer.addChild(tempMonster);
+			monsters.push(tempMonster);
 		}
+		return monsters;
 	},
 	putObstacles: function(){
 		// for (var i = this.parent.level.length - 1; i >= 0; i--) {
@@ -79,7 +85,7 @@ var LevelGenerator = Class.extend({
 	},
 	createRoom: function(){
 		var i = 0;
-		this.distanceToShowMap = 8;
+		this.distanceToShowMap = 5;
 		var mapMaker = null;
 		// if(this.parent.currentNode.getNextFloat()< 0.3){
 		// 	mapMaker = voronoiMap.islandShape.makeBlob(this.parent.currentNode.getNextFloat(), 0.5);

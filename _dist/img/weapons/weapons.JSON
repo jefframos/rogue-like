@@ -4,6 +4,7 @@
         {
             "name":"MithrilKnife",
             "battlePower":30,
+            "magicPower":10,
             "hitRate":180,
             "price":300,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -12,6 +13,7 @@
         {
             "name":"AirLancet",
             "battlePower":76,
+            "magicPower":10,
             "hitRate":180,
             "price":950,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -20,6 +22,7 @@
         {
             "name":"Assassin",
             "battlePower":106,
+            "magicPower":10,
             "hitRate":180,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -28,6 +31,7 @@
         {
             "name":"Dirk",
             "battlePower":26,
+            "magicPower":10,
             "hitRate":180,
             "price":150,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -36,6 +40,7 @@
         {
             "name":"Graedus",
             "battlePower":204,
+            "magicPower":10,
             "hitRate":180,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -44,6 +49,7 @@
         {
             "name":"Guardian",
             "battlePower":59,
+            "magicPower":10,
             "hitRate":180,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -52,6 +58,7 @@
         {
             "name":"ManEater",
             "battlePower":146,
+            "magicPower":10,
             "hitRate":180,
             "price":11000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -60,6 +67,7 @@
         {
             "name":"SwordBreaker",
             "battlePower":164,
+            "magicPower":10,
             "hitRate":180,
             "price":16000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -68,6 +76,7 @@
         {
             "name":"ThiefKnife",
             "battlePower":88,
+            "magicPower":10,
             "hitRate":180,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -76,6 +85,7 @@
         {
             "name":"ValiantKnife",
             "battlePower":145,
+            "magicPower":10,
             "hitRate":180,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -84,6 +94,7 @@
         {
             "name":"Atma,WeaponBat",
             "battlePower":255,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -92,6 +103,7 @@
         {
             "name":"Blizzard",
             "battlePower":108,
+            "magicPower":10,
             "hitRate":150,
             "price":7000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -100,6 +112,7 @@
         {
             "name":"Break Blade",
             "battlePower":117,
+            "magicPower":10,
             "hitRate":150,
             "price":12000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -108,6 +121,7 @@
         {
             "name":"Crystal",
             "battlePower":167,
+            "magicPower":10,
             "hitRate":150,
             "price":15000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -116,6 +130,7 @@
         {
             "name":"Drainer",
             "battlePower":121,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -124,6 +139,7 @@
         {
             "name":"Enhancer",
             "battlePower":135,
+            "magicPower":10,
             "hitRate":150,
             "price":10000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -132,6 +148,7 @@
         {
             "name":"Epee",
             "battlePower":98,
+            "magicPower":10,
             "hitRate":150,
             "price":3000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -140,6 +157,7 @@
         {
             "name":"Excalibur",
             "battlePower":217,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -148,6 +166,7 @@
         {
             "name":"Falchion",
             "battlePower":176,
+            "magicPower":10,
             "hitRate":150,
             "price":17000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -156,6 +175,7 @@
         {
             "name":"Flame,Sabre",
             "battlePower":108,
+            "magicPower":10,
             "hitRate":150,
             "price":7000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -164,6 +184,7 @@
         {
             "name":"Illumina",
             "battlePower":255,
+            "magicPower":10,
             "hitRate":255,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -172,6 +193,7 @@
         {
             "name":"MithrilBlade",
             "battlePower":38,
+            "magicPower":10,
             "hitRate":150,
             "price":450,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -180,6 +202,7 @@
         {
             "name":"Ogre Nix",
             "battlePower":182,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -188,6 +211,7 @@
         {
         "name":"Ragnarok",
             "battlePower":255,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -196,6 +220,7 @@
         {
         "name":"RegalCutlass",
             "battlePower":54,
+            "magicPower":10,
             "hitRate":150,
             "price":800,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -204,6 +229,7 @@
         {
         "name":"Rune,Edge",
             "battlePower":55,
+            "magicPower":10,
             "hitRate":150,
             "price":7500,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -212,6 +238,7 @@
         {
         "name":"Scimitar",
             "battlePower":208,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -220,6 +247,7 @@
         {
         "name":"Soul,Sabre",
             "battlePower":125,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -228,6 +256,7 @@
         {
         "name":"ThunderBlade",
             "battlePower":108,
+            "magicPower":10,
             "hitRate":150,
             "price":7000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -236,6 +265,7 @@
         {
         "name":"Aura,Lance",
             "battlePower":227,
+            "magicPower":10,
             "hitRate":180,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -244,6 +274,7 @@
         {
         "name":"Gold,Lance",
             "battlePower":139,
+            "magicPower":10,
             "hitRate":150,
             "price":12000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -252,6 +283,7 @@
         {
         "name":"Imp,Halberd",
             "battlePower":253,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -260,6 +292,7 @@
         {
         "name":"Mithril,Pike",
             "battlePower":70,
+            "magicPower":10,
             "hitRate":150,
             "price":800,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -268,6 +301,7 @@
         {
         "name":"Partisan",
             "battlePower":150,
+            "magicPower":10,
             "hitRate":150,
             "price":13000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -276,6 +310,7 @@
         {
         "name":"Pearl,Lance",
             "battlePower":194,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -284,6 +319,7 @@
         {
         "name":"Stout,Spear",
             "battlePower":112,
+            "magicPower":10,
             "hitRate":150,
             "price":10000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -292,6 +328,7 @@
         {
         "name":"Trident",
             "battlePower":93,
+            "magicPower":10,
             "hitRate":150,
             "price":1700,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -300,6 +337,7 @@
         {
         "name":"Blossom",
             "battlePower":112,
+            "magicPower":10,
             "hitRate":180,
             "price":3200,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -308,6 +346,7 @@
         {
         "name":"Hardened",
             "battlePower":121,
+            "magicPower":10,
             "hitRate":180,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -316,6 +355,7 @@
         {
         "name":"Imperial",
             "battlePower":82,
+            "magicPower":10,
             "hitRate":180,
             "price":600,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -324,6 +364,7 @@
         {
         "name":"Kodachi",
             "battlePower":93,
+            "magicPower":10,
             "hitRate":180,
             "price":1200,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -332,6 +373,7 @@
         {
         "name":"Striker",
             "battlePower":190,
+            "magicPower":10,
             "hitRate":180,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -340,6 +382,7 @@
         {
         "name":"Stunner",
             "battlePower":220,
+            "magicPower":10,
             "hitRate":180,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -348,6 +391,7 @@
         {
         "name":"Ashura",
             "battlePower":57,
+            "magicPower":10,
             "hitRate":150,
             "price":500,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -356,6 +400,7 @@
         {
         "name":"Aura",
             "battlePower":162,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -364,6 +409,7 @@
         {
         "name":"Forged",
             "battlePower":81,
+            "magicPower":10,
             "hitRate":150,
             "price":1200,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -372,6 +418,7 @@
         {
         "name":"Kotetsu",
             "battlePower":66,
+            "magicPower":10,
             "hitRate":150,
             "price":800,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -380,6 +427,7 @@
         {
         "name":"Murasame",
             "battlePower":110,
+            "magicPower":10,
             "hitRate":150,
             "price":9000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -388,6 +436,7 @@
         {
         "name":"Sky,Render",
             "battlePower":215,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -396,6 +445,7 @@
         {
         "name":"Strato",
             "battlePower":199,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -404,6 +454,7 @@
         {
         "name":"Tempest",
             "battlePower":101,
+            "magicPower":10,
             "hitRate":150,
             "price":8000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -412,6 +463,7 @@
         {
         "name":"Fire,Rod",
             "battlePower":79,
+            "magicPower":10,
             "hitRate":135,
             "price":3000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -420,6 +472,7 @@
         {
         "name":"Gravity,Rod",
             "battlePower":120,
+            "magicPower":10,
             "hitRate":135,
             "price":13000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -428,6 +481,7 @@
         {
         "name":"Heal,Rod",
             "battlePower":200,
+            "magicPower":10,
             "hitRate":255,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -436,6 +490,7 @@
         {
         "name":"Ice,Rod",
             "battlePower":79,
+            "magicPower":10,
             "hitRate":135,
             "price":3000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -444,6 +499,7 @@
         {
         "name":"Magus,Rod",
             "battlePower":168,
+            "magicPower":10,
             "hitRate":135,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -452,6 +508,7 @@
         {
         "name":"Mithril,Rod",
             "battlePower":60,
+            "magicPower":10,
             "hitRate":135,
             "price":500,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -460,6 +517,7 @@
         {
         "name":"Pearl,Rod",
             "battlePower":124,
+            "magicPower":10,
             "hitRate":135,
             "price":12000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -468,6 +526,7 @@
         {
         "name":"Poison,Rod",
             "battlePower":86,
+            "magicPower":10,
             "hitRate":135,
             "price":1500,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -476,6 +535,7 @@
         {
         "name":"Punisher",
             "battlePower":111,
+            "magicPower":10,
             "hitRate":150,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -484,6 +544,7 @@
         {
         "name":"Thunder,Rod",
             "battlePower":79,
+            "magicPower":10,
             "hitRate":135,
             "price":3000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -492,6 +553,7 @@
         {
         "name":"Chocobo,Brsh",
             "battlePower":60,
+            "magicPower":10,
             "hitRate":135,
             "price":600,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -500,6 +562,7 @@
         {
         "name":"DaVinci,Brsh",
             "battlePower":100,
+            "magicPower":10,
             "hitRate":135,
             "price":7000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -508,6 +571,7 @@
         {
         "name":"Magical,Brsh",
             "battlePower":130,
+            "magicPower":10,
             "hitRate":135,
             "price":10000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -516,6 +580,7 @@
         {
         "name":"Rainbow,Brsh",
             "battlePower":146,
+            "magicPower":10,
             "hitRate":135,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -524,6 +589,7 @@
         {
         "name":"Ninja,Star",
             "battlePower":132,
+            "magicPower":10,
             "hitRate":230,
             "price":500,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -532,6 +598,7 @@
         {
         "name":"Shuriken",
             "battlePower":86,
+            "magicPower":10,
             "hitRate":230,
             "price":30,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -540,6 +607,7 @@
         {
         "name":"Tack,Star",
             "battlePower":190,
+            "magicPower":10,
             "hitRate":230,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -548,6 +616,7 @@
         {
         "name":"Bone,Club",
             "battlePower":151,
+            "magicPower":10,
             "hitRate":150,
             "price":20000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -556,6 +625,7 @@
         {
         "name":"Boomerang",
             "battlePower":102,
+            "magicPower":10,
             "hitRate":230,
             "price":4500,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -564,6 +634,7 @@
         {
         "name":"Flail",
             "battlePower":86,
+            "magicPower":10,
             "hitRate":150,
             "price":2000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -572,6 +643,7 @@
         {
         "name":"Full,Moon",
             "battlePower":95,
+            "magicPower":10,
             "hitRate":230,
             "price":2500,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -580,6 +652,7 @@
         {
         "name":"Hawk,Eye",
             "battlePower":111,
+            "magicPower":10,
             "hitRate":180,
             "price":6000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -588,6 +661,7 @@
         {
         "name":"Morning,Star",
             "battlePower":109,
+            "magicPower":10,
             "hitRate":150,
             "price":5000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -596,6 +670,7 @@
         {
         "name":"Rising,Sun",
             "battlePower":98,
+            "magicPower":10,
             "hitRate":230,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -604,6 +679,7 @@
         {
         "name":"Cards",
             "battlePower":104,
+            "magicPower":10,
             "hitRate":230,
             "price":1000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -612,6 +688,7 @@
         {
         "name":"Darts",
             "battlePower":115,
+            "magicPower":10,
             "hitRate":230,
             "price":10000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -620,6 +697,7 @@
         {
         "name":"Doom,Darts",
             "battlePower":187,
+            "magicPower":10,
             "hitRate":230,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -628,6 +706,7 @@
         {
         "name":"Trump",
             "battlePower":133,
+            "magicPower":10,
             "hitRate":230,
             "price":13000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -636,6 +715,7 @@
         {
         "name":"ClawDragon,Claw",
             "battlePower":188,
+            "magicPower":10,
             "hitRate":200,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -644,6 +724,7 @@
         {
         "name":"ClawFire,Knuckle",
             "battlePower":122,
+            "magicPower":10,
             "hitRate":200,
             "price":10000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -652,6 +733,7 @@
         {
         "name":"ClawKaiser",
             "battlePower":83,
+            "magicPower":10,
             "hitRate":200,
             "price":1000,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -660,6 +742,7 @@
         {
         "name":"ClawMetalKnuckle",
             "battlePower":55,
+            "magicPower":10,
             "hitRate":200,
             "price":500,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -668,6 +751,7 @@
         {
         "name":"ClawMithril,Claw",
             "battlePower":65,
+            "magicPower":10,
             "hitRate":200,
             "price":800,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -676,6 +760,7 @@
         {
         "name":"ClawPoison,Claw",
             "battlePower":95,
+            "magicPower":10,
             "hitRate":200,
             "price":2500,
             "icoImg":"_dist/img/weapons/dagger.png",
@@ -684,6 +769,7 @@
         {
         "name":"ClawTiger,Fangs",
             "battlePower":215,
+            "magicPower":10,
             "hitRate":200,
             "price":2,
             "icoImg":"_dist/img/weapons/dagger.png",

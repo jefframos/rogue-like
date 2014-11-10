@@ -312,6 +312,15 @@ var GameScreen = AbstractScreen.extend({
             var centerPositionPlayer = {x:this.player.getPosition().x + this.player.centerPosition.x,
                 y:this.player.getPosition().y + this.player.centerPosition.y};
             var tilePosition = {x:Math.floor(centerPositionPlayer.x / APP.nTileSize),y:Math.floor(centerPositionPlayer.y / APP.nTileSize)};
+
+            if(this.miniPlayer){
+                this.miniPlayer.clear();
+                this.miniPlayer.beginFill(0xFF0000);
+                this.miniPlayer.drawRect(tilePosition.x * 2,tilePosition.y * 2,2,2);
+                console.log(tilePosition.x * 2,tilePosition.y * 2,2,2);
+                this.miniPlayer.endFill();
+
+            }
             return tilePosition;
         }
         return null;
@@ -425,7 +434,8 @@ var GameScreen = AbstractScreen.extend({
         
         // console.log(this.tempSizeTiles, this.mapPosition);
         // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * APP.nTileSize - Math.floor(this.mapPosition.y*2)};
-
+        var i = 0;
+        var j = 0;
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
         }else{
@@ -433,14 +443,40 @@ var GameScreen = AbstractScreen.extend({
             if(this.currentNode.mode === 1){
                 this.tempSizeTiles = {x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x , y:Math.floor(windowHeight / APP.nTileSize) +this.marginTiles.y};
             }else{
-                this.tempSizeTiles = {x:24 + this.marginTiles.x + Math.floor(this.currentNode.getNextFloat() * 15) , y:20+ this.marginTiles.y+Math.floor(this.currentNode.getNextFloat() * 15)};
+                this.tempSizeTiles = {x:100 + this.marginTiles.x + Math.floor(this.currentNode.getNextFloat() * 15) , y:120+ this.marginTiles.y+Math.floor(this.currentNode.getNextFloat() * 15)};
             }
             this.currentNode.bg = this.levelGenerator.createRoom();
             this.bgContainer.addChild(this.currentNode.bg);
         }
 
         this.levelBounds= {x: this.currentNode.mapData.length * APP.nTileSize, y: this.currentNode.mapData[0].length * APP.nTileSize};
-        console.log(this.levelBounds, this.currentNode.mapData.length, this.currentNode.mapData[0].length);
+
+        if(this.minimapContainer && this.minimapContainer.parent)
+        {
+            this.minimapContainer.parent.removeChild(this.minimapContainer);
+        }
+        this.minimapContainer = new PIXI.DisplayObjectContainer();
+        this.miniPlayer = new PIXI.Graphics();
+        var tempRect = new PIXI.Graphics();
+
+       
+        var tileMiniSize = 2;
+        this.miniPlayer.beginFill(0xFF0000);
+        this.miniPlayer.drawRect(tileMiniSize,tileMiniSize,0,0);
+        for (i = this.currentNode.mapData.length - 1; i >= 0; i--) {
+            for (j = this.currentNode.mapData[i].length - 1; j >= 0; j--) {
+                tempRect.beginFill(displayColors[this.currentNode.mapData[i][j]]);
+                tempRect.drawRect(i*tileMiniSize,j*tileMiniSize,tileMiniSize,tileMiniSize);
+                tempRect.endFill();
+                this.minimapContainer.addChild(tempRect);
+            }
+        }
+        this.minimapContainer.addChild(this.miniPlayer);
+
+        APP.getHUD().addChild(this.minimapContainer);
+        this.minimapContainer.position.x = windowWidth - this.minimapContainer.width - 20;
+        this.minimapContainer.position.y = windowHeight - this.minimapContainer.height - 20;
+        // console.log(this.levelBounds, this.currentNode.mapData.length, this.currentNode.mapData[0].length);
         // this.levelBounds= {x: this.currentNode.bg.width, y: this.currentNode.bg.height};
 
         // this.levelGenerator.debugBounds();
@@ -460,7 +496,7 @@ var GameScreen = AbstractScreen.extend({
             //definir um valor de level de hora a ser gerado, pode ser o ID ou a distancia até o centro
             //ou até mesmo o proprio level do player
             monstersToLoaded = this.levelGenerator.createHordes();
-            for (var i = monstersToLoaded.length - 1; i >= 0; i--) {
+            for (i = monstersToLoaded.length - 1; i >= 0; i--) {
                 monstersAssets.push(monstersToLoaded[i].monsterModel.srcJson);
                 monstersAssets.push(monstersToLoaded[i].monsterModel.srcImg);
             }

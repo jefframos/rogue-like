@@ -2,7 +2,7 @@
 var PopUpText = Class.extend({
 	init: function (color){
 		this.color = color?color:'white';
-		this.label = new PIXI.Text('', {fill:this.color, align:'center', font:'bold 20px Arial', stroke:'#000', strokeThickness: 2});
+		this.label = new PIXI.Text('', {fill:this.color, align:'center', font:'bold 30px Arial', stroke:'#000', strokeThickness: 2});
 	},
 	setText: function(text){
 		this.label.setText(text);

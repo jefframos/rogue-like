@@ -88,6 +88,8 @@ var Minimap = Class.extend({
 		}
 		// console.log(minX,minY,maxX,maxY, maxX * this.margin.x, this.margin.x);
 		this.background.beginFill(0x0);
+        this.background.lineStyle(4,0x555555);
+
 		// this.background.lineStyle(1, 0xffd900, 1);
 		this.background.drawRect(0,0,
 			(maxX - minX + 1) * this.sizeTile.x + this.margin.x * 2 + this.sizeGraph.x/2,

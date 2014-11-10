@@ -68,7 +68,7 @@ var Player = SpritesheetEntity.extend({
         pop.setText('LEVEL UP');
         APP.getEffectsContainer().addChild(pop.getContent());
         pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2 - 20);
-        pop.initMotion(-15 - (Math.random() * 10), 0.8);
+        pop.initMotion(-15 - (Math.random() * 10), 1.5);
         this.getTexture().tint = 0xFF0000;
 
         this.updateAtt();
@@ -79,7 +79,7 @@ var Player = SpritesheetEntity.extend({
         pop.setText(Math.floor(xp) + ' XP');
         APP.getEffectsContainer().addChild(pop.getContent());
         pop.setPosition(this.getPosition().x + this.centerPosition.x - 10, this.getPosition().y-5 + Math.random() * 10 - this.height/2);
-        pop.initMotion(-10 - (Math.random() * 10), 0.5);
+        pop.initMotion(-10 - (Math.random() * 10), 1);
         this.getTexture().tint = 0xFF0000;
     },
     build: function(){
@@ -241,10 +241,9 @@ var Player = SpritesheetEntity.extend({
             var tempFire = new Fire({x:tempFireSpeed * Math.sin(tempAngle), y: tempFireSpeed * Math.cos(tempAngle)});
             tempFire.timeLive = this.fireStepLive / 5;
             if(spellModel){
-                this.playerModel.spellPower = spellModel.spellPower;
+                this.playerModel.spellPower = spellModel.spellPower + this.weaponModel?this.weaponModel.magicPower:0;
                 tempFire.imgSource = spellModel.srcImg;
             }
-
             tempFire.fireType = 'magical';
             tempFire.power = this.playerModel.getDemage('magical');
             tempFire.range *= 1.5;

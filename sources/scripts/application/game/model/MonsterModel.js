@@ -1,6 +1,7 @@
 /*jshint undef:false */
 var MonsterModel = Class.extend({
-	init: function (name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp){
+	
+	init: function (name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp,srcImg,srcJson,sourceLabel,frames){
 		console.log('name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp\n', name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp);
 		this.name = name;
 		this.initiallevel = level;
@@ -12,6 +13,11 @@ var MonsterModel = Class.extend({
 		this.initialdefense = defense;
 		this.initialmagicDefense = magicDefense;
 		this.initialxp = xp;
+
+		this.srcImg = srcImg;
+        this.srcJson = srcJson;
+        this.sourceLabel = sourceLabel;
+        this.frames = frames;
 
 
 		this.level = level;
@@ -60,7 +66,11 @@ var MonsterModel = Class.extend({
 			this.initialbattlePower,
 			this.initialdefense,
 			this.initialmagicDefense,
-			this.initialxp);
+			this.initialxp,
+			this.srcImg,
+			this.srcJson,
+			this.sourceLabel,
+			this.frames);
 	},
 	updateLevel: function(level){
 		console.log('updateLevel', level);
