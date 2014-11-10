@@ -37,6 +37,9 @@ var GameScreen = AbstractScreen.extend({
 
         this.playerModel.mp = 8000;
         this.playerModel.mpMax = 8000;
+
+        this.playerReady = false;
+
         // this.playerModel.levelUp();
         // for (var i = 0; i < 20; i++) {
         //     this.playerModel.levelUp();ddw
@@ -50,9 +53,6 @@ var GameScreen = AbstractScreen.extend({
     build: function () {
         this._super();
         var assetsToLoader = [
-            '_dist/img/spritesheet/dragon.json',
-            '_dist/img/spritesheet/dragon.png',
-            '_dist/img/dragao-perdido.png',
             '_dist/img/drop.png',
             '_dist/img/spritesheet/chinesa.json',
             '_dist/img/spritesheet/chinesa.png'
@@ -115,6 +115,7 @@ var GameScreen = AbstractScreen.extend({
         this.XPBar.setBackColor(0x000000);
         APP.getHUD().addChild(this.XPBar.getContent());
 
+
         this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 15px Arial'});
         APP.getHUD().addChild(this.levelLabel);
 
@@ -167,6 +168,11 @@ var GameScreen = AbstractScreen.extend({
             this.equipsBoxHud.push(tempBox);
         }
 
+        this.boxStats = new BoxHUD1(200,310,0);
+        APP.getHUD().addChild(this.boxStats.getContent());
+        this.boxStats.setPosition(20, 320);
+
+
         //adiciona minimap
         this.minimap = new Minimap();
         APP.getHUD().addChild(this.minimap.getContent());
@@ -210,7 +216,7 @@ var GameScreen = AbstractScreen.extend({
     //update do game
     update:function()
     {
-        if(this.player){
+        if(this.playerReady && this.player !== undefined && this.player !== null){
             this.getContent().position.x = windowWidth/2 - this.player.getPosition().x;
             this.getContent().position.y = windowHeight/2 - this.player.getPosition().y;
             this.player.fireFreqAcum --;
@@ -264,6 +270,7 @@ var GameScreen = AbstractScreen.extend({
             this.playerModel.resetPoints();
             this.killLevel(this.resetLevel);
             this.player = null;
+            this.entityLayer.updateable = false;
         }
     },
     //atualiza a HUD
@@ -284,9 +291,24 @@ var GameScreen = AbstractScreen.extend({
                 '\nLEVEL: '+this.playerModel.level
                 );
         }
+        if(this.boxStats && this.player.weaponModel)
+        {
+            this.boxStats.setText('\n'+'LEVEL: '+this.playerModel.level+' '+this.playerModel.playerClass+'\n'+
+                '\n'+'VIG: '+Math.floor(this.playerModel.vigor)+'\n'+
+                '\n'+'SPD: '+Math.floor(this.playerModel.speed)+'\n'+
+                '\n'+'STM: '+Math.floor(this.playerModel.stamina)+'\n'+
+                '\n'+'MPW: '+Math.floor(this.playerModel.magicPower)+' + '+this.player.weaponModel.magicPower+'\n'+
+                '\n'+'BPW: '+Math.floor(this.playerModel.battlePower)+' + '+this.player.weaponModel.battlePower+'\n'+
+                '\n'+'ATT: '+Math.floor(this.playerModel.attack)+'\n'+
+                '\n'+'DEF: '+Math.floor(this.playerModel.defense)+' + '+this.player.armorModel.defenseArmor+'\n'+
+                '\n'+'MDF: '+Math.floor(this.playerModel.magicDefense)+' + '+this.player.armorModel.magicDefenseArmor+'\n'
+                );
+            this.boxStats.setTextPos(20,0);
+
+        }
     },
     getPlayerTilePos:function(){
-        if(this.player){
+        if(this.playerReady && this.player){
             var centerPositionPlayer = {x:this.player.getPosition().x + this.player.centerPosition.x,
                 y:this.player.getPosition().y + this.player.centerPosition.y};
             var tilePosition = {x:Math.floor(centerPositionPlayer.x / APP.nTileSize),y:Math.floor(centerPositionPlayer.y / APP.nTileSize)};
@@ -297,7 +319,7 @@ var GameScreen = AbstractScreen.extend({
     //faz a colisão por tile map
     boundsCollision:function(){
         // console.log(this.currentNode.mapData[0], 'data');
-        if(this.currentNode && this.player){
+        if(this.currentNode.mapData && this.player){
             for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
                 tempEntity = this.entityLayer.childs[i];
                 if(tempEntity.type !== 'fire'){
@@ -351,6 +373,9 @@ var GameScreen = AbstractScreen.extend({
     //destroy o level
     killLevel:function(callback){
         var self = this;
+
+        this.playerReady = false;
+
         for (var k = this.entityLayer.childs.length - 1; k >= 0; k--) {
             this.entityLayer.childs[k].preKill();
         }
@@ -370,9 +395,6 @@ var GameScreen = AbstractScreen.extend({
     {
         this.mouseDown = false;
         this.keyboardInput.vecPositions = [];
-        this.blackShape.alpha = 1;
-        TweenLite.to(this.blackShape, 1, {alpha:0});
-
         var roomState = 'first room';
         switch(this.currentNode.mode)
         {
@@ -417,18 +439,13 @@ var GameScreen = AbstractScreen.extend({
             this.bgContainer.addChild(this.currentNode.bg);
         }
 
-        this.levelBounds= {x: this.currentNode.placedTiles.length * APP.nTileSize, y: this.currentNode.placedTiles[0].length * APP.nTileSize};
-        console.log(this.levelBounds, this.currentNode.placedTiles.length, this.currentNode.placedTiles[0].length);
+        this.levelBounds= {x: this.currentNode.mapData.length * APP.nTileSize, y: this.currentNode.mapData[0].length * APP.nTileSize};
+        console.log(this.levelBounds, this.currentNode.mapData.length, this.currentNode.mapData[0].length);
         // this.levelBounds= {x: this.currentNode.bg.width, y: this.currentNode.bg.height};
 
         // this.levelGenerator.debugBounds();
         this.levelGenerator.createDoors();
         this.levelGenerator.putObstacles();
-        if(this.currentNode.mode !== 1){
-            //definir um valor de level de hora a ser gerado, pode ser o ID ou a distancia até o centro
-            //ou até mesmo o proprio level do player
-            this.levelGenerator.createHordes();
-        }
 
         if(this.currentNode.getNextFloat() > 0.5){
             this.levelGenerator.createRain();
@@ -436,7 +453,44 @@ var GameScreen = AbstractScreen.extend({
             this.levelGenerator.removeRain();
         }
 
-        
+        var monstersToLoaded = [];
+        var monstersAssets = [];
+
+        if(this.currentNode.mode !== 1){
+            //definir um valor de level de hora a ser gerado, pode ser o ID ou a distancia até o centro
+            //ou até mesmo o proprio level do player
+            monstersToLoaded = this.levelGenerator.createHordes();
+            for (var i = monstersToLoaded.length - 1; i >= 0; i--) {
+                monstersAssets.push(monstersToLoaded[i].monsterModel.srcJson);
+                monstersAssets.push(monstersToLoaded[i].monsterModel.srcImg);
+            }
+            var monsterLoader = new PIXI.AssetLoader(monstersAssets);
+            var self = this;
+            monsterLoader.onComplete = function() {
+                for (var i = monstersToLoaded.length - 1; i >= 0; i--) {
+                    monstersToLoaded[i].build();
+                    monstersToLoaded[i].setPosition(monstersToLoaded[i].initialPosition.x, monstersToLoaded[i].initialPosition.y);
+                    self.entityLayer.addChild(monstersToLoaded[i]);
+                }
+                self.initPlayer();
+            };
+            monsterLoader.onProgress = function() {
+                console.log('onProgress');
+                // self.onProgress();
+            };
+            monsterLoader.load();
+        }else{
+            this.initPlayer();
+        }
+    },
+    initPlayer:function() {
+
+        this.blackShape.alpha = 1;
+        TweenLite.to(this.blackShape, 1, {alpha:0});
+
+        this.playerReady = true;
+        this.entityLayer.updateable = true;
+
         this.player.build();
         // this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]);
         // this.player.setArmorModel(APP.armorList[Math.floor(APP.armorList.length * Math.random())]);
@@ -448,11 +502,7 @@ var GameScreen = AbstractScreen.extend({
         this.player.setWeaponModel(APP.weaponList[0]);
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
 
-        // this.equips = [null,null,null];
-        this.equips[0] = this.player.weaponModel;
-        this.equips[1] = this.player.armorModel;
-        this.equips[2] = this.player.relicModel;
-        this.updateInventory();
+       
 
         this.entityLayer.addChild(this.player);
 
@@ -474,6 +524,11 @@ var GameScreen = AbstractScreen.extend({
         }
 
         this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y/2);
+
+        this.equips[0] = this.player.weaponModel;
+        this.equips[1] = this.player.armorModel;
+        this.equips[2] = this.player.relicModel;
+        this.updateInventory();
         // console.log(this.levelBounds.x/2,this.levelBounds.y/2);
     },
     //atualiza o z index da layer

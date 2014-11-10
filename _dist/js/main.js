@@ -184,7 +184,7 @@ var Application = AbstractApplication.extend({
         this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(0), this.stage.removeChild(this.loadText), 
         this.isMobile = testMobile(), this.appContainer = document.getElementById("rect"), 
         this.id = parseInt(1e11 * Math.random()), this.gen = new DungeonGenerator(), this.gen.generate(16777215 * Math.random(), 1, [ 10, 15 ], [ 12, 12 ], 5), 
-        this.nTileSize = 40, this.tileSize = {
+        this.nTileSize = 80, this.tileSize = {
             x: this.nTileSize,
             y: this.nTileSize
         };
@@ -222,7 +222,7 @@ var Application = AbstractApplication.extend({
         console.log("assetsLoader");
         var self = this, jsonLoaderMonsters = new PIXI.JsonLoader("_dist/img/enemies/enemies.JSON");
         jsonLoaderMonsters.on("loaded", function(evt) {
-            for (var i = 0; i < evt.content.json.itens.length; i++) self.monsterList.push(new MonsterModel(evt.content.json.itens[i].name, evt.content.json.itens[i].level, evt.content.json.itens[i].hp, evt.content.json.itens[i].stamina, evt.content.json.itens[i].speed, evt.content.json.itens[i].magicPower, evt.content.json.itens[i].battlePower, evt.content.json.itens[i].defense, evt.content.json.itens[i].magicDefense, evt.content.json.itens[i].xp));
+            for (var i = 0; i < evt.content.json.itens.length; i++) self.monsterList.push(new MonsterModel(evt.content.json.itens[i].name, evt.content.json.itens[i].level, evt.content.json.itens[i].hp, evt.content.json.itens[i].stamina, evt.content.json.itens[i].speed, evt.content.json.itens[i].magicPower, evt.content.json.itens[i].battlePower, evt.content.json.itens[i].defense, evt.content.json.itens[i].magicDefense, evt.content.json.itens[i].xp, evt.content.json.itens[i].srcImg, evt.content.json.itens[i].srcJson, evt.content.json.itens[i].sourceLabel, evt.content.json.itens[i].frames));
             console.log("jsonLoaderMonsters", evt.content.json.itens[0]), self.updateLoad();
         }), jsonLoaderMonsters.load();
         var jsonLoaderRelics = new PIXI.JsonLoader("_dist/img/relics/relics.JSON");
@@ -237,7 +237,7 @@ var Application = AbstractApplication.extend({
         }), jsonLoaderArmor.load();
         var jsonLoaderWeapon = new PIXI.JsonLoader("_dist/img/weapons/weapons.JSON");
         jsonLoaderWeapon.on("loaded", function(evt) {
-            for (var i = 0; i < evt.content.json.itens.length; i++) self.weaponList.push(new WeaponModel(evt.content.json.itens[i].name, evt.content.json.itens[i].battlePower, evt.content.json.itens[i].hitRate, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg, evt.content.json.itens[i].srcImg));
+            for (var i = 0; i < evt.content.json.itens.length; i++) self.weaponList.push(new WeaponModel(evt.content.json.itens[i].name, evt.content.json.itens[i].battlePower, evt.content.json.itens[i].magicPower, evt.content.json.itens[i].hitRate, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg, evt.content.json.itens[i].srcImg));
             console.log("jsonLoaderWeapon", evt.content.json.itens.length), self.updateLoad();
         }), jsonLoaderWeapon.load();
         var jsonLoaderSpell = new PIXI.JsonLoader("_dist/img/spells/spells.JSON");
@@ -258,9 +258,9 @@ var Application = AbstractApplication.extend({
     init: function(width, height, maxValue, currentValue) {
         this.maxValue = maxValue, this.text = "default", this.currentValue = currentValue, 
         this.container = new PIXI.DisplayObjectContainer(), this.width = width, this.height = height, 
-        this.backShape = new PIXI.Graphics(), this.backShape.beginFill(16711680), this.backShape.drawRect(0, 0, width, height), 
-        this.container.addChild(this.backShape), this.frontShape = new PIXI.Graphics(), 
-        this.frontShape.beginFill(65280), this.frontShape.drawRect(0, 0, width, height), 
+        this.backShape = new PIXI.Graphics(), this.backShape.lineStyle(1, 15658734), this.backShape.beginFill(16711680), 
+        this.backShape.drawRect(0, 0, width, height), this.container.addChild(this.backShape), 
+        this.frontShape = new PIXI.Graphics(), this.frontShape.beginFill(65280), this.frontShape.drawRect(0, 0, width, height), 
         this.container.addChild(this.frontShape), this.frontShape.scale.x = this.currentValue / this.maxValue;
     },
     setFrontColor: function(color) {
@@ -270,7 +270,7 @@ var Application = AbstractApplication.extend({
     },
     setBackColor: function(color) {
         this.backShape && this.container.removeChild(this.backShape), this.backShape = new PIXI.Graphics(), 
-        this.backShape.beginFill(color), this.backShape.drawRect(0, 0, this.width, this.height), 
+        this.backShape.beginFill(color), this.backShape.lineStyle(1, 15658734), this.backShape.drawRect(0, 0, this.width, this.height), 
         this.container.addChildAt(this.backShape, 0);
     },
     setText: function(text) {
@@ -295,10 +295,11 @@ var Application = AbstractApplication.extend({
     init: function(width, height, infoSide) {
         if (this.text = "default", this.container = new PIXI.DisplayObjectContainer(), this.infoSide = infoSide, 
         this.width = width, this.height = height, this.backShape = new PIXI.Graphics(), 
-        this.backShape.beginFill(0), this.backShape.drawRect(0, 0, width, height), this.container.addChild(this.backShape), 
-        this.container.hitArea = new PIXI.Rectangle(0, 0, width, height), 0 !== infoSide) {
+        this.backShape.beginFill(0), this.backShape.lineStyle(1, 15658734), this.backShape.drawRect(0, 0, width, height), 
+        this.container.addChild(this.backShape), this.container.hitArea = new PIXI.Rectangle(0, 0, width, height), 
+        0 !== infoSide) {
             this.infoContainer = new PIXI.DisplayObjectContainer(), this.backShapeInfo = new PIXI.Graphics(), 
-            this.backShapeInfo.beginFill(0), this.backShapeInfo.drawRect(0, 0, width, height), 
+            this.backShapeInfo.lineStyle(1, 15658734), this.backShapeInfo.beginFill(0), this.backShapeInfo.drawRect(0, 0, width, height), 
             this.infoContainer.addChild(this.backShapeInfo), 1 === infoSide ? this.infoContainer.position.x = -width : 2 === infoSide ? this.infoContainer.position.x = width : 3 === infoSide ? this.infoContainer.position.y = -height : 4 === infoSide && (this.infoContainer.position.y = height), 
             this.infoContainer.alpha = 0, this.container.addChild(this.infoContainer), this.container.setInteractive(!0), 
             this.model = null;
@@ -316,6 +317,9 @@ var Application = AbstractApplication.extend({
     hideInfo: function() {
         this.infoContainer.alpha = 0;
     },
+    setTextPos: function(x, y) {
+        this.label && (this.label.position.x = x, this.label.position.y = y);
+    },
     setColor: function(color) {
         this.backShape && this.container.removeChild(this.backShape), this.backShape = new PIXI.Graphics(), 
         this.backShape.beginFill(color), this.backShape.drawRect(0, 0, this.width, this.height), 
@@ -324,10 +328,10 @@ var Application = AbstractApplication.extend({
     addModel: function(model) {
         if (this.model = model, this.addImage(this.model.icoImg), 0 !== this.infoSide) {
             var text = "";
-            if (model instanceof WeaponModel) text = "Weapon\n" + model.label + "\npwr: +" + model.battlePower; else if (model instanceof ArmorModel) text = "Armor\n" + model.label + "\ndef: +" + model.defenseArmor + "\nmag def: +" + model.magicDefenseArmor; else if (model instanceof RelicModel) text = "Relic\n" + model.label + "\nstatus: " + model.status; else if (model instanceof ItemModel) {
+            if (model instanceof WeaponModel) text = "Weapon\n" + model.label + "\nPWR: +" + model.battlePower + "\nMPW: +" + model.magicPower; else if (model instanceof ArmorModel) text = "Armor\n" + model.label + "\nDEF: +" + model.defenseArmor + "\nMDF: +" + model.magicDefenseArmor; else if (model instanceof RelicModel) text = "Relic\n" + model.label + "\nSTATUS: \n" + model.status; else if (model instanceof ItemModel) {
                 var addicionalLabel = 0 !== model.baseValue ? "\n+ " + model.baseValue : "";
                 text = model.label + "\n" + model.effect + addicionalLabel;
-            } else model instanceof SpellModel && (text = model.label + "\nmag pow: " + model.spellPower + "\nMP: " + model.mp);
+            } else model instanceof SpellModel && (text = model.label + "\nMPW: " + model.spellPower + "\nMP: " + model.mp);
             this.infoLabel ? this.infoLabel.setText(text) : (this.infoLabel = new PIXI.Text(text, {
                 fill: "white",
                 align: "left",
@@ -355,12 +359,49 @@ var Application = AbstractApplication.extend({
     setPosition: function(x, y) {
         this.container.position.x = x, this.container.position.y = y;
     }
+}), Minimap = Class.extend({
+    init: function(img) {
+        img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : this.background = new PIXI.Graphics(), 
+        this.container = new PIXI.DisplayObjectContainer(), this.container.addChild(this.background), 
+        this.arrayRooms = [], this.margin = {
+            x: 20,
+            y: 20
+        }, this.sizeTile = {
+            x: 50,
+            y: 50
+        }, this.sizeGraph = {
+            x: 30,
+            y: 30
+        };
+    },
+    build: function() {
+        for (var minX = 9999, minY = 9999, maxX = -9999, maxY = -9999, tempX = 0, tempY = 0, j = 0; j < APP.gen.rooms.length; j++) for (var item = APP.gen.rooms[j], i = 0; i < item.length; i++) if (item[i].id > 0) {
+            var tempRoomView = new PIXI.Graphics();
+            tempRoomView.beginFill(1 === item[i].mode ? 5428328 : 2 === item[i].mode ? 11447982 : 3 === item[i].mode ? 16239929 : 4 === item[i].mode ? 16202041 : 5 === item[i].mode ? 2171169 : 6 === item[i].mode ? 13324996 : 16777215), 
+            tempRoomView.lineStyle(1, 3355443, 1), tempX = item[i].position[1] * this.sizeTile.x, 
+            tempY = item[i].position[0] * this.sizeTile.y, tempRoomView.position.x = tempX, 
+            tempRoomView.position.y = tempY, tempRoomView.drawRect(0, 0, this.sizeGraph.x, this.sizeGraph.y), 
+            tempRoomView.endFill(), this.container.addChild(tempRoomView), minX > item[i].position[1] && (minX = item[i].position[1]), 
+            minY > item[i].position[0] && (minY = item[i].position[0]), maxX < item[i].position[1] && (maxX = item[i].position[1]), 
+            maxY < item[i].position[0] && (maxY = item[i].position[0]), this.arrayRooms.push(tempRoomView);
+        }
+        for (var k = 0; k < this.arrayRooms.length; k++) this.arrayRooms[k].position.x -= minX * this.sizeTile.x - this.margin.x - this.sizeGraph.x / 2, 
+        this.arrayRooms[k].position.y -= minY * this.sizeTile.y - this.margin.y - this.sizeGraph.y / 2;
+        this.background.beginFill(0), this.background.lineStyle(4, 5592405), this.background.drawRect(0, 0, (maxX - minX + 1) * this.sizeTile.x + 2 * this.margin.x + this.sizeGraph.x / 2, (maxY - minY + 1) * this.sizeTile.y + 2 * this.margin.y + this.sizeGraph.y / 2), 
+        this.background.endFill();
+    },
+    getContent: function() {
+        return this.container;
+    },
+    setPosition: function(x, y) {
+        this.container.position.x = x, this.container.position.y = y;
+    }
 }), PopUpText = Class.extend({
     init: function(color) {
         this.color = color ? color : "white", this.label = new PIXI.Text("", {
             fill: this.color,
             align: "center",
-            font: "bold 20px Arial",
+            font: "bold 30px Arial",
             stroke: "#000",
             strokeThickness: 2
         });
@@ -615,43 +656,6 @@ var Application = AbstractApplication.extend({
     pointDistance: function(x, y, x0, y0) {
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     }
-}), Minimap = Class.extend({
-    init: function(img) {
-        img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : this.background = new PIXI.Graphics(), 
-        this.container = new PIXI.DisplayObjectContainer(), this.container.addChild(this.background), 
-        this.arrayRooms = [], this.margin = {
-            x: 20,
-            y: 20
-        }, this.sizeTile = {
-            x: 50,
-            y: 50
-        }, this.sizeGraph = {
-            x: 30,
-            y: 30
-        };
-    },
-    build: function() {
-        for (var minX = 9999, minY = 9999, maxX = -9999, maxY = -9999, tempX = 0, tempY = 0, j = 0; j < APP.gen.rooms.length; j++) for (var item = APP.gen.rooms[j], i = 0; i < item.length; i++) if (item[i].id > 0) {
-            var tempRoomView = new PIXI.Graphics();
-            tempRoomView.beginFill(1 === item[i].mode ? 5428328 : 2 === item[i].mode ? 11447982 : 3 === item[i].mode ? 16239929 : 4 === item[i].mode ? 16202041 : 5 === item[i].mode ? 2171169 : 6 === item[i].mode ? 13324996 : 16777215), 
-            tempRoomView.lineStyle(1, 3355443, 1), tempX = item[i].position[1] * this.sizeTile.x, 
-            tempY = item[i].position[0] * this.sizeTile.y, tempRoomView.position.x = tempX, 
-            tempRoomView.position.y = tempY, tempRoomView.drawRect(0, 0, this.sizeGraph.x, this.sizeGraph.y), 
-            tempRoomView.endFill(), this.container.addChild(tempRoomView), minX > item[i].position[1] && (minX = item[i].position[1]), 
-            minY > item[i].position[0] && (minY = item[i].position[0]), maxX < item[i].position[1] && (maxX = item[i].position[1]), 
-            maxY < item[i].position[0] && (maxY = item[i].position[0]), this.arrayRooms.push(tempRoomView);
-        }
-        for (var k = 0; k < this.arrayRooms.length; k++) this.arrayRooms[k].position.x -= minX * this.sizeTile.x - this.margin.x - this.sizeGraph.x / 2, 
-        this.arrayRooms[k].position.y -= minY * this.sizeTile.y - this.margin.y - this.sizeGraph.y / 2;
-        this.background.beginFill(0), this.background.drawRect(0, 0, (maxX - minX + 1) * this.sizeTile.x + 2 * this.margin.x + this.sizeGraph.x / 2, (maxY - minY + 1) * this.sizeTile.y + 2 * this.margin.y + this.sizeGraph.y / 2), 
-        this.background.endFill();
-    },
-    getContent: function() {
-        return this.container;
-    },
-    setPosition: function(x, y) {
-        this.container.position.x = x, this.container.position.y = y;
-    }
 }), Obstacle = Entity.extend({
     init: function(imgId) {
         this._super(), this.updateable = !0, this.collidable = !0, this.arrayObstacles = [ "_dist/img/2.png", "_dist/img/3.png", "_dist/img/2.png" ], 
@@ -719,14 +723,14 @@ var Application = AbstractApplication.extend({
     levelUp: function() {
         var pop = new PopUpText("white");
         pop.setText("LEVEL UP"), APP.getEffectsContainer().addChild(pop.getContent()), pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
-        pop.initMotion(-15 - 10 * Math.random(), .8), this.getTexture().tint = 16711680, 
+        pop.initMotion(-15 - 10 * Math.random(), 1.5), this.getTexture().tint = 16711680, 
         this.updateAtt();
     },
     updateXP: function(xp) {
         var pop = new PopUpText("green");
         pop.setText(Math.floor(xp) + " XP"), APP.getEffectsContainer().addChild(pop.getContent()), 
         pop.setPosition(this.getPosition().x + this.centerPosition.x - 10, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2), 
-        pop.initMotion(-10 - 10 * Math.random(), .5), this.getTexture().tint = 16711680;
+        pop.initMotion(-10 - 10 * Math.random(), 1), this.getTexture().tint = 16711680;
     },
     build: function() {
         var self = this, motionArray = this.getFramesByRange("chinesa10", 0, 8), animationIdle = new SpritesheetAnimation();
@@ -814,7 +818,7 @@ var Application = AbstractApplication.extend({
                 x: tempFireSpeed * Math.sin(tempAngle),
                 y: tempFireSpeed * Math.cos(tempAngle)
             });
-            tempFire.timeLive = this.fireStepLive / 5, spellModel && (this.playerModel.spellPower = spellModel.spellPower, 
+            tempFire.timeLive = this.fireStepLive / 5, spellModel && (this.playerModel.spellPower = spellModel.spellPower + this.weaponModel ? this.weaponModel.magicPower : 0, 
             tempFire.imgSource = spellModel.srcImg), tempFire.fireType = "magical", tempFire.power = this.playerModel.getDemage("magical"), 
             tempFire.range *= 1.5, tempFire.build(), tempFire.getContent().scale.x = 2, tempFire.getContent().scale.y = 2, 
             tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y + 10), this.layer.addChild(tempFire), 
@@ -915,7 +919,11 @@ var Application = AbstractApplication.extend({
     init: function(player, model) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = APP.tileSize.x / 2, 
         this.width = .9 * APP.tileSize.x, this.height = .9 * APP.tileSize.y, this.type = "enemy", 
-        this.node = null, this.boundsCollision = !0, this.player = player, this.monsterModel = model;
+        this.node = null, this.boundsCollision = !0, this.player = player, this.monsterModel = model, 
+        this.initialPosition = {
+            x: 0,
+            y: 0
+        };
     },
     hurt: function(demage, type) {
         var trueDemage = this.monsterModel.getHurt(demage, type);
@@ -931,10 +939,10 @@ var Application = AbstractApplication.extend({
         }
     },
     build: function() {
-        this.fireFreq = this.monsterModel.fireFreq, this.defaultVelocity = this.monsterModel.speed / 15, 
-        this.defaultVelocity < 4 && (this.defaultVelocity = 4), this.hp = this.monsterModel.hp, 
-        this.behaviour = new DefaultBehaviour(this, this.player), console.log("HP", this.hp);
-        var motionArray = this.getFramesByRange("dragon10", 0, 14), animationIdle = new SpritesheetAnimation();
+        console.log(this.monsterModel, "monsterModel"), this.fireFreq = this.monsterModel.fireFreq, 
+        this.defaultVelocity = this.monsterModel.speed / 15, this.defaultVelocity < 4 && (this.defaultVelocity = 4), 
+        this.hp = this.monsterModel.hp, this.behaviour = new DefaultBehaviour(this, this.player);
+        var motionArray = this.getFramesByRange(this.monsterModel.sourceLabel, this.monsterModel.frames.idleInit, this.monsterModel.frames.idleEnd), animationIdle = new SpritesheetAnimation();
         animationIdle.build("idle", motionArray, 1, !0, null), this.spritesheet = new Spritesheet(), 
         this.spritesheet.addAnimation(animationIdle), this.spritesheet.play("idle"), this.centerPosition = {
             x: this.width / 2,
@@ -942,8 +950,9 @@ var Application = AbstractApplication.extend({
         }, this.updateable = !0, this.collidable = !0;
     },
     update: function() {
-        this.behaviour && this.behaviour.update(), this.isTouch || (this.velocity = this.virtualVelocity), 
-        this._super(), this.getBounds(), this.getTexture() && (this.getContent().position.x = 20);
+        this.pointDistance(this.getPosition().x, this.getPosition().y, this.player.getPosition().x, this.player.getPosition().y) < 1.5 * windowWidth && (this.behaviour && this.behaviour.update(), 
+        this.isTouch || (this.velocity = this.virtualVelocity), this._super(), this.getBounds(), 
+        this.getTexture() && (this.getContent().position.x = 20, this.range = this.getTexture().width / 2));
     },
     preKill: function() {
         var self = this;
@@ -1006,7 +1015,7 @@ var Application = AbstractApplication.extend({
     }
 }), DefaultBehaviour = Class.extend({
     init: function(entity, player) {
-        this.player = player, this.entity = entity, this.fireFreq = entity.fireFreq + 30 * Math.random(), 
+        this.player = player, this.entity = entity, this.fireFreq = entity.fireFreq / 2, 
         this.maxFireFreq = entity.fireFreq, this.fireAcum = 0, this.walkAccum = 0, this.fireTimeLive = 50, 
         this.velocity = entity.defaultVelocity, this.maxWalkAccum = 5 * this.velocity, this.fireSpeed = 1.5 * this.velocity;
     },
@@ -1052,11 +1061,12 @@ var Application = AbstractApplication.extend({
         this.price = price, this.icoImg = icoImg;
     }
 }), MonsterModel = Class.extend({
-    init: function(name, level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp) {
+    init: function(name, level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp, srcImg, srcJson, sourceLabel, frames) {
         console.log("name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp\n", name, level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp), 
         this.name = name, this.initiallevel = level, this.initialhp = hp, this.initialstamina = stamina, 
         this.initialspeed = speed, this.initialmagicPower = magicPower, this.initialbattlePower = battlePower, 
         this.initialdefense = defense, this.initialmagicDefense = magicDefense, this.initialxp = xp, 
+        this.srcImg = srcImg, this.srcJson = srcJson, this.sourceLabel = sourceLabel, this.frames = frames, 
         this.level = level, this.hpMax = hp, this.speed = speed, this.magicPower = magicPower, 
         this.battlePower = battlePower, this.defense = defense, this.magicDefense = magicDefense, 
         this.stamina = stamina, this.critialChance = 0, this.speedStatus = "normal", this.attackType = "physical", 
@@ -1066,7 +1076,7 @@ var Application = AbstractApplication.extend({
         this.baseHPModifier = 1.62, this.staminaModifier = .008, this.level = level, this.updateLevel(level);
     },
     clone: function() {
-        return new MonsterModel(this.name, this.initiallevel, this.initialhp, this.initialstamina, this.initialspeed, this.initialmagicPower, this.initialbattlePower, this.initialdefense, this.initialmagicDefense, this.initialxp);
+        return new MonsterModel(this.name, this.initiallevel, this.initialhp, this.initialstamina, this.initialspeed, this.initialmagicPower, this.initialbattlePower, this.initialdefense, this.initialmagicDefense, this.initialxp, this.srcImg, this.srcJson, this.sourceLabel, this.frames);
     },
     updateLevel: function(level) {
         console.log("updateLevel", level), this.level = level, this.speed += level * ((this.speed * this.speed + this.speed + 3) / 4) * this.speedModifier, 
@@ -1210,9 +1220,9 @@ var Application = AbstractApplication.extend({
         this.icoImg = icoImg, this.srcImg = srcImg, this.isMultiple = isMultiple;
     }
 }), WeaponModel = Class.extend({
-    init: function(name, battlePower, hitRate, price, icoImg, srcImg) {
-        this.name = name, this.label = name, this.battlePower = battlePower, this.hitRate = hitRate, 
-        this.price = price, this.srcImg = srcImg, this.icoImg = icoImg;
+    init: function(name, battlePower, magicPower, hitRate, price, icoImg, srcImg) {
+        this.name = name, this.label = name, this.battlePower = battlePower, this.magicPower = magicPower, 
+        this.hitRate = hitRate, this.price = price, this.srcImg = srcImg, this.icoImg = icoImg;
     }
 }), displayColors = {
     OCEAN: 4473978,
@@ -1246,14 +1256,20 @@ var Application = AbstractApplication.extend({
         this.parent = parent;
     },
     createHordes: function() {
-        for (var tempMonster = null, i = 0; 1 > i; i++) tempMonster = new Enemy(this.parent.player, APP.monsterList[0].clone()), 
-        tempMonster.build(), tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.x, this.parent.levelBounds.y * this.parent.currentNode.getNextFloat() + this.parent.mapPosition.y), 
-        this.parent.entityLayer.addChild(tempMonster);
+        for (var tempMonster = null, monsters = [], i = 0; 1 > i; i++) {
+            tempMonster = new Enemy(this.parent.player, APP.monsterList[0].clone());
+            var rndAngle = 360 * this.parent.currentNode.getNextFloat() / 180 * Math.PI;
+            tempMonster.initialPosition = {
+                x: this.parent.levelBounds.x / 2 + 300 * Math.sin(rndAngle),
+                y: this.parent.levelBounds.y / 2 + 300 * Math.cos(rndAngle)
+            }, monsters.push(tempMonster);
+        }
+        return monsters;
     },
     putObstacles: function() {},
     createRoom: function() {
         var i = 0;
-        this.distanceToShowMap = 8;
+        this.distanceToShowMap = 5;
         var mapMaker = null;
         mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), .5), 
         this.parent.currentNode.mapData = [];
@@ -1395,14 +1411,14 @@ var Application = AbstractApplication.extend({
         }, this.mouseDown = !1;
         var clss = "thief", rnd = Math.random();
         .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = new PlayerModel(clss), 
-        this.playerModel.mp = 8e3, this.playerModel.mpMax = 8e3;
+        this.playerModel.mp = 8e3, this.playerModel.mpMax = 8e3, this.playerReady = !1;
     },
     destroy: function() {
         this._super();
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/spritesheet/dragon.json", "_dist/img/spritesheet/dragon.png", "_dist/img/dragao-perdido.png", "_dist/img/drop.png", "_dist/img/spritesheet/chinesa.json", "_dist/img/spritesheet/chinesa.png" ];
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/spritesheet/chinesa.json", "_dist/img/spritesheet/chinesa.png" ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad();
     },
     onAssetsLoaded: function() {
@@ -1439,7 +1455,8 @@ var Application = AbstractApplication.extend({
         for (this.equips = [ null, null, null ], this.equipsBoxHud = [], i = 0; i < this.equips.length; i++) tempBox = new BoxHUD1(100, 70, 1), 
         tempBox.setPosition(windowWidth - 120, windowHeight / 2.5 + 90 * i), 0 === i ? tempBox.setText("Weapon") : 1 === i ? tempBox.setText("Armor") : 2 === i && tempBox.setText("Relic"), 
         APP.getHUD().addChild(tempBox.getContent()), this.equipsBoxHud.push(tempBox);
-        this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent()), 
+        this.boxStats = new BoxHUD1(200, 310, 0), APP.getHUD().addChild(this.boxStats.getContent()), 
+        this.boxStats.setPosition(20, 320), this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent()), 
         this.minimap.build(), this.minimap.setPosition(windowWidth - .5 * this.minimap.getContent().width - 5, 10), 
         this.minimap.getContent().scale.x = .5, this.minimap.getContent().scale.y = .5;
     },
@@ -1461,7 +1478,7 @@ var Application = AbstractApplication.extend({
         this.player.shoot(APP.stage.getMousePosition(), this.player.weaponModel);
     },
     update: function() {
-        if (this.player) {
+        if (this.playerReady && void 0 !== this.player && null !== this.player) {
             this.getContent().position.x = windowWidth / 2 - this.player.getPosition().x, this.getContent().position.y = windowHeight / 2 - this.player.getPosition().y, 
             this.player.fireFreqAcum--, this.mouseDown && this.player.fireFreqAcum <= 0 && this.shoot(), 
             this.entityLayer.collideChilds(this.player), this.environmentLayer.collideChilds(this.player), 
@@ -1473,7 +1490,7 @@ var Application = AbstractApplication.extend({
         this.HPView && this.player && this.updateHUD(), this.player && this.player.endLevel ? (this.player.endLevel = !1, 
         this.currentNode = this.player.nextNode, this.currentNode.applySeed(), this.currentPlayerSide = this.player.nextDoorSide, 
         this.killLevel(this.resetLevel), this.player = null) : this.player && this.player.playerDead && (this.playerModel.resetPoints(), 
-        this.killLevel(this.resetLevel), this.player = null);
+        this.killLevel(this.resetLevel), this.player = null, this.entityLayer.updateable = !1);
     },
     updateHUD: function() {
         this.HPView.updateBar(Math.floor(this.playerModel.hp), Math.floor(this.playerModel.hpMax)), 
@@ -1482,10 +1499,12 @@ var Application = AbstractApplication.extend({
         this.MPView.setText(Math.floor(this.playerModel.mp) + "/ " + Math.floor(this.playerModel.mpMax));
         var tempXP = Math.floor(this.playerModel.xp) - Math.floor(this.playerModel.toBeforeLevel), tempNext = Math.floor(this.playerModel.toNextLevel) - Math.floor(this.playerModel.toBeforeLevel);
         this.XPBar.updateBar(tempXP, tempNext), this.XPBar.setText(tempXP + "/ " + tempNext), 
-        this.levelLabel && this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:roomState   -    playerClass:" + this.playerModel.playerClass + "\nLEVEL: " + this.playerModel.level);
+        this.levelLabel && this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:roomState   -    playerClass:" + this.playerModel.playerClass + "\nLEVEL: " + this.playerModel.level), 
+        this.boxStats && this.player.weaponModel && (this.boxStats.setText("\nLEVEL: " + this.playerModel.level + " " + this.playerModel.playerClass + "\n\nVIG: " + Math.floor(this.playerModel.vigor) + "\n\nSPD: " + Math.floor(this.playerModel.speed) + "\n\nSTM: " + Math.floor(this.playerModel.stamina) + "\n\nMPW: " + Math.floor(this.playerModel.magicPower) + " + " + this.player.weaponModel.magicPower + "\n\nBPW: " + Math.floor(this.playerModel.battlePower) + " + " + this.player.weaponModel.battlePower + "\n\nATT: " + Math.floor(this.playerModel.attack) + "\n\nDEF: " + Math.floor(this.playerModel.defense) + " + " + this.player.armorModel.defenseArmor + "\n\nMDF: " + Math.floor(this.playerModel.magicDefense) + " + " + this.player.armorModel.magicDefenseArmor + "\n"), 
+        this.boxStats.setTextPos(20, 0));
     },
     getPlayerTilePos: function() {
-        if (this.player) {
+        if (this.playerReady && this.player) {
             var centerPositionPlayer = {
                 x: this.player.getPosition().x + this.player.centerPosition.x,
                 y: this.player.getPosition().y + this.player.centerPosition.y
@@ -1498,7 +1517,7 @@ var Application = AbstractApplication.extend({
         return null;
     },
     boundsCollision: function() {
-        if (this.currentNode && this.player) for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if (tempEntity = this.entityLayer.childs[i], 
+        if (this.currentNode.mapData && this.player) for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if (tempEntity = this.entityLayer.childs[i], 
         "fire" !== tempEntity.type) {
             var centerPositionPlayer = {
                 x: tempEntity.getPosition().x + tempEntity.centerPosition.x,
@@ -1541,7 +1560,9 @@ var Application = AbstractApplication.extend({
         }
     },
     killLevel: function() {
-        for (var self = this, k = this.entityLayer.childs.length - 1; k >= 0; k--) this.entityLayer.childs[k].preKill();
+        var self = this;
+        this.playerReady = !1;
+        for (var k = this.entityLayer.childs.length - 1; k >= 0; k--) this.entityLayer.childs[k].preKill();
         for (var t = this.environmentLayer.childs.length - 1; t >= 0; t--) this.environmentLayer.childs[t].preKill();
         TweenLite.to(this.blackShape, .5, {
             alpha: 1
@@ -1550,10 +1571,7 @@ var Application = AbstractApplication.extend({
         }, 700);
     },
     resetLevel: function() {
-        this.mouseDown = !1, this.keyboardInput.vecPositions = [], this.blackShape.alpha = 1, 
-        TweenLite.to(this.blackShape, 1, {
-            alpha: 0
-        });
+        this.mouseDown = !1, this.keyboardInput.vecPositions = [];
         var roomState = "first room";
         switch (this.currentNode.mode) {
           case 2:
@@ -1588,17 +1606,36 @@ var Application = AbstractApplication.extend({
             y: 20 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
         }, this.currentNode.bg = this.levelGenerator.createRoom(), this.bgContainer.addChild(this.currentNode.bg)), 
         this.levelBounds = {
-            x: this.currentNode.placedTiles.length * APP.nTileSize,
-            y: this.currentNode.placedTiles[0].length * APP.nTileSize
-        }, console.log(this.levelBounds, this.currentNode.placedTiles.length, this.currentNode.placedTiles[0].length), 
-        this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), 1 !== this.currentNode.mode && this.levelGenerator.createHordes(), 
-        this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
-        this.player.build(), this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
+            x: this.currentNode.mapData.length * APP.nTileSize,
+            y: this.currentNode.mapData[0].length * APP.nTileSize
+        }, console.log(this.levelBounds, this.currentNode.mapData.length, this.currentNode.mapData[0].length), 
+        this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
+        var monstersToLoaded = [], monstersAssets = [];
+        if (1 !== this.currentNode.mode) {
+            monstersToLoaded = this.levelGenerator.createHordes();
+            for (var i = monstersToLoaded.length - 1; i >= 0; i--) monstersAssets.push(monstersToLoaded[i].monsterModel.srcJson), 
+            monstersAssets.push(monstersToLoaded[i].monsterModel.srcImg);
+            var monsterLoader = new PIXI.AssetLoader(monstersAssets), self = this;
+            monsterLoader.onComplete = function() {
+                for (var i = monstersToLoaded.length - 1; i >= 0; i--) monstersToLoaded[i].build(), 
+                monstersToLoaded[i].setPosition(monstersToLoaded[i].initialPosition.x, monstersToLoaded[i].initialPosition.y), 
+                self.entityLayer.addChild(monstersToLoaded[i]);
+                self.initPlayer();
+            }, monsterLoader.onProgress = function() {
+                console.log("onProgress");
+            }, monsterLoader.load();
+        } else this.initPlayer();
+    },
+    initPlayer: function() {
+        this.blackShape.alpha = 1, TweenLite.to(this.blackShape, 1, {
+            alpha: 0
+        }), this.playerReady = !0, this.entityLayer.updateable = !0, this.player.build(), 
+        this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
-        this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
-        this.equips[2] = this.player.relicModel, this.updateInventory(), this.entityLayer.addChild(this.player), 
-        "up" === this.currentPlayerSide || "down" === this.currentPlayerSide || "left" === this.currentPlayerSide || "right" === this.currentPlayerSide, 
-        this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2);
+        this.entityLayer.addChild(this.player), "up" === this.currentPlayerSide || "down" === this.currentPlayerSide || "left" === this.currentPlayerSide || "right" === this.currentPlayerSide, 
+        this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2), this.equips[0] = this.player.weaponModel, 
+        this.equips[1] = this.player.armorModel, this.equips[2] = this.player.relicModel, 
+        this.updateInventory();
     },
     depthCompare: function(a, b) {
         var yA = a.position.y, yB = b.position.y;
