@@ -13,10 +13,12 @@ var Application = AbstractApplication.extend({
         this.gen = new DungeonGenerator();
         this.gen.generate(Math.random() * 0xFFFFFF, 1, [10, 15], [12,12], 5);
         // this.gen.log();
-        //size utilizado nos personagens
-        this.tileSize = {x:80, y: 80};
+
         //size utilizado no tilemap
-        this.nTileSize = 80;
+        this.nTileSize = 40;
+        //size utilizado nos personagens
+        this.tileSize = {x: this.nTileSize, y:  this.nTileSize};
+        
 
 	},
     getEffectsContainer:function(){

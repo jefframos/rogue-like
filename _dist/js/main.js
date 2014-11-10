@@ -1,4 +1,4 @@
-/*! jefframos 06-11-2014 */
+/*! jefframos 10-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -126,7 +126,7 @@ var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0,
         }, this.rightTile = {
             x: 0,
             y: 0
-        };
+        }, this.placedTiles = [];
     },
     applySeed: function() {
         this.tempAccSeed = this.seed;
@@ -184,10 +184,10 @@ var Application = AbstractApplication.extend({
         this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(0), this.stage.removeChild(this.loadText), 
         this.isMobile = testMobile(), this.appContainer = document.getElementById("rect"), 
         this.id = parseInt(1e11 * Math.random()), this.gen = new DungeonGenerator(), this.gen.generate(16777215 * Math.random(), 1, [ 10, 15 ], [ 12, 12 ], 5), 
-        this.tileSize = {
-            x: 80,
-            y: 80
-        }, this.nTileSize = 80;
+        this.nTileSize = 40, this.tileSize = {
+            x: this.nTileSize,
+            y: this.nTileSize
+        };
     },
     getEffectsContainer: function() {
         return this.mainApp.effectsContainer;
@@ -431,15 +431,13 @@ var Application = AbstractApplication.extend({
         this.debugGraphic.endFill());
     },
     build: function() {
-        this._super("_dist/img/cubo2.png");
-        this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
-        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.getContent().alpha = .5;
+        this._super("_dist/img/cubo.png");
     },
     update: function() {
-        this._super(), this.getBounds(), this.debugPolygon(5596740, !0);
+        this._super(), this.getBounds();
     },
     preKill: function() {
-        this._super(), this.debugGraphic.parent && this.debugGraphic.parent.removeChild(this.debugGraphic);
+        this._super(), this.debugGraphic && this.debugGraphic.parent && this.debugGraphic.parent.removeChild(this.debugGraphic);
     },
     pointDistance: function(x, y, x0, y0) {
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
@@ -1254,53 +1252,70 @@ var Application = AbstractApplication.extend({
     },
     putObstacles: function() {},
     createRoom: function() {
-        var i = 0, tempTile = null, tempContainer = new PIXI.DisplayObjectContainer(), mapMaker = null;
+        var i = 0;
+        this.distanceToShowMap = 8;
+        var mapMaker = null;
         mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), .5), 
         this.parent.currentNode.mapData = [];
-        var tempDataLine = [];
+        var tempDataLine = [], tempDataPlacedLine = [];
         for (i = this.parent.tempSizeTiles.x - 1; i >= 0; i--) {
-            tempDataLine = [];
-            for (var j = this.parent.tempSizeTiles.y - 1; j >= 0; j--) tempDataLine.push({});
-            this.parent.currentNode.mapData.push(tempDataLine);
+            tempDataLine = [], tempDataPlacedLine = [];
+            for (var j = this.parent.tempSizeTiles.y - 1; j >= 0; j--) tempDataLine.push({}), 
+            tempDataPlacedLine.push(0);
+            this.parent.currentNode.mapData.push(tempDataLine), this.parent.currentNode.placedTiles.push(tempDataPlacedLine);
         }
         var tempMapSize = {
             width: this.parent.tempSizeTiles.x * APP.nTileSize,
             height: this.parent.tempSizeTiles.y * APP.nTileSize
-        }, numberOfPoints = this.parent.tempSizeTiles.x * this.parent.tempSizeTiles.y, map = voronoiMap.map(tempMapSize);
-        map.newIsland(mapMaker, this.parent.currentNode.getNextFloat()), map.go0PlaceUniformPoints(numberOfPoints, this.parent.tempSizeTiles.x, this.parent.tempSizeTiles.y, APP.nTileSize), 
-        map.go1BuildGraph(), map.assignBiomes(), map.go2AssignElevations(), map.go3AssignMoisture(), 
-        map.go4DecorateMap();
-        var scl = (APP.nTileSize, 1), tempX = 0, tempY = 0, ix = 0, jy = 0, top = null, bot = {
-            x: 0,
-            y: -99999
-        }, lef = null, rig = {
-            x: -99999,
-            y: -99999
+        }, numberOfPoints = this.parent.tempSizeTiles.x * this.parent.tempSizeTiles.y;
+        this.map = voronoiMap.map(tempMapSize), this.map.newIsland(mapMaker, this.parent.currentNode.getNextFloat()), 
+        this.map.go0PlaceUniformPoints(numberOfPoints, this.parent.tempSizeTiles.x, this.parent.tempSizeTiles.y, APP.nTileSize), 
+        this.map.go1BuildGraph(), this.map.assignBiomes(), this.map.go2AssignElevations(), 
+        this.map.go3AssignMoisture(), this.map.go4DecorateMap();
+        var ix = 0, jy = 0, top = {
+            x: this.parent.tempSizeTiles.x / 2,
+            y: this.parent.tempSizeTiles.y / 2 - 3
+        }, bot = {
+            x: this.parent.tempSizeTiles.x / 2,
+            y: this.parent.tempSizeTiles.y / 2 + 3
+        }, lef = {
+            x: this.parent.tempSizeTiles.x / 2 - 3,
+            y: this.parent.tempSizeTiles.y / 2
+        }, rig = {
+            x: this.parent.tempSizeTiles.x / 2 + 3,
+            y: this.parent.tempSizeTiles.y / 2
         };
-        for (i = 0; i < map.centers.length; i++) ix = Math.floor(map.centers[i].point.y / APP.nTileSize), 
-        jy = Math.floor(map.centers[i].point.x / APP.nTileSize), ix === Math.floor(this.parent.tempSizeTiles.y / 2) && (top || "OCEAN" === map.centers[i].biome || (top = {
-            x: jy,
-            y: ix
-        }), bot.y < jy && (bot = {
-            x: jy,
-            y: ix
-        })), jy === Math.floor(this.parent.tempSizeTiles.x / 2) && (lef || "OCEAN" === map.centers[i].biome || (lef = {
-            x: jy,
-            y: ix
-        }), rig.x < ix && (rig = {
-            x: jy,
-            y: ix
-        })), tempX = ix * APP.nTileSize, tempY = jy * APP.nTileSize, this.parent.currentNode.mapData[jy][ix] = map.centers[i].biome, 
-        tempTile = new SimpleSprite("_dist/img/tile1.png"), tempTile.setPosition(tempY * scl, tempX * scl), 
-        tempTile.getContent().tint = displayColors[map.centers[i].biome], tempTile.getContent().scale.x = scl, 
-        tempTile.getContent().scale.y = scl, tempContainer.addChild(tempTile.getContent());
+        for (i = 0; i < this.map.centers.length; i++) ix = Math.floor(this.map.centers[i].point.y / APP.nTileSize), 
+        jy = Math.floor(this.map.centers[i].point.x / APP.nTileSize), this.parent.currentNode.placedTiles[jy][ix] = 0, 
+        this.parent.currentNode.mapData[jy][ix] = this.map.centers[i].biome;
         return this.parent.currentNode.topTile = top, this.parent.currentNode.bottomTile = bot, 
         this.parent.currentNode.leftTile = lef, this.parent.currentNode.rightTile = rig, 
-        this.parent.bgContainer.addChild(tempContainer), this.parent.currentNode.bg = tempContainer, 
-        tempContainer;
+        this.parent.currentNode.bg = new PIXI.DisplayObjectContainer(), this.parent.currentNode.bg;
+    },
+    updateTiles: function(playerPostion) {
+        if (playerPostion && this.parent.currentNode.mapData) for (var tempPlaced = {
+            x: 0,
+            y: 0
+        }, i = playerPostion.x - this.distanceToShowMap; i < playerPostion.x + this.distanceToShowMap; i++) if (i >= 0 && i < this.parent.currentNode.placedTiles.length) {
+            tempPlaced.x = i;
+            for (var j = playerPostion.y - this.distanceToShowMap; j < playerPostion.y + this.distanceToShowMap; j++) if (j >= 0 && j < this.parent.currentNode.placedTiles[tempPlaced.x].length && (tempPlaced.y = j, 
+            0 === this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] && this.pointDistance(tempPlaced.x, tempPlaced.y, playerPostion.x, playerPostion.y) < this.distanceToShowMap)) {
+                this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = 1;
+                var tempTile = new SimpleSprite("_dist/img/tile1.png"), tempX = tempPlaced.x * APP.nTileSize, tempY = tempPlaced.y * APP.nTileSize, scl = (APP.nTileSize, 
+                1);
+                tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = displayColors[this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y]], 
+                tempTile.getContent().scale.x = scl / 2, tempTile.getContent().scale.y = scl / 2, 
+                tempTile.getContent().alpha = 0, TweenLite.to(tempTile.getContent(), .5, {
+                    alpha: 1
+                }), TweenLite.to(tempTile.getContent().scale, .2, {
+                    x: scl,
+                    y: scl
+                }), this.parent.currentNode.bg.addChild(tempTile.getContent());
+            }
+        }
     },
     createDoors: function() {
-        this.parent.currentNode.childrenSides[0] && this.parent.currentNode.leftTile && (this.parent.doorLeft = new Door("left"), 
+        console.log(this.parent.currentNode.childrenSides, "childrenSides"), this.parent.currentNode.childrenSides[0] && this.parent.currentNode.leftTile && (this.parent.doorLeft = new Door("left"), 
         this.parent.doorLeft.build(), this.parent.doorLeft.setPosition(this.parent.currentNode.leftTile.x * APP.nTileSize + this.parent.doorLeft.width / 2, this.parent.currentNode.leftTile.y * APP.nTileSize), 
         this.parent.doorLeft.node = this.parent.currentNode.childrenSides[0], this.parent.environmentLayer.addChild(this.parent.doorLeft)), 
         this.parent.currentNode.childrenSides[1] && this.parent.currentNode.rightTile && (this.parent.doorRight = new Door("right"), 
@@ -1309,8 +1324,8 @@ var Application = AbstractApplication.extend({
         this.parent.currentNode.childrenSides[2] && this.parent.currentNode.topTile && (this.parent.doorUp = new Door("up"), 
         this.parent.doorUp.build(), this.parent.doorUp.setPosition(this.parent.currentNode.topTile.x * APP.nTileSize, this.parent.currentNode.topTile.y * APP.nTileSize - this.parent.doorUp.height / 2), 
         this.parent.doorUp.node = this.parent.currentNode.childrenSides[2], this.parent.environmentLayer.addChild(this.parent.doorUp)), 
-        this.parent.currentNode.childrenSides[3] && this.parent.currentNode.downTile && (this.parent.doorDown = new Door("down"), 
-        this.parent.doorDown.build(), this.parent.doorDown.setPosition(this.parent.currentNode.downTile.x * APP.nTileSize, this.parent.currentNode.downTile.y * APP.nTileSize + this.parent.doorDown.height / 2), 
+        this.parent.currentNode.childrenSides[3] && this.parent.currentNode.bottomTile && (this.parent.doorDown = new Door("down"), 
+        this.parent.doorDown.build(), this.parent.doorDown.setPosition(this.parent.currentNode.bottomTile.x * APP.nTileSize, this.parent.currentNode.bottomTile.y * APP.nTileSize + this.parent.doorDown.height / 2), 
         this.parent.doorDown.node = this.parent.currentNode.childrenSides[3], this.parent.environmentLayer.addChild(this.parent.doorDown));
     },
     removeRain: function() {
@@ -1326,6 +1341,7 @@ var Application = AbstractApplication.extend({
     },
     update: function() {
         if (this.vecRain) for (var i = this.vecRain.length - 1; i >= 0; i--) this.vecRain[i].update();
+        this.updateTiles(this.parent.getPlayerTilePos());
     },
     pointDistance: function(x, y, x0, y0) {
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
@@ -1468,8 +1484,21 @@ var Application = AbstractApplication.extend({
         this.XPBar.updateBar(tempXP, tempNext), this.XPBar.setText(tempXP + "/ " + tempNext), 
         this.levelLabel && this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:roomState   -    playerClass:" + this.playerModel.playerClass + "\nLEVEL: " + this.playerModel.level);
     },
+    getPlayerTilePos: function() {
+        if (this.player) {
+            var centerPositionPlayer = {
+                x: this.player.getPosition().x + this.player.centerPosition.x,
+                y: this.player.getPosition().y + this.player.centerPosition.y
+            }, tilePosition = {
+                x: Math.floor(centerPositionPlayer.x / APP.nTileSize),
+                y: Math.floor(centerPositionPlayer.y / APP.nTileSize)
+            };
+            return tilePosition;
+        }
+        return null;
+    },
     boundsCollision: function() {
-        for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if (tempEntity = this.entityLayer.childs[i], 
+        if (this.currentNode && this.player) for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if (tempEntity = this.entityLayer.childs[i], 
         "fire" !== tempEntity.type) {
             var centerPositionPlayer = {
                 x: tempEntity.getPosition().x + tempEntity.centerPosition.x,
@@ -1501,13 +1530,13 @@ var Application = AbstractApplication.extend({
             }, tilePositionRight = {
                 x: Math.floor(nextStepRight.x / APP.nTileSize),
                 y: Math.floor(nextStepRight.y / APP.nTileSize)
-            }, pass = this.currentNode.mapData[tilePositionDown.x] && this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y];
+            }, pass = void 0 !== this.currentNode.mapData[tilePositionDown.x] && void 0 !== this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y];
             pass && "OCEAN" === this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y] && tempEntity.virtualVelocity.y > 0 && (tempEntity.virtualVelocity.y = 0), 
-            pass = this.currentNode.mapData[tilePositionUp.x] && this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y], 
+            pass = void 0 !== this.currentNode.mapData[tilePositionUp.x] && void 0 !== this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y], 
             pass && "OCEAN" === this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y] && tempEntity.virtualVelocity.y < 0 && (tempEntity.virtualVelocity.y = 0), 
-            pass = this.currentNode.mapData[tilePositionRight.x] && this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y], 
+            pass = void 0 !== this.currentNode.mapData[tilePositionRight.x] && void 0 !== this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y], 
             this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] && "OCEAN" === this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] && tempEntity.virtualVelocity.x > 0 && (tempEntity.virtualVelocity.x = 0), 
-            pass = this.currentNode.mapData[tilePositionLeft.x] && this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y], 
+            pass = void 0 !== this.currentNode.mapData[tilePositionLeft.x] && void 0 !== this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y], 
             this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] && "OCEAN" === this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] && tempEntity.virtualVelocity.x < 0 && (tempEntity.virtualVelocity.x = 0);
         }
     },
@@ -1521,7 +1550,8 @@ var Application = AbstractApplication.extend({
         }, 700);
     },
     resetLevel: function() {
-        this.mouseDown = !1, this.blackShape.alpha = 1, TweenLite.to(this.blackShape, 1, {
+        this.mouseDown = !1, this.keyboardInput.vecPositions = [], this.blackShape.alpha = 1, 
+        TweenLite.to(this.blackShape, 1, {
             alpha: 0
         });
         var roomState = "first room";
@@ -1556,10 +1586,12 @@ var Application = AbstractApplication.extend({
         } : {
             x: 24 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
             y: 20 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
-        }, this.currentNode.bg = this.levelGenerator.createRoom()), this.levelBounds = {
-            x: this.currentNode.bg.width,
-            y: this.currentNode.bg.height
-        }, this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), 1 !== this.currentNode.mode && this.levelGenerator.createHordes(), 
+        }, this.currentNode.bg = this.levelGenerator.createRoom(), this.bgContainer.addChild(this.currentNode.bg)), 
+        this.levelBounds = {
+            x: this.currentNode.placedTiles.length * APP.nTileSize,
+            y: this.currentNode.placedTiles[0].length * APP.nTileSize
+        }, console.log(this.levelBounds, this.currentNode.placedTiles.length, this.currentNode.placedTiles[0].length), 
+        this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), 1 !== this.currentNode.mode && this.levelGenerator.createHordes(), 
         this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain(), 
         this.player.build(), this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
         this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 

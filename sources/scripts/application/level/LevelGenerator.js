@@ -79,10 +79,8 @@ var LevelGenerator = Class.extend({
 	},
 	createRoom: function(){
 		var i = 0;
-		var tempTile = null;
-		var tempContainer = new PIXI.DisplayObjectContainer();
+		this.distanceToShowMap = 8;
 		var mapMaker = null;
-		
 		// if(this.parent.currentNode.getNextFloat()< 0.3){
 		// 	mapMaker = voronoiMap.islandShape.makeBlob(this.parent.currentNode.getNextFloat(), 0.5);
 		// }
@@ -92,102 +90,92 @@ var LevelGenerator = Class.extend({
 		// else{// if(this.parent.currentNode.getNextFloat()< 0.3){
 		// 	mapMaker = voronoiMap.islandShape.makeSquare(this.parent.currentNode.getNextFloat(), 0.5);
 		// }
-
-
 		mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), 0.5);
 		// this.parent.tempSizeTiles.x *= 4;
 		// this.parent.tempSizeTiles.y *= 4;
 		this.parent.currentNode.mapData = [];
+		// this.placedTiles = [];
 		var tempDataLine = [];
+		var tempDataPlacedLine = [];
 		for (i = this.parent.tempSizeTiles.x - 1; i >= 0; i--) {
 			tempDataLine = [];
+			tempDataPlacedLine = [];
 			for (var j = this.parent.tempSizeTiles.y - 1; j >= 0; j--) {
 				tempDataLine.push({});
+				tempDataPlacedLine.push(0);
 			}
 			this.parent.currentNode.mapData.push(tempDataLine);
+			this.parent.currentNode.placedTiles.push(tempDataPlacedLine);
 		}
 
 		var tempMapSize = {width:this.parent.tempSizeTiles.x*APP.nTileSize,height:this.parent.tempSizeTiles.y*APP.nTileSize};
 		var numberOfPoints = this.parent.tempSizeTiles.x*this.parent.tempSizeTiles.y;
 
-		var map = voronoiMap.map(tempMapSize);
-		map.newIsland(mapMaker, this.parent.currentNode.getNextFloat());
+		this.map = voronoiMap.map(tempMapSize);
+		this.map.newIsland(mapMaker, this.parent.currentNode.getNextFloat());
 
 		//gera a malha de pontos uniformemente
-		map.go0PlaceUniformPoints( numberOfPoints ,this.parent.tempSizeTiles.x,this.parent.tempSizeTiles.y,APP.nTileSize);
-		map.go1BuildGraph();
-		map.assignBiomes();
-		map.go2AssignElevations();
-		map.go3AssignMoisture();
-		map.go4DecorateMap();
-
-
-		var sz = APP.nTileSize;
-		var scl = 1;
-
-		var tempX = 0;
-		var tempY = 0;
-
+		this.map.go0PlaceUniformPoints( numberOfPoints ,this.parent.tempSizeTiles.x,this.parent.tempSizeTiles.y,APP.nTileSize);
+		this.map.go1BuildGraph();
+		this.map.assignBiomes();
+		this.map.go2AssignElevations();
+		this.map.go3AssignMoisture();
+		this.map.go4DecorateMap();
 		var ix = 0;
 		var jy = 0;
 		
-		var top = null;
-		var bot = {x:0, y:-99999};
-		var lef = null;
-		var rig = {x:-99999, y:-99999};
-		
-		for (i = 0; i < map.centers.length; i++) {
+		// var top = null;
+		// var bot = {x:0, y:-99999};
+		// var lef = null;
+		// var rig = {x:-99999, y:-99999};
+
+		var top = {x:this.parent.tempSizeTiles.x / 2, y:this.parent.tempSizeTiles.y/2 - 3};
+		var bot = {x:this.parent.tempSizeTiles.x / 2, y:this.parent.tempSizeTiles.y/2 + 3};
+		var lef = {x:this.parent.tempSizeTiles.x/2 - 3, y:this.parent.tempSizeTiles.y / 2};
+		var rig = {x:this.parent.tempSizeTiles.x/2 + 3, y:this.parent.tempSizeTiles.y / 2};
+////////////////////////////////////////
+		for (i = 0; i < this.map.centers.length; i++) {
 			
 
-			//inverse
-			ix = Math.floor(map.centers[i].point.y / APP.nTileSize);
-			jy = Math.floor(map.centers[i].point.x / APP.nTileSize);
+		// 	//inverse
+			ix = Math.floor(this.map.centers[i].point.y / APP.nTileSize);
+			jy = Math.floor(this.map.centers[i].point.x / APP.nTileSize);
 
 
 			
-			if(ix === Math.floor(this.parent.tempSizeTiles.y / 2)){
-				if(!top && map.centers[i].biome !== 'OCEAN')
-				{
-					top = {x:jy,y:ix};
-					// console.log('top',top);
-				}
-				if(bot.y < jy){
-					bot = {x:jy,y:ix};
-					// console.log('bot',bot);
-				}
-			}
+			// if(ix === Math.floor(this.parent.tempSizeTiles.y / 2)){
+			// 	if(!top && this.map.centers[i].biome !== 'OCEAN')
+			// 	{
+			// 		top = {x:jy,y:ix};
+			// 		// console.log('top',top);
+			// 	}
+			// 	if(bot.y < jy){
+			// 		bot = {x:jy,y:ix};
+			// 		// console.log('bot',bot);
+			// 	}
+			// }
 
-			if(jy === Math.floor(this.parent.tempSizeTiles.x / 2)){
-				if(!lef && map.centers[i].biome !== 'OCEAN')
-				{
-					lef = {x:jy,y:ix};
-					// console.log('lef',lef);
-				}
-				// console.log('ix',ix, jy);
+			// if(jy === Math.floor(this.parent.tempSizeTiles.x / 2)){
+			// 	if(!lef && this.map.centers[i].biome !== 'OCEAN')
+			// 	{
+			// 		lef = {x:jy,y:ix};
+			// 		// console.log('lef',lef);
+			// 	}
+			// 	// console.log('ix',ix, jy);
 
-				if(rig.x < ix){
-					rig = {x:jy,y:ix};
-					// console.log('rig',rig);
-				}
-			}
+			// 	if(rig.x < ix){
+			// 		rig = {x:jy,y:ix};
+			// 		// console.log('rig',rig);
+			// 	}
+			// }
 
 
-			tempX = ix * APP.nTileSize;
-			tempY = jy * APP.nTileSize;
-
-			this.parent.currentNode.mapData[jy][ix] = map.centers[i].biome;
-
-			tempTile = new SimpleSprite('_dist/img/tile1.png');
-			
-			tempTile.setPosition(tempY*scl,tempX*scl);
-			tempTile.getContent().tint = displayColors[map.centers[i].biome];//0x0000FF * map.centers[i].elevation;
-
-			// tempTile.getContent().tint = displayColors.OCEAN + 0x000055 * map.centers[i].elevation;//0x0000FF * map.centers[i].elevation;
-
-			tempTile.getContent().scale.x = scl;
-			tempTile.getContent().scale.y = scl;
-			tempContainer.addChild(tempTile.getContent());
+		// 	tempX = ix * APP.nTileSize;
+		// 	tempY = jy * APP.nTileSize;
+			this.parent.currentNode.placedTiles[jy][ix] = 0;
+			this.parent.currentNode.mapData[jy][ix] = this.map.centers[i].biome;
 		}
+////////////////////////////////////////
 		this.parent.currentNode.topTile = top;
 		this.parent.currentNode.bottomTile = bot;
 		this.parent.currentNode.leftTile = lef;
@@ -218,15 +206,51 @@ var LevelGenerator = Class.extend({
 		// 	}
 		// }
 
+		this.parent.currentNode.bg = new PIXI.DisplayObjectContainer();
+		return this.parent.currentNode.bg;
 
+	},
+	updateTiles: function(playerPostion){
+		// console.log(this.parent.currentNode.bg.parent);
+		// if(this.parent.currentNode.bg && this.parent.currentNode.bg.parent === undefined){
+		// 	this.parent.bgContainer.addChild(this.parent.currentNode.bg);
+		// }
+		if(playerPostion && this.parent.currentNode.mapData){
+			var tempPlaced = {x:0,y:0};
+			for (var i = playerPostion.x - this.distanceToShowMap; i < playerPostion.x+this.distanceToShowMap; i++) {
+				if(i >= 0 && i <this.parent.currentNode.placedTiles.length){
+					tempPlaced.x = i;
+					for (var j = playerPostion.y - this.distanceToShowMap; j < playerPostion.y+this.distanceToShowMap; j++) {
+						if(j >= 0 && j <this.parent.currentNode.placedTiles[tempPlaced.x].length){
+							tempPlaced.y = j;
+							if(this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] === 0 && this.pointDistance(tempPlaced.x, tempPlaced.y,playerPostion.x,playerPostion.y) < this.distanceToShowMap){
+								this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = 1;
 
-		//
+								var tempTile = new SimpleSprite('_dist/img/tile1.png');
+								
+								var tempX = tempPlaced.x * APP.nTileSize;
+								var tempY = tempPlaced.y * APP.nTileSize;
 
-		this.parent.bgContainer.addChild(tempContainer);
-		this.parent.currentNode.bg = tempContainer;
-		
-		return tempContainer;
+								var sz = APP.nTileSize;
+								var scl = 1;
+								// console.log(tempY*scl,tempX*scl);
+								tempTile.setPosition(tempX*scl,tempY*scl);
 
+								tempTile.getContent().tint = displayColors[this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y]];//0x0000FF * map.centers[i].elevation;
+
+								tempTile.getContent().scale.x = scl / 2;
+								tempTile.getContent().scale.y = scl / 2;
+								tempTile.getContent().alpha = 0;
+								TweenLite.to(tempTile.getContent(), 0.5, {alpha:1});
+								TweenLite.to(tempTile.getContent().scale, 0.2, {x:scl, y:scl});
+								this.parent.currentNode.bg.addChild(tempTile.getContent());
+							}
+						}
+					}
+				}
+			}
+			
+		}
 	},
 	// debugBounds:function(){
 	// 	if(this.parent.levelBoundsGraph && this.parent.levelBoundsGraph.parent){
@@ -239,7 +263,7 @@ var LevelGenerator = Class.extend({
 	// },
 	createDoors:function(){
 		
-
+		console.log(this.parent.currentNode.childrenSides,'childrenSides');
 		if(this.parent.currentNode.childrenSides[0] && this.parent.currentNode.leftTile){
 			this.parent.doorLeft = new Door('left');
 			this.parent.doorLeft.build();
@@ -265,10 +289,10 @@ var LevelGenerator = Class.extend({
 			this.parent.environmentLayer.addChild(this.parent.doorUp);
 		}
 
-		if(this.parent.currentNode.childrenSides[3] && this.parent.currentNode.downTile){
+		if(this.parent.currentNode.childrenSides[3] && this.parent.currentNode.bottomTile){
 			this.parent.doorDown = new Door('down');
 			this.parent.doorDown.build();
-			this.parent.doorDown.setPosition(this.parent.currentNode.downTile.x * APP.nTileSize, this.parent.currentNode.downTile.y * APP.nTileSize + this.parent.doorDown.height/2);
+			this.parent.doorDown.setPosition(this.parent.currentNode.bottomTile.x * APP.nTileSize, this.parent.currentNode.bottomTile.y * APP.nTileSize + this.parent.doorDown.height/2);
 			this.parent.doorDown.node = this.parent.currentNode.childrenSides[3];
 			this.parent.environmentLayer.addChild(this.parent.doorDown);
 		}
@@ -338,6 +362,8 @@ var LevelGenerator = Class.extend({
 				this.vecRain[i].update();
 			}
 		}
+		this.updateTiles(this.parent.getPlayerTilePos());
+		// console.log(this.parent.getPlayerTylePos());
 	},
 	pointDistance: function(x, y, x0, y0){
 		return Math.sqrt((x -= x0) * x + (y -= y0) * y);

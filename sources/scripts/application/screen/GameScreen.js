@@ -285,53 +285,65 @@ var GameScreen = AbstractScreen.extend({
                 );
         }
     },
+    getPlayerTilePos:function(){
+        if(this.player){
+            var centerPositionPlayer = {x:this.player.getPosition().x + this.player.centerPosition.x,
+                y:this.player.getPosition().y + this.player.centerPosition.y};
+            var tilePosition = {x:Math.floor(centerPositionPlayer.x / APP.nTileSize),y:Math.floor(centerPositionPlayer.y / APP.nTileSize)};
+            return tilePosition;
+        }
+        return null;
+    },
     //faz a colisão por tile map
     boundsCollision:function(){
-        for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
-            tempEntity = this.entityLayer.childs[i];
-            if(tempEntity.type !== 'fire'){
-        
-                var centerPositionPlayer = {x:tempEntity.getPosition().x + tempEntity.centerPosition.x,
-                    y:tempEntity.getPosition().y + tempEntity.centerPosition.y};
+        // console.log(this.currentNode.mapData[0], 'data');
+        if(this.currentNode && this.player){
+            for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
+                tempEntity = this.entityLayer.childs[i];
+                if(tempEntity.type !== 'fire'){
+                    // console.log(this.currentNode.mapData);
+                    var centerPositionPlayer = {x:tempEntity.getPosition().x + tempEntity.centerPosition.x,
+                        y:tempEntity.getPosition().y + tempEntity.centerPosition.y};
 
 
-                var nextStep = {x:centerPositionPlayer.x + tempEntity.virtualVelocity.x,
-                    y:centerPositionPlayer.y + tempEntity.virtualVelocity.y};
+                    var nextStep = {x:centerPositionPlayer.x + tempEntity.virtualVelocity.x,
+                        y:centerPositionPlayer.y + tempEntity.virtualVelocity.y};
 
 
-                var nextStepDown = {x:nextStep.x,y:nextStep.y + tempEntity.height};
-                var nextStepUp = {x:nextStep.x,y:nextStep.y - tempEntity.height};
-                var nextStepLeft = {x:nextStep.x - tempEntity.width,y:nextStep.y};
-                var nextStepRight = {x:nextStep.x + tempEntity.width,y:nextStep.y};
+                    var nextStepDown = {x:nextStep.x,y:nextStep.y + tempEntity.height};
+                    var nextStepUp = {x:nextStep.x,y:nextStep.y - tempEntity.height};
+                    var nextStepLeft = {x:nextStep.x - tempEntity.width,y:nextStep.y};
+                    var nextStepRight = {x:nextStep.x + tempEntity.width,y:nextStep.y};
 
 
-                var tilePositionDown = {x:Math.floor(nextStepDown.x / APP.nTileSize),y:Math.floor(nextStepDown.y / APP.nTileSize)};
-                var tilePositionUp = {x:Math.floor(nextStepUp.x / APP.nTileSize),y:Math.floor(nextStepUp.y / APP.nTileSize)};
-                var tilePositionLeft = {x:Math.floor(nextStepLeft.x / APP.nTileSize),y:Math.floor(nextStepLeft.y / APP.nTileSize)};
-                var tilePositionRight = {x:Math.floor(nextStepRight.x / APP.nTileSize),y:Math.floor(nextStepRight.y / APP.nTileSize)};
+                    var tilePositionDown = {x:Math.floor(nextStepDown.x / APP.nTileSize),y:Math.floor(nextStepDown.y / APP.nTileSize)};
+                    var tilePositionUp = {x:Math.floor(nextStepUp.x / APP.nTileSize),y:Math.floor(nextStepUp.y / APP.nTileSize)};
+                    var tilePositionLeft = {x:Math.floor(nextStepLeft.x / APP.nTileSize),y:Math.floor(nextStepLeft.y / APP.nTileSize)};
+                    var tilePositionRight = {x:Math.floor(nextStepRight.x / APP.nTileSize),y:Math.floor(nextStepRight.y / APP.nTileSize)};
 
-                var pass = this.currentNode.mapData[tilePositionDown.x] &&this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y];
-                if(pass &&
-                    this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y] === 'OCEAN' && tempEntity.virtualVelocity.y > 0){
-                    tempEntity.virtualVelocity.y = 0;
-                }
+                    var pass = this.currentNode.mapData[tilePositionDown.x] !== undefined && this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y] !== undefined;
+                    if(pass &&
+                        this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y] === 'OCEAN' && tempEntity.virtualVelocity.y > 0){
+                        tempEntity.virtualVelocity.y = 0;
+                    }
 
-                pass = this.currentNode.mapData[tilePositionUp.x] &&this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y];
-                if(pass &&
-                    this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y] === 'OCEAN' && tempEntity.virtualVelocity.y < 0){
-                    tempEntity.virtualVelocity.y = 0;
-                }
-                
-                pass = this.currentNode.mapData[tilePositionRight.x] &&this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y];
-                if(this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] &&
-                    this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] === 'OCEAN' && tempEntity.virtualVelocity.x > 0){
-                    tempEntity.virtualVelocity.x = 0;
-                }
+                    pass = this.currentNode.mapData[tilePositionUp.x] !== undefined && this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y] !== undefined;
+                    if(pass &&
+                        this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y] === 'OCEAN' && tempEntity.virtualVelocity.y < 0){
+                        tempEntity.virtualVelocity.y = 0;
+                    }
+                    
+                    pass = this.currentNode.mapData[tilePositionRight.x] !== undefined && this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] !== undefined;
+                    if(this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] &&
+                        this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] === 'OCEAN' && tempEntity.virtualVelocity.x > 0){
+                        tempEntity.virtualVelocity.x = 0;
+                    }
 
-                pass = this.currentNode.mapData[tilePositionLeft.x] &&this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y];
-                if(this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] &&
-                    this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] === 'OCEAN' && tempEntity.virtualVelocity.x < 0){
-                    tempEntity.virtualVelocity.x = 0;
+                    pass = this.currentNode.mapData[tilePositionLeft.x] !== undefined && this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] !== undefined;
+                    if(this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] &&
+                        this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] === 'OCEAN' && tempEntity.virtualVelocity.x < 0){
+                        tempEntity.virtualVelocity.x = 0;
+                    }
                 }
             }
         }
@@ -357,6 +369,7 @@ var GameScreen = AbstractScreen.extend({
     resetLevel:function()
     {
         this.mouseDown = false;
+        this.keyboardInput.vecPositions = [];
         this.blackShape.alpha = 1;
         TweenLite.to(this.blackShape, 1, {alpha:0});
 
@@ -401,9 +414,12 @@ var GameScreen = AbstractScreen.extend({
                 this.tempSizeTiles = {x:24 + this.marginTiles.x + Math.floor(this.currentNode.getNextFloat() * 15) , y:20+ this.marginTiles.y+Math.floor(this.currentNode.getNextFloat() * 15)};
             }
             this.currentNode.bg = this.levelGenerator.createRoom();
+            this.bgContainer.addChild(this.currentNode.bg);
         }
 
-        this.levelBounds= {x: this.currentNode.bg.width, y: this.currentNode.bg.height};
+        this.levelBounds= {x: this.currentNode.placedTiles.length * APP.nTileSize, y: this.currentNode.placedTiles[0].length * APP.nTileSize};
+        console.log(this.levelBounds, this.currentNode.placedTiles.length, this.currentNode.placedTiles[0].length);
+        // this.levelBounds= {x: this.currentNode.bg.width, y: this.currentNode.bg.height};
 
         // this.levelGenerator.debugBounds();
         this.levelGenerator.createDoors();
@@ -458,6 +474,7 @@ var GameScreen = AbstractScreen.extend({
         }
 
         this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y/2);
+        // console.log(this.levelBounds.x/2,this.levelBounds.y/2);
     },
     //atualiza o z index da layer
     depthCompare:function(a,b) {

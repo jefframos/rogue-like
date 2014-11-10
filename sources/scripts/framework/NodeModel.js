@@ -18,6 +18,7 @@ var NodeModel = Class.extend({
 		this.bottomTile = {x:0,y:0};
 		this.leftTile = {x:0,y:0};
 		this.rightTile = {x:0,y:0};
+		this.placedTiles = [];
 	},
 	applySeed:function(){
 		this.tempAccSeed = this.seed;

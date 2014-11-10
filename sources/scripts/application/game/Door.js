@@ -61,23 +61,24 @@ var Door = Entity.extend({
         }
     },
     build: function(){
-        this._super('_dist/img/cubo2.png');
+        this._super('_dist/img/cubo.png');
         var self = this;
-        this.debugGraphic = new PIXI.Graphics();
-        this.debugGraphic.beginFill(0xFF3300);
-        this.debugGraphic.lineStyle(1, 0xffd900, 1);
-        this.debugGraphic.endFill();
-        this.getContent().alpha = 0.5;
+        
+        // this.debugGraphic = new PIXI.Graphics();
+        // this.debugGraphic.beginFill(0xFF3300);
+        // this.debugGraphic.lineStyle(1, 0xffd900, 1);
+        // this.debugGraphic.endFill();
+        // this.getContent().alpha = 0.5;
     },
     update: function(){
         this._super();
         this.getBounds();
-        this.debugPolygon(0x556644, true);
+        // this.debugPolygon(0x556644, true);
     },
 
     preKill:function(){
         this._super();
-        if(this.debugGraphic.parent){
+        if(this.debugGraphic && this.debugGraphic.parent){
             this.debugGraphic.parent.removeChild(this.debugGraphic);
         }
     },
