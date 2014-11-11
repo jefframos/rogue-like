@@ -33,7 +33,7 @@ var GameScreen = AbstractScreen.extend({
             clss = 'mage';
         }
 
-        this.playerModel = new PlayerModel(clss);
+        this.playerModel = APP.playersList[0].clone();
 
         this.playerModel.mp = 8000;
         this.playerModel.mpMax = 8000;

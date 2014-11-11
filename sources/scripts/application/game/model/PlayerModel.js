@@ -1,80 +1,110 @@
 /*jshint undef:false */
 var PlayerModel = Class.extend({
-	init: function (playerClass){
-		
-
-		if(!playerClass){
-			this.playerClass = 'warrior';
-		}else{
-			this.playerClass = playerClass;
-		}
+	init: function (name, label, stats, modifiers, graphicsData, config){
 
 		this.level = 1;
-		var nextl = this.level;
-		this.toNextLevel = (nextl*nextl+nextl+3)/4* 20 * nextl;
-		this.toBeforeLevel = 0;
+		this.name = name;
+        this.label = label;
+        this.stats = stats;
+        this.modifiers = modifiers;
+        this.graphicsData = graphicsData;
+        this.confi = config;
 
-		if(this.playerClass === 'warrior'){
-			this.vigor = 40;
-	        this.speed = 33;
-	        this.stamina = 33;
-			this.magicPower = 25;
-	        this.battlePower = 25;
-			this.defense = 48;
-			this.magicDefense = 20;
-			this.baseHPModifier = 1.32;
-			this.baseHP = this.level* (20 / this.baseHPModifier);
-			this.baseMPModifier = 15.2;
-
-			//modifiers
-			this.vigorModifier = 0.0065;
-	        this.speedModifier = 0.0045;
-	        this.staminaModifier = 0.007;
-			this.magicPowerModifier = 0.0025;
-	        this.battlePowerModifier = 0.0055;
-			this.defenseModifier = 0.0065;
-			this.magicDefenseModifier = 0.0025;
-
-		}else if(this.playerClass === 'mage'){
-			this.vigor = 31;
-	        this.speed = 33;
-	        this.stamina = 28;
-			this.magicPower = 39;
-	        this.battlePower = 12;
-			this.defense = 42;
-			this.magicDefense = 33;
-			this.baseHPModifier = 1.32;
-			this.baseHP = this.level* (20 / this.baseHPModifier);
-			this.baseMPModifier = 7.8;
-
-			this.vigorModifier = 0.004;
-	        this.speedModifier = 0.005;
-	        this.staminaModifier = 0.005;
-			this.magicPowerModifier = 0.007;
-	        this.battlePowerModifier = 0.003;
-			this.defenseModifier = 0.005;
-			this.magicDefenseModifier = 0.007;
+		if(!name){
+			this.playerClass = 'warrior';
+		}else{
+			this.playerClass = name;
 		}
-		else if(this.playerClass === 'thief'){
-			this.vigor = 37;
-	        this.speed = 40;
-	        this.stamina = 28;
-			this.magicPower = 28;
-	        this.battlePower = 14;
-			this.defense = 38;
-			this.magicDefense = 23;
-			this.baseHPModifier = 1.32;
-			this.baseHP = this.level* (20 / this.baseHPModifier);
-			this.baseMPModifier = 10.2;
 
-			this.vigorModifier = 0.005;
-	        this.speedModifier = 0.007;
-	        this.staminaModifier = 0.007;
-			this.magicPowerModifier = 0.004;
-	        this.battlePowerModifier = 0.005;
-			this.defenseModifier = 0.004;
-			this.magicDefenseModifier = 0.004;
-		}
+
+		this.vigor = this.stats.vigor;
+        this.speed = this.stats.speed;
+        this.stamina = this.stats.stamina;
+		this.magicPower = this.stats.magicPower;
+        this.battlePower = this.stats.battlePower;
+		this.defense = this.stats.defense;
+		this.magicDefense = this.stats.magicDefense;
+
+		//modifiers
+		this.baseHPModifier = this.modifiers.baseHPModifier;
+		this.baseMPModifier = this.modifiers.baseMPModifier;
+		this.vigorModifier = this.modifiers.vigorModifier;
+        this.speedModifier = this.modifiers.speedModifier;
+        this.staminaModifier = this.modifiers.staminaModifier;
+		this.magicPowerModifier = this.modifiers.magicPowerModifier;
+        this.battlePowerModifier = this.modifiers.battlePowerModifier;
+		this.defenseModifier = this.modifiers.defenseModifier;
+		this.magicDefenseModifier = this.modifiers.magicDefenseModifier;
+					
+
+		this.baseHP = this.level* (20 / this.baseHPModifier);
+
+		// this.level = 1;
+		// var nextl = this.level;
+		// this.toNextLevel = (nextl*nextl+nextl+3)/4* 20 * nextl;
+		// this.toBeforeLevel = 0;
+
+		// if(this.playerClass === 'warrior'){
+		// 	this.vigor = 40;
+	 //        this.speed = 33;
+	 //        this.stamina = 33;
+		// 	this.magicPower = 25;
+	 //        this.battlePower = 25;
+		// 	this.defense = 48;
+		// 	this.magicDefense = 20;
+		// 	this.baseHPModifier = 1.32;
+		// 	this.baseHP = this.level* (20 / this.baseHPModifier);
+		// 	this.baseMPModifier = 15.2;
+
+		// 	//modifiers
+		// 	this.vigorModifier = 0.0065;
+	 //        this.speedModifier = 0.0045;
+	 //        this.staminaModifier = 0.007;
+		// 	this.magicPowerModifier = 0.0025;
+	 //        this.battlePowerModifier = 0.0055;
+		// 	this.defenseModifier = 0.0065;
+		// 	this.magicDefenseModifier = 0.0025;
+
+		// }else if(this.playerClass === 'mage'){
+		// 	this.vigor = 31;
+	 //        this.speed = 33;
+	 //        this.stamina = 28;
+		// 	this.magicPower = 39;
+	 //        this.battlePower = 12;
+		// 	this.defense = 42;
+		// 	this.magicDefense = 33;
+		// 	this.baseHPModifier = 1.32;
+		// 	this.baseHP = this.level* (20 / this.baseHPModifier);
+		// 	this.baseMPModifier = 7.8;
+
+		// 	this.vigorModifier = 0.004;
+	 //        this.speedModifier = 0.005;
+	 //        this.staminaModifier = 0.005;
+		// 	this.magicPowerModifier = 0.007;
+	 //        this.battlePowerModifier = 0.003;
+		// 	this.defenseModifier = 0.005;
+		// 	this.magicDefenseModifier = 0.007;
+		// }
+		// else if(this.playerClass === 'thief'){
+		// 	this.vigor = 37;
+	 //        this.speed = 40;
+	 //        this.stamina = 28;
+		// 	this.magicPower = 28;
+	 //        this.battlePower = 14;
+		// 	this.defense = 38;
+		// 	this.magicDefense = 23;
+		// 	this.baseHPModifier = 1.32;
+		// 	this.baseHP = this.level* (20 / this.baseHPModifier);
+		// 	this.baseMPModifier = 10.2;
+
+		// 	this.vigorModifier = 0.005;
+	 //        this.speedModifier = 0.007;
+	 //        this.staminaModifier = 0.007;
+		// 	this.magicPowerModifier = 0.004;
+	 //        this.battlePowerModifier = 0.005;
+		// 	this.defenseModifier = 0.004;
+		// 	this.magicDefenseModifier = 0.004;
+		// }
 
 		//modifiers >
 		//'warrior'
@@ -130,6 +160,16 @@ var PlayerModel = Class.extend({
 		Math.floor(this.fireFreq)+','+
 		Math.floor(this.getDemage('physical'))+','+
 		Math.floor(this.getDemage('magical'))+'\n';
+
+		console.log('PlayerModel', this);
+
+		// this.levelUp(this.level);
+
+		var nextl = this.level;
+		var befl = this.level - 1;
+		this.toNextLevel = (nextl*nextl+nextl+3)/4* 20 * nextl;
+		this.toBeforeLevel = (befl*befl+befl+3)/4* 20 * befl;
+
 	},
 	log: function(){
 		console.log();
@@ -151,6 +191,14 @@ var PlayerModel = Class.extend({
 		console.log('demagePhysical,',Math.floor(this.getDemage('physical')));
 		console.log('demageMagical,',Math.floor(this.getDemage('magical')));
 
+	},
+	clone: function(){
+		return new PlayerModel(this.name,
+			        this.label,
+			        this.stats,
+			        this.modifiers,
+			        this.graphicsData,
+			        this.config);
 	},
 	logCSV: function(){
 		console.log(this.csvStr);

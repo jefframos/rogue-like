@@ -35,6 +35,7 @@ var Application = AbstractApplication.extend({
     },
     build:function(){
         // this.monsterList.push(new MonsterModel(1,80,50,20,13,13,70,70, 10));
+        this.playersList = [];
         this.monsterList = [];
         this.spellList = [];
         this.weaponList = [];
@@ -48,7 +49,8 @@ var Application = AbstractApplication.extend({
                             '_dist/img/spells/spells.JSON',
                             '_dist/img/potions/potions.JSON',
                             '_dist/img/enemies/enemies.JSON',
-                            '_dist/img/armor/armor.JSON'];
+                            '_dist/img/armor/armor.JSON',
+                            '_dist/img/players/players.JSON'];
         this.assetsLoader = new PIXI.AssetLoader(JSONToLoader);
         var self = this;
 
@@ -86,6 +88,25 @@ var Application = AbstractApplication.extend({
     {
         console.log('assetsLoader');
         var self = this;
+
+        var jsonLoaderPlayers = new PIXI.JsonLoader('_dist/img/players/players.JSON');
+        jsonLoaderPlayers.on('loaded', function(evt) {
+            // console.log('jsonLoaderPlayers',evt.content.json);
+            for (var i = 0; i < evt.content.json.itens.length; i++) {
+                console.log(evt.content.json.itens[i].stats,'SJKALSKALSK');
+                self.playersList.push(new PlayerModel(
+                    evt.content.json.itens[i].name,
+                    evt.content.json.itens[i].label,
+                    evt.content.json.itens[i].stats,
+                    evt.content.json.itens[i].modifiers,
+                    evt.content.json.itens[i].graphicsData,
+                    evt.content.json.itens[i].config
+                ));
+            }
+            console.log('jsonLoaderPlayers',evt.content.json.itens[0]);
+            self.updateLoad();
+        });
+        jsonLoaderPlayers.load();
 
         var jsonLoaderMonsters = new PIXI.JsonLoader('_dist/img/enemies/enemies.JSON');
         jsonLoaderMonsters.on('loaded', function(evt) {

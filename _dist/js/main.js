@@ -202,9 +202,9 @@ var Application = AbstractApplication.extend({
         return this.HUD;
     },
     build: function() {
-        this.monsterList = [], this.spellList = [], this.weaponList = [], this.armorList = [], 
-        this.itemList = [], this.relicList = [], this._super();
-        var JSONToLoader = [ "_dist/img/relics/relics.JSON", "_dist/img/weapons/weapons.JSON", "_dist/img/spells/spells.JSON", "_dist/img/potions/potions.JSON", "_dist/img/enemies/enemies.JSON", "_dist/img/armor/armor.JSON" ];
+        this.playersList = [], this.monsterList = [], this.spellList = [], this.weaponList = [], 
+        this.armorList = [], this.itemList = [], this.relicList = [], this._super();
+        var JSONToLoader = [ "_dist/img/relics/relics.JSON", "_dist/img/weapons/weapons.JSON", "_dist/img/spells/spells.JSON", "_dist/img/potions/potions.JSON", "_dist/img/enemies/enemies.JSON", "_dist/img/armor/armor.JSON", "_dist/img/players/players.JSON" ];
         this.assetsLoader = new PIXI.AssetLoader(JSONToLoader);
         var self = this;
         this.assetsLoader.onComplete = function() {
@@ -220,7 +220,13 @@ var Application = AbstractApplication.extend({
     },
     onAssetsLoaded: function() {
         console.log("assetsLoader");
-        var self = this, jsonLoaderMonsters = new PIXI.JsonLoader("_dist/img/enemies/enemies.JSON");
+        var self = this, jsonLoaderPlayers = new PIXI.JsonLoader("_dist/img/players/players.JSON");
+        jsonLoaderPlayers.on("loaded", function(evt) {
+            for (var i = 0; i < evt.content.json.itens.length; i++) console.log(evt.content.json.itens[i].stats, "SJKALSKALSK"), 
+            self.playersList.push(new PlayerModel(evt.content.json.itens[i].name, evt.content.json.itens[i].label, evt.content.json.itens[i].stats, evt.content.json.itens[i].modifiers, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
+            console.log("jsonLoaderPlayers", evt.content.json.itens[0]), self.updateLoad();
+        }), jsonLoaderPlayers.load();
+        var jsonLoaderMonsters = new PIXI.JsonLoader("_dist/img/enemies/enemies.JSON");
         jsonLoaderMonsters.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.monsterList.push(new MonsterModel(evt.content.json.itens[i].name, evt.content.json.itens[i].stats, evt.content.json.itens[i].fire, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
             console.log("jsonLoaderMonsters", evt.content.json.itens[0]), self.updateLoad();
@@ -1174,33 +1180,28 @@ var Application = AbstractApplication.extend({
         currentSpeed;
     }
 }), PlayerModel = Class.extend({
-    init: function(playerClass) {
-        this.playerClass = playerClass ? playerClass : "warrior", this.level = 1;
-        var nextl = this.level;
-        this.toNextLevel = (nextl * nextl + nextl + 3) / 4 * 20 * nextl, this.toBeforeLevel = 0, 
-        "warrior" === this.playerClass ? (this.vigor = 40, this.speed = 33, this.stamina = 33, 
-        this.magicPower = 25, this.battlePower = 25, this.defense = 48, this.magicDefense = 20, 
-        this.baseHPModifier = 1.32, this.baseHP = this.level * (20 / this.baseHPModifier), 
-        this.baseMPModifier = 15.2, this.vigorModifier = .0065, this.speedModifier = .0045, 
-        this.staminaModifier = .007, this.magicPowerModifier = .0025, this.battlePowerModifier = .0055, 
-        this.defenseModifier = .0065, this.magicDefenseModifier = .0025) : "mage" === this.playerClass ? (this.vigor = 31, 
-        this.speed = 33, this.stamina = 28, this.magicPower = 39, this.battlePower = 12, 
-        this.defense = 42, this.magicDefense = 33, this.baseHPModifier = 1.32, this.baseHP = this.level * (20 / this.baseHPModifier), 
-        this.baseMPModifier = 7.8, this.vigorModifier = .004, this.speedModifier = .005, 
-        this.staminaModifier = .005, this.magicPowerModifier = .007, this.battlePowerModifier = .003, 
-        this.defenseModifier = .005, this.magicDefenseModifier = .007) : "thief" === this.playerClass && (this.vigor = 37, 
-        this.speed = 40, this.stamina = 28, this.magicPower = 28, this.battlePower = 14, 
-        this.defense = 38, this.magicDefense = 23, this.baseHPModifier = 1.32, this.baseHP = this.level * (20 / this.baseHPModifier), 
-        this.baseMPModifier = 10.2, this.vigorModifier = .005, this.speedModifier = .007, 
-        this.staminaModifier = .007, this.magicPowerModifier = .004, this.battlePowerModifier = .005, 
-        this.defenseModifier = .004, this.magicDefenseModifier = .004), this.spellPower = 20, 
-        this.weaponPower = 30, this.defenseArmor = 0, this.magicDefenseArmor = 0, this.hpMax = this.baseHP * (this.stamina + 32) / 32, 
-        this.hp = this.hpMax, this.baseMP = this.level * (20 / this.baseMPModifier), this.mpMax = this.baseMP * (this.magicPower + 32) / 32, 
-        this.mp = this.mpMax, this.critialChance = 0, this.speedStatus = "normal", this.vigor2 = 2 * this.vigor, 
-        this.vigor >= 128 && (this.vigor2 = 255), this.attack = this.battlePower + this.vigor2, 
-        this.xp = 0, this.velocity = 8 - (255 - this.speed) / 25 + 5, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.3, 
-        this.entity = null, this.csvStr = "level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n", 
-        this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n";
+    init: function(name, label, stats, modifiers, graphicsData, config) {
+        this.level = 1, this.name = name, this.label = label, this.stats = stats, this.modifiers = modifiers, 
+        this.graphicsData = graphicsData, this.confi = config, this.playerClass = name ? name : "warrior", 
+        this.vigor = this.stats.vigor, this.speed = this.stats.speed, this.stamina = this.stats.stamina, 
+        this.magicPower = this.stats.magicPower, this.battlePower = this.stats.battlePower, 
+        this.defense = this.stats.defense, this.magicDefense = this.stats.magicDefense, 
+        this.baseHPModifier = this.modifiers.baseHPModifier, this.baseMPModifier = this.modifiers.baseMPModifier, 
+        this.vigorModifier = this.modifiers.vigorModifier, this.speedModifier = this.modifiers.speedModifier, 
+        this.staminaModifier = this.modifiers.staminaModifier, this.magicPowerModifier = this.modifiers.magicPowerModifier, 
+        this.battlePowerModifier = this.modifiers.battlePowerModifier, this.defenseModifier = this.modifiers.defenseModifier, 
+        this.magicDefenseModifier = this.modifiers.magicDefenseModifier, this.baseHP = this.level * (20 / this.baseHPModifier), 
+        this.spellPower = 20, this.weaponPower = 30, this.defenseArmor = 0, this.magicDefenseArmor = 0, 
+        this.hpMax = this.baseHP * (this.stamina + 32) / 32, this.hp = this.hpMax, this.baseMP = this.level * (20 / this.baseMPModifier), 
+        this.mpMax = this.baseMP * (this.magicPower + 32) / 32, this.mp = this.mpMax, this.critialChance = 0, 
+        this.speedStatus = "normal", this.vigor2 = 2 * this.vigor, this.vigor >= 128 && (this.vigor2 = 255), 
+        this.attack = this.battlePower + this.vigor2, this.xp = 0, this.velocity = 8 - (255 - this.speed) / 25 + 5, 
+        this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.3, this.entity = null, 
+        this.csvStr = "level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n", 
+        this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n", 
+        console.log("PlayerModel", this);
+        var nextl = this.level, befl = this.level - 1;
+        this.toNextLevel = (nextl * nextl + nextl + 3) / 4 * 20 * nextl, this.toBeforeLevel = (befl * befl + befl + 3) / 4 * 20 * befl;
     },
     log: function() {
         console.log(), console.log("stats"), console.log("class,", this.playerClass), console.log("level,", Math.floor(this.level)), 
@@ -1211,6 +1212,9 @@ var Application = AbstractApplication.extend({
         console.log("attack,", Math.floor(this.attack)), console.log("magicDefense,", Math.floor(this.magicDefense)), 
         console.log("velocity,", Math.floor(this.velocity)), console.log("fireFreq,", Math.floor(this.fireFreq)), 
         console.log("demagePhysical,", Math.floor(this.getDemage("physical"))), console.log("demageMagical,", Math.floor(this.getDemage("magical")));
+    },
+    clone: function() {
+        return new PlayerModel(this.name, this.label, this.stats, this.modifiers, this.graphicsData, this.config);
     },
     logCSV: function() {
         console.log(this.csvStr);
@@ -1474,7 +1478,7 @@ var Application = AbstractApplication.extend({
             y: 10
         }, this.mouseDown = !1;
         var clss = "thief", rnd = Math.random();
-        .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = new PlayerModel(clss), 
+        .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = APP.playersList[0].clone(), 
         this.playerModel.mp = 8e3, this.playerModel.mpMax = 8e3, this.playerReady = !1;
     },
     destroy: function() {
