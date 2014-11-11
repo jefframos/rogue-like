@@ -37,20 +37,24 @@ var LevelGenerator = Class.extend({
 	createHordes: function(){
 		var tempMonster = null;
 		var monsters = [];
-		for (var i = 0; i < 1; i++) {
-			
-			tempMonster = new Enemy(this.parent.player, APP.monsterList[0].clone());
+		for (var i = 0; i < 10; i++) {
+			var id = Math.floor(this.parent.currentNode.getNextFloat() * APP.monsterList.length);
+			if(APP.monsterList[id].sourceLabel === 'STATIC'){
+				tempMonster = new StaticEnemy(this.parent.player, APP.monsterList[id].clone());
+			}else{
+				tempMonster = new Enemy(this.parent.player, APP.monsterList[id].clone());
+			}
 			// if(this.parent.currentNode.id >= 10){
 			// 	// tempMonster.monsterModel.level = 10;
-			// 	tempMonster.monsterModel.updateLevel(10);
+			// tempMonster.monsterModel.updateLevel(10);
 			// }else{
 			// 	tempMonster.monsterModel.updateLevel(1);
 			// }
 			// tempMonster.build();
 			// tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat(),this.parent.levelBounds.y * this.parent.currentNode.getNextFloat());
 			var rndAngle = this.parent.currentNode.getNextFloat() * 360 / 180 * Math.PI;
-			tempMonster.initialPosition = {x:this.parent.levelBounds.x /2 + 300 * Math.sin(rndAngle),
-				y:this.parent.levelBounds.y /2 + 300 * Math.cos(rndAngle)};
+			tempMonster.initialPosition = {x:this.parent.levelBounds.x /2 + 300 + (400*i) * Math.sin(rndAngle),
+				y:this.parent.levelBounds.y /2 + 300 + (400*i) * Math.cos(rndAngle)};
 			// this.parent.entityLayer.addChild(tempMonster);
 			monsters.push(tempMonster);
 		}

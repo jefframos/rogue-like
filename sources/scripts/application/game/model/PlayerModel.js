@@ -108,7 +108,7 @@ var PlayerModel = Class.extend({
 		this.xp = 0;
 
 		this.velocity = 8 - (255 - this.speed) / 25 + 5;
-		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * 1.5;
+		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * 1.3;
 
 
         this.entity = null;
@@ -363,74 +363,3 @@ var PlayerModel = Class.extend({
 		return currentSpeed;
 	}
 });
-
-
-
-
-// SpellMPSpell PowerDescription
-// Bio 26 53 Poison-elemental attack
-// Bolt 6 20 Lightning-elemental attack
-// Bolt 22 26 1Lightning-elemental attack
-// Bolt 3 53 120 Lightning-elemental attack
-// Demi 33 8 Cuts an enemys HP in half
-// Drain 15 38 Drains HP from an enemy
-// Fire 4 21 Fire-elemental attack
-// Fire 2 20 60 Fire-elemental attack
-// Fire 3 51 121 Fire-elemental attack
-// Flare 45 60 Barrier-piercing attack
-// Ice 5 22 Ice-elemental attack
-// Ice 2 21 62 Ice-elemental attack
-// Ice 3 52 122 Ice-elemental attack
-// Merton 85 138 Unfocused piercing fire attack
-// Meteor 62 36 Damages multiple enemies
-// Pearl 40 108 Pearl-elemental attack
-// Poison 3 25 Poisons an enemy
-// Quake 50 111 Unfocused Earth-elemental attack
-// Quartr 48 12 Cuts an enemys HP by 3/4
-// Ultima 80 150 Damages multiple enemies
-// W Wind 75 15 Unfocused near-fatal attack
-
-// X-Zone530Sends an enemy into the X-Zone
-// Bserk160Casts Berserk on target
-// Dispel250Maintains poor status
-// Float170Makes target float
-// Haste100Raises battle speed
-// Haste2380Speeds up entire party
-// Imp100Changes to/from "Imp"
-// Muddle80Confuses target
-// Mute80Silences target
-// Osmose126Absorbs MP from an enemy
-// Quick990Allows double commands
-// Rasp1210Damages MP
-// Rflect220Casts a magic barrier on target
-// Safe120Raises defense
-// Scan30Displays an enemy's HP/weak point
-// Shell150Raises magic defense
-// Sleep50Puts target to sleep
-// Slow50Slows battle speed
-// Slow 2260Slows multiple enemies
-// Stop100Stops an enemy
-// Vanish180Renders target invisible
-// Warp200Escape from dungeons/battles
-// Antdot30Cures poisoning
-// Cure510Recovers HP
-// Cure 22528Recovers HP
-// Cure 34066Recovers HP
-// hp302Recovers hp
-// hp 26016Restores hp and HP/MP
-// hp 3500Protects from wound
-// Regen100Gradually recovers HP
-// Remedy150Cures status ailments
-
-
-// level, 1
-// hp, 30
-// vigor, 40 
-// speed, 28 
-// stamina, 33 
-// magicPower, 25 
-// battlePower, 25 
-// defense, 48 
-// attack, 105 
-// magicDefense, 20 
-

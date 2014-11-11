@@ -1,5 +1,5 @@
 /*jshint undef:false */
-var Enemy = SpritesheetEntity.extend({
+var StaticEnemy = Entity.extend({
     init:function(player, model){
         this._super( true );
         this.updateable = false;
@@ -15,18 +15,15 @@ var Enemy = SpritesheetEntity.extend({
         this.initialPosition = {x:0, y:0};
     },
     hurt:function(demage, type){
-        
 
         var trueDemage = this.monsterModel.getHurt(demage, type);
         this.hp -= trueDemage;
-
+        console.log(this.hp);
         var pop = new PopUpText('red');
         pop.setText(Math.floor(trueDemage));
         APP.getEffectsContainer().addChild(pop.getContent());
         pop.setPosition(this.getPosition().x -10 + Math.random() * 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2);
         pop.initMotion(-10 - (Math.random() * 10), 0.5);
-        this.getTexture().tint = 0xFF0000;
-
         if(this.hp <= 0){
             this.preKill();
             var trueXP = this.monsterModel.xp + ((this.monsterModel.level - this.player.playerModel.level)*0.15*this.monsterModel.xp) + 1;
@@ -35,6 +32,8 @@ var Enemy = SpritesheetEntity.extend({
     },
     build: function(){
         // console.log('criou o Heart');
+        // console.log(this.monsterModel, 'monsterModel');
+        this._super(this.monsterModel.srcImg);
         this.defaultVelocity = this.monsterModel.speed/15;
         if(this.defaultVelocity < 4){
             this.defaultVelocity = 4;
@@ -42,13 +41,6 @@ var Enemy = SpritesheetEntity.extend({
         this.hp = this.monsterModel.hp;
         this.behaviour = new DefaultBehaviour(this, this.player);
         var self = this;
-        var motionArray = this.getFramesByRange(this.monsterModel.sourceLabel,this.monsterModel.frames.idleInit,this.monsterModel.frames.idleEnd);
-        var animationIdle = new SpritesheetAnimation();
-        animationIdle.build('idle', motionArray, 1, true, null);
-        this.spritesheet = new Spritesheet();
-        this.spritesheet.addAnimation(animationIdle);
-        this.spritesheet.play('idle');
-        this.centerPosition = {x:this.width/2, y:this.height/2};
 
         this.updateable = true;
         this.collidable = true;
@@ -63,12 +55,14 @@ var Enemy = SpritesheetEntity.extend({
             }
             this._super();
             this.getBounds();
-            if(this.getTexture()){
-                this.getContent().position.x = 20;
-                //console.log(this.getTexture().width);
-                this.range = this.getTexture().width / 2;
+            // if(this.getTexture()){
+            //     this.getContent().position.x = 20;
+            //     //console.log(this.getTexture().width);
+            //     this.range = this.getTexture().width / 2;
 
-            }
+            // }
+            // this.centerPosition = {x:-this.width/2, y:-this.height/2};
+
         }
     },
     preKill:function(){

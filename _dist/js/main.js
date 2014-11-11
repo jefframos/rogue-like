@@ -1,4 +1,4 @@
-/*! jefframos 10-11-2014 */
+/*! jefframos 11-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -222,7 +222,7 @@ var Application = AbstractApplication.extend({
         console.log("assetsLoader");
         var self = this, jsonLoaderMonsters = new PIXI.JsonLoader("_dist/img/enemies/enemies.JSON");
         jsonLoaderMonsters.on("loaded", function(evt) {
-            for (var i = 0; i < evt.content.json.itens.length; i++) self.monsterList.push(new MonsterModel(evt.content.json.itens[i].name, evt.content.json.itens[i].level, evt.content.json.itens[i].hp, evt.content.json.itens[i].stamina, evt.content.json.itens[i].speed, evt.content.json.itens[i].magicPower, evt.content.json.itens[i].battlePower, evt.content.json.itens[i].defense, evt.content.json.itens[i].magicDefense, evt.content.json.itens[i].xp, evt.content.json.itens[i].srcImg, evt.content.json.itens[i].srcJson, evt.content.json.itens[i].sourceLabel, evt.content.json.itens[i].frames));
+            for (var i = 0; i < evt.content.json.itens.length; i++) self.monsterList.push(new MonsterModel(evt.content.json.itens[i].name, evt.content.json.itens[i].stats, evt.content.json.itens[i].fire, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
             console.log("jsonLoaderMonsters", evt.content.json.itens[0]), self.updateLoad();
         }), jsonLoaderMonsters.load();
         var jsonLoaderRelics = new PIXI.JsonLoader("_dist/img/relics/relics.JSON");
@@ -250,6 +250,10 @@ var Application = AbstractApplication.extend({
             for (var i = 0; i < evt.content.json.itens.length; i++) self.itemList.push(new ItemModel(evt.content.json.itens[i].name, evt.content.json.itens[i].effect, evt.content.json.itens[i].baseValue, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg));
             console.log("jsonLoaderPotion", evt.content.json.itens.length), self.updateLoad();
         }), jsonLoaderPotion.load();
+    },
+    getMonsterByName: function(name) {
+        for (var i = this.monsterList.length - 1; i >= 0; i--) if (this.monsterList[i].name === name) return this.monsterList[i].clone();
+        return null;
     },
     show: function() {},
     hide: function() {},
@@ -939,7 +943,6 @@ var Application = AbstractApplication.extend({
         }
     },
     build: function() {
-        console.log(this.monsterModel, "monsterModel"), this.fireFreq = this.monsterModel.fireFreq, 
         this.defaultVelocity = this.monsterModel.speed / 15, this.defaultVelocity < 4 && (this.defaultVelocity = 4), 
         this.hp = this.monsterModel.hp, this.behaviour = new DefaultBehaviour(this, this.player);
         var motionArray = this.getFramesByRange(this.monsterModel.sourceLabel, this.monsterModel.frames.idleInit, this.monsterModel.frames.idleEnd), animationIdle = new SpritesheetAnimation();
@@ -1013,13 +1016,70 @@ var Application = AbstractApplication.extend({
         this.isTouch = !0, (collection.left || collection.right && 0 !== this.virtualVelocity.x) && (this.velocity.x = 0), 
         (collection.up || collection.down && 0 !== this.virtualVelocity.y) && (this.velocity.y = 0);
     }
-}), DefaultBehaviour = Class.extend({
-    init: function(entity, player) {
-        this.player = player, this.entity = entity, this.fireFreq = entity.fireFreq / 2, 
-        this.maxFireFreq = entity.fireFreq, this.fireAcum = 0, this.walkAccum = 0, this.fireTimeLive = 50, 
-        this.velocity = entity.defaultVelocity, this.maxWalkAccum = 5 * this.velocity, this.fireSpeed = 1.5 * this.velocity;
+}), StaticEnemy = Entity.extend({
+    init: function(player, model) {
+        this._super(!0), this.updateable = !1, this.deading = !1, this.range = APP.tileSize.x / 2, 
+        this.width = .9 * APP.tileSize.x, this.height = .9 * APP.tileSize.y, this.type = "enemy", 
+        this.node = null, this.boundsCollision = !0, this.player = player, this.monsterModel = model, 
+        this.initialPosition = {
+            x: 0,
+            y: 0
+        };
+    },
+    hurt: function(demage, type) {
+        var trueDemage = this.monsterModel.getHurt(demage, type);
+        this.hp -= trueDemage, console.log(this.hp);
+        var pop = new PopUpText("red");
+        if (pop.setText(Math.floor(trueDemage)), APP.getEffectsContainer().addChild(pop.getContent()), 
+        pop.setPosition(this.getPosition().x - 10 + 20 * Math.random(), this.getPosition().y - 5 + 10 * Math.random() - this.height / 2), 
+        pop.initMotion(-10 - 10 * Math.random(), .5), this.hp <= 0) {
+            this.preKill();
+            var trueXP = this.monsterModel.xp + .15 * (this.monsterModel.level - this.player.playerModel.level) * this.monsterModel.xp + 1;
+            this.player.playerModel.updateXp(trueXP);
+        }
+    },
+    build: function() {
+        this._super(this.monsterModel.srcImg), this.defaultVelocity = this.monsterModel.speed / 15, 
+        this.defaultVelocity < 4 && (this.defaultVelocity = 4), this.hp = this.monsterModel.hp, 
+        this.behaviour = new DefaultBehaviour(this, this.player);
+        this.updateable = !0, this.collidable = !0;
     },
     update: function() {
+        this.pointDistance(this.getPosition().x, this.getPosition().y, this.player.getPosition().x, this.player.getPosition().y) < 1.5 * windowWidth && (this.behaviour && this.behaviour.update(), 
+        this.isTouch || (this.velocity = this.virtualVelocity), this._super(), this.getBounds());
+    },
+    preKill: function() {
+        var self = this;
+        this.updateable = !1, this.collidable = !1, TweenLite.to(this.getContent(), .5, {
+            alpha: 0,
+            onComplete: function() {
+                self.kill = !0;
+            }
+        });
+    },
+    pointDistance: function(x, y, x0, y0) {
+        return Math.sqrt((x -= x0) * x + (y -= y0) * y);
+    },
+    touch: function(collection) {
+        this.isTouch = !0, (collection.left || collection.right && 0 !== this.virtualVelocity.x) && (this.velocity.x = 0), 
+        (collection.up || collection.down && 0 !== this.virtualVelocity.y) && (this.velocity.y = 0);
+    }
+}), DefaultBehaviour = Class.extend({
+    init: function(entity, player) {
+        this.player = player, this.entity = entity, this.fireFreq = entity.monsterModel.fire.fireFreq / 2, 
+        this.maxFireFreq = entity.monsterModel.fire.fireFreq, this.fireAcum = 0, this.walkAccum = 0, 
+        this.fireTimeLive = 50, this.velocity = entity.defaultVelocity, this.maxWalkAccum = 5 * this.velocity, 
+        this.fireSpeed = 1.5 * this.velocity, this.maxChilds = 5, this.bornChildAccum = 100, 
+        entity.monsterModel.config.spawner && (this.childModel = APP.getMonsterByName(entity.monsterModel.config.spawner));
+    },
+    update: function() {
+        if (this.childModel && this.maxChilds > 0 && (this.bornChildAccum--, this.bornChildAccum < 0)) {
+            this.bornChildAccum = 100, this.maxChilds--;
+            var tempMonster = null;
+            tempMonster = "STATIC" === this.childModel.sourceLabel ? new StaticEnemy(this.player, this.childModel.clone()) : new Enemy(this.player, this.childModel.clone()), 
+            tempMonster.build(), tempMonster.setPosition(this.entity.getPosition().x, this.entity.getPosition().y), 
+            this.entity.layer.addChild(tempMonster);
+        }
         this.walkAccum--, this.walkAccum < 0 && (this.entity.setVelocity(Math.sin(360 * Math.random() / 180 * Math.PI) * this.velocity * .8, Math.cos(360 * Math.random() / 180 * Math.PI) * this.velocity * .8), 
         this.walkAccum = this.maxWalkAccum), this.fireFreq--, this.fireFreq < 0 && pointDistance(this.entity.getPosition().x, this.entity.getPosition().y, this.player.getPosition().x, this.player.getPosition().y) < this.fireTimeLive * this.fireSpeed * 2 && (this.shoot(), 
         this.fireFreq = this.maxFireFreq);
@@ -1027,15 +1087,16 @@ var Application = AbstractApplication.extend({
     shoot: function() {
         var angle = Math.atan2(this.entity.getPosition().y + this.entity.centerPosition.y - this.player.getPosition().y, this.entity.getPosition().x + this.entity.centerPosition.x - this.player.getPosition().x);
         angle = 180 * angle / Math.PI * -1, angle += 270, angle = angle / 180 * Math.PI;
-        for (var numFires = 1, tempFireSpeed = this.fireSpeed, pair = 1, odd = 1, tempAcc = 0, tempAngle = angle, i = 0; numFires > i; i++) {
-            i > 0 && (i % 2 === 0 ? (tempAcc = pair, pair++) : (tempAcc = -odd, odd++), tempAngle = angle + 10 * tempAcc * Math.PI / 180);
+        for (var monsterModel = this.entity.monsterModel, numFires = monsterModel.fire.quant, tempFireSpeed = monsterModel.fire.speed, pair = 1, odd = 1, tempAcc = 0, tempAngle = angle, angleAcc = "arround" === monsterModel.fire.mode ? 360 : 90, i = 0; numFires > i; i++) {
+            i > 0 && (i % 2 === 0 ? (tempAcc = pair, pair++) : (tempAcc = -odd, odd++), tempAngle = angle + tempAcc * (angleAcc / numFires) * Math.PI / 180);
             var tempFire = new Fire({
                 x: tempFireSpeed * Math.sin(tempAngle),
                 y: tempFireSpeed * Math.cos(tempAngle)
             });
-            tempFire.timeLive = this.fireTimeLive, tempFire.power = this.entity.monsterModel.getDemage(this.entity.monsterModel.attackType), 
-            tempFire.build(), tempFire.target = "player", tempFire.setPosition(this.entity.getPosition().x + 40, this.entity.getPosition().y + 10), 
-            this.entity.layer.addChild(tempFire);
+            tempFire.timeLive = monsterModel.fire.lifeTime, tempFire.power = monsterModel.getDemage(monsterModel.attackType), 
+            monsterModel.fire.srcImg && (tempFire.imgSource = monsterModel.fire.srcImg), tempFire.build(), 
+            tempFire.target = "player", tempFire.setPosition(this.entity.getPosition().x + this.entity.centerPosition.x, this.entity.getPosition().y + this.entity.centerPosition.y), 
+            this.entity.layer.addChild(tempFire), tempFire.getContent().rotation = -tempAngle + 180 * Math.PI / 180;
         }
     }
 }), ItemDefault = Class.extend({
@@ -1052,7 +1113,7 @@ var Application = AbstractApplication.extend({
     }
 }), FireModel = Class.extend({
     init: function() {
-        this.fireSpeed = 10, this.fireStepLive = 65;
+        this.fireSpeed = 22, this.fireStepLive = 65;
     },
     update: function() {}
 }), ItemModel = Class.extend({
@@ -1061,46 +1122,48 @@ var Application = AbstractApplication.extend({
         this.price = price, this.icoImg = icoImg;
     }
 }), MonsterModel = Class.extend({
-    init: function(name, level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp, srcImg, srcJson, sourceLabel, frames) {
-        console.log("name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp\n", name, level, hp, stamina, speed, magicPower, battlePower, defense, magicDefense, xp), 
-        this.name = name, this.initiallevel = level, this.initialhp = hp, this.initialstamina = stamina, 
-        this.initialspeed = speed, this.initialmagicPower = magicPower, this.initialbattlePower = battlePower, 
-        this.initialdefense = defense, this.initialmagicDefense = magicDefense, this.initialxp = xp, 
-        this.srcImg = srcImg, this.srcJson = srcJson, this.sourceLabel = sourceLabel, this.frames = frames, 
-        this.level = level, this.hpMax = hp, this.speed = speed, this.magicPower = magicPower, 
-        this.battlePower = battlePower, this.defense = defense, this.magicDefense = magicDefense, 
-        this.stamina = stamina, this.critialChance = 0, this.speedStatus = "normal", this.attackType = "physical", 
-        magicPower > battlePower && (this.attackType = "magical"), this.xp = xp ? xp : 100, 
+    init: function(name, stats, fire, graphicsData, config) {
+        console.log("name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp\n", name, stats), 
+        this.name = name, this.stats = stats, this.fire = fire, this.graphicsData = graphicsData, 
+        this.config = config, this.initiallevel = stats.level, this.initialhp = stats.hp, 
+        this.initialstamina = stats.stamina, this.initialspeed = stats.speed, this.initialmagicPower = stats.magicPower, 
+        this.initialbattlePower = stats.battlePower, this.initialdefense = stats.defense, 
+        this.initialmagicDefense = stats.magicDefense, this.initialxp = stats.xp, this.srcImg = graphicsData.srcImg, 
+        this.srcJson = graphicsData.srcJson, this.sourceLabel = graphicsData.sourceLabel, 
+        this.frames = graphicsData.frames, this.level = stats.level, this.hpMax = stats.hp, 
+        this.speed = stats.speed, this.magicPower = stats.magicPower, this.battlePower = stats.battlePower, 
+        this.defense = stats.defense, this.magicDefense = stats.magicDefense, this.stamina = stats.stamina, 
+        this.critialChance = 0, this.speedStatus = "normal", this.fire.type ? this.attackType = this.fire.type : (this.attackType = "physical", 
+        stats.magicPower > stats.battlePower && (this.attackType = "magical")), this.xp = stats.xp > 0 ? stats.xp : 100, 
         this.spellPower = 9, this.speedModifier = .005, this.magicPowerModifier = .004, 
         this.battlePowerModifier = .005, this.defenseModifier = .004, this.magicDefenseModifier = .004, 
-        this.baseHPModifier = 1.62, this.staminaModifier = .008, this.level = level, this.updateLevel(level);
+        this.baseHPModifier = 1.62, this.staminaModifier = .008, this.updateLevel(stats.level);
     },
     clone: function() {
-        return new MonsterModel(this.name, this.initiallevel, this.initialhp, this.initialstamina, this.initialspeed, this.initialmagicPower, this.initialbattlePower, this.initialdefense, this.initialmagicDefense, this.initialxp, this.srcImg, this.srcJson, this.sourceLabel, this.frames);
+        return new MonsterModel(this.name, this.stats, this.fire, this.graphicsData, this.config);
     },
     updateLevel: function(level) {
-        console.log("updateLevel", level), this.level = level, this.speed += level * ((this.speed * this.speed + this.speed + 3) / 4) * this.speedModifier, 
-        console.log(this.speed), this.magicPower += level * ((this.magicPower * this.magicPower + this.magicPower + 3) / 4) * this.magicPowerModifier, 
+        this.level = level, this.speed += level * ((this.speed * this.speed + this.speed + 3) / 4) * this.speedModifier, 
+        this.magicPower += level * ((this.magicPower * this.magicPower + this.magicPower + 3) / 4) * this.magicPowerModifier, 
         this.battlePower += level * ((this.battlePower * this.battlePower + this.battlePower + 3) / 4) * this.battlePowerModifier, 
         this.defense += level * ((this.defense * this.defense + this.defense + 3) / 4) * this.defenseModifier, 
         this.magicDefense += level * ((this.magicDefense * this.magicDefense + this.magicDefense + 3) / 4) * this.magicDefenseModifier, 
         this.stamina += (this.stamina * this.stamina + this.stamina + 3) / 4 * this.staminaModifier, 
-        this.attack = this.battlePower * level, this.speed > 255 && (this.speed = 255), 
-        this.stamina > 255 && (this.stamina = 255), this.magicPower > 255 && (this.magicPower = 255), 
-        this.battlePower > 255 && (this.battlePower = 255), this.defense > 255 && (this.defense = 255), 
-        this.attack > 255 && (this.attack = 255), this.magicDefense > 255 && (this.magicDefense = 255), 
-        this.baseHP = level * (20 / this.baseHPModifier), this.hpMax += this.baseHP * (this.stamina + 32) / 32 * (level / 2), 
-        this.hp = this.hpMax, this.velocity = 8 - (255 - this.speed) / 25 + 5, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * (1.8 + 1e3 * this.speedModifier), 
-        this.fireFreq <= 4 && (this.fireFreq = 4), this.fireFreq >= 150 && (this.fireFreq = 150), 
-        this.velocity >= 10 && (this.velocity = 10), this.velocity <= 3 && (this.velocity = 3);
+        this.attack = this.battlePower, this.speed > 255 && (this.speed = 255), this.stamina > 255 && (this.stamina = 255), 
+        this.magicPower > 255 && (this.magicPower = 255), this.battlePower > 255 && (this.battlePower = 255), 
+        this.defense > 255 && (this.defense = 255), this.attack > 255 && (this.attack = 255), 
+        this.magicDefense > 255 && (this.magicDefense = 255), this.baseHP = level * (20 / this.baseHPModifier), 
+        this.hpMax += this.baseHP * (this.stamina + 32) / 32 * (level / 2), this.hp = this.hpMax, 
+        this.velocity = 8 - (255 - this.speed) / 25 + 5, this.velocity >= 10 && (this.velocity = 10), 
+        this.velocity <= 3 && (this.velocity = 3);
         var curveAcentValue = .15;
         this.xp += Math.floor((level * (level / 3) + level + 3) / 5 * this.xp * level * curveAcentValue), 
-        console.log("enemy HP", this.hp, this.defenseModifier, level, this.fireFreq, this.xp);
+        console.log("enemy HP", this.hp, this.defenseModifier, level, this.xp, this.name);
     },
     getDemage: function(type) {
         var damageMultiplier = 0, demage = 0;
-        return "physical" === type ? demage = this.battlePower * this.level + this.level * this.level * this.battlePower / 2 / 256 * 2.5 / 2 : "magical" === type && (demage = this.spellPower * this.level + this.level * (3 * this.magicPower / 2) * this.spellPower / 32), 
-        demage += demage / 2 * damageMultiplier;
+        return "physical" === type ? demage = this.battlePower * (this.level / 5) + this.level * this.attack * (this.level / 20) * 15 / 256 * 3 / 2 : "magical" === type && (demage = this.spellPower * this.level + this.level * (3 * this.magicPower / 2) * this.spellPower / 32), 
+        demage += demage / 2 * damageMultiplier, console.log(type, demage), demage;
     },
     getHurt: function(demage, type) {
         return "physical" === type ? demage = demage * (255 - this.defense) / 256 + 1 : "magical" === type && (demage = demage * (255 - this.magicDefense) / 256 + 1), 
@@ -1135,7 +1198,7 @@ var Application = AbstractApplication.extend({
         this.hp = this.hpMax, this.baseMP = this.level * (20 / this.baseMPModifier), this.mpMax = this.baseMP * (this.magicPower + 32) / 32, 
         this.mp = this.mpMax, this.critialChance = 0, this.speedStatus = "normal", this.vigor2 = 2 * this.vigor, 
         this.vigor >= 128 && (this.vigor2 = 255), this.attack = this.battlePower + this.vigor2, 
-        this.xp = 0, this.velocity = 8 - (255 - this.speed) / 25 + 5, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.5, 
+        this.xp = 0, this.velocity = 8 - (255 - this.speed) / 25 + 5, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.3, 
         this.entity = null, this.csvStr = "level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n", 
         this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n";
     },
@@ -1256,12 +1319,13 @@ var Application = AbstractApplication.extend({
         this.parent = parent;
     },
     createHordes: function() {
-        for (var tempMonster = null, monsters = [], i = 0; 1 > i; i++) {
-            tempMonster = new Enemy(this.parent.player, APP.monsterList[0].clone());
+        for (var tempMonster = null, monsters = [], i = 0; 10 > i; i++) {
+            var id = Math.floor(this.parent.currentNode.getNextFloat() * APP.monsterList.length);
+            tempMonster = "STATIC" === APP.monsterList[id].sourceLabel ? new StaticEnemy(this.parent.player, APP.monsterList[id].clone()) : new Enemy(this.parent.player, APP.monsterList[id].clone());
             var rndAngle = 360 * this.parent.currentNode.getNextFloat() / 180 * Math.PI;
             tempMonster.initialPosition = {
-                x: this.parent.levelBounds.x / 2 + 300 * Math.sin(rndAngle),
-                y: this.parent.levelBounds.y / 2 + 300 * Math.cos(rndAngle)
+                x: this.parent.levelBounds.x / 2 + 300 + 400 * i * Math.sin(rndAngle),
+                y: this.parent.levelBounds.y / 2 + 300 + 400 * i * Math.cos(rndAngle)
             }, monsters.push(tempMonster);
         }
         return monsters;
@@ -1449,8 +1513,8 @@ var Application = AbstractApplication.extend({
             APP.getHUD().addChild(tempBox.getContent());
             var tempText = "", shortcut = i + 1;
             3 === i ? shortcut = "Q" : 4 === i ? shortcut = "E" : 5 === i && (shortcut = "SPACE"), 
-            this.shortcuts[i] && (tempBox.addImage(this.shortcuts[i].icoImg), tempText = this.shortcuts[i].name, 
-            tempBox.addModel(this.shortcuts[i])), tempBox.setText(tempText + "\n\n\n" + shortcut);
+            this.shortcuts[i] && this.shortcuts[i].icoImg && (tempBox.addImage(this.shortcuts[i].icoImg), 
+            tempText = this.shortcuts[i].name, tempBox.addModel(this.shortcuts[i])), tempBox.setText(tempText + "\n\n\n" + shortcut);
         }
         for (this.equips = [ null, null, null ], this.equipsBoxHud = [], i = 0; i < this.equips.length; i++) tempBox = new BoxHUD1(100, 70, 1), 
         tempBox.setPosition(windowWidth - 120, windowHeight / 2.5 + 90 * i), 0 === i ? tempBox.setText("Weapon") : 1 === i ? tempBox.setText("Armor") : 2 === i && tempBox.setText("Relic"), 
@@ -1466,7 +1530,7 @@ var Application = AbstractApplication.extend({
     updateInventory: function() {
         this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
         this.equips[2] = this.player.relicModel;
-        for (var i = 0; i < this.equipsBoxHud.length; i++) this.equipsBoxHud[i].addModel(this.equips[i]);
+        for (var i = 0; i < this.equipsBoxHud.length; i++) this.equips[i] && this.equipsBoxHud[i].addModel(this.equips[i]);
     },
     useItem: function(itemModel) {
         this.player.useItem(itemModel);
@@ -1512,9 +1576,23 @@ var Application = AbstractApplication.extend({
                 x: Math.floor(centerPositionPlayer.x / APP.nTileSize),
                 y: Math.floor(centerPositionPlayer.y / APP.nTileSize)
             };
-            return this.miniPlayer && (this.miniPlayer.clear(), this.miniPlayer.beginFill(16711680), 
-            this.miniPlayer.drawRect(2 * tilePosition.x, 2 * tilePosition.y, 2, 2), console.log(2 * tilePosition.x, 2 * tilePosition.y, 2, 2), 
-            this.miniPlayer.endFill()), tilePosition;
+            this.miniPlayer && (this.miniPlayer.clear(), this.miniPlayer.beginFill(255), this.miniPlayer.drawRect(2 * tilePosition.x, 2 * tilePosition.y, 2, 2), 
+            this.miniPlayer.endFill());
+            for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if ("enemy" === this.entityLayer.childs[i].type) {
+                var centerPositionE = {
+                    x: this.entityLayer.childs[i].getPosition().x + this.entityLayer.childs[i].centerPosition.x,
+                    y: this.entityLayer.childs[i].getPosition().y + this.entityLayer.childs[i].centerPosition.y
+                }, tilePositionE = {
+                    x: Math.floor(centerPositionE.x / APP.nTileSize),
+                    y: Math.floor(centerPositionE.y / APP.nTileSize)
+                };
+                this.vecEnemiesMini || (this.vecEnemiesMini = []);
+                for (var tmpGr = null, j = this.vecEnemiesMini.length - 1; j >= 0; j--) this.vecEnemiesMini[j][1] === this.entityLayer.childs[i] && (tmpGr = this.vecEnemiesMini[j][0]);
+                null === tmpGr && (tmpGr = new PIXI.Graphics(), this.vecEnemiesMini.push([ tmpGr, this.entityLayer.childs[i] ]), 
+                this.minimapContainer.addChild(tmpGr)), tmpGr && (tmpGr.clear(), tmpGr.beginFill(16711680), 
+                tmpGr.drawRect(2 * tilePositionE.x, 2 * tilePositionE.y, 2, 2), tmpGr.endFill());
+            }
+            return tilePosition;
         }
         return null;
     },
@@ -1624,17 +1702,20 @@ var Application = AbstractApplication.extend({
         this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
         var monstersToLoaded = [], monstersAssets = [];
         if (1 !== this.currentNode.mode) {
-            for (monstersToLoaded = this.levelGenerator.createHordes(), i = monstersToLoaded.length - 1; i >= 0; i--) monstersAssets.push(monstersToLoaded[i].monsterModel.srcJson), 
-            monstersAssets.push(monstersToLoaded[i].monsterModel.srcImg);
-            var monsterLoader = new PIXI.AssetLoader(monstersAssets), self = this;
-            monsterLoader.onComplete = function() {
-                for (var i = monstersToLoaded.length - 1; i >= 0; i--) monstersToLoaded[i].build(), 
-                monstersToLoaded[i].setPosition(monstersToLoaded[i].initialPosition.x, monstersToLoaded[i].initialPosition.y), 
-                self.entityLayer.addChild(monstersToLoaded[i]);
-                self.initPlayer();
-            }, monsterLoader.onProgress = function() {
-                console.log("onProgress");
-            }, monsterLoader.load();
+            for (monstersToLoaded = this.levelGenerator.createHordes(), i = monstersToLoaded.length - 1; i >= 0; i--) monstersToLoaded[i].monsterModel.fire.srcImg && monstersAssets.push(monstersToLoaded[i].monsterModel.fire.srcImg), 
+            monstersToLoaded[i].monsterModel.srcJson && monstersAssets.push(monstersToLoaded[i].monsterModel.srcJson), 
+            monstersToLoaded[i].monsterModel.srcImg && monstersAssets.push(monstersToLoaded[i].monsterModel.srcImg);
+            if (monstersToLoaded.length) {
+                var monsterLoader = new PIXI.AssetLoader(monstersAssets), self = this;
+                monsterLoader.onComplete = function() {
+                    for (var i = monstersToLoaded.length - 1; i >= 0; i--) monstersToLoaded[i].build(), 
+                    monstersToLoaded[i].setPosition(monstersToLoaded[i].initialPosition.x, monstersToLoaded[i].initialPosition.y), 
+                    self.entityLayer.addChild(monstersToLoaded[i]);
+                    self.initPlayer();
+                }, monsterLoader.onProgress = function() {
+                    console.log("onProgress");
+                }, monsterLoader.load();
+            } else this.initPlayer();
         } else this.initPlayer();
     },
     initPlayer: function() {
@@ -1642,7 +1723,6 @@ var Application = AbstractApplication.extend({
             alpha: 0
         }), this.playerReady = !0, this.entityLayer.updateable = !0, this.player.build(), 
         this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
-        this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]), 
         this.entityLayer.addChild(this.player), "up" === this.currentPlayerSide || "down" === this.currentPlayerSide || "left" === this.currentPlayerSide || "right" === this.currentPlayerSide, 
         this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2), this.equips[0] = this.player.weaponModel, 
         this.equips[1] = this.player.armorModel, this.equips[2] = this.player.relicModel, 

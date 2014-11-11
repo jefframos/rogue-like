@@ -41,8 +41,8 @@ var GameScreen = AbstractScreen.extend({
         this.playerReady = false;
 
         // this.playerModel.levelUp();
-        // for (var i = 0; i < 20; i++) {
-        //     this.playerModel.levelUp();ddw
+        // for (var i = 0; i < 10; i++) {
+        //     this.playerModel.levelUp();
         // }
         // this.playerModel.levelUp();
         // this.playerModel.logCSV();
@@ -144,7 +144,7 @@ var GameScreen = AbstractScreen.extend({
             else if(i === 5){
                 shortcut = 'SPACE';
             }
-            if(this.shortcuts[i]){
+            if(this.shortcuts[i] && this.shortcuts[i].icoImg){
                 tempBox.addImage(this.shortcuts[i].icoImg);
                 tempText = this.shortcuts[i].name;
                 tempBox.addModel(this.shortcuts[i]);
@@ -198,7 +198,9 @@ var GameScreen = AbstractScreen.extend({
         this.equips[2] = this.player.relicModel;
 
         for (var i = 0; i < this.equipsBoxHud.length; i++) {
-            this.equipsBoxHud[i].addModel(this.equips[i]);
+            if(this.equips[i]){
+                this.equipsBoxHud[i].addModel(this.equips[i]);
+            }
         }
     },
     //usa um item
@@ -315,11 +317,38 @@ var GameScreen = AbstractScreen.extend({
 
             if(this.miniPlayer){
                 this.miniPlayer.clear();
-                this.miniPlayer.beginFill(0xFF0000);
+                this.miniPlayer.beginFill(0x0000FF);
                 this.miniPlayer.drawRect(tilePosition.x * 2,tilePosition.y * 2,2,2);
-                console.log(tilePosition.x * 2,tilePosition.y * 2,2,2);
                 this.miniPlayer.endFill();
+            }
+            for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
+                if(this.entityLayer.childs[i].type === 'enemy'){
+                    var centerPositionE = {x:this.entityLayer.childs[i].getPosition().x + this.entityLayer.childs[i].centerPosition.x,
+                        y:this.entityLayer.childs[i].getPosition().y + this.entityLayer.childs[i].centerPosition.y};
+                    var tilePositionE = {x:Math.floor(centerPositionE.x / APP.nTileSize),y:Math.floor(centerPositionE.y / APP.nTileSize)};
 
+                    if(!this.vecEnemiesMini)
+                    {
+                        this.vecEnemiesMini = [];
+                    }
+                    var tmpGr = null;
+                    for (var j = this.vecEnemiesMini.length - 1; j >= 0; j--) {
+                        if(this.vecEnemiesMini[j][1] === this.entityLayer.childs[i]){
+                            tmpGr = this.vecEnemiesMini[j][0];
+                        }
+                    }
+                    if(tmpGr === null){
+                        tmpGr = new PIXI.Graphics();
+                        this.vecEnemiesMini.push([tmpGr,this.entityLayer.childs[i]]);
+                        this.minimapContainer.addChild(tmpGr);
+                    }
+                    if(tmpGr){
+                        tmpGr.clear();
+                        tmpGr.beginFill(0xFF0000);
+                        tmpGr.drawRect(tilePositionE.x * 2,tilePositionE.y * 2,2,2);
+                        tmpGr.endFill();
+                    }
+                }
             }
             return tilePosition;
         }
@@ -497,25 +526,40 @@ var GameScreen = AbstractScreen.extend({
             //ou até mesmo o proprio level do player
             monstersToLoaded = this.levelGenerator.createHordes();
             for (i = monstersToLoaded.length - 1; i >= 0; i--) {
-                monstersAssets.push(monstersToLoaded[i].monsterModel.srcJson);
-                monstersAssets.push(monstersToLoaded[i].monsterModel.srcImg);
-            }
-            var monsterLoader = new PIXI.AssetLoader(monstersAssets);
-            var self = this;
-            monsterLoader.onComplete = function() {
-                for (var i = monstersToLoaded.length - 1; i >= 0; i--) {
-                    monstersToLoaded[i].build();
-                    monstersToLoaded[i].setPosition(monstersToLoaded[i].initialPosition.x, monstersToLoaded[i].initialPosition.y);
-                    self.entityLayer.addChild(monstersToLoaded[i]);
+                if(monstersToLoaded[i].monsterModel.fire.srcImg){
+                    monstersAssets.push(monstersToLoaded[i].monsterModel.fire.srcImg);
                 }
-                self.initPlayer();
-            };
-            monsterLoader.onProgress = function() {
-                console.log('onProgress');
-                // self.onProgress();
-            };
-            monsterLoader.load();
-        }else{
+                if(monstersToLoaded[i].monsterModel.srcJson){
+                    monstersAssets.push(monstersToLoaded[i].monsterModel.srcJson);
+                }
+                if(monstersToLoaded[i].monsterModel.srcImg){
+                    monstersAssets.push(monstersToLoaded[i].monsterModel.srcImg);
+                }
+            }
+            if(monstersToLoaded.length){
+                var monsterLoader = new PIXI.AssetLoader(monstersAssets);
+                var self = this;
+                monsterLoader.onComplete = function() {
+                    for (var i = monstersToLoaded.length - 1; i >= 0; i--) {
+                        monstersToLoaded[i].build();
+                        monstersToLoaded[i].setPosition(monstersToLoaded[i].initialPosition.x, monstersToLoaded[i].initialPosition.y);
+                        self.entityLayer.addChild(monstersToLoaded[i]);
+                    }
+                    self.initPlayer();
+                };
+                monsterLoader.onProgress = function() {
+                    console.log('onProgress');
+                    // self.onProgress();
+                };
+                monsterLoader.load();
+            }
+            else
+            {
+                this.initPlayer();
+            }
+        }
+        else
+        {
             this.initPlayer();
         }
     },
@@ -536,7 +580,7 @@ var GameScreen = AbstractScreen.extend({
         // this.player.setSpellModel(APP.spellList[1]);
         this.player.setArmorModel(APP.armorList[0]);
         this.player.setWeaponModel(APP.weaponList[0]);
-        this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
+        //this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
 
        
 
@@ -558,9 +602,12 @@ var GameScreen = AbstractScreen.extend({
         }else{
             //this.player.setPosition(this.mapPosition.x + this.levelBounds.x/2,this.mapPosition.y + this.levelBounds.y/2);
         }
-
+        // this.simpleEnemy = new StaticEnemy(this.player, APP.monsterList[0].clone());
+        // this.simpleEnemy.build();
+        // this.simpleEnemy.setPosition(this.levelBounds.x/2 - 50,this.levelBounds.y/2 - 50);
         this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y/2);
 
+        // this.entityLayer.addChild(this.simpleEnemy);
         this.equips[0] = this.player.weaponModel;
         this.equips[1] = this.player.armorModel;
         this.equips[2] = this.player.relicModel;

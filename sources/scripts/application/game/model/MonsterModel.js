@@ -1,41 +1,50 @@
 /*jshint undef:false */
 var MonsterModel = Class.extend({
 	
-	init: function (name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp,srcImg,srcJson,sourceLabel,frames){
-		console.log('name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp\n', name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp);
+	init: function (name,stats,fire,graphicsData,config){
+		console.log('name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp\n', name,stats);
 		this.name = name;
-		this.initiallevel = level;
-		this.initialhp = hp;
-		this.initialstamina = stamina;
-		this.initialspeed = speed;
-		this.initialmagicPower = magicPower;
-		this.initialbattlePower = battlePower;
-		this.initialdefense = defense;
-		this.initialmagicDefense = magicDefense;
-		this.initialxp = xp;
+		this.stats = stats;
+		this.fire = fire;
+		this.graphicsData = graphicsData;
+		this.config = config;
+		this.initiallevel = stats.level;
+		this.initialhp = stats.hp;
+		this.initialstamina = stats.stamina;
+		this.initialspeed = stats.speed;
+		this.initialmagicPower = stats.magicPower;
+		this.initialbattlePower = stats.battlePower;
+		this.initialdefense = stats.defense;
+		this.initialmagicDefense = stats.magicDefense;
+		this.initialxp = stats.xp;
 
-		this.srcImg = srcImg;
-        this.srcJson = srcJson;
-        this.sourceLabel = sourceLabel;
-        this.frames = frames;
+		this.srcImg = graphicsData.srcImg;
+        this.srcJson = graphicsData.srcJson;
+        this.sourceLabel = graphicsData.sourceLabel;
+        this.frames = graphicsData.frames;
 
 
-		this.level = level;
-		this.hpMax = hp;
-		this.speed = speed;
-		this.magicPower = magicPower;
-		this.battlePower = battlePower;
-		this.defense = defense;
-		this.magicDefense = magicDefense;
-		this.stamina = stamina;
+		this.level = stats.level;
+		this.hpMax = stats.hp;
+		this.speed = stats.speed;
+		this.magicPower = stats.magicPower;
+		this.battlePower = stats.battlePower;
+		this.defense = stats.defense;
+		this.magicDefense = stats.magicDefense;
+		this.stamina = stats.stamina;
 		this.critialChance = 0.0;
 		this.speedStatus = 'normal';
-		this.attackType = 'physical';
-		if(magicPower > battlePower){
-			this.attackType = 'magical';
+
+		if(this.fire.type){
+			this.attackType = this.fire.type;
+		}else{
+			this.attackType = 'physical';
+			if(stats.magicPower > stats.battlePower){
+				this.attackType = 'magical';
+			}
 		}
-		if(xp){
-			this.xp = xp;
+		if(stats.xp > 0){
+			this.xp = stats.xp;
 		}else{
 			this.xp = 100;
 		}
@@ -50,40 +59,29 @@ var MonsterModel = Class.extend({
 		this.magicDefenseModifier = 0.004;
 		this.baseHPModifier = 1.62;
 		this.staminaModifier = 0.008;
-		this.level = level;
-		this.updateLevel(level);
+		this.updateLevel(stats.level);
 		
 		// this.updateLevel(level);
 	},
 	clone: function(){
 		return new MonsterModel(
 			this.name,
-			this.initiallevel,
-			this.initialhp,
-			this.initialstamina,
-			this.initialspeed,
-			this.initialmagicPower,
-			this.initialbattlePower,
-			this.initialdefense,
-			this.initialmagicDefense,
-			this.initialxp,
-			this.srcImg,
-			this.srcJson,
-			this.sourceLabel,
-			this.frames);
+			this.stats,
+			this.fire,
+			this.graphicsData,
+			this.config);
 	},
 	updateLevel: function(level){
-		console.log('updateLevel', level);
+		// console.log('updateLevel', level);
 		this.level = level;
         this.speed += level * ((this.speed*this.speed+this.speed+3)/4*this.speedModifier);
-        console.log(this.speed);
 		this.magicPower += level * ((this.magicPower*this.magicPower+this.magicPower+3)/4*this.magicPowerModifier);
         this.battlePower += level * ((this.battlePower*this.battlePower+this.battlePower+3)/4*this.battlePowerModifier);
 		this.defense += level * ((this.defense*this.defense+this.defense+3)/4*this.defenseModifier);
 		this.magicDefense += level * ((this.magicDefense*this.magicDefense+this.magicDefense+3)/4*this.magicDefenseModifier);
         this.stamina += (this.stamina*this.stamina+this.stamina+3)/4*this.staminaModifier;
 
-		this.attack = this.battlePower * level;
+		this.attack = this.battlePower;
 
         if(this.speed > 255){
 			this.speed = 255;
@@ -112,16 +110,17 @@ var MonsterModel = Class.extend({
 		this.hpMax += (this.baseHP*(this.stamina+32))/32 *(level/2);
 		this.hp = this.hpMax;
 		this.velocity = 8 - (255 - this.speed) / 25 + 5;
-		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * (1.8 + (this.speedModifier*1000));
 
-		if(this.fireFreq <= 4)
-		{
-			this.fireFreq = 4;
-		}
-		if(this.fireFreq >= 150)
-		{
-			this.fireFreq = 150;
-		}
+		// this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * (1.8 + (this.speedModifier*1000));
+
+		// if(this.fireFreq <= 4)
+		// {
+		// 	this.fireFreq = 4;
+		// }
+		// if(this.fireFreq >= 150)
+		// {
+		// 	this.fireFreq = 150;
+		// }
 		if(this.velocity >= 10)
 		{
 			this.velocity = 10;
@@ -135,7 +134,7 @@ var MonsterModel = Class.extend({
 		this.xp += Math.floor((level*(level/3)+level+3)/5 * this.xp * (level * curveAcentValue));
 
 		
-		console.log('enemy HP', this.hp, this.defenseModifier, level, this.fireFreq, this.xp);
+		console.log('enemy HP', this.hp, this.defenseModifier, level, this.xp, this.name);
 
 		// var calcXP = (level*level+level+3)/4* 20 * level;
 		// console.log(calcXP, 'level', level);
@@ -146,15 +145,13 @@ var MonsterModel = Class.extend({
 		var damageMultiplier = 0;//Math.random() < this.critialChance ? 0.5 : 2;
 		var demage = 0;
 		if(type === 'physical'){
-			//demage = this.battlePower * this.level + ((this.level * this.attack * this.weaponPower) / 256) * 3 / 2;
-
-			demage = this.battlePower * this.level + ((this.level * this.level * this.battlePower/2) / 256) * 2.5 / 2;
-			// demage = this.battlePower + ((this.level * this.level * this.attack) / 256) * 3 / 2;
+			//mudar essa segunda divisao pra alterar significativamente o dano
+			demage = this.battlePower * (this.level / 5) + ((this.level * (this.attack * (this.level / 20)) * 15) / 256) * 3 / 2;
 		}else if(type === 'magical'){
 			demage = this.spellPower * this.level + (this.level * (this.magicPower * 3/2) * this.spellPower / 32);
 		}
 		demage = demage + ((demage / 2) * damageMultiplier);
-		// console.log(type, demage);
+		console.log(type, demage);
 		return demage;
 	},
 	getHurt: function(demage, type){

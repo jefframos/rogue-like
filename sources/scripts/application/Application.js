@@ -93,19 +93,10 @@ var Application = AbstractApplication.extend({
             for (var i = 0; i < evt.content.json.itens.length; i++) {
                 self.monsterList.push(new MonsterModel(
                     evt.content.json.itens[i].name,
-                    evt.content.json.itens[i].level,
-                    evt.content.json.itens[i].hp,
-                    evt.content.json.itens[i].stamina,
-                    evt.content.json.itens[i].speed,
-                    evt.content.json.itens[i].magicPower,
-                    evt.content.json.itens[i].battlePower,
-                    evt.content.json.itens[i].defense,
-                    evt.content.json.itens[i].magicDefense,
-                    evt.content.json.itens[i].xp,
-                    evt.content.json.itens[i].srcImg,
-                    evt.content.json.itens[i].srcJson,
-                    evt.content.json.itens[i].sourceLabel,
-                    evt.content.json.itens[i].frames
+                    evt.content.json.itens[i].stats,
+                    evt.content.json.itens[i].fire,
+                    evt.content.json.itens[i].graphicsData,
+                    evt.content.json.itens[i].config
                 ));
             }
             console.log('jsonLoaderMonsters',evt.content.json.itens[0]);
@@ -206,6 +197,15 @@ var Application = AbstractApplication.extend({
         // this.HUD = new PIXI.DisplayObjectContainer();
         // this.stage.addChild(this.HUD);
         // this.screenManager.change('Main');
+    },
+    getMonsterByName:function(name){
+        for (var i = this.monsterList.length - 1; i >= 0; i--) {
+            if(this.monsterList[i].name === name)
+            {
+                return this.monsterList[i].clone();
+            }
+        }
+        return null;
     },
     show:function(){
     },
