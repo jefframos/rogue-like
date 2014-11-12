@@ -86,21 +86,25 @@ var Player = SpritesheetEntity.extend({
         // console.log('criou o player');
 
         var self = this;
-        var motionArray = this.getFramesByRange('chinesa10',0,8);
+
+
+        var motionArray = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel,
+            this.playerModel.graphicsData.frames.idleInit,
+            this.playerModel.graphicsData.frames.idleEnd);
         var animationIdle = new SpritesheetAnimation();
         animationIdle.build('idle', motionArray, 1, true, null);
 
         // var motionArrayDead = this.getFramesByRange('chinesa10',19,25);
-        var motionArrayDead = this.getFramesByRange('chinesa10',0,8);
-        var animationDead = new SpritesheetAnimation();
+        // var motionArrayDead = this.getFramesByRange('chinesa10',0,8);
+        // var animationDead = new SpritesheetAnimation();
 
-        animationDead.build('dead', motionArrayDead, 2, false, function(){
-            TweenLite.to(self.spritesheet.scale, 0.2, {x:0,y:0});
-        });
+        // animationDead.build('dead', motionArrayDead, 2, false, function(){
+        //     TweenLite.to(self.spritesheet.scale, 0.2, {x:0,y:0});
+        // });
 
         this.spritesheet = new Spritesheet();
         this.spritesheet.addAnimation(animationIdle);
-        this.spritesheet.addAnimation(animationDead);
+        // this.spritesheet.addAnimation(animationDead);
         this.spritesheet.play('idle');
         this.reset();
         this.counter = 0;
@@ -191,7 +195,8 @@ var Player = SpritesheetEntity.extend({
         this.debugPolygon(0x556644, true);
 
         if(this.getTexture()){
-            this.getContent().position.x = 20;
+            this.getContent().position.x = this.getTexture().width/2;
+            this.getContent().position.y = this.getTexture().height/4;
         }
     },
     //spell

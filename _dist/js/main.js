@@ -1,4 +1,4 @@
-/*! jefframos 11-11-2014 */
+/*! jefframos 12-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -743,16 +743,9 @@ var Application = AbstractApplication.extend({
         pop.initMotion(-10 - 10 * Math.random(), 1), this.getTexture().tint = 16711680;
     },
     build: function() {
-        var self = this, motionArray = this.getFramesByRange("chinesa10", 0, 8), animationIdle = new SpritesheetAnimation();
-        animationIdle.build("idle", motionArray, 1, !0, null);
-        var motionArrayDead = this.getFramesByRange("chinesa10", 0, 8), animationDead = new SpritesheetAnimation();
-        animationDead.build("dead", motionArrayDead, 2, !1, function() {
-            TweenLite.to(self.spritesheet.scale, .2, {
-                x: 0,
-                y: 0
-            });
-        }), this.spritesheet = new Spritesheet(), this.spritesheet.addAnimation(animationIdle), 
-        this.spritesheet.addAnimation(animationDead), this.spritesheet.play("idle"), this.reset(), 
+        var motionArray = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel, this.playerModel.graphicsData.frames.idleInit, this.playerModel.graphicsData.frames.idleEnd), animationIdle = new SpritesheetAnimation();
+        animationIdle.build("idle", motionArray, 1, !0, null), this.spritesheet = new Spritesheet(), 
+        this.spritesheet.addAnimation(animationIdle), this.spritesheet.play("idle"), this.reset(), 
         this.counter = 0, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill();
     },
@@ -806,7 +799,8 @@ var Application = AbstractApplication.extend({
         this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = this.playerModel.velocity, 
         !this.isTouch && this.returnCollider <= 0 && (this.velocity = this.virtualVelocity), 
         this.returnCollider > 0 && this.returnCollider--, this.deading && this.setVelocity(0, 0), 
-        this._super(), this.debugPolygon(5596740, !0), this.getTexture() && (this.getContent().position.x = 20);
+        this._super(), this.debugPolygon(5596740, !0), this.getTexture() && (this.getContent().position.x = this.getTexture().width / 2, 
+        this.getContent().position.y = this.getTexture().height / 4);
     },
     spell: function(mousePos, spellModel) {
         if (spellModel.mp > this.playerModel.mp) {
@@ -1478,7 +1472,7 @@ var Application = AbstractApplication.extend({
             y: 10
         }, this.mouseDown = !1;
         var clss = "thief", rnd = Math.random();
-        .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = APP.playersList[0].clone(), 
+        .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = APP.playersList[Math.floor(Math.random() * APP.playersList.length)].clone(), 
         this.playerModel.mp = 8e3, this.playerModel.mpMax = 8e3, this.playerReady = !1;
     },
     destroy: function() {
@@ -1486,7 +1480,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/spritesheet/chinesa.json", "_dist/img/spritesheet/chinesa.png" ];
+        var assetsToLoader = [ "_dist/img/drop.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad();
     },
     onAssetsLoaded: function() {

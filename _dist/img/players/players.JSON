@@ -25,10 +25,10 @@
                 "magicDefenseModifier":0.004
             },
             "graphicsData":{
-                "icoImg":"_dist/img/players/sockets.png",
-                "srcImg":"_dist/img/players/sockets.png",
-                "srcJson":"_dist/img/players/sockets.JSON",
-                "sourceLabel":"sockets10",
+                "icoImg":"_dist/img/players/sockets2.png",
+                "srcImg":"_dist/img/players/sockets2.png",
+                "srcJson":"_dist/img/players/sockets2.JSON",
+                "sourceLabel":"sockets210",
                 "frames":{
                     "idleInit":0,
                     "idleEnd":14
@@ -64,7 +64,7 @@
                 "icoImg":"_dist/img/players/heart2.png",
                 "srcImg":"_dist/img/players/heart2.png",
                 "srcJson":"_dist/img/players/heart2.JSON",
-                "sourceLabel":"heart210",
+                "sourceLabel":"heart10",
                 "frames":{
                     "idleInit":0,
                     "idleEnd":13

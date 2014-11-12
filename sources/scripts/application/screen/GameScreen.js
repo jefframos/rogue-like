@@ -33,7 +33,7 @@ var GameScreen = AbstractScreen.extend({
             clss = 'mage';
         }
 
-        this.playerModel = APP.playersList[0].clone();
+        this.playerModel = APP.playersList[Math.floor(Math.random()*APP.playersList.length)].clone();
 
         this.playerModel.mp = 8000;
         this.playerModel.mpMax = 8000;
@@ -54,8 +54,9 @@ var GameScreen = AbstractScreen.extend({
         this._super();
         var assetsToLoader = [
             '_dist/img/drop.png',
-            '_dist/img/spritesheet/chinesa.json',
-            '_dist/img/spritesheet/chinesa.png'
+            this.playerModel.graphicsData.icoImg,
+            this.playerModel.graphicsData.srcImg,
+            this.playerModel.graphicsData.srcJson
         ];
         this.loader = new PIXI.AssetLoader(assetsToLoader);
         this.initLoad();
