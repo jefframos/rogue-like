@@ -797,11 +797,24 @@ var Application = AbstractApplication.extend({
         pop.initMotion(-10 - 10 * Math.random(), 1), this.getTexture().tint = 16711680;
     },
     build: function() {
-        var motionArray = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel, this.playerModel.graphicsData.frames.idleInit, this.playerModel.graphicsData.frames.idleEnd), animationIdle = new SpritesheetAnimation();
-        animationIdle.build("idle", motionArray, 1, !0, null), this.spritesheet = new Spritesheet(), 
-        this.spritesheet.addAnimation(animationIdle), this.spritesheet.play("idle"), this.reset(), 
-        this.counter = 0, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
-        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill();
+        var motionIdleDown = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel, this.playerModel.graphicsData.frames.idleDownInit, this.playerModel.graphicsData.frames.idleDownEnd), animationIdleDown = new SpritesheetAnimation();
+        animationIdleDown.build("idleDown", motionIdleDown, 1, !0, null);
+        var motionIdleUp = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel, this.playerModel.graphicsData.frames.idleUpInit, this.playerModel.graphicsData.frames.idleUpEnd), animationIdleUp = new SpritesheetAnimation();
+        animationIdleUp.build("idleUp", motionIdleUp, 1, !0, null);
+        var motionIdleSide = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel, this.playerModel.graphicsData.frames.idleSideInit, this.playerModel.graphicsData.frames.idleSideEnd), animationIdleSide = new SpritesheetAnimation();
+        animationIdleSide.build("idleSide", motionIdleSide, 1, !0, null);
+        var motionDown = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel, this.playerModel.graphicsData.frames.walkDownInit, this.playerModel.graphicsData.frames.walkDownEnd), animationDown = new SpritesheetAnimation();
+        animationDown.build("down", motionDown, 1, !0, null);
+        var motionUp = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel, this.playerModel.graphicsData.frames.walkUpInit, this.playerModel.graphicsData.frames.walkUpEnd), animationUp = new SpritesheetAnimation();
+        animationUp.build("up", motionUp, 1, !0, null);
+        var motionSide = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel, this.playerModel.graphicsData.frames.walkSideInit, this.playerModel.graphicsData.frames.walkSideEnd), animationSide = new SpritesheetAnimation();
+        animationSide.build("side", motionSide, 1, !0, null), this.spritesheet = new Spritesheet(), 
+        this.spritesheet.addAnimation(animationIdleDown), this.spritesheet.addAnimation(animationIdleUp), 
+        this.spritesheet.addAnimation(animationDown), this.spritesheet.addAnimation(animationUp), 
+        this.spritesheet.addAnimation(animationSide), this.spritesheet.addAnimation(animationIdleSide), 
+        this.spritesheet.play("idleDown"), this.reset(), this.counter = 0, this.debugGraphic = new PIXI.Graphics(), 
+        this.debugGraphic.beginFill(16724736), this.debugGraphic.lineStyle(1, 16767232, 1), 
+        this.debugGraphic.endFill();
     },
     getBounds: function() {
         return this.bounds = {
@@ -852,6 +865,10 @@ var Application = AbstractApplication.extend({
     update: function() {
         this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = this.playerModel.velocity, 
         !this.isTouch && this.returnCollider <= 0 && (this.velocity = this.virtualVelocity), 
+        this.velocity.y > 0 ? this.spritesheet.play("down") : this.velocity.y < 0 ? this.spritesheet.play("up") : this.velocity.x < 0 ? (this.spritesheet.scale.x = 1, 
+        this.spritesheet.play("side")) : this.velocity.x > 0 ? (this.spritesheet.scale.x = -1, 
+        this.spritesheet.play("side")) : (console.log(this.spritesheet.currentAnimation.label), 
+        "side" === this.spritesheet.currentAnimation.label ? this.spritesheet.play("idleSide") : "up" === this.spritesheet.currentAnimation.label ? this.spritesheet.play("idleUp") : "down" === this.spritesheet.currentAnimation.label && this.spritesheet.play("idleDown")), 
         this.returnCollider > 0 && this.returnCollider--, this.deading && this.setVelocity(0, 0), 
         this._super(), this.debugPolygon(5596740, !0), this.getTexture() && this.playerModel.graphicsData.positionSprite && (this.playerModel.graphicsData.positionSprite.x && (this.getContent().position.x = this.playerModel.graphicsData.positionSprite.x), 
         this.playerModel.graphicsData.positionSprite.y && (this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y));

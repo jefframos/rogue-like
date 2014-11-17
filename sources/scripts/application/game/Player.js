@@ -88,11 +88,41 @@ var Player = SpritesheetEntity.extend({
         var self = this;
 
 
-        var motionArray = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel,
-            this.playerModel.graphicsData.frames.idleInit,
-            this.playerModel.graphicsData.frames.idleEnd);
-        var animationIdle = new SpritesheetAnimation();
-        animationIdle.build('idle', motionArray, 1, true, null);
+        var motionIdleDown = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel,
+            this.playerModel.graphicsData.frames.idleDownInit,
+            this.playerModel.graphicsData.frames.idleDownEnd);
+        var animationIdleDown = new SpritesheetAnimation();
+        animationIdleDown.build('idleDown', motionIdleDown, 1, true, null);
+
+        var motionIdleUp = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel,
+            this.playerModel.graphicsData.frames.idleUpInit,
+            this.playerModel.graphicsData.frames.idleUpEnd);
+        var animationIdleUp = new SpritesheetAnimation();
+        animationIdleUp.build('idleUp', motionIdleUp, 1, true, null);
+
+        var motionIdleSide = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel,
+            this.playerModel.graphicsData.frames.idleSideInit,
+            this.playerModel.graphicsData.frames.idleSideEnd);
+        var animationIdleSide = new SpritesheetAnimation();
+        animationIdleSide.build('idleSide', motionIdleSide, 1, true, null);
+
+        var motionDown = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel,
+            this.playerModel.graphicsData.frames.walkDownInit,
+            this.playerModel.graphicsData.frames.walkDownEnd);
+        var animationDown = new SpritesheetAnimation();
+        animationDown.build('down', motionDown, 1, true, null);
+
+        var motionUp = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel,
+            this.playerModel.graphicsData.frames.walkUpInit,
+            this.playerModel.graphicsData.frames.walkUpEnd);
+        var animationUp = new SpritesheetAnimation();
+        animationUp.build('up', motionUp, 1, true, null);
+
+        var motionSide = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel,
+            this.playerModel.graphicsData.frames.walkSideInit,
+            this.playerModel.graphicsData.frames.walkSideEnd);
+        var animationSide = new SpritesheetAnimation();
+        animationSide.build('side', motionSide, 1, true, null);
 
         // var motionArrayDead = this.getFramesByRange('chinesa10',19,25);
         // var motionArrayDead = this.getFramesByRange('chinesa10',0,8);
@@ -103,9 +133,14 @@ var Player = SpritesheetEntity.extend({
         // });
 
         this.spritesheet = new Spritesheet();
-        this.spritesheet.addAnimation(animationIdle);
+        this.spritesheet.addAnimation(animationIdleDown);
+        this.spritesheet.addAnimation(animationIdleUp);
+        this.spritesheet.addAnimation(animationDown);
+        this.spritesheet.addAnimation(animationUp);
+        this.spritesheet.addAnimation(animationSide);
+        this.spritesheet.addAnimation(animationIdleSide);
         // this.spritesheet.addAnimation(animationDead);
-        this.spritesheet.play('idle');
+        this.spritesheet.play('idleDown');
         this.reset();
         this.counter = 0;
 
@@ -181,10 +216,32 @@ var Player = SpritesheetEntity.extend({
         }else{
             this.defaultVelocity = this.playerModel.velocity;
         }
-
         if(!this.isTouch && this.returnCollider <= 0){
             this.velocity = this.virtualVelocity;
         }
+
+        if(this.velocity.y > 0){
+            this.spritesheet.play('down');
+        }else if(this.velocity.y < 0){
+            this.spritesheet.play('up');
+        }else if(this.velocity.x < 0){
+            this.spritesheet.scale.x = 1;
+            this.spritesheet.play('side');
+        }else if(this.velocity.x > 0){
+            this.spritesheet.scale.x = -1;
+            this.spritesheet.play('side');
+        }else{
+            console.log(this.spritesheet.currentAnimation.label);
+            if(this.spritesheet.currentAnimation.label === 'side'){
+                this.spritesheet.play('idleSide');
+            }else if(this.spritesheet.currentAnimation.label === 'up'){
+                this.spritesheet.play('idleUp');
+            }else if(this.spritesheet.currentAnimation.label === 'down'){
+                this.spritesheet.play('idleDown');
+            }
+            
+        }
+
         if(this.returnCollider > 0){
             this.returnCollider --;
         }

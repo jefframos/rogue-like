@@ -27,7 +27,7 @@
             "graphicsData":{
                 "icoImg":"_dist/img/players/sockets2.png",
                 "srcImg":"_dist/img/players/sockets2.png",
-                "srcJson":"_dist/img/players/sockets2.JSON",
+                "srcJson":"_dist/img/players/sockets2.json",
                 "sourceLabel":"sockets210",
                 "positionSprite":{
                     "x": -20,
@@ -67,7 +67,7 @@
             "graphicsData":{
                 "icoImg":"_dist/img/players/heart2.png",
                 "srcImg":"_dist/img/players/heart2.png",
-                "srcJson":"_dist/img/players/heart2.JSON",
+                "srcJson":"_dist/img/players/heart2.json",
                 "sourceLabel":"heart10",
                 "positionSprite":{
                     "x": -20,
@@ -105,19 +105,28 @@
                 "magicDefenseModifier":0.0025
             },
             "graphicsData":{
-                "icoImg":"_dist/img/players/chinesa.png",
-                "srcImg":"_dist/img/players/chinesa.png",
-                "srcJson":"_dist/img/players/chinesa.JSON",
-                "sourceLabel":"chinesa10",
+                "icoImg":"_dist/img/players/fox.png",
+                "srcImg":"_dist/img/players/fox.png",
+                "srcJson":"_dist/img/players/fox.json",
+                "sourceLabel":"fox10",
                 "positionSprite":{
-                    "x": 20,
-                    "y": 0
+                    "x": 30,
+                    "y": -20
                 },
                 "frames":{
-                    "idleInit":0,
-                    "idleEnd":8
-                },
-                "nada":0
+                    "idleDownInit":0,
+                    "idleDownEnd":0,
+                    "idleSideInit":4,
+                    "idleSideEnd":4,
+                    "idleUpInit":8,
+                    "idleUpEnd":8,
+                    "walkDownInit":0,
+                    "walkDownEnd":2,
+                    "walkSideInit":4,
+                    "walkSideEnd":6,
+                    "walkUpInit":8,
+                    "walkUpEnd":10
+                }
             },
             "config":{
             }
