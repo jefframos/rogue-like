@@ -497,34 +497,54 @@ var Application = AbstractApplication.extend({
     init: function(player) {
         this._super(), this.updateable = !0, this.collidable = !1, this.player = player, 
         this.srcImg = "_dist/img/fairy/f1.png", this.type = "fairy", this.width = 25, this.height = 25, 
-        this.bounceAcc = 10, this.bounceAccMax = 30, this.velYHelper = 1, this.range = 0;
+        this.bounceAcc = 0, this.bounceAccMax = 30, this.velYHelper = 1, this.fairyContainer = new PIXI.DisplayObjectContainer(), 
+        this.range = 0, this.fairyAngle = 0, this.noDepth = !0;
     },
     getBounds: function() {
         return this.bounds = {
-            x: this.getPosition().x - this.width * this.sprite.anchor.x,
-            y: this.getPosition().y - this.height * this.sprite.anchor.y,
+            x: this.getPosition().x - this.width * this.fairySprite.anchor.x,
+            y: this.getPosition().y - this.height * this.fairySprite.anchor.y,
             w: this.width,
             h: this.height
         }, this.bounds;
     },
     build: function() {
-        this._super(this.srcImg);
-        this.sprite.anchor.x = .5, this.sprite.anchor.y = 1, this.texture;
+        this.texture = PIXI.Texture.fromImage(this.srcImg), this.fairySprite = new PIXI.Sprite(this.texture), 
+        this.fairyContainer.addChild(this.fairySprite);
+        this.fairySprite.anchor.x = .5, this.fairySprite.anchor.y = 1, this.texture;
+    },
+    getContent: function() {
+        return this.fairyContainer;
+    },
+    getPosition: function() {
+        return this.fairyContainer.position;
+    },
+    setPosition: function(x, y) {
+        this.fairyContainer.position.x = x, this.fairyContainer.position.y = y;
+    },
+    forceBackPlayer: function() {
+        console.log("force back");
+    },
+    forceFrontPlayer: function() {
+        console.log("force front"), this.player.layer && this.player.layer.getContent().swapChildren(this.fairyContainer, this.player.getContent());
     },
     update: function() {
-        this._super();
         var angle = null;
-        if (this.player && this.player.centerPosition) {
+        if (this.fairyContainer.position.x += this.velocity.x, this.fairyContainer.position.y += this.velocity.y, 
+        this.fairySprite.position.x += this.virtualVelocity.x, this.fairySprite.position.y += this.virtualVelocity.y, 
+        this.player && this.player.centerPosition) {
             var playerPos = {
-                x: this.player.getPosition().x + this.player.centerPosition.x,
+                x: this.player.getPosition().x,
                 y: this.player.getPosition().y + this.player.centerPosition.y
-            }, dist = pointDistance(playerPos.x, playerPos.y, this.getPosition().x, this.getPosition().y);
-            dist > 20 ? (angle = Math.atan2(playerPos.y - this.getPosition().y, playerPos.x - this.getPosition().x), 
+            }, dist = pointDistance(playerPos.x, playerPos.y, this.fairyContainer.position.x, this.fairyContainer.position.y);
+            dist > 20 ? (angle = Math.atan2(playerPos.y - this.fairyContainer.position.y, playerPos.x - this.fairyContainer.position.x), 
             angle = 180 * angle / Math.PI, angle += 270, angle = angle / 180 * Math.PI * -1, 
-            this.velocity.x *= .8, this.velocity.y *= .8) : this.velocity.x = 0;
-            var yAcc = this.bounceAcc / this.bounceAccMax * this.velYHelper / 5, xAcc = -(this.bounceAcc / this.bounceAccMax * this.velYHelper) / 5;
-            this.velocity.x += xAcc + angle ? Math.sin(angle) : 0, this.velocity.y += yAcc + angle ? Math.cos(angle) : 0, 
-            this.bounceAcc += this.velYHelper, console.log(this.velocity.y), this.bounceAcc <= 0 ? this.velYHelper *= -1 : this.bounceAcc >= this.bounceAccMax && (this.velYHelper *= -1);
+            this.velocity.x = Math.sin(angle) * this.player.defaultVelocity * dist / 20, this.velocity.y = Math.cos(angle) * this.player.defaultVelocity * dist / 20) : (this.velocity.x *= .9, 
+            this.velocity.y *= .9, Math.abs(this.velocity.x < .05) && (this.velocity.x = 0), 
+            Math.abs(this.velocity.y < .05) && (this.velocity.y = 0)), this.fairyAngle += 2.8;
+            var xAcc = 2 * Math.sin(this.fairyAngle / 180 * Math.PI), yAcc = 2.1 * Math.cos(this.fairyAngle / 180 * Math.PI) * (this.bounceAcc / this.bounceAccMax) * 2;
+            this.virtualVelocity.x = xAcc, this.virtualVelocity.y = yAcc, this.bounceAcc += this.velYHelper, 
+            this.bounceAcc <= 0 ? this.velYHelper *= -1 : this.bounceAcc >= this.bounceAccMax && (this.velYHelper *= -1);
         }
     }
 }), Fire = Entity.extend({
@@ -833,8 +853,8 @@ var Application = AbstractApplication.extend({
         this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = this.playerModel.velocity, 
         !this.isTouch && this.returnCollider <= 0 && (this.velocity = this.virtualVelocity), 
         this.returnCollider > 0 && this.returnCollider--, this.deading && this.setVelocity(0, 0), 
-        this._super(), this.debugPolygon(5596740, !0), this.getTexture() && (this.getContent().position.x = this.getTexture().width / 2, 
-        this.getContent().position.y = this.getTexture().height / 4);
+        this._super(), this.debugPolygon(5596740, !0), this.getTexture() && this.playerModel.graphicsData.positionSprite && (this.playerModel.graphicsData.positionSprite.x && (this.getContent().position.x = this.playerModel.graphicsData.positionSprite.x), 
+        this.playerModel.graphicsData.positionSprite.y && (this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y));
     },
     spell: function(mousePos, spellModel) {
         if (spellModel.mp > this.playerModel.mp) {
@@ -1763,9 +1783,9 @@ var Application = AbstractApplication.extend({
     },
     depthCompare: function(a, b) {
         var yA = a.position.y, yB = b.position.y;
-        return a.children.length > 0 && (yA = a.children[0].position.y + a.children[0].height), 
+        return a.noDepth || b.noDepth ? 0 : (a.children.length > 0 && (yA = a.children[0].position.y + a.children[0].height), 
         b.children.length > 0 && (yB = b.children[0].position.y + b.children[0].height), 
-        yB > yA ? -1 : yA > yB ? 1 : 0;
+        yB > yA ? -1 : yA > yB ? 1 : 0);
     }
 }), WaitScreen = AbstractScreen.extend({
     init: function(label) {

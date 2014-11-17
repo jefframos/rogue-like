@@ -616,7 +616,7 @@ var GameScreen = AbstractScreen.extend({
         this.fairy1.build();
         this.entityLayer.addChild(this.fairy1);
         this.fairy1.setPosition(this.player.getPosition().x, this.player.getPosition().y);
-        
+
         // this.entityLayer.addChild(this.simpleEnemy);
         this.equips[0] = this.player.weaponModel;
         this.equips[1] = this.player.armorModel;
@@ -628,6 +628,9 @@ var GameScreen = AbstractScreen.extend({
     depthCompare:function(a,b) {
         var yA = a.position.y;
         var yB = b.position.y;
+        if(a.noDepth || b.noDepth){
+            return 0;
+        }
         if(a.children.length > 0){
             yA = a.children[0].position.y + a.children[0].height;
         }

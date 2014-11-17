@@ -29,6 +29,10 @@
                 "srcImg":"_dist/img/players/sockets2.png",
                 "srcJson":"_dist/img/players/sockets2.JSON",
                 "sourceLabel":"sockets210",
+                "positionSprite":{
+                    "x": -20,
+                    "y": -20
+                },
                 "frames":{
                     "idleInit":0,
                     "idleEnd":14
@@ -65,6 +69,10 @@
                 "srcImg":"_dist/img/players/heart2.png",
                 "srcJson":"_dist/img/players/heart2.JSON",
                 "sourceLabel":"heart10",
+                "positionSprite":{
+                    "x": -20,
+                    "y": -20
+                },
                 "frames":{
                     "idleInit":0,
                     "idleEnd":13
@@ -101,10 +109,15 @@
                 "srcImg":"_dist/img/players/chinesa.png",
                 "srcJson":"_dist/img/players/chinesa.JSON",
                 "sourceLabel":"chinesa10",
+                "positionSprite":{
+                    "x": 20,
+                    "y": 0
+                },
                 "frames":{
                     "idleInit":0,
                     "idleEnd":8
-                }
+                },
+                "nada":0
             },
             "config":{
             }

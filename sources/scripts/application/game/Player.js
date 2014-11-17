@@ -194,9 +194,13 @@ var Player = SpritesheetEntity.extend({
         this._super();
         this.debugPolygon(0x556644, true);
 
-        if(this.getTexture()){
-            this.getContent().position.x = this.getTexture().width/2;
-            this.getContent().position.y = this.getTexture().height/4;
+        if(this.getTexture() && this.playerModel.graphicsData.positionSprite){
+            if(this.playerModel.graphicsData.positionSprite.x){
+                this.getContent().position.x = this.playerModel.graphicsData.positionSprite.x;
+            }
+            if(this.playerModel.graphicsData.positionSprite.y){
+                this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y;
+            }
         }
     },
     //spell
