@@ -1,4 +1,4 @@
-/*! jefframos 12-11-2014 */
+/*! jefframos 17-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -492,6 +492,40 @@ var Application = AbstractApplication.extend({
     },
     pointDistance: function(x, y, x0, y0) {
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
+    }
+}), Fairy = Entity.extend({
+    init: function(player) {
+        this._super(), this.updateable = !0, this.collidable = !1, this.player = player, 
+        this.srcImg = "_dist/img/fairy/f1.png", this.type = "fairy", this.width = 25, this.height = 25, 
+        this.bounceAcc = 10, this.bounceAccMax = 30, this.velYHelper = 1, this.range = 0;
+    },
+    getBounds: function() {
+        return this.bounds = {
+            x: this.getPosition().x - this.width * this.sprite.anchor.x,
+            y: this.getPosition().y - this.height * this.sprite.anchor.y,
+            w: this.width,
+            h: this.height
+        }, this.bounds;
+    },
+    build: function() {
+        this._super(this.srcImg);
+        this.sprite.anchor.x = .5, this.sprite.anchor.y = 1, this.texture;
+    },
+    update: function() {
+        this._super();
+        var angle = null;
+        if (this.player && this.player.centerPosition) {
+            var playerPos = {
+                x: this.player.getPosition().x + this.player.centerPosition.x,
+                y: this.player.getPosition().y + this.player.centerPosition.y
+            }, dist = pointDistance(playerPos.x, playerPos.y, this.getPosition().x, this.getPosition().y);
+            dist > 20 ? (angle = Math.atan2(playerPos.y - this.getPosition().y, playerPos.x - this.getPosition().x), 
+            angle = 180 * angle / Math.PI, angle += 270, angle = angle / 180 * Math.PI * -1, 
+            this.velocity.x *= .8, this.velocity.y *= .8) : this.velocity.x = 0;
+            var yAcc = this.bounceAcc / this.bounceAccMax * this.velYHelper / 5, xAcc = -(this.bounceAcc / this.bounceAccMax * this.velYHelper) / 5;
+            this.velocity.x += xAcc + angle ? Math.sin(angle) : 0, this.velocity.y += yAcc + angle ? Math.cos(angle) : 0, 
+            this.bounceAcc += this.velYHelper, console.log(this.velocity.y), this.bounceAcc <= 0 ? this.velYHelper *= -1 : this.bounceAcc >= this.bounceAccMax && (this.velYHelper *= -1);
+        }
     }
 }), Fire = Entity.extend({
     init: function(vel) {
@@ -1472,7 +1506,7 @@ var Application = AbstractApplication.extend({
             y: 10
         }, this.mouseDown = !1;
         var clss = "thief", rnd = Math.random();
-        .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = APP.playersList[Math.floor(Math.random() * APP.playersList.length)].clone(), 
+        .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = APP.playersList[2].clone(), 
         this.playerModel.mp = 8e3, this.playerModel.mpMax = 8e3, this.playerReady = !1;
     },
     destroy: function() {
@@ -1722,9 +1756,10 @@ var Application = AbstractApplication.extend({
         }), this.playerReady = !0, this.entityLayer.updateable = !0, this.player.build(), 
         this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
         this.entityLayer.addChild(this.player), "up" === this.currentPlayerSide || "down" === this.currentPlayerSide || "left" === this.currentPlayerSide || "right" === this.currentPlayerSide, 
-        this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2), this.equips[0] = this.player.weaponModel, 
-        this.equips[1] = this.player.armorModel, this.equips[2] = this.player.relicModel, 
-        this.updateInventory();
+        this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2), this.fairy1 = new Fairy(this.player), 
+        this.fairy1.build(), this.entityLayer.addChild(this.fairy1), this.fairy1.setPosition(this.player.getPosition().x, this.player.getPosition().y), 
+        this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
+        this.equips[2] = this.player.relicModel, this.updateInventory();
     },
     depthCompare: function(a, b) {
         var yA = a.position.y, yB = b.position.y;

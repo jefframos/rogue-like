@@ -33,7 +33,8 @@ var GameScreen = AbstractScreen.extend({
             clss = 'mage';
         }
 
-        this.playerModel = APP.playersList[Math.floor(Math.random()*APP.playersList.length)].clone();
+        this.playerModel = APP.playersList[2].clone();
+        // this.playerModel = APP.playersList[Math.floor(Math.random()*APP.playersList.length)].clone();
 
         this.playerModel.mp = 8000;
         this.playerModel.mpMax = 8000;
@@ -573,6 +574,8 @@ var GameScreen = AbstractScreen.extend({
         this.entityLayer.updateable = true;
 
         this.player.build();
+
+
         // this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]);
         // this.player.setArmorModel(APP.armorList[Math.floor(APP.armorList.length * Math.random())]);
         // this.player.setWeaponModel(APP.weaponList[Math.floor(APP.weaponList.length * Math.random())]);
@@ -608,6 +611,12 @@ var GameScreen = AbstractScreen.extend({
         // this.simpleEnemy.setPosition(this.levelBounds.x/2 - 50,this.levelBounds.y/2 - 50);
         this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y/2);
 
+
+        this.fairy1 = new Fairy(this.player);
+        this.fairy1.build();
+        this.entityLayer.addChild(this.fairy1);
+        this.fairy1.setPosition(this.player.getPosition().x, this.player.getPosition().y);
+        
         // this.entityLayer.addChild(this.simpleEnemy);
         this.equips[0] = this.player.weaponModel;
         this.equips[1] = this.player.armorModel;
