@@ -7,8 +7,8 @@
             "magicPower":10,
             "hitRate":180,
             "price":300,
-            "icoImg":"_dist/img/weapons/dagger.png",
-            "srcImg":"_dist/img/weapons/dagger.png"
+            "icoImg":"_dist/img/weapons/dagger1.png",
+            "srcImg":"_dist/img/weapons/dagger1.png"
         },
         {
             "name":"AirLancet",

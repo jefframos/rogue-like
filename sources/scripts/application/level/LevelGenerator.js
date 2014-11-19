@@ -1,4 +1,36 @@
 /*jshint undef:false */
+var defaultColors = {
+	    // Features
+	    OCEAN: 0x44447a,
+	    COAST: 0x33335a,
+	    LAKESHORE: 0x225588,
+	    LAKE: 0x336699,
+	    RIVER: 0x225588,
+	    MARSH: 0x2f6666,
+	    ICE: 0x99ffff,
+	    BEACH: 0xa09077,
+	    ROAD1: 0x442211,
+	    ROAD2: 0x553322,
+	    ROAD3: 0x664433,
+	    BRIDGE: 0x686860,
+	    LAVA: 0xcc3333,
+
+	    // Terrain
+	    SNOW: 0xffffff,
+	    TUNDRA: 0xbbbbaa,
+	    BARE: 0x888888,
+	    SCORCHED: 0x555555,
+	    TAIGA: 0x99aa77,
+	    SHRUBLAND: 0x889977,
+	    TEMPERATE_DESERT: 0xc9d29b,
+	    TEMPERATE_RAIN_FOREST: 0x448855,
+	    TEMPERATE_DECIDUOUS_FOREST: 0x679459,
+	    GRASSLAND: 0x88aa55,
+	    SUBTROPICAL_DESERT: 0xd2b98b,
+	    TROPICAL_RAIN_FOREST: 0x337755,
+	    TROPICAL_SEASONAL_FOREST: 0x559944
+	};
+
 var displayColors = {
 	    // Features
 	    OCEAN: 0x44447a,
@@ -30,6 +62,7 @@ var displayColors = {
 	    TROPICAL_RAIN_FOREST: 0x337755,
 	    TROPICAL_SEASONAL_FOREST: 0x559944
 	};
+
 var LevelGenerator = Class.extend({
 	init: function (parent){
 		this.parent = parent;
@@ -89,7 +122,7 @@ var LevelGenerator = Class.extend({
 	},
 	createRoom: function(){
 		var i = 0;
-		this.distanceToShowMap = 5;
+		this.distanceToShowMap = 8;
 		var mapMaker = null;
 		// if(this.parent.currentNode.getNextFloat()< 0.3){
 		// 	mapMaker = voronoiMap.islandShape.makeBlob(this.parent.currentNode.getNextFloat(), 0.5);
@@ -128,7 +161,7 @@ var LevelGenerator = Class.extend({
 		this.map.go0PlaceUniformPoints( numberOfPoints ,this.parent.tempSizeTiles.x,this.parent.tempSizeTiles.y,APP.nTileSize);
 		this.map.go1BuildGraph();
 		this.map.assignBiomes();
-		this.map.go2AssignElevations();
+		this.map.go2AssignElevations(0.1);
 		this.map.go3AssignMoisture();
 		this.map.go4DecorateMap();
 		var ix = 0;
@@ -236,7 +269,8 @@ var LevelGenerator = Class.extend({
 							if(this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] === 0 && this.pointDistance(tempPlaced.x, tempPlaced.y,playerPostion.x,playerPostion.y) < this.distanceToShowMap){
 								this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = 1;
 
-								var tempTile = new SimpleSprite('_dist/img/tile1.png');
+								var tempTile = new SimpleSprite('_dist/img/levels/tile'+(Math.floor(Math.random() * 4) + 1)+'.png');
+								// var tempTile = new SimpleSprite('_dist/img/tile1.png');
 								
 								var tempX = tempPlaced.x * APP.nTileSize;
 								var tempY = tempPlaced.y * APP.nTileSize;
@@ -248,11 +282,11 @@ var LevelGenerator = Class.extend({
 
 								tempTile.getContent().tint = displayColors[this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y]];//0x0000FF * map.centers[i].elevation;
 
-								tempTile.getContent().scale.x = scl / 2;
-								tempTile.getContent().scale.y = scl / 2;
-								tempTile.getContent().alpha = 0;
-								TweenLite.to(tempTile.getContent(), 0.5, {alpha:1});
-								TweenLite.to(tempTile.getContent().scale, 0.2, {x:scl, y:scl});
+								// tempTile.getContent().scale.x = scl / 2;
+								// tempTile.getContent().scale.y = scl / 2;
+								// tempTile.getContent().alpha = 0;
+								// TweenLite.to(tempTile.getContent(), 0.5, {alpha:1});
+								// TweenLite.to(tempTile.getContent().scale, 0.2, {x:scl, y:scl});
 								this.parent.currentNode.bg.addChild(tempTile.getContent());
 							}
 						}
@@ -273,7 +307,7 @@ var LevelGenerator = Class.extend({
 	// },
 	createDoors:function(){
 		
-		console.log(this.parent.currentNode.childrenSides,'childrenSides');
+		// console.log(this.parent.currentNode.childrenSides,'childrenSides');
 		if(this.parent.currentNode.childrenSides[0] && this.parent.currentNode.leftTile){
 			this.parent.doorLeft = new Door('left');
 			this.parent.doorLeft.build();

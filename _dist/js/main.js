@@ -1,4 +1,4 @@
-/*! jefframos 17-11-2014 */
+/*! jefframos 19-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -11,8 +11,8 @@ function testMobile() {
 function update() {
     requestAnimFrame(update), meter.tickStart();
     var tempRation = window.innerHeight / windowHeight, ratio = tempRation < window.innerWidth / windowWidth ? tempRation : window.innerWidth / windowWidth;
-    windowWidthVar = windowWidth * ratio, windowHeightVar = windowHeight * ratio, renderer.view.style.width = windowWidth / 1.5 + "px", 
-    renderer.view.style.height = windowHeight / 1.5 + "px", APP.update(), renderer.render(APP.stage), 
+    windowWidthVar = windowWidth * ratio, windowHeightVar = windowHeight * ratio, renderer.view.style.width = windowWidth + "px", 
+    renderer.view.style.height = windowHeight + "px", APP.update(), renderer.render(APP.stage), 
     meter.tick();
 }
 
@@ -184,7 +184,7 @@ var Application = AbstractApplication.extend({
         this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(0), this.stage.removeChild(this.loadText), 
         this.isMobile = testMobile(), this.appContainer = document.getElementById("rect"), 
         this.id = parseInt(1e11 * Math.random()), this.gen = new DungeonGenerator(), this.gen.generate(16777215 * Math.random(), 1, [ 10, 15 ], [ 12, 12 ], 5), 
-        this.nTileSize = 80, this.tileSize = {
+        this.nTileSize = 64, this.tileSize = {
             x: this.nTileSize,
             y: this.nTileSize
         };
@@ -268,9 +268,9 @@ var Application = AbstractApplication.extend({
     init: function(width, height, maxValue, currentValue) {
         this.maxValue = maxValue, this.text = "default", this.currentValue = currentValue, 
         this.container = new PIXI.DisplayObjectContainer(), this.width = width, this.height = height, 
-        this.backShape = new PIXI.Graphics(), this.backShape.lineStyle(1, 15658734), this.backShape.beginFill(16711680), 
-        this.backShape.drawRect(0, 0, width, height), this.container.addChild(this.backShape), 
-        this.frontShape = new PIXI.Graphics(), this.frontShape.beginFill(65280), this.frontShape.drawRect(0, 0, width, height), 
+        this.backShape = new PIXI.Graphics(), this.backShape.beginFill(16711680), this.backShape.drawRect(0, 0, width, height), 
+        this.container.addChild(this.backShape), this.frontShape = new PIXI.Graphics(), 
+        this.frontShape.beginFill(65280), this.frontShape.drawRect(0, 0, width, height), 
         this.container.addChild(this.frontShape), this.frontShape.scale.x = this.currentValue / this.maxValue;
     },
     setFrontColor: function(color) {
@@ -280,14 +280,14 @@ var Application = AbstractApplication.extend({
     },
     setBackColor: function(color) {
         this.backShape && this.container.removeChild(this.backShape), this.backShape = new PIXI.Graphics(), 
-        this.backShape.beginFill(color), this.backShape.lineStyle(1, 15658734), this.backShape.drawRect(0, 0, this.width, this.height), 
+        this.backShape.beginFill(color), this.backShape.drawRect(0, 0, this.width, this.height), 
         this.container.addChildAt(this.backShape, 0);
     },
     setText: function(text) {
         this.text !== text && (this.lifebar ? this.lifebar.setText(text) : (this.lifebar = new PIXI.Text(text, {
             fill: "white",
             align: "center",
-            font: "bold 20px Arial"
+            font: "10px Arial"
         }), this.container.addChild(this.lifebar)));
     },
     updateBar: function(currentValue, maxValue) {
@@ -781,7 +781,7 @@ var Application = AbstractApplication.extend({
     },
     updateAtt: function() {
         this.defaultVelocity = this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3, 
-        this.fireSpeed = this.fireModel.fireSpeed, this.fireSpeed < 1.4 * this.defaultVelocity && (this.fireSpeed = 1.4 * this.defaultVelocity), 
+        this.fireSpeed = this.fireModel.fireSpeed, this.fireSpeed < 1.1 * this.defaultVelocity && (this.fireSpeed = 1.1 * this.defaultVelocity), 
         this.fireStepLive = this.fireModel.fireStepLive;
     },
     levelUp: function() {
@@ -865,10 +865,10 @@ var Application = AbstractApplication.extend({
     update: function() {
         this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = this.playerModel.velocity, 
         !this.isTouch && this.returnCollider <= 0 && (this.velocity = this.virtualVelocity), 
-        this.velocity.y > 0 ? this.spritesheet.play("down") : this.velocity.y < 0 ? this.spritesheet.play("up") : this.velocity.x < 0 ? (this.spritesheet.scale.x = 1, 
+        this.velocity.y > 0 ? (this.spritesheet.scale.x = 1, this.spritesheet.play("down")) : this.velocity.y < 0 ? (this.spritesheet.scale.x = 1, 
+        this.spritesheet.play("up")) : this.velocity.x < 0 ? (this.spritesheet.scale.x = 1, 
         this.spritesheet.play("side")) : this.velocity.x > 0 ? (this.spritesheet.scale.x = -1, 
-        this.spritesheet.play("side")) : (console.log(this.spritesheet.currentAnimation.label), 
-        "side" === this.spritesheet.currentAnimation.label ? this.spritesheet.play("idleSide") : "up" === this.spritesheet.currentAnimation.label ? this.spritesheet.play("idleUp") : "down" === this.spritesheet.currentAnimation.label && this.spritesheet.play("idleDown")), 
+        this.spritesheet.play("side")) : "side" === this.spritesheet.currentAnimation.label ? this.spritesheet.play("idleSide") : "up" === this.spritesheet.currentAnimation.label ? this.spritesheet.play("idleUp") : "down" === this.spritesheet.currentAnimation.label && this.spritesheet.play("idleDown"), 
         this.returnCollider > 0 && this.returnCollider--, this.deading && this.setVelocity(0, 0), 
         this._super(), this.debugPolygon(5596740, !0), this.getTexture() && this.playerModel.graphicsData.positionSprite && (this.playerModel.graphicsData.positionSprite.x && (this.getContent().position.x = this.playerModel.graphicsData.positionSprite.x), 
         this.playerModel.graphicsData.positionSprite.y && (this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y));
@@ -1184,7 +1184,7 @@ var Application = AbstractApplication.extend({
     }
 }), FireModel = Class.extend({
     init: function() {
-        this.fireSpeed = 22, this.fireStepLive = 65;
+        this.fireSpeed = 12, this.fireStepLive = 65;
     },
     update: function() {}
 }), ItemModel = Class.extend({
@@ -1260,7 +1260,7 @@ var Application = AbstractApplication.extend({
         this.hpMax = this.baseHP * (this.stamina + 32) / 32, this.hp = this.hpMax, this.baseMP = this.level * (20 / this.baseMPModifier), 
         this.mpMax = this.baseMP * (this.magicPower + 32) / 32, this.mp = this.mpMax, this.critialChance = 0, 
         this.speedStatus = "normal", this.vigor2 = 2 * this.vigor, this.vigor >= 128 && (this.vigor2 = 255), 
-        this.attack = this.battlePower + this.vigor2, this.xp = 0, this.velocity = 8 - (255 - this.speed) / 25 + 5, 
+        this.attack = this.battlePower + this.vigor2, this.xp = 0, this.velocity = 8 - (255 - this.speed) / 35 + 2, 
         this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.3, this.entity = null, 
         this.csvStr = "level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n", 
         this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n", 
@@ -1309,9 +1309,9 @@ var Application = AbstractApplication.extend({
         this.baseHPModifier -= .008, this.baseMPModifier += .02, this.baseHP = this.level * (20 / this.baseHPModifier), 
         this.baseMP = this.level * (20 / this.baseMPModifier), this.hpMax += this.baseHP * (this.stamina + 32) / 32, 
         this.hp = this.hpMax, this.mpMax += this.baseMP * (this.magicPower + 32) / 32, this.mp = this.mpMax, 
-        this.velocity = 8 - (255 - this.speed) / 25 + 5, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * (1.1 + 1e3 * this.speedModifier), 
+        this.velocity = 8 - (255 - this.speed) / 35 + 2, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * (1.1 + 1e3 * this.speedModifier), 
         this.fireFreq <= 4 && (this.fireFreq = 4), this.fireFreq >= 25 && (this.fireFreq = 25), 
-        this.velocity >= 10 && (this.velocity = 10), this.velocity <= 3 && (this.velocity = 3), 
+        this.velocity >= 9 && (this.velocity = 9), this.velocity <= 2 && (this.velocity = 2), 
         this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n", 
         this.entity && this.entity.levelUp();
     },
@@ -1356,7 +1356,34 @@ var Application = AbstractApplication.extend({
         this.name = name, this.label = name, this.battlePower = battlePower, this.magicPower = magicPower, 
         this.hitRate = hitRate, this.price = price, this.srcImg = srcImg, this.icoImg = icoImg;
     }
-}), displayColors = {
+}), defaultColors = {
+    OCEAN: 4473978,
+    COAST: 3355482,
+    LAKESHORE: 2250120,
+    LAKE: 3368601,
+    RIVER: 2250120,
+    MARSH: 3106406,
+    ICE: 10092543,
+    BEACH: 10522743,
+    ROAD1: 4465169,
+    ROAD2: 5583650,
+    ROAD3: 6702131,
+    BRIDGE: 6842464,
+    LAVA: 13382451,
+    SNOW: 16777215,
+    TUNDRA: 12303274,
+    BARE: 8947848,
+    SCORCHED: 5592405,
+    TAIGA: 10070647,
+    SHRUBLAND: 8952183,
+    TEMPERATE_DESERT: 13226651,
+    TEMPERATE_RAIN_FOREST: 4491349,
+    TEMPERATE_DECIDUOUS_FOREST: 6788185,
+    GRASSLAND: 8956501,
+    SUBTROPICAL_DESERT: 13810059,
+    TROPICAL_RAIN_FOREST: 3372885,
+    TROPICAL_SEASONAL_FOREST: 5609796
+}, displayColors = {
     OCEAN: 4473978,
     COAST: 3355482,
     LAKESHORE: 2250120,
@@ -1402,7 +1429,7 @@ var Application = AbstractApplication.extend({
     putObstacles: function() {},
     createRoom: function() {
         var i = 0;
-        this.distanceToShowMap = 5;
+        this.distanceToShowMap = 8;
         var mapMaker = null;
         mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), .5), 
         this.parent.currentNode.mapData = [];
@@ -1419,7 +1446,7 @@ var Application = AbstractApplication.extend({
         }, numberOfPoints = this.parent.tempSizeTiles.x * this.parent.tempSizeTiles.y;
         this.map = voronoiMap.map(tempMapSize), this.map.newIsland(mapMaker, this.parent.currentNode.getNextFloat()), 
         this.map.go0PlaceUniformPoints(numberOfPoints, this.parent.tempSizeTiles.x, this.parent.tempSizeTiles.y, APP.nTileSize), 
-        this.map.go1BuildGraph(), this.map.assignBiomes(), this.map.go2AssignElevations(), 
+        this.map.go1BuildGraph(), this.map.assignBiomes(), this.map.go2AssignElevations(.1), 
         this.map.go3AssignMoisture(), this.map.go4DecorateMap();
         var ix = 0, jy = 0, top = {
             x: this.parent.tempSizeTiles.x / 2,
@@ -1450,21 +1477,15 @@ var Application = AbstractApplication.extend({
             for (var j = playerPostion.y - this.distanceToShowMap; j < playerPostion.y + this.distanceToShowMap; j++) if (j >= 0 && j < this.parent.currentNode.placedTiles[tempPlaced.x].length && (tempPlaced.y = j, 
             0 === this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] && this.pointDistance(tempPlaced.x, tempPlaced.y, playerPostion.x, playerPostion.y) < this.distanceToShowMap)) {
                 this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = 1;
-                var tempTile = new SimpleSprite("_dist/img/tile1.png"), tempX = tempPlaced.x * APP.nTileSize, tempY = tempPlaced.y * APP.nTileSize, scl = (APP.nTileSize, 
+                var tempTile = new SimpleSprite("_dist/img/levels/tile" + (Math.floor(4 * Math.random()) + 1) + ".png"), tempX = tempPlaced.x * APP.nTileSize, tempY = tempPlaced.y * APP.nTileSize, scl = (APP.nTileSize, 
                 1);
                 tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = displayColors[this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y]], 
-                tempTile.getContent().scale.x = scl / 2, tempTile.getContent().scale.y = scl / 2, 
-                tempTile.getContent().alpha = 0, TweenLite.to(tempTile.getContent(), .5, {
-                    alpha: 1
-                }), TweenLite.to(tempTile.getContent().scale, .2, {
-                    x: scl,
-                    y: scl
-                }), this.parent.currentNode.bg.addChild(tempTile.getContent());
+                this.parent.currentNode.bg.addChild(tempTile.getContent());
             }
         }
     },
     createDoors: function() {
-        console.log(this.parent.currentNode.childrenSides, "childrenSides"), this.parent.currentNode.childrenSides[0] && this.parent.currentNode.leftTile && (this.parent.doorLeft = new Door("left"), 
+        this.parent.currentNode.childrenSides[0] && this.parent.currentNode.leftTile && (this.parent.doorLeft = new Door("left"), 
         this.parent.doorLeft.build(), this.parent.doorLeft.setPosition(this.parent.currentNode.leftTile.x * APP.nTileSize + this.parent.doorLeft.width / 2, this.parent.currentNode.leftTile.y * APP.nTileSize), 
         this.parent.doorLeft.node = this.parent.currentNode.childrenSides[0], this.parent.environmentLayer.addChild(this.parent.doorLeft)), 
         this.parent.currentNode.childrenSides[1] && this.parent.currentNode.rightTile && (this.parent.doorRight = new Door("right"), 
@@ -1552,7 +1573,7 @@ var Application = AbstractApplication.extend({
     build: function() {
         this._super();
         var assetsToLoader = [ "_dist/img/drop.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
-        this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad();
+        this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onAssetsLoaded: function() {
         this._super(), this.currentNode = APP.gen.firstNode, this.currentNode.applySeed();
@@ -1564,42 +1585,18 @@ var Application = AbstractApplication.extend({
         this.resetLevel();
     },
     createHUD: function() {
-        this.HPView = new BarView(200, 20, 100, 100), this.HPView.setPosition(20, 150), 
-        APP.getHUD().addChild(this.HPView.getContent()), this.MPView = new BarView(200, 20, 100, 100), 
-        this.MPView.setPosition(20, 180), this.MPView.setFrontColor(255), APP.getHUD().addChild(this.MPView.getContent()), 
-        this.XPBar = new BarView(200, 20, 100, 100), this.XPBar.setPosition(20, 210), this.XPBar.setFrontColor(5592405), 
-        this.XPBar.setBackColor(0), APP.getHUD().addChild(this.XPBar.getContent()), this.levelLabel = new PIXI.Text("", {
-            fill: "white",
-            align: "left",
-            font: "bold 15px Arial"
-        }), APP.getHUD().addChild(this.levelLabel), this.shortcuts = [ null, null, null, null, null, null ], 
-        this.shortcuts[0] = APP.itemList[0], this.shortcuts[1] = APP.itemList[1], this.shortcuts[2] = APP.itemList[2], 
-        this.shortcuts[3] = APP.spellList[Math.floor(APP.spellList.length * Math.random())], 
-        this.shortcuts[4] = APP.spellList[Math.floor(APP.spellList.length * Math.random())], 
-        this.shortcuts[5] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
-        for (var tempBox = null, icosTotalWidth = 120 * this.shortcuts.length, i = 0; i < this.shortcuts.length; i++) {
-            tempBox = new BoxHUD1(100, 70, 3), tempBox.setPosition(windowWidth / 2 - icosTotalWidth / 2 + 120 * i, windowHeight - 90), 
-            APP.getHUD().addChild(tempBox.getContent());
-            var tempText = "", shortcut = i + 1;
-            3 === i ? shortcut = "Q" : 4 === i ? shortcut = "E" : 5 === i && (shortcut = "SPACE"), 
-            this.shortcuts[i] && this.shortcuts[i].icoImg && (tempBox.addImage(this.shortcuts[i].icoImg), 
-            tempText = this.shortcuts[i].name, tempBox.addModel(this.shortcuts[i])), tempBox.setText(tempText + "\n\n\n" + shortcut);
-        }
-        for (this.equips = [ null, null, null ], this.equipsBoxHud = [], i = 0; i < this.equips.length; i++) tempBox = new BoxHUD1(100, 70, 1), 
-        tempBox.setPosition(windowWidth - 120, windowHeight / 2.5 + 90 * i), 0 === i ? tempBox.setText("Weapon") : 1 === i ? tempBox.setText("Armor") : 2 === i && tempBox.setText("Relic"), 
-        APP.getHUD().addChild(tempBox.getContent()), this.equipsBoxHud.push(tempBox);
-        this.boxStats = new BoxHUD1(200, 310, 0), APP.getHUD().addChild(this.boxStats.getContent()), 
-        this.boxStats.setPosition(20, 320), this.minimap = new Minimap(), APP.getHUD().addChild(this.minimap.getContent()), 
-        this.minimap.build(), this.minimap.setPosition(windowWidth - .5 * this.minimap.getContent().width - 5, 10), 
-        this.minimap.getContent().scale.x = .5, this.minimap.getContent().scale.y = .5;
+        this.HPView = new BarView(80, 10, 100, 100), this.HPView.setPosition(10, 10), this.HPView.setFrontColor(4034057), 
+        APP.getHUD().addChild(this.HPView.getContent()), this.MPView = new BarView(80, 10, 100, 100), 
+        this.MPView.setPosition(10, 25), this.MPView.setFrontColor(4675770), APP.getHUD().addChild(this.MPView.getContent()), 
+        this.XPBar = new BarView(80, 10, 100, 100), this.XPBar.setPosition(10, 40), this.XPBar.setFrontColor(5592405), 
+        this.XPBar.setBackColor(1118481), APP.getHUD().addChild(this.XPBar.getContent());
     },
     useShortcut: function(id) {
         this.shortcuts[id] && (this.shortcuts[id] instanceof ItemModel ? this.useItem(this.shortcuts[id]) : this.shortcuts[id] instanceof SpellModel && this.spell(this.shortcuts[id]));
     },
     updateInventory: function() {
-        this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
-        this.equips[2] = this.player.relicModel;
-        for (var i = 0; i < this.equipsBoxHud.length; i++) this.equips[i] && this.equipsBoxHud[i].addModel(this.equips[i]);
+        if (this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
+        this.equips[2] = this.player.relicModel, this.equipsBoxHud) for (var i = 0; i < this.equipsBoxHud.length; i++) this.equips[i] && this.equipsBoxHud[i].addModel(this.equips[i]);
     },
     useItem: function(itemModel) {
         this.player.useItem(itemModel);
@@ -1645,7 +1642,7 @@ var Application = AbstractApplication.extend({
                 x: Math.floor(centerPositionPlayer.x / APP.nTileSize),
                 y: Math.floor(centerPositionPlayer.y / APP.nTileSize)
             };
-            this.miniPlayer && (this.miniPlayer.clear(), this.miniPlayer.beginFill(255), this.miniPlayer.drawRect(2 * tilePosition.x, 2 * tilePosition.y, 2, 2), 
+            this.miniPlayer && (this.miniPlayer.clear(), this.miniPlayer.beginFill(255), this.miniPlayer.drawRect(tilePosition.x, tilePosition.y, 1, 1), 
             this.miniPlayer.endFill());
             for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if ("enemy" === this.entityLayer.childs[i].type) {
                 var centerPositionE = {
@@ -1659,7 +1656,7 @@ var Application = AbstractApplication.extend({
                 for (var tmpGr = null, j = this.vecEnemiesMini.length - 1; j >= 0; j--) this.vecEnemiesMini[j][1] === this.entityLayer.childs[i] && (tmpGr = this.vecEnemiesMini[j][0]);
                 null === tmpGr && (tmpGr = new PIXI.Graphics(), this.vecEnemiesMini.push([ tmpGr, this.entityLayer.childs[i] ]), 
                 this.minimapContainer.addChild(tmpGr)), tmpGr && (tmpGr.clear(), tmpGr.beginFill(16711680), 
-                tmpGr.drawRect(2 * tilePositionE.x, 2 * tilePositionE.y, 2, 2), tmpGr.endFill());
+                tmpGr.drawRect(tilePositionE.x, tilePositionE.y, 1, 1), tmpGr.endFill());
             }
             return tilePosition;
         }
@@ -1746,8 +1743,8 @@ var Application = AbstractApplication.extend({
         this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
         var i = 0, j = 0;
         this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : (this.marginTiles = {
-            x: Math.floor(this.mapPosition.x / APP.nTileSize),
-            y: Math.floor(this.mapPosition.y / APP.nTileSize)
+            x: Math.floor(this.mapPosition.x / APP.nTileSize) + 20,
+            y: Math.floor(this.mapPosition.y / APP.nTileSize) + 20
         }, this.tempSizeTiles = 1 === this.currentNode.mode ? {
             x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x,
             y: Math.floor(windowHeight / APP.nTileSize) + this.marginTiles.y
@@ -1760,7 +1757,7 @@ var Application = AbstractApplication.extend({
             y: this.currentNode.mapData[0].length * APP.nTileSize
         }, this.minimapContainer && this.minimapContainer.parent && this.minimapContainer.parent.removeChild(this.minimapContainer), 
         this.minimapContainer = new PIXI.DisplayObjectContainer(), this.miniPlayer = new PIXI.Graphics();
-        var tempRect = new PIXI.Graphics(), tileMiniSize = 2;
+        var tempRect = new PIXI.Graphics(), tileMiniSize = 1;
         for (this.miniPlayer.beginFill(16711680), this.miniPlayer.drawRect(tileMiniSize, tileMiniSize, 0, 0), 
         i = this.currentNode.mapData.length - 1; i >= 0; i--) for (j = this.currentNode.mapData[i].length - 1; j >= 0; j--) tempRect.beginFill(displayColors[this.currentNode.mapData[i][j]]), 
         tempRect.drawRect(i * tileMiniSize, j * tileMiniSize, tileMiniSize, tileMiniSize), 
@@ -1888,7 +1885,13 @@ var Application = AbstractApplication.extend({
         for (var exists = !1, i = this.vecPositions.length - 1; i >= 0; i--) this.vecPositions[i] === position && (exists = !0);
         exists || this.vecPositions.push(position);
     }
-}), meter = new FPSMeter(), SOCKET = null, windowWidth = 1280, windowHeight = 720;
+}), meter = new FPSMeter();
+
+$.ajaxSetup({
+    cache: !1
+});
+
+var SOCKET = null, windowWidth = 810, windowHeight = 456;
 
 testMobile() && (windowWidth = 640, windowHeight = 960);
 

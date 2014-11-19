@@ -57,8 +57,8 @@ var Player = SpritesheetEntity.extend({
 
         this.fireSpeed = this.fireModel.fireSpeed;
 
-        if(this.fireSpeed < this.defaultVelocity * 1.4){
-            this.fireSpeed = this.defaultVelocity * 1.4;
+        if(this.fireSpeed < this.defaultVelocity * 1.1){
+            this.fireSpeed = this.defaultVelocity * 1.1;
         }
        
         this.fireStepLive = this.fireModel.fireStepLive;
@@ -221,8 +221,10 @@ var Player = SpritesheetEntity.extend({
         }
 
         if(this.velocity.y > 0){
+            this.spritesheet.scale.x = 1;
             this.spritesheet.play('down');
         }else if(this.velocity.y < 0){
+            this.spritesheet.scale.x = 1;
             this.spritesheet.play('up');
         }else if(this.velocity.x < 0){
             this.spritesheet.scale.x = 1;
@@ -231,7 +233,7 @@ var Player = SpritesheetEntity.extend({
             this.spritesheet.scale.x = -1;
             this.spritesheet.play('side');
         }else{
-            console.log(this.spritesheet.currentAnimation.label);
+            // console.log(this.spritesheet.currentAnimation.label);
             if(this.spritesheet.currentAnimation.label === 'side'){
                 this.spritesheet.play('idleSide');
             }else if(this.spritesheet.currentAnimation.label === 'up'){

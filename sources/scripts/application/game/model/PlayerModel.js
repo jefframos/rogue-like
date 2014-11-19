@@ -137,7 +137,8 @@ var PlayerModel = Class.extend({
 		this.attack = this.battlePower + this.vigor2;
 		this.xp = 0;
 
-		this.velocity = 8 - (255 - this.speed) / 25 + 5;
+		// this.velocity = 6 - (255 - this.speed) / 25 + 5;
+		this.velocity = 8 - (255 - this.speed) / 35 + 2;
 		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * 1.3;
 
 
@@ -305,7 +306,7 @@ var PlayerModel = Class.extend({
 		this.mpMax += (this.baseMP*(this.magicPower+32))/32;
 		this.mp = this.mpMax;
 
-		this.velocity = 8 - (255 - this.speed) / 25 + 5;
+		this.velocity = 8 - (255 - this.speed) / 35  + 2;// + 5;
 		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * (1.1 + (this.speedModifier*1000));
 		if(this.fireFreq <= 4)
 		{
@@ -315,13 +316,13 @@ var PlayerModel = Class.extend({
 		{
 			this.fireFreq = 25;
 		}
-		if(this.velocity >= 10)
+		if(this.velocity >= 9)
 		{
-			this.velocity = 10;
+			this.velocity = 9;
 		}
-		if(this.velocity <= 3)
+		if(this.velocity <= 2)
 		{
-			this.velocity = 3;
+			this.velocity = 2;
 		}
 
 		// console.log(this.level,'<- levelUp, xp ->',this.xp);

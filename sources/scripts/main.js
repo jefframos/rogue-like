@@ -1,13 +1,13 @@
 /*jshint undef:false */
 var meter = new FPSMeter();
-
+$.ajaxSetup({ cache: false });
 function testMobile() {
     return false;// Modernizr.touch || window.innerWidth < 600;
 }
 
 var SOCKET = null;
-var windowWidth = 1280,
-windowHeight = 720;
+var windowWidth = 810,
+windowHeight = 456;
 
 if(testMobile()){
 	windowWidth = 640;
@@ -37,10 +37,16 @@ function update() {
 	var ratio = tempRation < (window.innerWidth/windowWidth)?tempRation:(window.innerWidth/windowWidth);
 	windowWidthVar = windowWidth * ratio;
 	windowHeightVar = windowHeight * ratio;
+	//proportional
 	// renderer.view.style.width = windowWidthVar+'px';
 	// renderer.view.style.height = windowHeightVar+'px';
-	renderer.view.style.width = (windowWidth/1.5)+'px';
-	renderer.view.style.height = (windowHeight/1.5)+'px';
+
+	renderer.view.style.width = windowWidth+'px';
+	renderer.view.style.height = windowHeight+'px';
+
+
+	// renderer.view.style.width = (windowWidth/1.5)+'px';
+	// renderer.view.style.height = (windowHeight/1.5)+'px';
 	APP.update();
 	renderer.render(APP.stage);
 	meter.tick();

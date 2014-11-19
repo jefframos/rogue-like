@@ -9,7 +9,7 @@ var BarView = Class.extend({
 		this.width = width;
 		this.height = height;
 		this.backShape = new PIXI.Graphics();
-		this.backShape.lineStyle(1,0xEEEEEE);
+		// this.backShape.lineStyle(1,0xEEEEEE);
 		this.backShape.beginFill(0xFF0000);
 		this.backShape.drawRect(0,0,width, height);
 		this.container.addChild(this.backShape);
@@ -37,7 +37,7 @@ var BarView = Class.extend({
 		}
 		this.backShape = new PIXI.Graphics();
 		this.backShape.beginFill(color);
-		this.backShape.lineStyle(1,0xEEEEEE);
+		// this.backShape.lineStyle(1,0xEEEEEE);
 		this.backShape.drawRect(0,0,this.width, this.height);
 		this.container.addChildAt(this.backShape,0);
 
@@ -45,7 +45,7 @@ var BarView = Class.extend({
 	setText: function(text){
 		if(this.text !== text){
 			if(!this.lifebar){
-				this.lifebar = new PIXI.Text(text, {fill:'white', align:'center', font:'bold 20px Arial'});
+				this.lifebar = new PIXI.Text(text, {fill:'white', align:'center', font:'10px Arial'});
 				this.container.addChild(this.lifebar);
 			}else
 			{

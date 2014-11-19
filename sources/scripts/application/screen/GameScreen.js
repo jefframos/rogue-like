@@ -42,10 +42,9 @@ var GameScreen = AbstractScreen.extend({
         this.playerReady = false;
 
         // this.playerModel.levelUp();
-        // for (var i = 0; i < 10; i++) {
+        // for (var i = 0; i < 20; i++) {
         //     this.playerModel.levelUp();
         // }
-        // this.playerModel.levelUp();
         // this.playerModel.logCSV();
     },
     destroy: function () {
@@ -61,6 +60,8 @@ var GameScreen = AbstractScreen.extend({
         ];
         this.loader = new PIXI.AssetLoader(assetsToLoader);
         this.initLoad();
+
+        this.equips = [null,null,null];
     },
     onAssetsLoaded:function()
     {
@@ -102,86 +103,87 @@ var GameScreen = AbstractScreen.extend({
     },
     //cria a HUD
     createHUD:function(){
-        this.HPView = new BarView(200,20, 100,100);
-        this.HPView.setPosition(20,150);
+        this.HPView = new BarView(80,10, 100,100);
+        this.HPView.setPosition(10,10);
+        this.HPView.setFrontColor(0x3d8e09);
         APP.getHUD().addChild(this.HPView.getContent());
 
-        this.MPView = new BarView(200,20, 100,100);
-        this.MPView.setPosition(20,180);
-        this.MPView.setFrontColor(0x0000FF);
+        this.MPView = new BarView(80,10, 100,100);
+        this.MPView.setPosition(10,25);
+        this.MPView.setFrontColor(0x4758ba);
         APP.getHUD().addChild(this.MPView.getContent());
 
-        this.XPBar = new BarView(200,20, 100,100);
-        this.XPBar.setPosition(20,210);
+        this.XPBar = new BarView(80,10, 100,100);
+        this.XPBar.setPosition(10,40);
         this.XPBar.setFrontColor(0x555555);
-        this.XPBar.setBackColor(0x000000);
+        this.XPBar.setBackColor(0x111111);
         APP.getHUD().addChild(this.XPBar.getContent());
 
 
-        this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 15px Arial'});
-        APP.getHUD().addChild(this.levelLabel);
+        // this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 15px Arial'});
+        // APP.getHUD().addChild(this.levelLabel);
 
         //adiciona os shortcuts
-        this.shortcuts = [null,null,null,null,null,null];
-        this.shortcuts[0] = APP.itemList[0];
-        this.shortcuts[1] = APP.itemList[1];
-        this.shortcuts[2] = APP.itemList[2];
-        this.shortcuts[3] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
-        this.shortcuts[4] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
-        this.shortcuts[5] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
-        var tempBox = null;
-        var icosTotalWidth = (120 * this.shortcuts.length);
-        for (var i = 0; i < this.shortcuts.length; i++) {
-            tempBox = new BoxHUD1(100,70, 3);
-            tempBox.setPosition(windowWidth / 2 - icosTotalWidth / 2 +i*120, windowHeight - 90);
-            APP.getHUD().addChild(tempBox.getContent());
-            var tempText = '';
-            var shortcut = i + 1;
-            if(i === 3){
-                shortcut = 'Q';
-            }
-            else if(i === 4){
-                shortcut = 'E';
-            }
-            else if(i === 5){
-                shortcut = 'SPACE';
-            }
-            if(this.shortcuts[i] && this.shortcuts[i].icoImg){
-                tempBox.addImage(this.shortcuts[i].icoImg);
-                tempText = this.shortcuts[i].name;
-                tempBox.addModel(this.shortcuts[i]);
-            }
-            tempBox.setText(tempText + '\n\n\n' + shortcut);
-        }
+        // this.shortcuts = [null,null,null,null,null,null];
+        // this.shortcuts[0] = APP.itemList[0];
+        // this.shortcuts[1] = APP.itemList[1];
+        // this.shortcuts[2] = APP.itemList[2];
+        // this.shortcuts[3] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
+        // this.shortcuts[4] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
+        // this.shortcuts[5] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
+        // var tempBox = null;
+        // var icosTotalWidth = (120 * this.shortcuts.length);
+        // for (var i = 0; i < this.shortcuts.length; i++) {
+        //     tempBox = new BoxHUD1(100,70, 3);
+        //     tempBox.setPosition(windowWidth / 2 - icosTotalWidth / 2 +i*120, windowHeight - 90);
+        //     APP.getHUD().addChild(tempBox.getContent());
+        //     var tempText = '';
+        //     var shortcut = i + 1;
+        //     if(i === 3){
+        //         shortcut = 'Q';
+        //     }
+        //     else if(i === 4){
+        //         shortcut = 'E';
+        //     }
+        //     else if(i === 5){
+        //         shortcut = 'SPACE';
+        //     }
+        //     if(this.shortcuts[i] && this.shortcuts[i].icoImg){
+        //         tempBox.addImage(this.shortcuts[i].icoImg);
+        //         tempText = this.shortcuts[i].name;
+        //         tempBox.addModel(this.shortcuts[i]);
+        //     }
+        //     tempBox.setText(tempText + '\n\n\n' + shortcut);
+        // }
 
-        this.equips = [null,null,null];
-        this.equipsBoxHud = [];
-        for (i = 0; i < this.equips.length; i++) {
-            tempBox = new BoxHUD1(100,70,1);
-            tempBox.setPosition(windowWidth - 120, windowHeight / 2.5 + 90*i);
-            if(i === 0){
-                tempBox.setText('Weapon');
-            }else if(i === 1){
-                tempBox.setText('Armor');
-            }else if(i === 2){
-                tempBox.setText('Relic');
-            }
-            APP.getHUD().addChild(tempBox.getContent());
-            this.equipsBoxHud.push(tempBox);
-        }
+        // this.equips = [null,null,null];
+        // this.equipsBoxHud = [];
+        // for (i = 0; i < this.equips.length; i++) {
+        //     tempBox = new BoxHUD1(100,70,1);
+        //     tempBox.setPosition(windowWidth - 120, windowHeight / 2.5 + 90*i);
+        //     if(i === 0){
+        //         tempBox.setText('Weapon');
+        //     }else if(i === 1){
+        //         tempBox.setText('Armor');
+        //     }else if(i === 2){
+        //         tempBox.setText('Relic');
+        //     }
+        //     APP.getHUD().addChild(tempBox.getContent());
+        //     this.equipsBoxHud.push(tempBox);
+        // }
 
-        this.boxStats = new BoxHUD1(200,310,0);
-        APP.getHUD().addChild(this.boxStats.getContent());
-        this.boxStats.setPosition(20, 320);
+        // this.boxStats = new BoxHUD1(200,310,0);
+        // APP.getHUD().addChild(this.boxStats.getContent());
+        // this.boxStats.setPosition(20, 320);
 
 
-        //adiciona minimap
-        this.minimap = new Minimap();
-        APP.getHUD().addChild(this.minimap.getContent());
-        this.minimap.build();
-        this.minimap.setPosition(windowWidth - this.minimap.getContent().width * 0.5 - 5, 10);
-        this.minimap.getContent().scale.x = 0.5;
-        this.minimap.getContent().scale.y = 0.5;
+        // //adiciona minimap
+        // this.minimap = new Minimap();
+        // APP.getHUD().addChild(this.minimap.getContent());
+        // this.minimap.build();
+        // this.minimap.setPosition(windowWidth - this.minimap.getContent().width * 0.5 - 5, 10);
+        // this.minimap.getContent().scale.x = 0.5;
+        // this.minimap.getContent().scale.y = 0.5;
     },
     //verifica qual model está no atalho e executa a ação daquele model
     useShortcut:function(id){
@@ -198,10 +200,11 @@ var GameScreen = AbstractScreen.extend({
         this.equips[0] = this.player.weaponModel;
         this.equips[1] = this.player.armorModel;
         this.equips[2] = this.player.relicModel;
-
-        for (var i = 0; i < this.equipsBoxHud.length; i++) {
-            if(this.equips[i]){
-                this.equipsBoxHud[i].addModel(this.equips[i]);
+        if(this.equipsBoxHud){
+            for (var i = 0; i < this.equipsBoxHud.length; i++) {
+                if(this.equips[i]){
+                    this.equipsBoxHud[i].addModel(this.equips[i]);
+                }
             }
         }
     },
@@ -320,7 +323,7 @@ var GameScreen = AbstractScreen.extend({
             if(this.miniPlayer){
                 this.miniPlayer.clear();
                 this.miniPlayer.beginFill(0x0000FF);
-                this.miniPlayer.drawRect(tilePosition.x * 2,tilePosition.y * 2,2,2);
+                this.miniPlayer.drawRect(tilePosition.x ,tilePosition.y,1,1);
                 this.miniPlayer.endFill();
             }
             for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
@@ -347,7 +350,7 @@ var GameScreen = AbstractScreen.extend({
                     if(tmpGr){
                         tmpGr.clear();
                         tmpGr.beginFill(0xFF0000);
-                        tmpGr.drawRect(tilePositionE.x * 2,tilePositionE.y * 2,2,2);
+                        tmpGr.drawRect(tilePositionE.x,tilePositionE.y,1,1);
                         tmpGr.endFill();
                     }
                 }
@@ -470,7 +473,7 @@ var GameScreen = AbstractScreen.extend({
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
         }else{
-            this.marginTiles = {x:Math.floor(this.mapPosition.x/ APP.nTileSize), y:Math.floor(this.mapPosition.y/ APP.nTileSize)};
+            this.marginTiles = {x:Math.floor(this.mapPosition.x/ APP.nTileSize) + 20, y:Math.floor(this.mapPosition.y/ APP.nTileSize) + 20};
             if(this.currentNode.mode === 1){
                 this.tempSizeTiles = {x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x , y:Math.floor(windowHeight / APP.nTileSize) +this.marginTiles.y};
             }else{
@@ -491,7 +494,7 @@ var GameScreen = AbstractScreen.extend({
         var tempRect = new PIXI.Graphics();
 
        
-        var tileMiniSize = 2;
+        var tileMiniSize = 1;
         this.miniPlayer.beginFill(0xFF0000);
         this.miniPlayer.drawRect(tileMiniSize,tileMiniSize,0,0);
         for (i = this.currentNode.mapData.length - 1; i >= 0; i--) {
@@ -621,7 +624,9 @@ var GameScreen = AbstractScreen.extend({
         this.equips[0] = this.player.weaponModel;
         this.equips[1] = this.player.armorModel;
         this.equips[2] = this.player.relicModel;
+
         this.updateInventory();
+
         // console.log(this.levelBounds.x/2,this.levelBounds.y/2);
     },
     //atualiza o z index da layer
