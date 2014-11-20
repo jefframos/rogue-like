@@ -215,7 +215,7 @@ var LevelGenerator = Class.extend({
 
 		// 	tempX = ix * APP.nTileSize;
 		// 	tempY = jy * APP.nTileSize;
-			this.parent.currentNode.placedTiles[jy][ix] = 0;
+			this.parent.currentNode.placedTiles[jy][ix] = null;
 			this.parent.currentNode.mapData[jy][ix] = this.map.centers[i].biome;
 		}
 ////////////////////////////////////////
@@ -248,8 +248,9 @@ var LevelGenerator = Class.extend({
 
 		// 	}
 		// }
-
+		// this.tileTeste = new SimpleSprite('_dist/img/levels/tile'+(Math.floor(Math.random() * 4) + 1)+'.png');
 		this.parent.currentNode.bg = new PIXI.DisplayObjectContainer();
+		this.playerPostion = 0;
 		return this.parent.currentNode.bg;
 
 	},
@@ -258,36 +259,57 @@ var LevelGenerator = Class.extend({
 		// if(this.parent.currentNode.bg && this.parent.currentNode.bg.parent === undefined){
 		// 	this.parent.bgContainer.addChild(this.parent.currentNode.bg);
 		// }
+		if(this.playerPostion === playerPostion){
+			return;
+		}
+		this.playerPostion = playerPostion;
 		if(playerPostion && this.parent.currentNode.mapData){
 			var tempPlaced = {x:0,y:0};
-			for (var i = playerPostion.x - this.distanceToShowMap; i < playerPostion.x+this.distanceToShowMap; i++) {
+			var tempPlacedSprite = null;
+			var distance = -999;
+			for (var i = playerPostion.x - this.distanceToShowMap - 4; i < playerPostion.x+this.distanceToShowMap + 4; i++) {
 				if(i >= 0 && i <this.parent.currentNode.placedTiles.length){
 					tempPlaced.x = i;
-					for (var j = playerPostion.y - this.distanceToShowMap; j < playerPostion.y+this.distanceToShowMap; j++) {
+					for (var j = playerPostion.y - this.distanceToShowMap - 4; j < playerPostion.y+this.distanceToShowMap + 4; j++) {
 						if(j >= 0 && j <this.parent.currentNode.placedTiles[tempPlaced.x].length){
 							tempPlaced.y = j;
-							if(this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] === 0 && this.pointDistance(tempPlaced.x, tempPlaced.y,playerPostion.x,playerPostion.y) < this.distanceToShowMap){
-								this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = 1;
+							if(tempPlaced.x >= 0 && tempPlaced.y >= 0 && this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y] !== 'OCEAN'){
+								tempPlacedSprite = this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y];
+								distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y,playerPostion.x,playerPostion.y));
+								if(tempPlacedSprite === null && distance < this.distanceToShowMap){
+									
 
-								var tempTile = new SimpleSprite('_dist/img/levels/tile'+(Math.floor(Math.random() * 4) + 1)+'.png');
-								// var tempTile = new SimpleSprite('_dist/img/tile1.png');
-								
-								var tempX = tempPlaced.x * APP.nTileSize;
-								var tempY = tempPlaced.y * APP.nTileSize;
+									var tempTile = new SimpleSprite('_dist/img/levels/tile'+(Math.floor(Math.random() * 4) + 1)+'.png');
+									// var tempTile = new SimpleSprite('_dist/img/tile1.png');
+									
+									var tempX = tempPlaced.x * APP.nTileSize;
+									var tempY = tempPlaced.y * APP.nTileSize;
 
-								var sz = APP.nTileSize;
-								var scl = 1;
-								// console.log(tempY*scl,tempX*scl);
-								tempTile.setPosition(tempX*scl,tempY*scl);
+									var sz = APP.nTileSize;
+									var scl = 1;
+									// console.log(tempY*scl,tempX*scl);
+									tempTile.setPosition(tempX*scl,tempY*scl);
 
-								tempTile.getContent().tint = displayColors[this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y]];//0x0000FF * map.centers[i].elevation;
+									tempTile.getContent().tint = displayColors[this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y]];//0x0000FF * map.centers[i].elevation;
 
-								// tempTile.getContent().scale.x = scl / 2;
-								// tempTile.getContent().scale.y = scl / 2;
-								// tempTile.getContent().alpha = 0;
-								// TweenLite.to(tempTile.getContent(), 0.5, {alpha:1});
-								// TweenLite.to(tempTile.getContent().scale, 0.2, {x:scl, y:scl});
-								this.parent.currentNode.bg.addChild(tempTile.getContent());
+									// tempTile.getContent().scale.x = scl / 2;
+									// tempTile.getContent().scale.y = scl / 2;
+									// tempTile.getContent().alpha = 0;
+									// TweenLite.to(tempTile.getContent(), 0.5, {alpha:1});
+									// TweenLite.to(tempTile.getContent().scale, 0.2, {x:scl, y:scl});
+									this.parent.currentNode.bg.addChild(tempTile.getContent());
+
+									this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = tempTile.getContent();
+
+								}
+
+								if (tempPlacedSprite !== null  && distance > this.distanceToShowMap){
+									if(tempPlacedSprite.parent){
+										// console.log(tempPlacedSprite, tempPlacedSprite.parent);
+										tempPlacedSprite.parent.removeChild(tempPlacedSprite);
+										this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = null;
+									}
+								}
 							}
 						}
 					}

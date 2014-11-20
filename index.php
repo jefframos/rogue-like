@@ -18,7 +18,7 @@
 		body{
 			margin: 0;
 			padding: 0;
-			background-color: #010101;
+			background-color: #191126;
 			font-family: sans-serif;
 		}
 

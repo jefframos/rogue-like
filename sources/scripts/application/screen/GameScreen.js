@@ -54,6 +54,7 @@ var GameScreen = AbstractScreen.extend({
         this._super();
         var assetsToLoader = [
             '_dist/img/drop.png',
+            '_dist/img/mask.png',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
@@ -80,13 +81,12 @@ var GameScreen = AbstractScreen.extend({
         this.graphDebug = new PIXI.Graphics();
         this.addChild(this.graphDebug);
 
+        this.createHUD();
+
         this.blackShape = new PIXI.Graphics();
         this.blackShape.beginFill(0x000000);
         this.blackShape.drawRect(0,0,windowWidth, windowHeight);
         APP.getHUD().addChild(this.blackShape);
-
-
-        this.createHUD();
 
         //instancia o sistema de colisões
         this.collisionSystem = new BoundCollisionSystem(this, false);
@@ -103,22 +103,37 @@ var GameScreen = AbstractScreen.extend({
     },
     //cria a HUD
     createHUD:function(){
+
+        this.fog = new SimpleSprite('_dist/img/mask.png');
+        APP.getHUD().addChild(this.fog.getContent());
+        
+        // this.fog.build();
+
+        this.backInterface = new PIXI.Graphics();
+        this.backInterface.beginFill(0x261838);
+        this.backInterface.drawRect(windowWidth,0,realWindowWidth - windowWidth, realWindowHeight);
+        APP.getHUD().addChild(this.backInterface);
+
+
+
         this.HPView = new BarView(80,10, 100,100);
-        this.HPView.setPosition(10,10);
+        this.HPView.setPosition(windowWidth + 10,10);
         this.HPView.setFrontColor(0x3d8e09);
         APP.getHUD().addChild(this.HPView.getContent());
 
         this.MPView = new BarView(80,10, 100,100);
-        this.MPView.setPosition(10,25);
+        this.MPView.setPosition(windowWidth + 10,25);
         this.MPView.setFrontColor(0x4758ba);
         APP.getHUD().addChild(this.MPView.getContent());
 
         this.XPBar = new BarView(80,10, 100,100);
-        this.XPBar.setPosition(10,40);
+        this.XPBar.setPosition(windowWidth + 10,40);
         this.XPBar.setFrontColor(0x555555);
         this.XPBar.setBackColor(0x111111);
         APP.getHUD().addChild(this.XPBar.getContent());
 
+
+        
 
         // this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 15px Arial'});
         // APP.getHUD().addChild(this.levelLabel);
@@ -184,6 +199,8 @@ var GameScreen = AbstractScreen.extend({
         // this.minimap.setPosition(windowWidth - this.minimap.getContent().width * 0.5 - 5, 10);
         // this.minimap.getContent().scale.x = 0.5;
         // this.minimap.getContent().scale.y = 0.5;
+
+
     },
     //verifica qual model está no atalho e executa a ação daquele model
     useShortcut:function(id){
@@ -508,8 +525,8 @@ var GameScreen = AbstractScreen.extend({
         this.minimapContainer.addChild(this.miniPlayer);
 
         APP.getHUD().addChild(this.minimapContainer);
-        this.minimapContainer.position.x = windowWidth - this.minimapContainer.width - 20;
-        this.minimapContainer.position.y = windowHeight - this.minimapContainer.height - 20;
+        this.minimapContainer.position.x = realWindowWidth - this.minimapContainer.width - 20;
+        this.minimapContainer.position.y = realWindowHeight - this.minimapContainer.height - 20;
         // console.log(this.levelBounds, this.currentNode.mapData.length, this.currentNode.mapData[0].length);
         // this.levelBounds= {x: this.currentNode.bg.width, y: this.currentNode.bg.height};
 

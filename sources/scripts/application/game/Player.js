@@ -5,7 +5,7 @@ var Player = SpritesheetEntity.extend({
         this.updateable = false;
         this.deading = false;
         this.collidable = true;
-        this.range = APP.tileSize.x/2;
+        this.range = 10;
         this.width = APP.tileSize.x * 0.8;
         this.height = APP.tileSize.y * 0.8;
         this.type = 'player';
@@ -87,7 +87,7 @@ var Player = SpritesheetEntity.extend({
 
         var self = this;
 
-
+        this.range = this.playerModel.graphicsData.range;
         var motionIdleDown = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel,
             this.playerModel.graphicsData.frames.idleDownInit,
             this.playerModel.graphicsData.frames.idleDownEnd);

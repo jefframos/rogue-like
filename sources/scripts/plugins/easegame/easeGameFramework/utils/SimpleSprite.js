@@ -8,6 +8,7 @@ var SimpleSprite =  Class.extend({
 			this.texture = img;
 
 		this.container = new PIXI.Sprite(this.texture);
+		// this.container.cacheAsBitmap = true;
 	},
 	getContent:function(){
 		return this.container;

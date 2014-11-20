@@ -1,4 +1,4 @@
-/*! jefframos 19-11-2014 */
+/*! jefframos 20-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -10,10 +10,11 @@ function testMobile() {
 
 function update() {
     requestAnimFrame(update), meter.tickStart();
-    var tempRation = window.innerHeight / windowHeight, ratio = tempRation < window.innerWidth / windowWidth ? tempRation : window.innerWidth / windowWidth;
-    windowWidthVar = windowWidth * ratio, windowHeightVar = windowHeight * ratio, renderer.view.style.width = windowWidth + "px", 
-    renderer.view.style.height = windowHeight + "px", APP.update(), renderer.render(APP.stage), 
-    meter.tick();
+    var tempRation = window.innerHeight / windowHeight, ratio = tempRation < window.innerWidth / realWindowWidth ? tempRation : window.innerWidth / realWindowWidth;
+    windowWidthVar = realWindowWidth * ratio, windowHeightVar = realWindowHeight * ratio, 
+    windowWidthVar > realWindowWidth && (windowWidthVar = realWindowWidth), windowHeightVar > realWindowHeight && (windowHeightVar = realWindowHeight), 
+    renderer.view.style.width = windowWidthVar + "px", renderer.view.style.height = windowHeightVar + "px", 
+    APP.update(), renderer.render(APP.stage), meter.tick();
 }
 
 function pointDistance(x, y, x0, y0) {
@@ -181,10 +182,10 @@ SmartSocket.SOCKET_ERROR = "socketError";
 
 var Application = AbstractApplication.extend({
     init: function() {
-        this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(0), this.stage.removeChild(this.loadText), 
-        this.isMobile = testMobile(), this.appContainer = document.getElementById("rect"), 
+        this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(3153730), 
+        this.stage.removeChild(this.loadText), this.isMobile = testMobile(), this.appContainer = document.getElementById("rect"), 
         this.id = parseInt(1e11 * Math.random()), this.gen = new DungeonGenerator(), this.gen.generate(16777215 * Math.random(), 1, [ 10, 15 ], [ 12, 12 ], 5), 
-        this.nTileSize = 64, this.tileSize = {
+        this.nTileSize = 50, this.tileSize = {
             x: this.nTileSize,
             y: this.nTileSize
         };
@@ -761,7 +762,7 @@ var Application = AbstractApplication.extend({
 }), Player = SpritesheetEntity.extend({
     init: function(model) {
         this._super(!0), this.updateable = !1, this.deading = !1, this.collidable = !0, 
-        this.range = APP.tileSize.x / 2, this.width = .8 * APP.tileSize.x, this.height = .8 * APP.tileSize.y, 
+        this.range = 10, this.width = .8 * APP.tileSize.x, this.height = .8 * APP.tileSize.y, 
         this.type = "player", this.collisionPointsMarginDivide = 0, this.isTouch = !1, this.boundsCollision = !0, 
         this.armorModel = null, this.weaponModel = null, this.relicModel = null, this.playerModel = model, 
         this.playerModel.entity = this, this.fireModel = new FireModel(), this.endLevel = !1, 
@@ -797,6 +798,7 @@ var Application = AbstractApplication.extend({
         pop.initMotion(-10 - 10 * Math.random(), 1), this.getTexture().tint = 16711680;
     },
     build: function() {
+        this.range = this.playerModel.graphicsData.range;
         var motionIdleDown = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel, this.playerModel.graphicsData.frames.idleDownInit, this.playerModel.graphicsData.frames.idleDownEnd), animationIdleDown = new SpritesheetAnimation();
         animationIdleDown.build("idleDown", motionIdleDown, 1, !0, null);
         var motionIdleUp = this.getFramesByRange(this.playerModel.graphicsData.sourceLabel, this.playerModel.graphicsData.frames.idleUpInit, this.playerModel.graphicsData.frames.idleUpEnd), animationIdleUp = new SpritesheetAnimation();
@@ -1462,25 +1464,32 @@ var Application = AbstractApplication.extend({
             y: this.parent.tempSizeTiles.y / 2
         };
         for (i = 0; i < this.map.centers.length; i++) ix = Math.floor(this.map.centers[i].point.y / APP.nTileSize), 
-        jy = Math.floor(this.map.centers[i].point.x / APP.nTileSize), this.parent.currentNode.placedTiles[jy][ix] = 0, 
+        jy = Math.floor(this.map.centers[i].point.x / APP.nTileSize), this.parent.currentNode.placedTiles[jy][ix] = null, 
         this.parent.currentNode.mapData[jy][ix] = this.map.centers[i].biome;
         return this.parent.currentNode.topTile = top, this.parent.currentNode.bottomTile = bot, 
         this.parent.currentNode.leftTile = lef, this.parent.currentNode.rightTile = rig, 
-        this.parent.currentNode.bg = new PIXI.DisplayObjectContainer(), this.parent.currentNode.bg;
+        this.parent.currentNode.bg = new PIXI.DisplayObjectContainer(), this.playerPostion = 0, 
+        this.parent.currentNode.bg;
     },
     updateTiles: function(playerPostion) {
-        if (playerPostion && this.parent.currentNode.mapData) for (var tempPlaced = {
+        if (this.playerPostion !== playerPostion && (this.playerPostion = playerPostion, 
+        playerPostion && this.parent.currentNode.mapData)) for (var tempPlaced = {
             x: 0,
             y: 0
-        }, i = playerPostion.x - this.distanceToShowMap; i < playerPostion.x + this.distanceToShowMap; i++) if (i >= 0 && i < this.parent.currentNode.placedTiles.length) {
+        }, tempPlacedSprite = null, distance = -999, i = playerPostion.x - this.distanceToShowMap - 4; i < playerPostion.x + this.distanceToShowMap + 4; i++) if (i >= 0 && i < this.parent.currentNode.placedTiles.length) {
             tempPlaced.x = i;
-            for (var j = playerPostion.y - this.distanceToShowMap; j < playerPostion.y + this.distanceToShowMap; j++) if (j >= 0 && j < this.parent.currentNode.placedTiles[tempPlaced.x].length && (tempPlaced.y = j, 
-            0 === this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] && this.pointDistance(tempPlaced.x, tempPlaced.y, playerPostion.x, playerPostion.y) < this.distanceToShowMap)) {
-                this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = 1;
-                var tempTile = new SimpleSprite("_dist/img/levels/tile" + (Math.floor(4 * Math.random()) + 1) + ".png"), tempX = tempPlaced.x * APP.nTileSize, tempY = tempPlaced.y * APP.nTileSize, scl = (APP.nTileSize, 
-                1);
-                tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = displayColors[this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y]], 
-                this.parent.currentNode.bg.addChild(tempTile.getContent());
+            for (var j = playerPostion.y - this.distanceToShowMap - 4; j < playerPostion.y + this.distanceToShowMap + 4; j++) if (j >= 0 && j < this.parent.currentNode.placedTiles[tempPlaced.x].length && (tempPlaced.y = j, 
+            tempPlaced.x >= 0 && tempPlaced.y >= 0 && "OCEAN" !== this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y])) {
+                if (tempPlacedSprite = this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y], 
+                distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y, playerPostion.x, playerPostion.y)), 
+                null === tempPlacedSprite && distance < this.distanceToShowMap) {
+                    var tempTile = new SimpleSprite("_dist/img/levels/tile" + (Math.floor(4 * Math.random()) + 1) + ".png"), tempX = tempPlaced.x * APP.nTileSize, tempY = tempPlaced.y * APP.nTileSize, scl = (APP.nTileSize, 
+                    1);
+                    tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = displayColors[this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y]], 
+                    this.parent.currentNode.bg.addChild(tempTile.getContent()), this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = tempTile.getContent();
+                }
+                null !== tempPlacedSprite && distance > this.distanceToShowMap && tempPlacedSprite.parent && (tempPlacedSprite.parent.removeChild(tempPlacedSprite), 
+                this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = null);
             }
         }
     },
@@ -1572,23 +1581,28 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onAssetsLoaded: function() {
         this._super(), this.currentNode = APP.gen.firstNode, this.currentNode.applySeed();
         this.vecPositions = [], this.keyboardInput = new InputManager(this), this.graphDebug = new PIXI.Graphics(), 
-        this.addChild(this.graphDebug), this.blackShape = new PIXI.Graphics(), this.blackShape.beginFill(0), 
-        this.blackShape.drawRect(0, 0, windowWidth, windowHeight), APP.getHUD().addChild(this.blackShape), 
-        this.createHUD(), this.collisionSystem = new BoundCollisionSystem(this, !1), this.effectsContainer = new PIXI.DisplayObjectContainer(), 
-        this.addChild(this.effectsContainer), this.levelGenerator = new LevelGenerator(this), 
-        this.resetLevel();
+        this.addChild(this.graphDebug), this.createHUD(), this.blackShape = new PIXI.Graphics(), 
+        this.blackShape.beginFill(0), this.blackShape.drawRect(0, 0, windowWidth, windowHeight), 
+        APP.getHUD().addChild(this.blackShape), this.collisionSystem = new BoundCollisionSystem(this, !1), 
+        this.effectsContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.effectsContainer), 
+        this.levelGenerator = new LevelGenerator(this), this.resetLevel();
     },
     createHUD: function() {
-        this.HPView = new BarView(80, 10, 100, 100), this.HPView.setPosition(10, 10), this.HPView.setFrontColor(4034057), 
+        this.fog = new SimpleSprite("_dist/img/mask.png"), APP.getHUD().addChild(this.fog.getContent()), 
+        this.backInterface = new PIXI.Graphics(), this.backInterface.beginFill(2496568), 
+        this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
+        APP.getHUD().addChild(this.backInterface), this.HPView = new BarView(80, 10, 100, 100), 
+        this.HPView.setPosition(windowWidth + 10, 10), this.HPView.setFrontColor(4034057), 
         APP.getHUD().addChild(this.HPView.getContent()), this.MPView = new BarView(80, 10, 100, 100), 
-        this.MPView.setPosition(10, 25), this.MPView.setFrontColor(4675770), APP.getHUD().addChild(this.MPView.getContent()), 
-        this.XPBar = new BarView(80, 10, 100, 100), this.XPBar.setPosition(10, 40), this.XPBar.setFrontColor(5592405), 
+        this.MPView.setPosition(windowWidth + 10, 25), this.MPView.setFrontColor(4675770), 
+        APP.getHUD().addChild(this.MPView.getContent()), this.XPBar = new BarView(80, 10, 100, 100), 
+        this.XPBar.setPosition(windowWidth + 10, 40), this.XPBar.setFrontColor(5592405), 
         this.XPBar.setBackColor(1118481), APP.getHUD().addChild(this.XPBar.getContent());
     },
     useShortcut: function(id) {
@@ -1763,8 +1777,8 @@ var Application = AbstractApplication.extend({
         tempRect.drawRect(i * tileMiniSize, j * tileMiniSize, tileMiniSize, tileMiniSize), 
         tempRect.endFill(), this.minimapContainer.addChild(tempRect);
         this.minimapContainer.addChild(this.miniPlayer), APP.getHUD().addChild(this.minimapContainer), 
-        this.minimapContainer.position.x = windowWidth - this.minimapContainer.width - 20, 
-        this.minimapContainer.position.y = windowHeight - this.minimapContainer.height - 20, 
+        this.minimapContainer.position.x = realWindowWidth - this.minimapContainer.width - 20, 
+        this.minimapContainer.position.y = realWindowHeight - this.minimapContainer.height - 20, 
         this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
         var monstersToLoaded = [], monstersAssets = [];
         if (1 !== this.currentNode.mode) {
@@ -1891,11 +1905,11 @@ $.ajaxSetup({
     cache: !1
 });
 
-var SOCKET = null, windowWidth = 810, windowHeight = 456;
+var SOCKET = null, windowWidth = 600, windowHeight = 600, realWindowWidth = 800, realWindowHeight = 600;
 
 testMobile() && (windowWidth = 640, windowHeight = 960);
 
-var renderer, windowWidthVar = window.innerWidth, windowHeightVar = window.innerHeight, renderer = PIXI.autoDetectRenderer(windowWidth, windowHeight);
+var renderer, windowWidthVar = window.innerWidth, windowHeightVar = window.innerHeight, renderer = PIXI.autoDetectRenderer(realWindowWidth, realWindowHeight);
 
 document.body.appendChild(renderer.view);
 

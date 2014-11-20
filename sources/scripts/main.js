@@ -6,8 +6,15 @@ function testMobile() {
 }
 
 var SOCKET = null;
-var windowWidth = 810,
-windowHeight = 456;
+var windowWidth = 600,
+// var windowWidth = 810,
+// windowHeight = 456;
+windowHeight = 600;
+
+var realWindowWidth = 800,
+// var windowWidth = 810,
+// windowHeight = 456;
+realWindowHeight = 600;
 
 if(testMobile()){
 	windowWidth = 640;
@@ -18,7 +25,7 @@ var renderer;
 
 var windowWidthVar = window.innerWidth,
 windowHeightVar = window.innerHeight;
-var renderer = PIXI.autoDetectRenderer(windowWidth, windowHeight);
+var renderer = PIXI.autoDetectRenderer(realWindowWidth, realWindowHeight);
 
 // renderer.view.style.width = windowWidthVar+'px';
 // renderer.view.style.height = windowHeightVar+'px';
@@ -34,15 +41,23 @@ function update() {
 	requestAnimFrame(update );
 	meter.tickStart();
 	var tempRation =  (window.innerHeight/windowHeight);
-	var ratio = tempRation < (window.innerWidth/windowWidth)?tempRation:(window.innerWidth/windowWidth);
-	windowWidthVar = windowWidth * ratio;
-	windowHeightVar = windowHeight * ratio;
+	var ratio = tempRation < (window.innerWidth/realWindowWidth)?tempRation:(window.innerWidth/realWindowWidth);
+	windowWidthVar = realWindowWidth * ratio;
+	windowHeightVar = realWindowHeight * ratio;
 	//proportional
-	// renderer.view.style.width = windowWidthVar+'px';
-	// renderer.view.style.height = windowHeightVar+'px';
+	if(windowWidthVar > realWindowWidth)
+	{
+		windowWidthVar = realWindowWidth;
+	}
+	if(windowHeightVar > realWindowHeight)
+	{
+		windowHeightVar = realWindowHeight;
+	}
+	renderer.view.style.width = windowWidthVar+'px';
+	renderer.view.style.height = windowHeightVar+'px';
 
-	renderer.view.style.width = windowWidth+'px';
-	renderer.view.style.height = windowHeight+'px';
+	// renderer.view.style.width = windowWidth+'px';
+	// renderer.view.style.height = windowHeight+'px';
 
 
 	// renderer.view.style.width = (windowWidth/1.5)+'px';

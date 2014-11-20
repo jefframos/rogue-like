@@ -33,6 +33,7 @@
                     "x": -20,
                     "y": -20
                 },
+                "range":50,
                 "frames":{
                     "idleInit":0,
                     "idleEnd":14
@@ -73,6 +74,7 @@
                     "x": -20,
                     "y": -20
                 },
+                "range":25,
                 "frames":{
                     "idleInit":0,
                     "idleEnd":13
@@ -110,9 +112,10 @@
                 "srcJson":"_dist/img/players/foxy.json",
                 "sourceLabel":"fox0",
                 "positionSprite":{
-                    "x": 25,
-                    "y": -15
+                    "x": 28,
+                    "y": -5
                 },
+                "range":25,
                 "frames":{
                     "idleDownInit":0,
                     "idleDownEnd":0,

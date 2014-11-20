@@ -3,7 +3,7 @@ var Application = AbstractApplication.extend({
 	init:function(){
 
         this._super(windowWidth, windowHeight);
-        this.stage.setBackgroundColor(0x000);
+        this.stage.setBackgroundColor(0x301f42);
         this.stage.removeChild(this.loadText);
         this.isMobile = testMobile();
         this.appContainer = document.getElementById('rect');
@@ -15,7 +15,7 @@ var Application = AbstractApplication.extend({
         // this.gen.log();
 
         //size utilizado no tilemap
-        this.nTileSize = 64;
+        this.nTileSize = 50;
         //size utilizado nos personagens
         this.tileSize = {x: this.nTileSize, y:  this.nTileSize};
         
