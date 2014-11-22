@@ -105,7 +105,7 @@ var GameScreen = AbstractScreen.extend({
     createHUD:function(){
 
         this.fog = new SimpleSprite('_dist/img/mask.png');
-        APP.getHUD().addChild(this.fog.getContent());
+        //APP.getHUD().addChild(this.fog.getContent());
         
         // this.fog.build();
 

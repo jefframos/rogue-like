@@ -26,7 +26,7 @@ var Fairy = Entity.extend({
         this.range = 0;
         this.fairyAngle = 0;
 
-        this.noDepth = true;
+        // this.noDepth = true;
     },
     getBounds: function(){
         this.bounds = {x: this.getPosition().x - this.width *this.fairySprite.anchor.x,

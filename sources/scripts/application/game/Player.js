@@ -220,30 +220,86 @@ var Player = SpritesheetEntity.extend({
             this.velocity = this.virtualVelocity;
         }
 
-        if(this.velocity.y > 0){
-            this.spritesheet.scale.x = 1;
-            this.spritesheet.play('down');
-        }else if(this.velocity.y < 0){
-            this.spritesheet.scale.x = 1;
-            this.spritesheet.play('up');
-        }else if(this.velocity.x < 0){
-            this.spritesheet.scale.x = 1;
-            this.spritesheet.play('side');
-        }else if(this.velocity.x > 0){
-            this.spritesheet.scale.x = -1;
-            this.spritesheet.play('side');
+        this.mouseAngle = Math.atan2( windowHeight/2 - APP.getMousePos().y + this.centerPosition.y,  windowWidth/2-APP.getMousePos().x+ this.centerPosition.x);
+        var motion = 'side';
+        this.mouseAngle = this.mouseAngle / Math.PI * 180 + 180;
+        // console.log(angle / Math.PI * 180 + 180);
+        if(this.mouseAngle > 45 && this.mouseAngle < 135)
+        {
+            motion = 'down';
+        }else if(this.mouseAngle > 225 && this.mouseAngle < 315)
+        {
+            motion = 'up';
+        }
+        if(motion === 'side'){
+            if(APP.getMousePos().x < windowWidth/2 + this.centerPosition.x)
+            {
+                this.spritesheet.scale.x = 1;
+            }else{
+                this.spritesheet.scale.x = -1;
+            }
+        }
+        if(this.velocity.y + this.velocity.x !== 0){
+            this.spritesheet.play(motion);
         }else{
-            // console.log(this.spritesheet.currentAnimation.label);
-            if(this.spritesheet.currentAnimation.label === 'side'){
+            if(motion === 'side'){
                 this.spritesheet.play('idleSide');
-            }else if(this.spritesheet.currentAnimation.label === 'up'){
+            }else if(motion === 'up'){
                 this.spritesheet.play('idleUp');
-            }else if(this.spritesheet.currentAnimation.label === 'down'){
+            }else if(motion === 'down'){
                 this.spritesheet.play('idleDown');
             }
             
         }
 
+        // if(this.velocity.y > 0){
+        //     this.spritesheet.scale.x = 1;
+        //     this.spritesheet.play(motion);
+        // }else if(this.velocity.y < 0){
+        //     this.spritesheet.scale.x = 1;
+        //     this.spritesheet.play(motion);
+        // }else if(this.velocity.x < 0){
+        //     this.spritesheet.scale.x = 1;
+        //     this.spritesheet.play(motion);
+        // }else if(this.velocity.x > 0){
+        //     this.spritesheet.scale.x = -1;
+        //     this.spritesheet.play(motion);
+        // }else{
+        //     // console.log(this.spritesheet.currentAnimation.label);
+        //     if(this.spritesheet.currentAnimation.label === motion){
+        //         this.spritesheet.play('idleSide');
+        //     }else if(this.spritesheet.currentAnimation.label === motion){
+        //         this.spritesheet.play('idleUp');
+        //     }else if(this.spritesheet.currentAnimation.label === motion){
+        //         this.spritesheet.play('idleDown');
+        //     }
+            
+        // }
+
+
+        // if(this.velocity.y > 0){
+        //     this.spritesheet.scale.x = 1;
+        //     this.spritesheet.play('down');
+        // }else if(this.velocity.y < 0){
+        //     this.spritesheet.scale.x = 1;
+        //     this.spritesheet.play('up');
+        // }else if(this.velocity.x < 0){
+        //     this.spritesheet.scale.x = 1;
+        //     this.spritesheet.play('side');
+        // }else if(this.velocity.x > 0){
+        //     this.spritesheet.scale.x = -1;
+        //     this.spritesheet.play('side');
+        // }else{
+        //     // console.log(this.spritesheet.currentAnimation.label);
+        //     if(this.spritesheet.currentAnimation.label === 'side'){
+        //         this.spritesheet.play('idleSide');
+        //     }else if(this.spritesheet.currentAnimation.label === 'up'){
+        //         this.spritesheet.play('idleUp');
+        //     }else if(this.spritesheet.currentAnimation.label === 'down'){
+        //         this.spritesheet.play('idleDown');
+        //     }
+            
+        // }
         if(this.returnCollider > 0){
             this.returnCollider --;
         }

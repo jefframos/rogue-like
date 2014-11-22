@@ -1,4 +1,4 @@
-/*! jefframos 20-11-2014 */
+/*! jefframos 22-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -195,6 +195,9 @@ var Application = AbstractApplication.extend({
     },
     getGame: function() {
         return this.mainApp;
+    },
+    getMousePos: function() {
+        return this.stage.getMousePosition();
     },
     getGameContent: function() {
         return this.mainApp.getContent();
@@ -499,7 +502,7 @@ var Application = AbstractApplication.extend({
         this._super(), this.updateable = !0, this.collidable = !1, this.player = player, 
         this.srcImg = "_dist/img/fairy/f1.png", this.type = "fairy", this.width = 25, this.height = 25, 
         this.bounceAcc = 0, this.bounceAccMax = 30, this.velYHelper = 1, this.fairyContainer = new PIXI.DisplayObjectContainer(), 
-        this.range = 0, this.fairyAngle = 0, this.noDepth = !0;
+        this.range = 0, this.fairyAngle = 0;
     },
     getBounds: function() {
         return this.bounds = {
@@ -867,10 +870,11 @@ var Application = AbstractApplication.extend({
     update: function() {
         this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = this.playerModel.velocity, 
         !this.isTouch && this.returnCollider <= 0 && (this.velocity = this.virtualVelocity), 
-        this.velocity.y > 0 ? (this.spritesheet.scale.x = 1, this.spritesheet.play("down")) : this.velocity.y < 0 ? (this.spritesheet.scale.x = 1, 
-        this.spritesheet.play("up")) : this.velocity.x < 0 ? (this.spritesheet.scale.x = 1, 
-        this.spritesheet.play("side")) : this.velocity.x > 0 ? (this.spritesheet.scale.x = -1, 
-        this.spritesheet.play("side")) : "side" === this.spritesheet.currentAnimation.label ? this.spritesheet.play("idleSide") : "up" === this.spritesheet.currentAnimation.label ? this.spritesheet.play("idleUp") : "down" === this.spritesheet.currentAnimation.label && this.spritesheet.play("idleDown"), 
+        this.mouseAngle = Math.atan2(windowHeight / 2 - APP.getMousePos().y + this.centerPosition.y, windowWidth / 2 - APP.getMousePos().x + this.centerPosition.x);
+        var motion = "side";
+        this.mouseAngle = this.mouseAngle / Math.PI * 180 + 180, this.mouseAngle > 45 && this.mouseAngle < 135 ? motion = "down" : this.mouseAngle > 225 && this.mouseAngle < 315 && (motion = "up"), 
+        "side" === motion && (this.spritesheet.scale.x = APP.getMousePos().x < windowWidth / 2 + this.centerPosition.x ? 1 : -1), 
+        this.velocity.y + this.velocity.x !== 0 ? this.spritesheet.play(motion) : "side" === motion ? this.spritesheet.play("idleSide") : "up" === motion ? this.spritesheet.play("idleUp") : "down" === motion && this.spritesheet.play("idleDown"), 
         this.returnCollider > 0 && this.returnCollider--, this.deading && this.setVelocity(0, 0), 
         this._super(), this.debugPolygon(5596740, !0), this.getTexture() && this.playerModel.graphicsData.positionSprite && (this.playerModel.graphicsData.positionSprite.x && (this.getContent().position.x = this.playerModel.graphicsData.positionSprite.x), 
         this.playerModel.graphicsData.positionSprite.y && (this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y));
@@ -1594,9 +1598,8 @@ var Application = AbstractApplication.extend({
         this.levelGenerator = new LevelGenerator(this), this.resetLevel();
     },
     createHUD: function() {
-        this.fog = new SimpleSprite("_dist/img/mask.png"), APP.getHUD().addChild(this.fog.getContent()), 
-        this.backInterface = new PIXI.Graphics(), this.backInterface.beginFill(2496568), 
-        this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
+        this.fog = new SimpleSprite("_dist/img/mask.png"), this.backInterface = new PIXI.Graphics(), 
+        this.backInterface.beginFill(2496568), this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
         APP.getHUD().addChild(this.backInterface), this.HPView = new BarView(80, 10, 100, 100), 
         this.HPView.setPosition(windowWidth + 10, 10), this.HPView.setFrontColor(4034057), 
         APP.getHUD().addChild(this.HPView.getContent()), this.MPView = new BarView(80, 10, 100, 100), 

@@ -27,6 +27,9 @@ var Application = AbstractApplication.extend({
     getGame:function(){
         return this.mainApp;
     },
+    getMousePos:function(){
+        return this.stage.getMousePosition();
+    },
     getGameContent:function(){
         return this.mainApp.getContent();
     },
