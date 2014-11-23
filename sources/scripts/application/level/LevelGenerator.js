@@ -47,20 +47,20 @@ var displayColors = {
 	    BRIDGE: 0x686860,
 	    LAVA: 0xcc3333,
 
-	    // Terrain
-	    SNOW: 0xffffff,
-	    TUNDRA: 0xbbbbaa,
-	    BARE: 0x888888,
-	    SCORCHED: 0x555555,
-	    TAIGA: 0x99aa77,
-	    SHRUBLAND: 0x889977,
-	    TEMPERATE_DESERT: 0xc9d29b,
-	    TEMPERATE_RAIN_FOREST: 0x448855,
-	    TEMPERATE_DECIDUOUS_FOREST: 0x679459,
-	    GRASSLAND: 0x88aa55,
-	    SUBTROPICAL_DESERT: 0xd2b98b,
-	    TROPICAL_RAIN_FOREST: 0x337755,
-	    TROPICAL_SEASONAL_FOREST: 0x559944
+	    // Terrain 0x315b16
+	    SNOW: 0x3d8e09,
+	    TUNDRA: 0x3d8e09,
+	    BARE: 0x3d8e09,
+	    SCORCHED: 0x3d8e09,
+	    TAIGA: 0x3d8e09,
+	    SHRUBLAND: 0x4fa319,
+	    TEMPERATE_DESERT: 0x4fa319,
+	    TEMPERATE_RAIN_FOREST: 0x315b16,
+	    TEMPERATE_DECIDUOUS_FOREST: 0x315b16,
+	    GRASSLAND: 0x4fa319,
+	    SUBTROPICAL_DESERT: 0x4fa319,
+	    TROPICAL_RAIN_FOREST: 0x315b16,
+	    TROPICAL_SEASONAL_FOREST: 0x315b16
 	};
 
 var LevelGenerator = Class.extend({
@@ -86,8 +86,8 @@ var LevelGenerator = Class.extend({
 			// tempMonster.build();
 			// tempMonster.setPosition(this.parent.levelBounds.x * this.parent.currentNode.getNextFloat(),this.parent.levelBounds.y * this.parent.currentNode.getNextFloat());
 			var rndAngle = this.parent.currentNode.getNextFloat() * 360 / 180 * Math.PI;
-			tempMonster.initialPosition = {x:this.parent.levelBounds.x /2 + 300 + (400*i) * Math.sin(rndAngle),
-				y:this.parent.levelBounds.y /2 + 300 + (400*i) * Math.cos(rndAngle)};
+			tempMonster.initialPosition = {x:this.parent.levelBounds.x /2 + 300 + (200*i) * Math.sin(rndAngle),
+				y:this.parent.levelBounds.y /2 + 300 + (200*i) * Math.cos(rndAngle)};
 			// this.parent.entityLayer.addChild(tempMonster);
 			monsters.push(tempMonster);
 		}
@@ -122,7 +122,7 @@ var LevelGenerator = Class.extend({
 	},
 	createRoom: function(){
 		var i = 0;
-		this.distanceToShowMap = 8;
+		this.distanceToShowMap = 9;
 		var mapMaker = null;
 		// if(this.parent.currentNode.getNextFloat()< 0.3){
 		// 	mapMaker = voronoiMap.islandShape.makeBlob(this.parent.currentNode.getNextFloat(), 0.5);
@@ -131,9 +131,12 @@ var LevelGenerator = Class.extend({
 		// 	mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), 0.5);
 		// }
 		// else{// if(this.parent.currentNode.getNextFloat()< 0.3){
-		// 	mapMaker = voronoiMap.islandShape.makeSquare(this.parent.currentNode.getNextFloat(), 0.5);
+			// mapMaker = voronoiMap.islandShape.makeSquare(this.parent.currentNode.getNextFloat(), 0.5);
 		// }
-		mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), 0.5);
+		// mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), 0.5);
+		// mapMaker = voronoiMap.islandShape.makeSquare(this.parent.currentNode.getNextFloat(), 0.5);
+
+		mapMaker = voronoiMap.islandShape.makePerlin(this.parent.currentNode.getNextFloat(), 0.5);
 		// this.parent.tempSizeTiles.x *= 4;
 		// this.parent.tempSizeTiles.y *= 4;
 		this.parent.currentNode.mapData = [];

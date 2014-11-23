@@ -1,4 +1,4 @@
-/*! jefframos 22-11-2014 */
+/*! jefframos 23-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -373,6 +373,85 @@ var Application = AbstractApplication.extend({
     setPosition: function(x, y) {
         this.container.position.x = x, this.container.position.y = y;
     }
+}), MapHUD = Class.extend({
+    init: function(img) {
+        this.width = 150, this.height = 130, img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : (this.background = new PIXI.Graphics(), 
+        this.background.beginFill(displayColors.OCEAN), this.background.drawRect(0, 0, this.width, this.height), 
+        this.background.endFill()), this.mask = new PIXI.Graphics(), this.container = new PIXI.DisplayObjectContainer(), 
+        this.mapContainer = new PIXI.DisplayObjectContainer(), this.container.addChild(this.background), 
+        this.container.addChild(this.mapContainer), this.sizeTile = {
+            x: 3,
+            y: 3
+        }, this.rightBottom = new PIXI.Graphics(), this.leftleft = new PIXI.Graphics(), 
+        this.bottomLeft = new PIXI.Graphics(), this.player = new PIXI.Graphics();
+    },
+    build: function(node) {
+        this.node = node, this.player.parent && this.player.parent.removeChild(this.player), 
+        this.rightBottom.parent && this.rightBottom.parent.removeChild(this.rightBottom), 
+        this.leftleft.parent && this.leftleft.parent.removeChild(this.leftleft), this.bottomLeft.parent && this.bottomLeft.parent.removeChild(this.bottomLeft), 
+        this.mask.parent && this.mask.parent.removeChild(this.mask), this.mapContainer.parent && (this.mapContainer.parent.removeChild(this.mapContainer), 
+        this.mapContainer = new PIXI.DisplayObjectContainer(), this.container.addChild(this.mapContainer));
+        var tempRect = new PIXI.Graphics();
+        for (i = node.mapData.length - 1; i >= 0; i--) for (j = node.mapData[i].length - 1; j >= 0; j--) tempRect.beginFill(displayColors[node.mapData[i][j]]), 
+        tempRect.drawRect(i * this.sizeTile.x, j * this.sizeTile.y, this.sizeTile.x, this.sizeTile.y), 
+        tempRect.endFill(), this.mapContainer.addChild(tempRect);
+        this.mask.beginFill(0), this.mask.moveTo(this.width / 1.8, 0);
+        var rightBottomEdge = {
+            x: this.width,
+            y: this.height / 2.5
+        };
+        this.mask.lineTo(rightBottomEdge.x, rightBottomEdge.y);
+        var bottomEdge = {
+            x: this.width / 1.3,
+            y: this.height
+        };
+        this.mask.lineTo(bottomEdge.x, bottomEdge.y);
+        var leftBottomEdge = {
+            x: this.width / 2.8,
+            y: this.height / 1.1
+        };
+        this.mask.lineTo(leftBottomEdge.x, leftBottomEdge.y);
+        var leftLeftEdge = {
+            x: 0,
+            y: this.height / 1.8
+        };
+        this.mask.lineTo(leftLeftEdge.x, leftLeftEdge.y), this.mask.lineTo(0, this.height / 5), 
+        this.mask.lineTo(this.width / 7, this.height / 15), this.mask.endFill(), this.container.addChild(this.mask), 
+        this.mapContainer.mask = this.mask, this.background.mask = this.mask;
+        var tempRbUnion = {
+            x: bottomEdge.x + 5,
+            y: bottomEdge.y + 20
+        };
+        this.rightBottom = new PIXI.Graphics(), this.rightBottom.beginFill(2171204), this.rightBottom.moveTo(rightBottomEdge.x, rightBottomEdge.y), 
+        this.rightBottom.lineTo(bottomEdge.x, bottomEdge.y), this.rightBottom.lineTo(tempRbUnion.x, tempRbUnion.y), 
+        this.rightBottom.lineTo(rightBottomEdge.x, rightBottomEdge.y + 20), this.rightBottom.endFill();
+        var tempBlUnion = {
+            x: leftBottomEdge.x - 5,
+            y: leftBottomEdge.y + 20
+        };
+        this.bottomLeft = new PIXI.Graphics(), this.bottomLeft.beginFill(3223899), this.bottomLeft.moveTo(bottomEdge.x, bottomEdge.y), 
+        this.bottomLeft.lineTo(leftBottomEdge.x, leftBottomEdge.y), this.bottomLeft.lineTo(tempBlUnion.x, tempBlUnion.y), 
+        this.bottomLeft.lineTo(tempRbUnion.x, tempRbUnion.y), this.bottomLeft.endFill(), 
+        this.leftleft = new PIXI.Graphics(), this.leftleft.beginFill(6053006), this.leftleft.moveTo(leftBottomEdge.x, leftBottomEdge.y), 
+        this.leftleft.lineTo(leftLeftEdge.x, leftLeftEdge.y), this.leftleft.lineTo(leftLeftEdge.x + 5, leftLeftEdge.y + 20), 
+        this.leftleft.lineTo(tempBlUnion.x, tempBlUnion.y), this.leftleft.endFill(), this.container.addChild(this.rightBottom), 
+        this.container.addChild(this.bottomLeft), this.container.addChild(this.leftleft), 
+        this.player = new PIXI.Graphics(), this.player.beginFill(8649781), this.player.moveTo(8, 7), 
+        this.player.lineTo(-8, 0), this.player.lineTo(8, -7), this.player.lineTo(6, 0), 
+        this.player.endFill(), this.container.addChild(this.player), this.player.position.x = this.width / 2, 
+        this.player.position.y = this.height / 2;
+    },
+    update: function(playerPos) {
+        this.mouseAngle = Math.atan2(windowHeight / 2 - APP.getMousePos().y, windowWidth / 2 - APP.getMousePos().x), 
+        this.player.rotation = this.mouseAngle, this.mapContainer.position.x = -(playerPos.x * this.sizeTile.x) + this.width / 2, 
+        this.mapContainer.position.y = -(playerPos.y * this.sizeTile.y) + this.height / 2;
+    },
+    getContent: function() {
+        return this.container;
+    },
+    setPosition: function(x, y) {
+        this.container.position.x = x, this.container.position.y = y;
+    }
 }), Minimap = Class.extend({
     init: function(img) {
         img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : this.background = new PIXI.Graphics(), 
@@ -515,7 +594,7 @@ var Application = AbstractApplication.extend({
     build: function() {
         this.texture = PIXI.Texture.fromImage(this.srcImg), this.fairySprite = new PIXI.Sprite(this.texture), 
         this.fairyContainer.addChild(this.fairySprite);
-        this.fairySprite.anchor.x = .5, this.fairySprite.anchor.y = 1, this.texture;
+        this.fairySprite.anchor.x = .5, this.fairySprite.anchor.y = .5, this.texture;
     },
     getContent: function() {
         return this.fairyContainer;
@@ -543,7 +622,7 @@ var Application = AbstractApplication.extend({
             }, dist = pointDistance(playerPos.x, playerPos.y, this.fairyContainer.position.x, this.fairyContainer.position.y);
             dist > 20 ? (angle = Math.atan2(playerPos.y - this.fairyContainer.position.y, playerPos.x - this.fairyContainer.position.x), 
             angle = 180 * angle / Math.PI, angle += 270, angle = angle / 180 * Math.PI * -1, 
-            this.velocity.x = Math.sin(angle) * this.player.defaultVelocity * dist / 20, this.velocity.y = Math.cos(angle) * this.player.defaultVelocity * dist / 20) : (this.velocity.x *= .9, 
+            this.velocity.x = Math.sin(angle) * this.player.defaultVelocity * dist / 30, this.velocity.y = Math.cos(angle) * this.player.defaultVelocity * dist / 30) : (this.velocity.x *= .9, 
             this.velocity.y *= .9, Math.abs(this.velocity.x < .05) && (this.velocity.x = 0), 
             Math.abs(this.velocity.y < .05) && (this.velocity.y = 0)), this.fairyAngle += 2.8;
             var xAcc = 2 * Math.sin(this.fairyAngle / 180 * Math.PI), yAcc = 2.1 * Math.cos(this.fairyAngle / 180 * Math.PI) * (this.bounceAcc / this.bounceAccMax) * 2;
@@ -1403,19 +1482,19 @@ var Application = AbstractApplication.extend({
     ROAD3: 6702131,
     BRIDGE: 6842464,
     LAVA: 13382451,
-    SNOW: 16777215,
-    TUNDRA: 12303274,
-    BARE: 8947848,
-    SCORCHED: 5592405,
-    TAIGA: 10070647,
-    SHRUBLAND: 8952183,
-    TEMPERATE_DESERT: 13226651,
-    TEMPERATE_RAIN_FOREST: 4491349,
-    TEMPERATE_DECIDUOUS_FOREST: 6788185,
-    GRASSLAND: 8956501,
-    SUBTROPICAL_DESERT: 13810059,
-    TROPICAL_RAIN_FOREST: 3372885,
-    TROPICAL_SEASONAL_FOREST: 5609796
+    SNOW: 4034057,
+    TUNDRA: 4034057,
+    BARE: 4034057,
+    SCORCHED: 4034057,
+    TAIGA: 4034057,
+    SHRUBLAND: 5219097,
+    TEMPERATE_DESERT: 5219097,
+    TEMPERATE_RAIN_FOREST: 3234582,
+    TEMPERATE_DECIDUOUS_FOREST: 3234582,
+    GRASSLAND: 5219097,
+    SUBTROPICAL_DESERT: 5219097,
+    TROPICAL_RAIN_FOREST: 3234582,
+    TROPICAL_SEASONAL_FOREST: 3234582
 }, LevelGenerator = Class.extend({
     init: function(parent) {
         this.parent = parent;
@@ -1426,8 +1505,8 @@ var Application = AbstractApplication.extend({
             tempMonster = "STATIC" === APP.monsterList[id].sourceLabel ? new StaticEnemy(this.parent.player, APP.monsterList[id].clone()) : new Enemy(this.parent.player, APP.monsterList[id].clone());
             var rndAngle = 360 * this.parent.currentNode.getNextFloat() / 180 * Math.PI;
             tempMonster.initialPosition = {
-                x: this.parent.levelBounds.x / 2 + 300 + 400 * i * Math.sin(rndAngle),
-                y: this.parent.levelBounds.y / 2 + 300 + 400 * i * Math.cos(rndAngle)
+                x: this.parent.levelBounds.x / 2 + 300 + 200 * i * Math.sin(rndAngle),
+                y: this.parent.levelBounds.y / 2 + 300 + 200 * i * Math.cos(rndAngle)
             }, monsters.push(tempMonster);
         }
         return monsters;
@@ -1435,9 +1514,9 @@ var Application = AbstractApplication.extend({
     putObstacles: function() {},
     createRoom: function() {
         var i = 0;
-        this.distanceToShowMap = 8;
+        this.distanceToShowMap = 9;
         var mapMaker = null;
-        mapMaker = voronoiMap.islandShape.makeRadial(this.parent.currentNode.getNextFloat(), .5), 
+        mapMaker = voronoiMap.islandShape.makePerlin(this.parent.currentNode.getNextFloat(), .5), 
         this.parent.currentNode.mapData = [];
         var tempDataLine = [], tempDataPlacedLine = [];
         for (i = this.parent.tempSizeTiles.x - 1; i >= 0; i--) {
@@ -1631,7 +1710,8 @@ var Application = AbstractApplication.extend({
             this.entityLayer.collideChilds(this.player), this.environmentLayer.collideChilds(this.player), 
             this.boundsCollision();
             for (var i = 0; i < this.entityLayer.childs.length; i++) "fire" === this.entityLayer.childs[i].type && this.entityLayer.collideChilds(this.entityLayer.childs[i]);
-            this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs);
+            this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs), 
+            this.minimapHUD && this.minimapHUD.update(this.getPlayerTilePos());
         }
         this._super(), this.entityLayer.getContent().children.sort(this.depthCompare), this.levelGenerator && this.levelGenerator.update(), 
         this.HPView && this.player && this.updateHUD(), this.player && this.player.endLevel ? (this.player.endLevel = !1, 
@@ -1659,22 +1739,6 @@ var Application = AbstractApplication.extend({
                 x: Math.floor(centerPositionPlayer.x / APP.nTileSize),
                 y: Math.floor(centerPositionPlayer.y / APP.nTileSize)
             };
-            this.miniPlayer && (this.miniPlayer.clear(), this.miniPlayer.beginFill(255), this.miniPlayer.drawRect(tilePosition.x, tilePosition.y, 1, 1), 
-            this.miniPlayer.endFill());
-            for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if ("enemy" === this.entityLayer.childs[i].type) {
-                var centerPositionE = {
-                    x: this.entityLayer.childs[i].getPosition().x + this.entityLayer.childs[i].centerPosition.x,
-                    y: this.entityLayer.childs[i].getPosition().y + this.entityLayer.childs[i].centerPosition.y
-                }, tilePositionE = {
-                    x: Math.floor(centerPositionE.x / APP.nTileSize),
-                    y: Math.floor(centerPositionE.y / APP.nTileSize)
-                };
-                this.vecEnemiesMini || (this.vecEnemiesMini = []);
-                for (var tmpGr = null, j = this.vecEnemiesMini.length - 1; j >= 0; j--) this.vecEnemiesMini[j][1] === this.entityLayer.childs[i] && (tmpGr = this.vecEnemiesMini[j][0]);
-                null === tmpGr && (tmpGr = new PIXI.Graphics(), this.vecEnemiesMini.push([ tmpGr, this.entityLayer.childs[i] ]), 
-                this.minimapContainer.addChild(tmpGr)), tmpGr && (tmpGr.clear(), tmpGr.beginFill(16711680), 
-                tmpGr.drawRect(tilePositionE.x, tilePositionE.y, 1, 1), tmpGr.endFill());
-            }
             return tilePosition;
         }
         return null;
@@ -1758,10 +1822,10 @@ var Application = AbstractApplication.extend({
         }
         for (this.player = new Player(this.playerModel), this.level = getRandomLevel(), 
         this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
-        var i = 0, j = 0;
+        var i = 0;
         this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : (this.marginTiles = {
-            x: Math.floor(this.mapPosition.x / APP.nTileSize) + 20,
-            y: Math.floor(this.mapPosition.y / APP.nTileSize) + 20
+            x: Math.floor(this.mapPosition.x / APP.nTileSize) + 25,
+            y: Math.floor(this.mapPosition.y / APP.nTileSize) + 25
         }, this.tempSizeTiles = 1 === this.currentNode.mode ? {
             x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x,
             y: Math.floor(windowHeight / APP.nTileSize) + this.marginTiles.y
@@ -1772,16 +1836,8 @@ var Application = AbstractApplication.extend({
         this.levelBounds = {
             x: this.currentNode.mapData.length * APP.nTileSize,
             y: this.currentNode.mapData[0].length * APP.nTileSize
-        }, this.minimapContainer && this.minimapContainer.parent && this.minimapContainer.parent.removeChild(this.minimapContainer), 
-        this.minimapContainer = new PIXI.DisplayObjectContainer(), this.miniPlayer = new PIXI.Graphics();
-        var tempRect = new PIXI.Graphics(), tileMiniSize = 1;
-        for (this.miniPlayer.beginFill(16711680), this.miniPlayer.drawRect(tileMiniSize, tileMiniSize, 0, 0), 
-        i = this.currentNode.mapData.length - 1; i >= 0; i--) for (j = this.currentNode.mapData[i].length - 1; j >= 0; j--) tempRect.beginFill(displayColors[this.currentNode.mapData[i][j]]), 
-        tempRect.drawRect(i * tileMiniSize, j * tileMiniSize, tileMiniSize, tileMiniSize), 
-        tempRect.endFill(), this.minimapContainer.addChild(tempRect);
-        this.minimapContainer.addChild(this.miniPlayer), APP.getHUD().addChild(this.minimapContainer), 
-        this.minimapContainer.position.x = realWindowWidth - this.minimapContainer.width - 20, 
-        this.minimapContainer.position.y = realWindowHeight - this.minimapContainer.height - 20, 
+        }, this.minimapHUD = new MapHUD(), this.minimapHUD.build(this.currentNode), APP.getHUD().addChild(this.minimapHUD.getContent()), 
+        this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth) / 2 - this.minimapHUD.width / 2, realWindowHeight - this.minimapHUD.height - 50), 
         this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
         var monstersToLoaded = [], monstersAssets = [];
         if (1 !== this.currentNode.mode) {

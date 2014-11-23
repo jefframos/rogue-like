@@ -263,6 +263,10 @@ var GameScreen = AbstractScreen.extend({
             }
             //atualiza o sistema de colisão
             this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs);
+
+            if(this.minimapHUD){
+                this.minimapHUD.update(this.getPlayerTilePos());
+            }
         }
 
         this._super();
@@ -337,41 +341,41 @@ var GameScreen = AbstractScreen.extend({
                 y:this.player.getPosition().y + this.player.centerPosition.y};
             var tilePosition = {x:Math.floor(centerPositionPlayer.x / APP.nTileSize),y:Math.floor(centerPositionPlayer.y / APP.nTileSize)};
 
-            if(this.miniPlayer){
-                this.miniPlayer.clear();
-                this.miniPlayer.beginFill(0x0000FF);
-                this.miniPlayer.drawRect(tilePosition.x ,tilePosition.y,1,1);
-                this.miniPlayer.endFill();
-            }
-            for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
-                if(this.entityLayer.childs[i].type === 'enemy'){
-                    var centerPositionE = {x:this.entityLayer.childs[i].getPosition().x + this.entityLayer.childs[i].centerPosition.x,
-                        y:this.entityLayer.childs[i].getPosition().y + this.entityLayer.childs[i].centerPosition.y};
-                    var tilePositionE = {x:Math.floor(centerPositionE.x / APP.nTileSize),y:Math.floor(centerPositionE.y / APP.nTileSize)};
+            // if(this.miniPlayer){
+            //     this.miniPlayer.clear();
+            //     this.miniPlayer.beginFill(0x0000FF);
+            //     this.miniPlayer.drawRect(tilePosition.x ,tilePosition.y,1,1);
+            //     this.miniPlayer.endFill();
+            // }
+            // for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
+            //     if(this.entityLayer.childs[i].type === 'enemy'){
+            //         var centerPositionE = {x:this.entityLayer.childs[i].getPosition().x + this.entityLayer.childs[i].centerPosition.x,
+            //             y:this.entityLayer.childs[i].getPosition().y + this.entityLayer.childs[i].centerPosition.y};
+            //         var tilePositionE = {x:Math.floor(centerPositionE.x / APP.nTileSize),y:Math.floor(centerPositionE.y / APP.nTileSize)};
 
-                    if(!this.vecEnemiesMini)
-                    {
-                        this.vecEnemiesMini = [];
-                    }
-                    var tmpGr = null;
-                    for (var j = this.vecEnemiesMini.length - 1; j >= 0; j--) {
-                        if(this.vecEnemiesMini[j][1] === this.entityLayer.childs[i]){
-                            tmpGr = this.vecEnemiesMini[j][0];
-                        }
-                    }
-                    if(tmpGr === null){
-                        tmpGr = new PIXI.Graphics();
-                        this.vecEnemiesMini.push([tmpGr,this.entityLayer.childs[i]]);
-                        this.minimapContainer.addChild(tmpGr);
-                    }
-                    if(tmpGr){
-                        tmpGr.clear();
-                        tmpGr.beginFill(0xFF0000);
-                        tmpGr.drawRect(tilePositionE.x,tilePositionE.y,1,1);
-                        tmpGr.endFill();
-                    }
-                }
-            }
+            //         if(!this.vecEnemiesMini)
+            //         {
+            //             this.vecEnemiesMini = [];
+            //         }
+            //         var tmpGr = null;
+            //         for (var j = this.vecEnemiesMini.length - 1; j >= 0; j--) {
+            //             if(this.vecEnemiesMini[j][1] === this.entityLayer.childs[i]){
+            //                 tmpGr = this.vecEnemiesMini[j][0];
+            //             }
+            //         }
+            //         if(tmpGr === null){
+            //             tmpGr = new PIXI.Graphics();
+            //             this.vecEnemiesMini.push([tmpGr,this.entityLayer.childs[i]]);
+            //             this.minimapContainer.addChild(tmpGr);
+            //         }
+            //         if(tmpGr){
+            //             tmpGr.clear();
+            //             tmpGr.beginFill(0xFF0000);
+            //             tmpGr.drawRect(tilePositionE.x,tilePositionE.y,1,1);
+            //             tmpGr.endFill();
+            //         }
+            //     }
+            // }
             return tilePosition;
         }
         return null;
@@ -490,7 +494,7 @@ var GameScreen = AbstractScreen.extend({
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
         }else{
-            this.marginTiles = {x:Math.floor(this.mapPosition.x/ APP.nTileSize) + 20, y:Math.floor(this.mapPosition.y/ APP.nTileSize) + 20};
+            this.marginTiles = {x:Math.floor(this.mapPosition.x/ APP.nTileSize) + 25, y:Math.floor(this.mapPosition.y/ APP.nTileSize) + 25};
             if(this.currentNode.mode === 1){
                 this.tempSizeTiles = {x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x , y:Math.floor(windowHeight / APP.nTileSize) +this.marginTiles.y};
             }else{
@@ -502,33 +506,10 @@ var GameScreen = AbstractScreen.extend({
 
         this.levelBounds= {x: this.currentNode.mapData.length * APP.nTileSize, y: this.currentNode.mapData[0].length * APP.nTileSize};
 
-        if(this.minimapContainer && this.minimapContainer.parent)
-        {
-            this.minimapContainer.parent.removeChild(this.minimapContainer);
-        }
-        this.minimapContainer = new PIXI.DisplayObjectContainer();
-        this.miniPlayer = new PIXI.Graphics();
-        var tempRect = new PIXI.Graphics();
-
-       
-        var tileMiniSize = 1;
-        this.miniPlayer.beginFill(0xFF0000);
-        this.miniPlayer.drawRect(tileMiniSize,tileMiniSize,0,0);
-        for (i = this.currentNode.mapData.length - 1; i >= 0; i--) {
-            for (j = this.currentNode.mapData[i].length - 1; j >= 0; j--) {
-                tempRect.beginFill(displayColors[this.currentNode.mapData[i][j]]);
-                tempRect.drawRect(i*tileMiniSize,j*tileMiniSize,tileMiniSize,tileMiniSize);
-                tempRect.endFill();
-                this.minimapContainer.addChild(tempRect);
-            }
-        }
-        this.minimapContainer.addChild(this.miniPlayer);
-
-        APP.getHUD().addChild(this.minimapContainer);
-        this.minimapContainer.position.x = realWindowWidth - this.minimapContainer.width - 20;
-        this.minimapContainer.position.y = realWindowHeight - this.minimapContainer.height - 20;
-        // console.log(this.levelBounds, this.currentNode.mapData.length, this.currentNode.mapData[0].length);
-        // this.levelBounds= {x: this.currentNode.bg.width, y: this.currentNode.bg.height};
+        this.minimapHUD = new MapHUD();
+        this.minimapHUD.build(this.currentNode);
+        APP.getHUD().addChild(this.minimapHUD.getContent());
+        this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth)/2 - this.minimapHUD.width/2, realWindowHeight - this.minimapHUD.height - 50);
 
         // this.levelGenerator.debugBounds();
         this.levelGenerator.createDoors();

@@ -44,7 +44,7 @@ var Fairy = Entity.extend({
 
         var self = this;
         this.fairySprite.anchor.x = 0.5;
-        this.fairySprite.anchor.y = 1;
+        this.fairySprite.anchor.y = 0.5;
         if(this.texture){
             // this.getContent().position.x = +this.width/2;
             //this.texture.position.y = -100;
@@ -102,6 +102,7 @@ var Fairy = Entity.extend({
         var angle = null;
 
         this.fairyContainer.position.x += this.velocity.x;
+        // this.fairyContainer.position.x -= 5;
         this.fairyContainer.position.y += this.velocity.y;
 
         this.fairySprite.position.x += this.virtualVelocity.x;
@@ -131,8 +132,8 @@ var Fairy = Entity.extend({
                 angle += 90 + 180;
                 angle = angle / 180 * Math.PI * -1;
 
-                this.velocity.x = Math.sin(angle) * this.player.defaultVelocity * dist / 20;
-                this.velocity.y = Math.cos(angle) * this.player.defaultVelocity * dist / 20;
+                this.velocity.x = Math.sin(angle) * this.player.defaultVelocity * dist / 30;
+                this.velocity.y = Math.cos(angle) * this.player.defaultVelocity * dist / 30;
 
                 // console.log(dist);
 
