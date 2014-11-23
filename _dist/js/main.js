@@ -386,15 +386,21 @@ var Application = AbstractApplication.extend({
         this.bottomLeft = new PIXI.Graphics(), this.player = new PIXI.Graphics();
     },
     build: function(node) {
-        this.node = node, this.player.parent && this.player.parent.removeChild(this.player), 
+        if (this.node = node, this.player.parent && this.player.parent.removeChild(this.player), 
         this.rightBottom.parent && this.rightBottom.parent.removeChild(this.rightBottom), 
         this.leftleft.parent && this.leftleft.parent.removeChild(this.leftleft), this.bottomLeft.parent && this.bottomLeft.parent.removeChild(this.bottomLeft), 
-        this.mask.parent && this.mask.parent.removeChild(this.mask), this.mapContainer.parent && (this.mapContainer.parent.removeChild(this.mapContainer), 
-        this.mapContainer = new PIXI.DisplayObjectContainer(), this.container.addChild(this.mapContainer));
-        var tempRect = new PIXI.Graphics();
-        for (i = node.mapData.length - 1; i >= 0; i--) for (j = node.mapData[i].length - 1; j >= 0; j--) tempRect.beginFill(displayColors[node.mapData[i][j]]), 
-        tempRect.drawRect(i * this.sizeTile.x, j * this.sizeTile.y, this.sizeTile.x, this.sizeTile.y), 
-        tempRect.endFill(), this.mapContainer.addChild(tempRect);
+        this.mask.parent && this.mask.parent.removeChild(this.mask), this.mapContainer.parent) {
+            for (;this.mapContainer.childs; ) this.mapContainer.removeChildAt(0);
+            this.mapContainer.parent.removeChild(this.mapContainer), this.mapContainer = new PIXI.DisplayObjectContainer(), 
+            this.container.addChild(this.mapContainer);
+        }
+        for (;this.container.childs; ) this.container.removeChildAt(0);
+        var tempMapContainer = new PIXI.DisplayObjectContainer(), tempRect = new PIXI.Graphics();
+        for (i = 0; i < node.mapData.length; i++) for (j = 0; j < node.mapData[i].length; j++) tempRect = new PIXI.Graphics(), 
+        tempRect.beginFill(displayColors[node.mapData[i][j]]), tempRect.drawRect(0, 0, this.sizeTile.x, this.sizeTile.y), 
+        tempRect.endFill(), tempRect.position.x = i * this.sizeTile.x, tempRect.position.y = j * this.sizeTile.y, 
+        tempMapContainer.addChild(tempRect);
+        tempMapContainer.cacheAsBitmap = !0, this.mapContainer.addChild(tempMapContainer), 
         this.mask.beginFill(0), this.mask.moveTo(this.width / 1.8, 0);
         var rightBottomEdge = {
             x: this.width,
