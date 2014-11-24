@@ -1,4 +1,4 @@
-/*! jefframos 23-11-2014 */
+/*! jefframos 24-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -373,10 +373,60 @@ var Application = AbstractApplication.extend({
     setPosition: function(x, y) {
         this.container.position.x = x, this.container.position.y = y;
     }
+}), LifeBarHUD = Class.extend({
+    init: function(width, height, maxValue, currentValue) {
+        this.maxValue = maxValue, this.text = "default", this.currentValue = currentValue, 
+        this.container = new PIXI.DisplayObjectContainer(), this.width = width, this.height = height, 
+        this.backShape = new PIXI.Graphics(), this.rect = [ [ 3, 0 ], [ 92, 18 ], [ 90, 34 ], [ 0, 18 ] ], 
+        this.frontRect = [ [ 3, 0 ], [ 92, 0 ], [ 92, 34 ], [ -5, 43 ] ];
+        var i = 0;
+        for (this.backShape.beginFill(16714560), this.backShape.moveTo(this.rect[0][0], this.rect[0][1]), 
+        i = 1; i < this.rect.length; i++) this.backShape.lineTo(this.rect[i][0], this.rect[i][1]);
+        for (this.backShape.endFill(), this.container.addChild(this.backShape), this.frontShape = new PIXI.Graphics(), 
+        this.frontShape.beginFill(8649781), this.frontShape.moveTo(this.frontRect[0][0], this.frontRect[0][1]), 
+        i = 1; i < this.frontRect.length; i++) this.frontShape.lineTo(this.frontRect[i][0], this.frontRect[i][1]);
+        for (this.frontShape.endFill(), this.container.addChild(this.frontShape), this.mask = new PIXI.Graphics(), 
+        this.mask.beginFill(8388608), this.mask.moveTo(this.rect[0][0], this.rect[0][1]), 
+        i = 1; i < this.rect.length; i++) this.mask.lineTo(this.rect[i][0], this.rect[i][1]);
+        for (this.mask.endFill(), this.baseRect = [ [ 0, 18 ], [ 90, 34 ], [ 95, 41 ], [ 6, 25 ] ], 
+        this.baseFrontRect = [ [ 0, 18 ], [ 95, 18 ], [ 95, 41 ], [ 14, 41 ] ], this.backBaseShape = new PIXI.Graphics(), 
+        this.backBaseShape.beginFill(9837082), this.backBaseShape.moveTo(this.baseRect[0][0], this.baseRect[0][1]), 
+        i = 1; i < this.baseRect.length; i++) this.backBaseShape.lineTo(this.baseRect[i][0], this.baseRect[i][1]);
+        for (this.backBaseShape.endFill(), this.container.addChild(this.backBaseShape), 
+        this.backFrontShape = new PIXI.Graphics(), this.backFrontShape.beginFill(3192624), 
+        this.backFrontShape.moveTo(this.baseFrontRect[0][0], this.baseFrontRect[0][1]), 
+        i = 1; i < this.baseFrontRect.length; i++) this.backFrontShape.lineTo(this.baseFrontRect[i][0], this.baseFrontRect[i][1]);
+        for (this.backFrontShape.endFill(), this.container.addChild(this.backFrontShape), 
+        this.backMask = new PIXI.Graphics(), this.backMask.beginFill(255), this.backMask.moveTo(this.baseRect[0][0], this.baseRect[0][1]), 
+        i = 1; i < this.baseRect.length; i++) this.backMask.lineTo(this.baseRect[i][0], this.baseRect[i][1]);
+        this.backMask.endFill(), this.container.addChild(this.mask), this.container.addChild(this.backMask), 
+        this.frontShape.mask = this.mask, this.backFrontShape.mask = this.backMask;
+    },
+    setFrontColor: function() {},
+    setBackColor: function() {},
+    setText: function(text) {
+        this.text !== text && (this.lifebar ? this.lifebar.setText(text) : this.lifebar = new PIXI.Text(text, {
+            fill: "white",
+            align: "center",
+            font: "10px Arial"
+        }));
+    },
+    updateBar: function(currentValue, maxValue) {
+        return this.currentValue < 0 ? (this.frontShape.position.x = this.frontShape.width, 
+        void (this.backFrontShape.position.x = this.backFrontShape.position.width)) : (this.currentValue = currentValue, 
+        this.maxValue = maxValue, this.frontShape.position.x = 91 * (1 - this.currentValue / this.maxValue), 
+        void (this.backFrontShape.position.x = 79 * (1 - this.currentValue / this.maxValue)));
+    },
+    getContent: function() {
+        return this.container;
+    },
+    setPosition: function(x, y) {
+        this.container.position.x = x, this.container.position.y = y;
+    }
 }), MapHUD = Class.extend({
     init: function(img) {
         this.width = 150, this.height = 130, img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : (this.background = new PIXI.Graphics(), 
-        this.background.beginFill(displayColors.OCEAN), this.background.drawRect(0, 0, this.width, this.height), 
+        this.background.beginFill(displayColors.OCEAN), this.background.drawRect(-15, -15, this.width + 30, this.height + 30), 
         this.background.endFill()), this.mask = new PIXI.Graphics(), this.container = new PIXI.DisplayObjectContainer(), 
         this.mapContainer = new PIXI.DisplayObjectContainer(), this.container.addChild(this.background), 
         this.container.addChild(this.mapContainer), this.sizeTile = {
@@ -386,40 +436,31 @@ var Application = AbstractApplication.extend({
         this.bottomLeft = new PIXI.Graphics(), this.player = new PIXI.Graphics();
     },
     build: function(node) {
-        if (this.node = node, this.player.parent && this.player.parent.removeChild(this.player), 
-        this.rightBottom.parent && this.rightBottom.parent.removeChild(this.rightBottom), 
-        this.leftleft.parent && this.leftleft.parent.removeChild(this.leftleft), this.bottomLeft.parent && this.bottomLeft.parent.removeChild(this.bottomLeft), 
-        this.mask.parent && this.mask.parent.removeChild(this.mask), this.mapContainer.parent) {
-            for (;this.mapContainer.childs; ) this.mapContainer.removeChildAt(0);
-            this.mapContainer.parent.removeChild(this.mapContainer), this.mapContainer = new PIXI.DisplayObjectContainer(), 
-            this.container.addChild(this.mapContainer);
-        }
-        for (;this.container.childs; ) this.container.removeChildAt(0);
-        var tempMapContainer = new PIXI.DisplayObjectContainer(), tempRect = new PIXI.Graphics();
-        for (i = 0; i < node.mapData.length; i++) for (j = 0; j < node.mapData[i].length; j++) tempRect = new PIXI.Graphics(), 
-        tempRect.beginFill(displayColors[node.mapData[i][j]]), tempRect.drawRect(0, 0, this.sizeTile.x, this.sizeTile.y), 
-        tempRect.endFill(), tempRect.position.x = i * this.sizeTile.x, tempRect.position.y = j * this.sizeTile.y, 
-        tempMapContainer.addChild(tempRect);
-        tempMapContainer.cacheAsBitmap = !0, this.mapContainer.addChild(tempMapContainer), 
+        this.node = node;
+        var tempMapContainer = new PIXI.DisplayObjectContainer(), tempRect = null;
+        for (i = 0; i < node.mapData.length; i++) for (j = 0; j < node.mapData[i].length; j++) tempRect = new SimpleSprite("_dist/img/pixel.jpg"), 
+        tempRect.setPosition(i, j), tempMapContainer.addChild(tempRect.getContent()), tempRect.getContent().tint = displayColors[node.mapData[i][j]];
+        tempMapContainer.scale.x = this.sizeTile.x, tempMapContainer.scale.y = this.sizeTile.y, 
+        this.mapContainer.addChild(tempMapContainer), tempMapContainer.cacheAsBitmap = !0, 
         this.mask.beginFill(0), this.mask.moveTo(this.width / 1.8, 0);
         var rightBottomEdge = {
-            x: this.width,
-            y: this.height / 2.5
+            x: this.width + 10 * Math.random(),
+            y: this.height / 2.5 + 10 * Math.random()
         };
         this.mask.lineTo(rightBottomEdge.x, rightBottomEdge.y);
         var bottomEdge = {
-            x: this.width / 1.3,
-            y: this.height
+            x: this.width / 1.3 + 10 * Math.random(),
+            y: this.height + 10 * Math.random()
         };
         this.mask.lineTo(bottomEdge.x, bottomEdge.y);
         var leftBottomEdge = {
-            x: this.width / 2.8,
-            y: this.height / 1.1
+            x: this.width / 2.8 + 10 * Math.random(),
+            y: this.height / 1.1 + 10 * Math.random()
         };
         this.mask.lineTo(leftBottomEdge.x, leftBottomEdge.y);
         var leftLeftEdge = {
-            x: 0,
-            y: this.height / 1.8
+            x: -5 + 10 * Math.random(),
+            y: this.height / 1.8 + 10 * Math.random()
         };
         this.mask.lineTo(leftLeftEdge.x, leftLeftEdge.y), this.mask.lineTo(0, this.height / 5), 
         this.mask.lineTo(this.width / 7, this.height / 15), this.mask.endFill(), this.container.addChild(this.mask), 
@@ -1285,7 +1326,6 @@ var Application = AbstractApplication.extend({
     }
 }), MonsterModel = Class.extend({
     init: function(name, stats, fire, graphicsData, config) {
-        console.log("name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp\n", name, stats), 
         this.name = name, this.stats = stats, this.fire = fire, this.graphicsData = graphicsData, 
         this.config = config, this.initiallevel = stats.level, this.initialhp = stats.hp, 
         this.initialstamina = stats.stamina, this.initialspeed = stats.speed, this.initialmagicPower = stats.magicPower, 
@@ -1319,13 +1359,12 @@ var Application = AbstractApplication.extend({
         this.velocity = 8 - (255 - this.speed) / 25 + 5, this.velocity >= 10 && (this.velocity = 10), 
         this.velocity <= 3 && (this.velocity = 3);
         var curveAcentValue = .15;
-        this.xp += Math.floor((level * (level / 3) + level + 3) / 5 * this.xp * level * curveAcentValue), 
-        console.log("enemy HP", this.hp, this.defenseModifier, level, this.xp, this.name);
+        this.xp += Math.floor((level * (level / 3) + level + 3) / 5 * this.xp * level * curveAcentValue);
     },
     getDemage: function(type) {
         var damageMultiplier = 0, demage = 0;
         return "physical" === type ? demage = this.battlePower * (this.level / 5) + this.level * this.attack * (this.level / 20) * 15 / 256 * 3 / 2 : "magical" === type && (demage = this.spellPower * this.level + this.level * (3 * this.magicPower / 2) * this.spellPower / 32), 
-        demage += demage / 2 * damageMultiplier, console.log(type, demage), demage;
+        demage += demage / 2 * damageMultiplier;
     },
     getHurt: function(demage, type) {
         return "physical" === type ? demage = demage * (255 - this.defense) / 256 + 1 : "magical" === type && (demage = demage * (255 - this.magicDefense) / 256 + 1), 
@@ -1670,7 +1709,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", "_dist/img/pixel.jpg", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onAssetsLoaded: function() {
@@ -1685,13 +1724,12 @@ var Application = AbstractApplication.extend({
     createHUD: function() {
         this.fog = new SimpleSprite("_dist/img/mask.png"), this.backInterface = new PIXI.Graphics(), 
         this.backInterface.beginFill(2496568), this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
-        APP.getHUD().addChild(this.backInterface), this.HPView = new BarView(80, 10, 100, 100), 
-        this.HPView.setPosition(windowWidth + 10, 10), this.HPView.setFrontColor(4034057), 
+        APP.getHUD().addChild(this.backInterface), this.HPView = new LifeBarHUD(80, 10, 100, 100), 
+        this.HPView.setPosition(windowWidth + 10, 100), this.HPView.setFrontColor(4034057), 
         APP.getHUD().addChild(this.HPView.getContent()), this.MPView = new BarView(80, 10, 100, 100), 
         this.MPView.setPosition(windowWidth + 10, 25), this.MPView.setFrontColor(4675770), 
-        APP.getHUD().addChild(this.MPView.getContent()), this.XPBar = new BarView(80, 10, 100, 100), 
-        this.XPBar.setPosition(windowWidth + 10, 40), this.XPBar.setFrontColor(5592405), 
-        this.XPBar.setBackColor(1118481), APP.getHUD().addChild(this.XPBar.getContent());
+        this.XPBar = new BarView(80, 10, 100, 100), this.XPBar.setPosition(windowWidth + 10, 40), 
+        this.XPBar.setFrontColor(5592405), this.XPBar.setBackColor(1118481);
     },
     useShortcut: function(id) {
         this.shortcuts[id] && (this.shortcuts[id] instanceof ItemModel ? this.useItem(this.shortcuts[id]) : this.shortcuts[id] instanceof SpellModel && this.spell(this.shortcuts[id]));
@@ -1842,8 +1880,9 @@ var Application = AbstractApplication.extend({
         this.levelBounds = {
             x: this.currentNode.mapData.length * APP.nTileSize,
             y: this.currentNode.mapData[0].length * APP.nTileSize
-        }, this.minimapHUD = new MapHUD(), this.minimapHUD.build(this.currentNode), APP.getHUD().addChild(this.minimapHUD.getContent()), 
-        this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth) / 2 - this.minimapHUD.width / 2, realWindowHeight - this.minimapHUD.height - 50), 
+        }, this.minimapHUD && (this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent()), 
+        this.minimapHUD = null), this.minimapHUD = new MapHUD(), this.minimapHUD.build(this.currentNode), 
+        APP.getHUD().addChild(this.minimapHUD.getContent()), this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth) / 2 - this.minimapHUD.width / 2, realWindowHeight - this.minimapHUD.height - 50), 
         this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
         var monstersToLoaded = [], monstersAssets = [];
         if (1 !== this.currentNode.mode) {
@@ -1942,7 +1981,7 @@ var Application = AbstractApplication.extend({
             game.player && (game.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
             if (game.player) {
-                if (87 === e.keyCode || 38 === e.keyCode && game.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && game.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && game.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && game.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) game.useShortcut(5); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode || 81 === e.keyCode || 69 === e.keyCode) {
+                if (87 === e.keyCode || 38 === e.keyCode && game.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && game.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && game.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && game.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) game.player.hurt(5); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode || 81 === e.keyCode || 69 === e.keyCode) {
                     var id = 1;
                     50 === e.keyCode ? id = 2 : 51 === e.keyCode ? id = 3 : 81 === e.keyCode ? id = 4 : 69 === e.keyCode && (id = 5), 
                     game.useShortcut(id - 1);
@@ -1974,7 +2013,7 @@ var SOCKET = null, windowWidth = 600, windowHeight = 600, realWindowWidth = 800,
 
 testMobile() && (windowWidth = 640, windowHeight = 960);
 
-var renderer, windowWidthVar = window.innerWidth, windowHeightVar = window.innerHeight, renderer = PIXI.autoDetectRenderer(realWindowWidth, realWindowHeight);
+var renderer, windowWidthVar = window.innerWidth, windowHeightVar = window.innerHeight, renderer = PIXI.autoDetectRenderer(realWindowWidth, realWindowHeight, null, !1, !0);
 
 document.body.appendChild(renderer.view);
 

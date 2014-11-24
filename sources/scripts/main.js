@@ -25,7 +25,7 @@ var renderer;
 
 var windowWidthVar = window.innerWidth,
 windowHeightVar = window.innerHeight;
-var renderer = PIXI.autoDetectRenderer(realWindowWidth, realWindowHeight);
+var renderer = PIXI.autoDetectRenderer(realWindowWidth, realWindowHeight, null, false, true);
 
 // renderer.view.style.width = windowWidthVar+'px';
 // renderer.view.style.height = windowHeightVar+'px';

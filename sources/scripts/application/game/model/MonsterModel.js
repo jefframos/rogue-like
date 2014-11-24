@@ -2,7 +2,7 @@
 var MonsterModel = Class.extend({
 	
 	init: function (name,stats,fire,graphicsData,config){
-		console.log('name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp\n', name,stats);
+		// console.log('name,level,hp,stamina,speed,magicPower,battlePower,defense,magicDefense, xp\n', name,stats);
 		this.name = name;
 		this.stats = stats;
 		this.fire = fire;
@@ -134,7 +134,7 @@ var MonsterModel = Class.extend({
 		this.xp += Math.floor((level*(level/3)+level+3)/5 * this.xp * (level * curveAcentValue));
 
 		
-		console.log('enemy HP', this.hp, this.defenseModifier, level, this.xp, this.name);
+		// console.log('enemy HP', this.hp, this.defenseModifier, level, this.xp, this.name);
 
 		// var calcXP = (level*level+level+3)/4* 20 * level;
 		// console.log(calcXP, 'level', level);
@@ -151,7 +151,7 @@ var MonsterModel = Class.extend({
 			demage = this.spellPower * this.level + (this.level * (this.magicPower * 3/2) * this.spellPower / 32);
 		}
 		demage = demage + ((demage / 2) * damageMultiplier);
-		console.log(type, demage);
+		// console.log(type, demage);
 		return demage;
 	},
 	getHurt: function(demage, type){

@@ -7,7 +7,7 @@ var MapHUD = Class.extend({
 			this.background = new PIXI.Graphics();
 			this.background.beginFill(displayColors.OCEAN);
 			// this.background.beginFill(0);
-			this.background.drawRect(0,0,this.width,this.height);
+			this.background.drawRect(0-15,0-15,this.width + 30,this.height + 30);
 			this.background.endFill();
 		}
 		else if(typeof(img) === 'string')
@@ -36,77 +36,77 @@ var MapHUD = Class.extend({
 	build:function(node){
 		this.node = node;
 		// console.log(APP.gen.rooms);
-		if(this.player.parent)
-		{
-			this.player.parent.removeChild(this.player);
-		}
-		if(this.rightBottom.parent)
-		{
-			this.rightBottom.parent.removeChild(this.rightBottom);
-		}
-		if(this.leftleft.parent)
-		{
-			this.leftleft.parent.removeChild(this.leftleft);
-		}
-		if(this.bottomLeft.parent)
-		{
-			this.bottomLeft.parent.removeChild(this.bottomLeft);
-		}
-		if(this.mask.parent)
-		{
-			this.mask.parent.removeChild(this.mask);
-		}
-		if(this.mapContainer.parent)
-		{
-			while(this.mapContainer.childs)
-			{
-				this.mapContainer.removeChildAt(0);
-			}
-			this.mapContainer.parent.removeChild(this.mapContainer);
-			this.mapContainer = new PIXI.DisplayObjectContainer();
-			this.container.addChild(this.mapContainer);
-		}
-		while(this.container.childs)
-		{
-			this.container.removeChildAt(0);
-		}
+		// if(this.player.parent)
+		// {
+		// 	this.player.parent.removeChild(this.player);
+		// }
+		// if(this.rightBottom.parent)
+		// {
+		// 	this.rightBottom.parent.removeChild(this.rightBottom);
+		// }
+		// if(this.leftleft.parent)
+		// {
+		// 	this.leftleft.parent.removeChild(this.leftleft);
+		// }
+		// if(this.bottomLeft.parent)
+		// {
+		// 	this.bottomLeft.parent.removeChild(this.bottomLeft);
+		// }
+		// if(this.mask.parent)
+		// {
+		// 	this.mask.parent.removeChild(this.mask);
+		// }
+		// if(this.mapContainer.parent)
+		// {
+		// 	while(this.mapContainer.childs)
+		// 	{
+		// 		this.mapContainer.removeChildAt(0);
+		// 	}
+		// 	this.mapContainer.parent.removeChild(this.mapContainer);
+		// 	this.mapContainer = new PIXI.DisplayObjectContainer();
+		// 	this.container.addChild(this.mapContainer);
+		// }
+		// while(this.container.childs)
+		// {
+		// 	this.container.removeChildAt(0);
+		// }
 		
 		var tempMapContainer = new PIXI.DisplayObjectContainer();
-		var tempRect = new PIXI.Graphics();
+		var tempRect = null;
 		// this.miniPlayer.beginFill(0xFF0000);
 		// this.miniPlayer.drawRect(tileMiniSize,tileMiniSize,0,0);
 		for (i = 0; i < node.mapData.length; i++) {
 
 			for (j = 0; j < node.mapData[i].length; j++) {
-				// console.log(i, j);
-				tempRect = new PIXI.Graphics();
-				tempRect.beginFill(displayColors[node.mapData[i][j]]);
-				tempRect.drawRect(0,0,this.sizeTile.x,this.sizeTile.y);
-				tempRect.endFill();
-				
-				tempRect.position.x = i*this.sizeTile.x;
-				tempRect.position.y = j*this.sizeTile.y;
-				tempMapContainer.addChild(tempRect);
+				tempRect = new SimpleSprite('_dist/img/pixel.jpg');
+				tempRect.setPosition(i,j);
+				tempMapContainer.addChild(tempRect.getContent());
+				tempRect.getContent().tint = displayColors[node.mapData[i][j]];
 			}
 		}
-		tempMapContainer.cacheAsBitmap = true;
+
+		tempMapContainer.scale.x = this.sizeTile.x;
+		tempMapContainer.scale.y = this.sizeTile.y;
 		this.mapContainer.addChild(tempMapContainer);
+		tempMapContainer.cacheAsBitmap = true;
+
+
 		this.mask.beginFill(0x000);
 		this.mask.moveTo(this.width/1.8,0);
 		// this.mask.lineTo(this.width/1.1,this.height * 0.2);
-		var rightBottomEdge = {x:this.width,y:this.height/2.5};
+		var rightBottomEdge = {x:this.width + Math.random()*10 ,y:this.height/2.5 + Math.random()*10};
 
 		this.mask.lineTo(rightBottomEdge.x,rightBottomEdge.y);
 
-		var bottomEdge = {x:this.width/1.3,y:this.height};
+		var bottomEdge = {x:this.width/1.3 + Math.random()*10 ,y:this.height + Math.random()*10};
 		this.mask.lineTo(bottomEdge.x,bottomEdge.y);
 		
 
-		var leftBottomEdge = {x:this.width/2.8,y:this.height/1.1};
+		var leftBottomEdge = {x:this.width/2.8 + Math.random()*10 ,y:this.height/1.1 + Math.random()*10};
 		this.mask.lineTo(leftBottomEdge.x,leftBottomEdge.y);
 
 
-		var leftLeftEdge = {x:0,y:this.height/1.8};
+		var leftLeftEdge = {x:-5 + Math.random()*10 ,y:this.height/1.8 + Math.random()*10};
 
 		this.mask.lineTo(leftLeftEdge.x,leftLeftEdge.y);
 

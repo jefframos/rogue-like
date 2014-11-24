@@ -30,7 +30,8 @@ var InputManager = Class.extend({
 					self.removePosition('right');
 				}
 				else if(e.keyCode === 32){
-					game.useShortcut(5);
+					// game.useShortcut(5);
+					game.player.hurt(5);
 				}
 				else if(e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51  || e.keyCode === 81  || e.keyCode === 69){
 					var id = 1;

@@ -55,6 +55,7 @@ var GameScreen = AbstractScreen.extend({
         var assetsToLoader = [
             '_dist/img/drop.png',
             '_dist/img/mask.png',
+            '_dist/img/pixel.jpg',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
@@ -116,22 +117,21 @@ var GameScreen = AbstractScreen.extend({
 
 
 
-        this.HPView = new BarView(80,10, 100,100);
-        this.HPView.setPosition(windowWidth + 10,10);
+        this.HPView = new LifeBarHUD(80,10, 100,100);
+        this.HPView.setPosition(windowWidth + 10,100);
         this.HPView.setFrontColor(0x3d8e09);
         APP.getHUD().addChild(this.HPView.getContent());
 
         this.MPView = new BarView(80,10, 100,100);
         this.MPView.setPosition(windowWidth + 10,25);
         this.MPView.setFrontColor(0x4758ba);
-        APP.getHUD().addChild(this.MPView.getContent());
+        // APP.getHUD().addChild(this.MPView.getContent());
 
         this.XPBar = new BarView(80,10, 100,100);
         this.XPBar.setPosition(windowWidth + 10,40);
         this.XPBar.setFrontColor(0x555555);
         this.XPBar.setBackColor(0x111111);
-        APP.getHUD().addChild(this.XPBar.getContent());
-
+        // APP.getHUD().addChild(this.XPBar.getContent());
 
         
 
@@ -505,7 +505,11 @@ var GameScreen = AbstractScreen.extend({
         }
 
         this.levelBounds= {x: this.currentNode.mapData.length * APP.nTileSize, y: this.currentNode.mapData[0].length * APP.nTileSize};
-
+        if(this.minimapHUD)
+        {
+            this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent());
+            this.minimapHUD = null;
+        }
         this.minimapHUD = new MapHUD();
         this.minimapHUD.build(this.currentNode);
         APP.getHUD().addChild(this.minimapHUD.getContent());
