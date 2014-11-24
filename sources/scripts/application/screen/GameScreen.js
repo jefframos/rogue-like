@@ -36,8 +36,8 @@ var GameScreen = AbstractScreen.extend({
         this.playerModel = APP.playersList[2].clone();
         // this.playerModel = APP.playersList[Math.floor(Math.random()*APP.playersList.length)].clone();
 
-        this.playerModel.mp = 8000;
-        this.playerModel.mpMax = 8000;
+        this.playerModel.mp = 100;
+        this.playerModel.mpMax = 100;
 
         this.playerReady = false;
 
@@ -119,13 +119,11 @@ var GameScreen = AbstractScreen.extend({
 
         this.HPView = new LifeBarHUD(80,10, 100,100);
         this.HPView.setPosition(windowWidth + 10,100);
-        this.HPView.setFrontColor(0x3d8e09);
         APP.getHUD().addChild(this.HPView.getContent());
 
-        this.MPView = new BarView(80,10, 100,100);
-        this.MPView.setPosition(windowWidth + 10,25);
-        this.MPView.setFrontColor(0x4758ba);
-        // APP.getHUD().addChild(this.MPView.getContent());
+        this.MPView = new ManaBarHUD(80,10, 100,100);
+        this.MPView.setPosition(windowWidth + 10,100);
+        APP.getHUD().addChild(this.MPView.getContent());
 
         this.XPBar = new BarView(80,10, 100,100);
         this.XPBar.setPosition(windowWidth + 10,40);
@@ -139,13 +137,13 @@ var GameScreen = AbstractScreen.extend({
         // APP.getHUD().addChild(this.levelLabel);
 
         //adiciona os shortcuts
-        // this.shortcuts = [null,null,null,null,null,null];
-        // this.shortcuts[0] = APP.itemList[0];
-        // this.shortcuts[1] = APP.itemList[1];
-        // this.shortcuts[2] = APP.itemList[2];
-        // this.shortcuts[3] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
-        // this.shortcuts[4] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
-        // this.shortcuts[5] = APP.spellList[Math.floor(APP.spellList.length * Math.random())];
+        this.shortcuts = [null,null,null,null,null,null];
+        this.shortcuts[0] = APP.itemList[0];
+        this.shortcuts[1] = APP.itemList[1];
+        this.shortcuts[2] = APP.itemList[2];
+        this.shortcuts[3] = APP.spellList[0];
+        this.shortcuts[4] = APP.spellList[1];
+        this.shortcuts[5] = APP.spellList[2];
         // var tempBox = null;
         // var icosTotalWidth = (120 * this.shortcuts.length);
         // for (var i = 0; i < this.shortcuts.length; i++) {

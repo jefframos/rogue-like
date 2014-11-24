@@ -423,6 +423,56 @@ var Application = AbstractApplication.extend({
     setPosition: function(x, y) {
         this.container.position.x = x, this.container.position.y = y;
     }
+}), ManaBarHUD = Class.extend({
+    init: function(width, height, maxValue, currentValue) {
+        this.maxValue = maxValue, this.text = "default", this.currentValue = currentValue, 
+        this.container = new PIXI.DisplayObjectContainer(), this.width = width, this.height = height, 
+        this.backShape = new PIXI.Graphics(), this.rect = [ [ 92, 18 ], [ 168, -32 ], [ 171, -23 ], [ 96, 32 ] ], 
+        this.frontRect = [ [ 92, -32 ], [ 168, -32 ], [ 185, 34 ], [ 90, 34 ] ];
+        var i = 0;
+        for (this.backShape.beginFill(16714560), this.backShape.moveTo(this.rect[0][0], this.rect[0][1]), 
+        i = 1; i < this.rect.length; i++) this.backShape.lineTo(this.rect[i][0], this.rect[i][1]);
+        for (this.backShape.endFill(), this.container.addChild(this.backShape), this.frontShape = new PIXI.Graphics(), 
+        this.frontShape.beginFill(9033204), this.frontShape.moveTo(this.frontRect[0][0], this.frontRect[0][1]), 
+        i = 1; i < this.frontRect.length; i++) this.frontShape.lineTo(this.frontRect[i][0], this.frontRect[i][1]);
+        for (this.frontShape.endFill(), this.container.addChild(this.frontShape), this.mask = new PIXI.Graphics(), 
+        this.mask.beginFill(8388608), this.mask.moveTo(this.rect[0][0], this.rect[0][1]), 
+        i = 1; i < this.rect.length; i++) this.mask.lineTo(this.rect[i][0], this.rect[i][1]);
+        for (this.mask.endFill(), this.baseRect = [ [ 96, 32 ], [ 171, -23 ], [ 171, -12 ], [ 95, 41 ] ], 
+        this.baseFrontRect = [ [ 90, -23 ], [ 171, -23 ], [ 171, 41 ], [ 90, 41 ] ], this.backBaseShape = new PIXI.Graphics(), 
+        this.backBaseShape.beginFill(9837082), this.backBaseShape.moveTo(this.baseRect[0][0], this.baseRect[0][1]), 
+        i = 1; i < this.baseRect.length; i++) this.backBaseShape.lineTo(this.baseRect[i][0], this.baseRect[i][1]);
+        for (this.backBaseShape.endFill(), this.container.addChild(this.backBaseShape), 
+        this.backFrontShape = new PIXI.Graphics(), this.backFrontShape.beginFill(2194057), 
+        this.backFrontShape.moveTo(this.baseFrontRect[0][0], this.baseFrontRect[0][1]), 
+        i = 1; i < this.baseFrontRect.length; i++) this.backFrontShape.lineTo(this.baseFrontRect[i][0], this.baseFrontRect[i][1]);
+        for (this.backFrontShape.endFill(), this.container.addChild(this.backFrontShape), 
+        this.backMask = new PIXI.Graphics(), this.backMask.beginFill(255), this.backMask.moveTo(this.baseRect[0][0], this.baseRect[0][1]), 
+        i = 1; i < this.baseRect.length; i++) this.backMask.lineTo(this.baseRect[i][0], this.baseRect[i][1]);
+        this.backMask.endFill(), this.container.addChild(this.mask), this.container.addChild(this.backMask), 
+        this.frontShape.mask = this.mask, this.backFrontShape.mask = this.backMask;
+    },
+    setFrontColor: function() {},
+    setBackColor: function() {},
+    setText: function(text) {
+        this.text !== text && (this.lifebar ? this.lifebar.setText(text) : this.lifebar = new PIXI.Text(text, {
+            fill: "white",
+            align: "center",
+            font: "10px Arial"
+        }));
+    },
+    updateBar: function(currentValue, maxValue) {
+        return this.currentValue < 0 ? (this.frontShape.position.x = this.frontShape.width, 
+        void (this.backFrontShape.position.x = this.backFrontShape.position.width)) : (this.currentValue = currentValue, 
+        this.maxValue = maxValue, console.log(this.currentValue, this.maxValue, "mp"), this.frontShape.position.x = 95 * (this.currentValue / this.maxValue) - 95, 
+        void (this.backFrontShape.position.x = 80 * (this.currentValue / this.maxValue) - 80));
+    },
+    getContent: function() {
+        return this.container;
+    },
+    setPosition: function(x, y) {
+        this.container.position.x = x, this.container.position.y = y;
+    }
 }), MapHUD = Class.extend({
     init: function(img) {
         this.width = 150, this.height = 130, img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : (this.background = new PIXI.Graphics(), 
@@ -1702,7 +1752,7 @@ var Application = AbstractApplication.extend({
         }, this.mouseDown = !1;
         var clss = "thief", rnd = Math.random();
         .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = APP.playersList[2].clone(), 
-        this.playerModel.mp = 8e3, this.playerModel.mpMax = 8e3, this.playerReady = !1;
+        this.playerModel.mp = 100, this.playerModel.mpMax = 100, this.playerReady = !1;
     },
     destroy: function() {
         this._super();
@@ -1725,11 +1775,13 @@ var Application = AbstractApplication.extend({
         this.fog = new SimpleSprite("_dist/img/mask.png"), this.backInterface = new PIXI.Graphics(), 
         this.backInterface.beginFill(2496568), this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
         APP.getHUD().addChild(this.backInterface), this.HPView = new LifeBarHUD(80, 10, 100, 100), 
-        this.HPView.setPosition(windowWidth + 10, 100), this.HPView.setFrontColor(4034057), 
-        APP.getHUD().addChild(this.HPView.getContent()), this.MPView = new BarView(80, 10, 100, 100), 
-        this.MPView.setPosition(windowWidth + 10, 25), this.MPView.setFrontColor(4675770), 
-        this.XPBar = new BarView(80, 10, 100, 100), this.XPBar.setPosition(windowWidth + 10, 40), 
-        this.XPBar.setFrontColor(5592405), this.XPBar.setBackColor(1118481);
+        this.HPView.setPosition(windowWidth + 10, 100), APP.getHUD().addChild(this.HPView.getContent()), 
+        this.MPView = new ManaBarHUD(80, 10, 100, 100), this.MPView.setPosition(windowWidth + 10, 100), 
+        APP.getHUD().addChild(this.MPView.getContent()), this.XPBar = new BarView(80, 10, 100, 100), 
+        this.XPBar.setPosition(windowWidth + 10, 40), this.XPBar.setFrontColor(5592405), 
+        this.XPBar.setBackColor(1118481), this.shortcuts = [ null, null, null, null, null, null ], 
+        this.shortcuts[0] = APP.itemList[0], this.shortcuts[1] = APP.itemList[1], this.shortcuts[2] = APP.itemList[2], 
+        this.shortcuts[3] = APP.spellList[0], this.shortcuts[4] = APP.spellList[1], this.shortcuts[5] = APP.spellList[2];
     },
     useShortcut: function(id) {
         this.shortcuts[id] && (this.shortcuts[id] instanceof ItemModel ? this.useItem(this.shortcuts[id]) : this.shortcuts[id] instanceof SpellModel && this.spell(this.shortcuts[id]));
