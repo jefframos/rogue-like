@@ -9,7 +9,8 @@ var BoxHUD1 = Class.extend({
 		this.height = height;
 		this.background = new SimpleSprite('_dist/img/HUD/box.png');
 		
-
+		this.img = null;
+		this.infoImg = null;
 		
 		this.container.hitArea = new PIXI.Rectangle(0,0,width, height);
 
@@ -52,8 +53,6 @@ var BoxHUD1 = Class.extend({
 			}
 
 			
-
-			
 			this.container.addChild(this.infoContainer);
 			this.container.addChild(this.background.getContent());
 			
@@ -64,13 +63,16 @@ var BoxHUD1 = Class.extend({
 			var self = this;
 			this.container.mouseover = function(mouseData){
 				self.showInfo();
-				console.log('over');
 			};
 
 			this.container.mouseout = function(mouseData){
 				self.hideInfo();
 			};
 
+			this.container.mousedown = function(mouseData){
+				console.log('down');
+				APP.getHUDController().dragInventory(self.infoImg.getContent());
+			};
 		}
 	},
 	showInfo: function(){
