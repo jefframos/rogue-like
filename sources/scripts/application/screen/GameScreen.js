@@ -118,11 +118,11 @@ var GameScreen = AbstractScreen.extend({
 
 
         this.HPView = new LifeBarHUD(80,10, 100,100);
-        this.HPView.setPosition(windowWidth + 10,100);
+        this.HPView.setPosition(windowWidth + 10,150);
         APP.getHUD().addChild(this.HPView.getContent());
 
         this.MPView = new ManaBarHUD(80,10, 100,100);
-        this.MPView.setPosition(windowWidth + 10,100);
+        this.MPView.setPosition(windowWidth + 10,150);
         APP.getHUD().addChild(this.MPView.getContent());
 
         this.XPBar = new BarView(80,10, 100,100);
@@ -136,38 +136,62 @@ var GameScreen = AbstractScreen.extend({
         // this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 15px Arial'});
         // APP.getHUD().addChild(this.levelLabel);
 
-        //adiciona os shortcuts
-        this.shortcuts = [null,null,null,null,null,null];
-        this.shortcuts[0] = APP.itemList[0];
-        this.shortcuts[1] = APP.itemList[1];
-        this.shortcuts[2] = APP.itemList[2];
-        this.shortcuts[3] = APP.spellList[0];
-        this.shortcuts[4] = APP.spellList[1];
-        this.shortcuts[5] = APP.spellList[2];
-        // var tempBox = null;
-        // var icosTotalWidth = (120 * this.shortcuts.length);
-        // for (var i = 0; i < this.shortcuts.length; i++) {
-        //     tempBox = new BoxHUD1(100,70, 3);
-        //     tempBox.setPosition(windowWidth / 2 - icosTotalWidth / 2 +i*120, windowHeight - 90);
-        //     APP.getHUD().addChild(tempBox.getContent());
-        //     var tempText = '';
-        //     var shortcut = i + 1;
-        //     if(i === 3){
-        //         shortcut = 'Q';
-        //     }
-        //     else if(i === 4){
-        //         shortcut = 'E';
-        //     }
-        //     else if(i === 5){
-        //         shortcut = 'SPACE';
-        //     }
-        //     if(this.shortcuts[i] && this.shortcuts[i].icoImg){
-        //         tempBox.addImage(this.shortcuts[i].icoImg);
-        //         tempText = this.shortcuts[i].name;
-        //         tempBox.addModel(this.shortcuts[i]);
-        //     }
-        //     tempBox.setText(tempText + '\n\n\n' + shortcut);
-        // }
+        this.backInventory = new PIXI.Graphics();
+        this.backInventory.beginFill(0x140B23);
+        this.backInventory.moveTo(25,0);
+        this.backInventory.lineTo(170,6);
+        this.backInventory.lineTo(186,32);
+        this.backInventory.lineTo(185,121);
+        this.backInventory.lineTo(146,144);
+        this.backInventory.lineTo(0,134);
+        this.backInventory.lineTo(4,21);
+        APP.getHUD().addChild(this.backInventory);
+        this.backInventory.position.x = windowWidth + 5;
+        this.backInventory.position.y = 320;
+
+        //adiciona os inventory
+        this.inventory = [null,null,null,null,
+        null,null,null,null,
+        null,null,null,null];
+        this.inventory[0] = APP.itemList[0];
+        this.inventory[1] = APP.itemList[1];
+        this.inventory[2] = APP.itemList[2];
+        this.inventory[3] = APP.spellList[0];
+        this.inventory[4] = APP.spellList[1];
+        this.inventory[5] = APP.spellList[2];
+        var tempBox = null;
+        var icosTotalWidth = (120 * this.inventory.length);
+        var lineAccum = 0;
+        var rowAccum = 0;
+        for (var i = 0; i < this.inventory.length; i++) {
+            tempBox = new BoxHUD1(42,36, 3, i);
+
+            if(i > 0 && i % 4 === 0){
+                lineAccum ++;
+                rowAccum = 0;
+            }
+
+            tempBox.setPosition(windowWidth +rowAccum*46 + 10, 325 + lineAccum * 42);
+            rowAccum ++;
+            APP.getHUD().addChild(tempBox.getContent());
+            var tempText = '';
+            var shortcut = i + 1;
+            // if(i === 3){
+            //     shortcut = 'Q';
+            // }
+            // else if(i === 4){
+            //     shortcut = 'E';
+            // }
+            // else if(i === 5){
+            //     shortcut = 'SPACE';
+            // }
+            if(this.inventory[i] && this.inventory[i].icoImg){
+                // tempBox.addImage(this.inventory[i].icoImg);
+                tempText = this.inventory[i].name;
+                tempBox.addModel(this.inventory[i]);
+            }
+            // tempBox.setText(tempText + '\n\n\n' + shortcut);
+        }
 
         // this.equips = [null,null,null];
         // this.equipsBoxHud = [];
@@ -202,11 +226,11 @@ var GameScreen = AbstractScreen.extend({
     },
     //verifica qual model está no atalho e executa a ação daquele model
     useShortcut:function(id){
-        if(this.shortcuts[id]){
-            if(this.shortcuts[id] instanceof ItemModel){
-                this.useItem(this.shortcuts[id]);
-            }else if(this.shortcuts[id] instanceof SpellModel){
-                this.spell(this.shortcuts[id]);
+        if(this.inventory[id]){
+            if(this.inventory[id] instanceof ItemModel){
+                this.useItem(this.inventory[id]);
+            }else if(this.inventory[id] instanceof SpellModel){
+                this.spell(this.inventory[id]);
             }
         }
     },
@@ -511,7 +535,7 @@ var GameScreen = AbstractScreen.extend({
         this.minimapHUD = new MapHUD();
         this.minimapHUD.build(this.currentNode);
         APP.getHUD().addChild(this.minimapHUD.getContent());
-        this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth)/2 - this.minimapHUD.width/2, realWindowHeight - this.minimapHUD.height - 50);
+        this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth)/2 - this.minimapHUD.width/2, realWindowHeight - this.minimapHUD.height - 30);
 
         // this.levelGenerator.debugBounds();
         this.levelGenerator.createDoors();

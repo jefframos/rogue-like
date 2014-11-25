@@ -126,7 +126,7 @@ var ManaBarHUD = Class.extend({
 		}
 		this.currentValue = currentValue;
 		this.maxValue = maxValue;
-		console.log(this.currentValue, this.maxValue, 'mp');
+		// console.log(this.currentValue, this.maxValue, 'mp');
 		this.frontShape.position.x = 95 * (this.currentValue/this.maxValue) - 95;
 		this.backFrontShape.position.x = 80 * (this.currentValue/this.maxValue) - 80;
 

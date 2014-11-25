@@ -76,28 +76,6 @@ var LifeBarHUD = Class.extend({
 		this.frontShape.mask = this.mask;
 		this.backFrontShape.mask = this.backMask;
 
-		// this.frontShape.scale.x = this.currentValue/this.maxValue;
-	},
-	setFrontColor: function(color){
-		// if(this.frontShape){
-		// 	this.container.removeChild(this.frontShape);
-		// }
-		// this.frontShape = new PIXI.Graphics();
-		// this.frontShape.beginFill(color);
-		// this.frontShape.drawRect(0,0,this.width, this.height);
-		// this.container.addChild(this.frontShape);
-
-	},
-	setBackColor: function(color){
-		// if(this.backShape){
-		// 	this.container.removeChild(this.backShape);
-		// }
-		// this.backShape = new PIXI.Graphics();
-		// this.backShape.beginFill(color);
-		// // this.backShape.lineStyle(1,0xEEEEEE);
-		// this.backShape.drawRect(0,0,this.width, this.height);
-		// this.container.addChildAt(this.backShape,0);
-
 	},
 	setText: function(text){
 		if(this.text !== text){

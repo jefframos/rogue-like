@@ -1,4 +1,4 @@
-/*! jefframos 24-11-2014 */
+/*! jefframos 25-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -306,17 +306,21 @@ var Application = AbstractApplication.extend({
         this.container.position.x = x, this.container.position.y = y;
     }
 }), BoxHUD1 = Class.extend({
-    init: function(width, height, infoSide) {
+    init: function(width, height, infoSide, id) {
         if (this.text = "default", this.container = new PIXI.DisplayObjectContainer(), this.infoSide = infoSide, 
-        this.width = width, this.height = height, this.backShape = new PIXI.Graphics(), 
-        this.backShape.beginFill(0), this.backShape.lineStyle(1, 15658734), this.backShape.drawRect(0, 0, width, height), 
-        this.container.addChild(this.backShape), this.container.hitArea = new PIXI.Rectangle(0, 0, width, height), 
-        0 !== infoSide) {
+        this.width = width, this.height = height, this.background = new SimpleSprite("_dist/img/HUD/box.png"), 
+        this.container.hitArea = new PIXI.Rectangle(0, 0, width, height), 0 !== infoSide) {
             this.infoContainer = new PIXI.DisplayObjectContainer(), this.backShapeInfo = new PIXI.Graphics(), 
-            this.backShapeInfo.lineStyle(1, 15658734), this.backShapeInfo.beginFill(0), this.backShapeInfo.drawRect(0, 0, width, height), 
-            this.infoContainer.addChild(this.backShapeInfo), 1 === infoSide ? this.infoContainer.position.x = -width : 2 === infoSide ? this.infoContainer.position.x = width : 3 === infoSide ? this.infoContainer.position.y = -height : 4 === infoSide && (this.infoContainer.position.y = height), 
-            this.infoContainer.alpha = 0, this.container.addChild(this.infoContainer), this.container.setInteractive(!0), 
-            this.model = null;
+            this.backShapeInfo.beginFill(1313571), this.backShapeInfo.moveTo(10, 2), this.backShapeInfo.lineTo(85, 0), 
+            this.backShapeInfo.lineTo(84, 70), this.backShapeInfo.lineTo(63, 95), this.backShapeInfo.lineTo(0, 84), 
+            this.backShapeInfo.lineTo(0, 16), this.infoContainer.addChild(this.backShapeInfo), 
+            this.infoContainer.pivot.x = 85, this.infoContainer.pivot.y = 85, 1 === infoSide ? this.infoContainer.position.x = -this.backShapeInfo.width : 2 === infoSide ? this.infoContainer.position.x = this.backShapeInfo.width : 3 === infoSide ? (this.infoContainer.position.y = -86 + this.infoContainer.pivot.y, 
+            this.infoContainer.position.x = -62 + this.infoContainer.pivot.x) : 4 === infoSide && (this.infoContainer.position.y = this.backShapeInfo.height), 
+            this.infoContainer.alpha = 0, 4 > id && (this.shortcut = new SimpleSprite("_dist/img/HUD/topBox.png"), 
+            this.container.addChild(this.shortcut.getContent()), this.shortcut.getContent().position.x = 7, 
+            this.shortcut.getContent().position.y = -14, this.setText(id + 1), this.setTextPos(20, -13)), 
+            this.container.addChild(this.infoContainer), this.container.addChild(this.background.getContent()), 
+            this.container.setInteractive(!0), this.model = null;
             var self = this;
             this.container.mouseover = function() {
                 self.showInfo(), console.log("over");
@@ -326,46 +330,80 @@ var Application = AbstractApplication.extend({
         }
     },
     showInfo: function() {
-        this.infoContainer.alpha = 1;
+        this.model && (this.infoContainer.scale.x = .5, this.infoContainer.scale.y = .5, 
+        TweenLite.to(this.infoContainer, .1, {
+            alpha: 1
+        }), TweenLite.to(this.infoContainer.scale, .2, {
+            x: 1,
+            y: 1,
+            ease: "easeOutBack"
+        }));
     },
     hideInfo: function() {
-        this.infoContainer.alpha = 0;
+        this.model && (TweenLite.to(this.infoContainer, .1, {
+            alpha: 0
+        }), TweenLite.to(this.infoContainer.scale, .3, {
+            x: .5,
+            y: .5,
+            ease: "easeInBack"
+        }));
     },
     setTextPos: function(x, y) {
         this.label && (this.label.position.x = x, this.label.position.y = y);
     },
-    setColor: function(color) {
-        this.backShape && this.container.removeChild(this.backShape), this.backShape = new PIXI.Graphics(), 
-        this.backShape.beginFill(color), this.backShape.drawRect(0, 0, this.width, this.height), 
-        this.container.addChild(this.backShape);
+    setQuantTextPos: function(x, y) {
+        this.quantLabel && (this.quantLabel.position.x = x, this.quantLabel.position.y = y);
     },
     addModel: function(model) {
         if (this.model = model, this.addImage(this.model.icoImg), 0 !== this.infoSide) {
             var text = "";
-            if (model instanceof WeaponModel) text = "Weapon\n" + model.label + "\nPWR: +" + model.battlePower + "\nMPW: +" + model.magicPower; else if (model instanceof ArmorModel) text = "Armor\n" + model.label + "\nDEF: +" + model.defenseArmor + "\nMDF: +" + model.magicDefenseArmor; else if (model instanceof RelicModel) text = "Relic\n" + model.label + "\nSTATUS: \n" + model.status; else if (model instanceof ItemModel) {
+            if (model && (textTitle = model.label), model instanceof WeaponModel) text = "PWR: +" + model.battlePower + "\nMPW: +" + model.magicPower; else if (model instanceof ArmorModel) text = "DEF: +" + model.defenseArmor + "\nMDF: +" + model.magicDefenseArmor; else if (model instanceof RelicModel) text = "STATUS: \n" + model.status; else if (model instanceof SpellModel) text = "MPW: " + model.spellPower + "\nMP: " + model.mp; else if (model instanceof ItemModel) {
                 var addicionalLabel = 0 !== model.baseValue ? "\n+ " + model.baseValue : "";
-                text = model.label + "\n" + model.effect + addicionalLabel;
-            } else model instanceof SpellModel && (text = model.label + "\nMPW: " + model.spellPower + "\nMP: " + model.mp);
-            this.infoLabel ? this.infoLabel.setText(text) : (this.infoLabel = new PIXI.Text(text, {
+                textTitle = model.label, text = model.effect + addicionalLabel, this.quant || (this.quant = new SimpleSprite("_dist/img/HUD/quantBox.png"), 
+                this.container.addChild(this.quant.getContent()), this.quant.getContent().position.x = -7, 
+                this.quant.getContent().position.y = 24, this.setQuantText("2"), this.setQuantTextPos(-3, 26));
+            }
+            this.infoLabelTitle ? this.infoLabelTitle.setText(textTitle) : (this.infoLabelTitle = new PIXI.Text(textTitle, {
                 fill: "white",
                 align: "left",
-                font: "14px Arial"
-            }), this.infoContainer.addChildAt(this.infoLabel, 1));
+                font: "10px Arial",
+                wordWrap: !0,
+                wordWrapWidth: 20
+            }), this.infoContainer.addChildAt(this.infoLabelTitle, 1), this.infoLabelTitle.position.y = 15, 
+            this.infoLabelTitle.position.x = 40), this.infoLabel ? this.infoLabel.setText(text) : (this.infoLabel = new PIXI.Text(text, {
+                fill: "white",
+                align: "left",
+                font: "12px Arial"
+            }), this.infoContainer.addChildAt(this.infoLabel, 1), this.infoLabel.position.y = 45, 
+            this.infoLabel.position.x = 15), model.icoImg && this.addImage(model.icoImg);
         }
+    },
+    setQuantText: function(text) {
+        this.quantText !== text && (this.quantLabel ? this.quantLabel.setText(text) : (this.quantLabel = new PIXI.Text(text, {
+            fill: "black",
+            align: "left",
+            font: "12px Arial"
+        }), this.container.addChild(this.quantLabel)));
     },
     setText: function(text) {
         this.text !== text && (this.label ? this.label.setText(text) : (this.label = new PIXI.Text(text, {
-            fill: "white",
+            fill: "black",
             align: "left",
             font: "14px Arial"
-        }), this.container.addChildAt(this.label, 1)));
+        }), this.container.addChild(this.label)));
     },
     update: function() {
         this.img && this.img.parent && this.img.setPosition(this.width / 2 - this.img.getContent().width / 2, this.height / 2 - this.img.getContent().height / 2);
     },
     addImage: function(src) {
-        this.img && this.img.parent && this.img.parent.removeChild(this.img), this.img = new SimpleSprite(src), 
-        this.container.addChild(this.img.getContent()), this.img.setPosition(this.width / 2 - 15, this.height / 2 - 15);
+        this.img && this.img.parent && this.img.parent.removeChild(this.img.getContent()), 
+        this.infoImg && this.infoImg.parent && this.infoImg.parent.removeChild(this.infoImg.getContent()), 
+        this.img = new SimpleSprite(src), this.infoImg = new SimpleSprite(src), this.container.addChild(this.img.getContent()), 
+        this.img.getContent().scale.x = .8, this.img.getContent().scale.y = .8;
+        var posCorrection = 12;
+        this.img.setPosition(this.width / 2 - posCorrection, this.height / 2 - posCorrection), 
+        this.infoContainer && (this.infoContainer.addChild(this.infoImg.getContent()), this.infoImg.getContent().scale.x = .6, 
+        this.infoImg.getContent().scale.y = .6, this.infoImg.setPosition(15, 15));
     },
     getContent: function() {
         return this.container;
@@ -402,8 +440,6 @@ var Application = AbstractApplication.extend({
         this.backMask.endFill(), this.container.addChild(this.mask), this.container.addChild(this.backMask), 
         this.frontShape.mask = this.mask, this.backFrontShape.mask = this.backMask;
     },
-    setFrontColor: function() {},
-    setBackColor: function() {},
     setText: function(text) {
         this.text !== text && (this.lifebar ? this.lifebar.setText(text) : this.lifebar = new PIXI.Text(text, {
             fill: "white",
@@ -464,7 +500,7 @@ var Application = AbstractApplication.extend({
     updateBar: function(currentValue, maxValue) {
         return this.currentValue < 0 ? (this.frontShape.position.x = this.frontShape.width, 
         void (this.backFrontShape.position.x = this.backFrontShape.position.width)) : (this.currentValue = currentValue, 
-        this.maxValue = maxValue, console.log(this.currentValue, this.maxValue, "mp"), this.frontShape.position.x = 95 * (this.currentValue / this.maxValue) - 95, 
+        this.maxValue = maxValue, this.frontShape.position.x = 95 * (this.currentValue / this.maxValue) - 95, 
         void (this.backFrontShape.position.x = 80 * (this.currentValue / this.maxValue) - 80));
     },
     getContent: function() {
@@ -475,7 +511,7 @@ var Application = AbstractApplication.extend({
     }
 }), MapHUD = Class.extend({
     init: function(img) {
-        this.width = 150, this.height = 130, img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : (this.background = new PIXI.Graphics(), 
+        this.width = 150, this.height = 100, img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : (this.background = new PIXI.Graphics(), 
         this.background.beginFill(displayColors.OCEAN), this.background.drawRect(-15, -15, this.width + 30, this.height + 30), 
         this.background.endFill()), this.mask = new PIXI.Graphics(), this.container = new PIXI.DisplayObjectContainer(), 
         this.mapContainer = new PIXI.DisplayObjectContainer(), this.container.addChild(this.background), 
@@ -1775,16 +1811,28 @@ var Application = AbstractApplication.extend({
         this.fog = new SimpleSprite("_dist/img/mask.png"), this.backInterface = new PIXI.Graphics(), 
         this.backInterface.beginFill(2496568), this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
         APP.getHUD().addChild(this.backInterface), this.HPView = new LifeBarHUD(80, 10, 100, 100), 
-        this.HPView.setPosition(windowWidth + 10, 100), APP.getHUD().addChild(this.HPView.getContent()), 
-        this.MPView = new ManaBarHUD(80, 10, 100, 100), this.MPView.setPosition(windowWidth + 10, 100), 
+        this.HPView.setPosition(windowWidth + 10, 150), APP.getHUD().addChild(this.HPView.getContent()), 
+        this.MPView = new ManaBarHUD(80, 10, 100, 100), this.MPView.setPosition(windowWidth + 10, 150), 
         APP.getHUD().addChild(this.MPView.getContent()), this.XPBar = new BarView(80, 10, 100, 100), 
         this.XPBar.setPosition(windowWidth + 10, 40), this.XPBar.setFrontColor(5592405), 
-        this.XPBar.setBackColor(1118481), this.shortcuts = [ null, null, null, null, null, null ], 
-        this.shortcuts[0] = APP.itemList[0], this.shortcuts[1] = APP.itemList[1], this.shortcuts[2] = APP.itemList[2], 
-        this.shortcuts[3] = APP.spellList[0], this.shortcuts[4] = APP.spellList[1], this.shortcuts[5] = APP.spellList[2];
+        this.XPBar.setBackColor(1118481), this.backInventory = new PIXI.Graphics(), this.backInventory.beginFill(1313571), 
+        this.backInventory.moveTo(25, 0), this.backInventory.lineTo(170, 6), this.backInventory.lineTo(186, 32), 
+        this.backInventory.lineTo(185, 121), this.backInventory.lineTo(146, 144), this.backInventory.lineTo(0, 134), 
+        this.backInventory.lineTo(4, 21), APP.getHUD().addChild(this.backInventory), this.backInventory.position.x = windowWidth + 5, 
+        this.backInventory.position.y = 320, this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null ], 
+        this.inventory[0] = APP.itemList[0], this.inventory[1] = APP.itemList[1], this.inventory[2] = APP.itemList[2], 
+        this.inventory[3] = APP.spellList[0], this.inventory[4] = APP.spellList[1], this.inventory[5] = APP.spellList[2];
+        for (var tempBox = null, lineAccum = (120 * this.inventory.length, 0), rowAccum = 0, i = 0; i < this.inventory.length; i++) {
+            tempBox = new BoxHUD1(42, 36, 3, i), i > 0 && i % 4 === 0 && (lineAccum++, rowAccum = 0), 
+            tempBox.setPosition(windowWidth + 46 * rowAccum + 10, 325 + 42 * lineAccum), rowAccum++, 
+            APP.getHUD().addChild(tempBox.getContent());
+            var tempText = "";
+            this.inventory[i] && this.inventory[i].icoImg && (tempText = this.inventory[i].name, 
+            tempBox.addModel(this.inventory[i]));
+        }
     },
     useShortcut: function(id) {
-        this.shortcuts[id] && (this.shortcuts[id] instanceof ItemModel ? this.useItem(this.shortcuts[id]) : this.shortcuts[id] instanceof SpellModel && this.spell(this.shortcuts[id]));
+        this.inventory[id] && (this.inventory[id] instanceof ItemModel ? this.useItem(this.inventory[id]) : this.inventory[id] instanceof SpellModel && this.spell(this.inventory[id]));
     },
     updateInventory: function() {
         if (this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
@@ -1934,7 +1982,7 @@ var Application = AbstractApplication.extend({
             y: this.currentNode.mapData[0].length * APP.nTileSize
         }, this.minimapHUD && (this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent()), 
         this.minimapHUD = null), this.minimapHUD = new MapHUD(), this.minimapHUD.build(this.currentNode), 
-        APP.getHUD().addChild(this.minimapHUD.getContent()), this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth) / 2 - this.minimapHUD.width / 2, realWindowHeight - this.minimapHUD.height - 50), 
+        APP.getHUD().addChild(this.minimapHUD.getContent()), this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth) / 2 - this.minimapHUD.width / 2, realWindowHeight - this.minimapHUD.height - 30), 
         this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
         var monstersToLoaded = [], monstersAssets = [];
         if (1 !== this.currentNode.mode) {
@@ -2030,7 +2078,7 @@ var Application = AbstractApplication.extend({
         this.vecPositions = [], document.body.addEventListener("mouseup", function() {
             game.player && (game.mouseDown = !1);
         }), document.body.addEventListener("mousedown", function() {
-            game.player && (game.mouseDown = !0);
+            game.player && APP.getMousePos().x < windowWidth && (game.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
             if (game.player) {
                 if (87 === e.keyCode || 38 === e.keyCode && game.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && game.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && game.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && game.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) game.player.hurt(5); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode || 81 === e.keyCode || 69 === e.keyCode) {

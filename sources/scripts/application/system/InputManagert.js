@@ -10,7 +10,7 @@ var InputManager = Class.extend({
 			}
 		});
 		document.body.addEventListener('mousedown', function(e){
-			if(game.player){
+			if(game.player && APP.getMousePos().x < windowWidth){
 				game.mouseDown = true;
 			}
 		});
