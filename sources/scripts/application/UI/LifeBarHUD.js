@@ -71,6 +71,19 @@ var LifeBarHUD = Class.extend({
 		}
 		this.backMask.endFill();
 
+
+		this.supportShape = new PIXI.Graphics();
+		this.supportShape.beginFill(0x1A8C1D);
+		this.supportShape.moveTo(this.rect[1][0],this.rect[1][1]);
+		this.supportShape.lineTo(this.baseRect[2][0],this.baseRect[2][1]);
+		this.supportShape.lineTo(this.baseRect[1][0],this.baseRect[1][1]);
+		this.supportShape.lineTo(this.rect[1][0],this.rect[1][1]);
+
+		this.supportShape.endFill();
+		this.container.addChild(this.supportShape);
+
+
+
 		this.container.addChild(this.mask);
 		this.container.addChild(this.backMask);
 		this.frontShape.mask = this.mask;

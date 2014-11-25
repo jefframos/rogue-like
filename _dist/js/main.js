@@ -437,8 +437,11 @@ var Application = AbstractApplication.extend({
         for (this.backFrontShape.endFill(), this.container.addChild(this.backFrontShape), 
         this.backMask = new PIXI.Graphics(), this.backMask.beginFill(255), this.backMask.moveTo(this.baseRect[0][0], this.baseRect[0][1]), 
         i = 1; i < this.baseRect.length; i++) this.backMask.lineTo(this.baseRect[i][0], this.baseRect[i][1]);
-        this.backMask.endFill(), this.container.addChild(this.mask), this.container.addChild(this.backMask), 
-        this.frontShape.mask = this.mask, this.backFrontShape.mask = this.backMask;
+        this.backMask.endFill(), this.supportShape = new PIXI.Graphics(), this.supportShape.beginFill(1739805), 
+        this.supportShape.moveTo(this.rect[1][0], this.rect[1][1]), this.supportShape.lineTo(this.baseRect[2][0], this.baseRect[2][1]), 
+        this.supportShape.lineTo(this.baseRect[1][0], this.baseRect[1][1]), this.supportShape.lineTo(this.rect[1][0], this.rect[1][1]), 
+        this.supportShape.endFill(), this.container.addChild(this.supportShape), this.container.addChild(this.mask), 
+        this.container.addChild(this.backMask), this.frontShape.mask = this.mask, this.backFrontShape.mask = this.backMask;
     },
     setText: function(text) {
         this.text !== text && (this.lifebar ? this.lifebar.setText(text) : this.lifebar = new PIXI.Text(text, {
@@ -463,8 +466,8 @@ var Application = AbstractApplication.extend({
     init: function(width, height, maxValue, currentValue) {
         this.maxValue = maxValue, this.text = "default", this.currentValue = currentValue, 
         this.container = new PIXI.DisplayObjectContainer(), this.width = width, this.height = height, 
-        this.backShape = new PIXI.Graphics(), this.rect = [ [ 92, 18 ], [ 168, -32 ], [ 171, -23 ], [ 96, 32 ] ], 
-        this.frontRect = [ [ 92, -32 ], [ 168, -32 ], [ 185, 34 ], [ 90, 34 ] ];
+        this.backShape = new PIXI.Graphics(), this.rect = [ [ 92, 18 ], [ 168, -32 ], [ 178, -23 ], [ 103, 28 ] ], 
+        this.frontRect = [ [ 92, -32 ], [ 168, -32 ], [ 235, 34 ], [ 90, 34 ] ];
         var i = 0;
         for (this.backShape.beginFill(16714560), this.backShape.moveTo(this.rect[0][0], this.rect[0][1]), 
         i = 1; i < this.rect.length; i++) this.backShape.lineTo(this.rect[i][0], this.rect[i][1]);
@@ -474,8 +477,8 @@ var Application = AbstractApplication.extend({
         for (this.frontShape.endFill(), this.container.addChild(this.frontShape), this.mask = new PIXI.Graphics(), 
         this.mask.beginFill(8388608), this.mask.moveTo(this.rect[0][0], this.rect[0][1]), 
         i = 1; i < this.rect.length; i++) this.mask.lineTo(this.rect[i][0], this.rect[i][1]);
-        for (this.mask.endFill(), this.baseRect = [ [ 96, 32 ], [ 171, -23 ], [ 171, -12 ], [ 95, 41 ] ], 
-        this.baseFrontRect = [ [ 90, -23 ], [ 171, -23 ], [ 171, 41 ], [ 90, 41 ] ], this.backBaseShape = new PIXI.Graphics(), 
+        for (this.mask.endFill(), this.baseRect = [ this.rect[3], this.rect[2], [ 173, -12 ], [ 95, 41 ] ], 
+        this.baseFrontRect = [ [ 90, -23 ], this.rect[2], [ 151, 41 ], [ 90, 41 ] ], this.backBaseShape = new PIXI.Graphics(), 
         this.backBaseShape.beginFill(9837082), this.backBaseShape.moveTo(this.baseRect[0][0], this.baseRect[0][1]), 
         i = 1; i < this.baseRect.length; i++) this.backBaseShape.lineTo(this.baseRect[i][0], this.baseRect[i][1]);
         for (this.backBaseShape.endFill(), this.container.addChild(this.backBaseShape), 
@@ -485,8 +488,11 @@ var Application = AbstractApplication.extend({
         for (this.backFrontShape.endFill(), this.container.addChild(this.backFrontShape), 
         this.backMask = new PIXI.Graphics(), this.backMask.beginFill(255), this.backMask.moveTo(this.baseRect[0][0], this.baseRect[0][1]), 
         i = 1; i < this.baseRect.length; i++) this.backMask.lineTo(this.baseRect[i][0], this.baseRect[i][1]);
-        this.backMask.endFill(), this.container.addChild(this.mask), this.container.addChild(this.backMask), 
-        this.frontShape.mask = this.mask, this.backFrontShape.mask = this.backMask;
+        this.backMask.endFill(), this.supportShape = new PIXI.Graphics(), this.supportShape.beginFill(2187880), 
+        this.supportShape.moveTo(this.rect[0][0], this.rect[0][1]), this.supportShape.lineTo(this.baseRect[0][0], this.baseRect[0][1]), 
+        this.supportShape.lineTo(this.baseRect[3][0], this.baseRect[3][1]), this.supportShape.lineTo(this.rect[0][0], this.rect[0][1]), 
+        this.supportShape.endFill(), this.container.addChild(this.supportShape), this.container.addChild(this.mask), 
+        this.container.addChild(this.backMask), this.frontShape.mask = this.mask, this.backFrontShape.mask = this.backMask;
     },
     setFrontColor: function() {},
     setBackColor: function() {},
@@ -500,8 +506,8 @@ var Application = AbstractApplication.extend({
     updateBar: function(currentValue, maxValue) {
         return this.currentValue < 0 ? (this.frontShape.position.x = this.frontShape.width, 
         void (this.backFrontShape.position.x = this.backFrontShape.position.width)) : (this.currentValue = currentValue, 
-        this.maxValue = maxValue, this.frontShape.position.x = 95 * (this.currentValue / this.maxValue) - 95, 
-        void (this.backFrontShape.position.x = 80 * (this.currentValue / this.maxValue) - 80));
+        this.maxValue = maxValue, this.frontShape.position.x = 130 * (this.currentValue / this.maxValue) - 130, 
+        void (this.backFrontShape.position.x = 55 * (this.currentValue / this.maxValue) - 55));
     },
     getContent: function() {
         return this.container;

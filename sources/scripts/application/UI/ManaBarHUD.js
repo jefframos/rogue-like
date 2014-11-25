@@ -10,8 +10,8 @@ var ManaBarHUD = Class.extend({
 		this.height = height;
 		this.backShape = new PIXI.Graphics();
 
-		this.rect = [[92,18],[168,-32],[171,-23],[96,32]];
-		this.frontRect = [[92,-32],[168,-32],[185,34],[90,34]];
+		this.rect = [[92,18],[168,-32],[178,-23],[103,28]];
+		this.frontRect = [[92,-32],[168,-32],[235,34],[90,34]];
 
 		// this.rect = [[92,18],[164,-32],[171,-23],[90,34]];
 		// this.frontRect = [[92,-32],[164,-32],[211,34],[90,34]];
@@ -45,8 +45,8 @@ var ManaBarHUD = Class.extend({
 
 
 
-		this.baseRect = [[96,32],[171,-23], [171,-12], [95,41]];
-		this.baseFrontRect = [[90,-23],[171,-23], [171,41], [90,41]];
+		this.baseRect = [this.rect[3],this.rect[2], [173,-12], [95,41]];
+		this.baseFrontRect = [[90,-23],this.rect[2], [151,41], [90,41]];
 
 		// this.baseRect = [[90,34],[171,-23], [171,-12], [95,41]];
 		// this.baseFrontRect = [[90,-23],[171,-23], [171,41], [90,41]];
@@ -77,6 +77,16 @@ var ManaBarHUD = Class.extend({
 			this.backMask.lineTo(this.baseRect[i][0],this.baseRect[i][1]);
 		}
 		this.backMask.endFill();
+
+		this.supportShape = new PIXI.Graphics();
+		this.supportShape.beginFill(0x216268);
+		this.supportShape.moveTo(this.rect[0][0],this.rect[0][1]);
+		this.supportShape.lineTo(this.baseRect[0][0],this.baseRect[0][1]);
+		this.supportShape.lineTo(this.baseRect[3][0],this.baseRect[3][1]);
+		this.supportShape.lineTo(this.rect[0][0],this.rect[0][1]);
+
+		this.supportShape.endFill();
+		this.container.addChild(this.supportShape);
 
 		this.container.addChild(this.mask);
 		this.container.addChild(this.backMask);
@@ -127,8 +137,8 @@ var ManaBarHUD = Class.extend({
 		this.currentValue = currentValue;
 		this.maxValue = maxValue;
 		// console.log(this.currentValue, this.maxValue, 'mp');
-		this.frontShape.position.x = 95 * (this.currentValue/this.maxValue) - 95;
-		this.backFrontShape.position.x = 80 * (this.currentValue/this.maxValue) - 80;
+		this.frontShape.position.x = 130 * (this.currentValue/this.maxValue) - 130;
+		this.backFrontShape.position.x = 55 * (this.currentValue/this.maxValue) - 55;
 
 		//}
 	},
