@@ -139,6 +139,7 @@ var BoxHUD1 = Class.extend({
 		this.quantLabel = null;
 		this.img = null;
 		this.infoImg = null;
+		this.infoLabel = null;
 	},
 	addModel: function(model){
 		if(this.model !== null){

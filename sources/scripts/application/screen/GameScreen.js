@@ -56,6 +56,7 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/drop.png',
             '_dist/img/mask.png',
             '_dist/img/pixel.jpg',
+            '_dist/img/HUD/bags/bag1.png',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson

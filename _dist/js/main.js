@@ -384,7 +384,8 @@ var Application = AbstractApplication.extend({
         this.quant && this.quant.getContent().parent && this.quant.getContent().parent.removeChild(this.quant.getContent()), 
         this.quantLabel && this.quantLabel.parent && this.quantLabel.parent.removeChild(this.quantLabel), 
         this.infoLabel && this.infoLabel.parent && this.infoLabel.parent.removeChild(this.infoLabel), 
-        this.model = null, this.quant = null, this.quantLabel = null, this.img = null, this.infoImg = null;
+        this.model = null, this.quant = null, this.quantLabel = null, this.img = null, this.infoImg = null, 
+        this.infoLabel = null;
     },
     addModel: function(model) {
         if (null !== this.model && this.removeModel(), this.model = model, this.addImage(this.model.icoImg), 
@@ -1889,7 +1890,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", "_dist/img/pixel.jpg", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onAssetsLoaded: function() {
