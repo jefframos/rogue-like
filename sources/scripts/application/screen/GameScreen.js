@@ -328,7 +328,7 @@ var GameScreen = AbstractScreen.extend({
                         this.arrayBags[i].getPosition().y,
                         this.player.getPosition().x + this.player.centerPosition.x,
                         this.player.getPosition().y + this.player.centerPosition.y);
-                    if(distance < 100 && !this.arrayBags[i].kill)
+                    if(distance < this.arrayBags[i].range && !this.arrayBags[i].kill)
                     {
                         if(distance < dist){
                             bagNear = this.arrayBags[i];

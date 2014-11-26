@@ -1985,7 +1985,7 @@ var Application = AbstractApplication.extend({
             var dist = 9999, bagNear = null;
             if (this.arrayBags) for (i = this.arrayBags.length - 1; i >= 0; i--) {
                 var distance = pointDistance(this.arrayBags[i].getPosition().x, this.arrayBags[i].getPosition().y, this.player.getPosition().x + this.player.centerPosition.x, this.player.getPosition().y + this.player.centerPosition.y);
-                100 > distance && !this.arrayBags[i].kill && dist > distance && (bagNear = this.arrayBags[i], 
+                distance < this.arrayBags[i].range && !this.arrayBags[i].kill && dist > distance && (bagNear = this.arrayBags[i], 
                 dist = distance), bagNear ? APP.getHUDController().showBagContent(bagNear) : APP.getHUDController().hideBagContent();
             }
         }

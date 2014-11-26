@@ -25,8 +25,6 @@ var HUDController = Class.extend({
 			if(self.currentBag){
 				APP.getGame().addModelInventory(self.currentBag.model);
 				self.removeBag();
-				//remove a bag
-				//adiciona no inventorio
 			}
 		};
 
