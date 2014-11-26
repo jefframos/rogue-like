@@ -5,11 +5,65 @@ var HUDController = Class.extend({
 		this.dragged = null;
 		this.currentModel = null;
 		this.stage = stage;
+
+
+		this.bagContent = new PIXI.DisplayObjectContainer();
+        this.bagContentBackground = new SimpleSprite('_dist/img/HUD/bagContent.png');
+        this.bagContent.addChild(this.bagContentBackground.getContent());
+        this.bagContent.pivot.x = 35;
+        this.bagContent.pivot.y = 59;
+        this.bagContent.alpha = 0;
+        this.bagContent.position.x = windowWidth / 2 + 30;
+        this.bagContent.position.y = windowHeight / 2 - 25;
+        this.bagContentImg = null;
+        this.container.addChild(this.bagContent);
+        this.currentBag = null;
+        this.bagContent.setInteractive(true);
 		var self = this;
+
+		this.bagContent.mousedown = function(mouseData){
+			if(self.currentBag){
+				APP.getGame().addModelInventory(self.currentBag.model);
+				self.removeBag();
+				//remove a bag
+				//adiciona no inventorio
+			}
+		};
+
 		this.stage.stage.mouseup = function(mouseData){
-			// console.log('mouseup', self);
 			self.releaseInventory();
 		};
+	},
+	removeBag:function(){
+		if(this.currentBag && this.currentBag.getContent().parent){
+			this.currentBag.kill = true;
+			this.hideBagContent();
+		}
+	},
+	hideBagContent:function(){
+		this.bagContent.alpha = 0;
+		this.currentBag = null;
+		// this.bagContent.scale.x = this.bagContent.scale.y = 0.2;
+	},
+	showBagContent:function(bag){
+		if(bag === this.currentBag){
+			this.bagContent.alpha = 1;
+			TweenLite.to(this.bagContent.scale, 0.4 ,{x:1, y:1});
+			return;
+		}
+		if(this.bagContentImg && this.bagContentImg.getContent().parent)
+		{
+			this.bagContentImg.getContent().parent.removeChild(this.bagContentImg.getContent());
+			this.bagContentImg = null;
+		}
+		console.log(bag);
+		this.currentBag = bag;
+		this.bagContentImg = new SimpleSprite(bag.model.icoImg);
+		this.bagContentImg.setPosition(13,10);
+		this.bagContent.addChild(this.bagContentImg.getContent());
+		this.bagContent.alpha = 1;
+		// this.bagContent.scale.x = this.bagContent.scale.y = 0.2;
+		TweenLite.to(this.bagContent.scale, 0.4 ,{x:1, y:1});
 	},
 	releaseInventory:function(){
 		if(this.dragged){

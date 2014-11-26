@@ -8,6 +8,7 @@ var BoxHUD1 = Class.extend({
 		this.width = width;
 		this.height = height;
 		this.background = new SimpleSprite('_dist/img/HUD/box.png');
+		this.backgroundOver = new SimpleSprite('_dist/img/HUD/boxGlow.png');
 		
 		this.img = null;
 		this.infoImg = null;
@@ -55,7 +56,8 @@ var BoxHUD1 = Class.extend({
 			
 			this.container.addChild(this.infoContainer);
 			this.container.addChild(this.background.getContent());
-			
+			this.container.addChild(this.backgroundOver.getContent());
+			this.backgroundOver.getContent().alpha = 0;
 
 			this.container.setInteractive(true);
 
@@ -81,10 +83,15 @@ var BoxHUD1 = Class.extend({
 		}
 	},
 	overState: function(){
-		this.background.getContent().tint = 0xFFA506;
+		this.backgroundOver.getContent().alpha = 1;
+		// this.background.getContent().alpha = 0;
+		// this.background.getContent().tint = 0xFFA506;
 	},
 	outState: function(){
-		this.background.getContent().tint = 0xffffff;
+		this.backgroundOver.getContent().alpha = 0;
+		// this.background.getContent().alpha = 1;
+		// this.background.getContent().filters = null;
+		// this.background.getContent().filters = [];
 
 	},
 	showInfo: function(){

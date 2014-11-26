@@ -57,6 +57,8 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/mask.png',
             '_dist/img/pixel.jpg',
             '_dist/img/HUD/bags/bag1.png',
+            '_dist/img/HUD/box.png',
+            '_dist/img/HUD/boxGlow.png',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
@@ -101,7 +103,7 @@ var GameScreen = AbstractScreen.extend({
         this.levelGenerator = new LevelGenerator(this);
         this.resetLevel();
 
-
+        this.arrayBags = [];
     },
     //cria a HUD
     createHUD:function(){
@@ -236,11 +238,20 @@ var GameScreen = AbstractScreen.extend({
 
 
     },
-    addBag:function(pos){
-        var tempBag = new Bag();
+    addBag:function(pos, model){
+        var tempBag = new Bag(model, this.player);
         tempBag.build();
         tempBag.setPosition(pos.x, pos.y);
         this.entityLayer.addChild(tempBag);
+        this.arrayBags.push(tempBag);
+    },
+    addModelInventory:function(model){
+        for (var i = 0; i < this.inventory.length; i++) {
+            if(!this.inventory[i].model){
+                this.inventory[i].addModel(model);
+                return;
+            }
+        }
     },
     //verifica qual model está no atalho e executa a ação daquele model
     useShortcut:function(id){
@@ -299,7 +310,7 @@ var GameScreen = AbstractScreen.extend({
 
             //collide os tiros com as entidades
             for (var i = 0; i < this.entityLayer.childs.length; i++) {
-                if(this.entityLayer.childs[i].type === 'fire'){
+                if(this.entityLayer.childs[i].type === 'fire' || this.entityLayer.childs[i].type === 'bag'){
                     this.entityLayer.collideChilds(this.entityLayer.childs[i]);
                 }
             }
@@ -308,6 +319,29 @@ var GameScreen = AbstractScreen.extend({
 
             if(this.minimapHUD){
                 this.minimapHUD.update(this.getPlayerTilePos());
+            }
+            var dist = 9999;
+            var bagNear = null;
+            if(this.arrayBags){
+                for (i = this.arrayBags.length - 1; i >= 0; i--) {
+                    var distance = pointDistance(this.arrayBags[i].getPosition().x,
+                        this.arrayBags[i].getPosition().y,
+                        this.player.getPosition().x + this.player.centerPosition.x,
+                        this.player.getPosition().y + this.player.centerPosition.y);
+                    if(distance < 100 && !this.arrayBags[i].kill)
+                    {
+                        if(distance < dist){
+                            bagNear = this.arrayBags[i];
+                            dist = distance;
+                        }
+                    }
+                    if(bagNear){
+                        APP.getHUDController().showBagContent(bagNear);
+                    }else{
+                        APP.getHUDController().hideBagContent();
+                    }
+                    
+                }
             }
         }
 
@@ -392,7 +426,7 @@ var GameScreen = AbstractScreen.extend({
         if(this.currentNode.mapData && this.player){
             for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
                 tempEntity = this.entityLayer.childs[i];
-                if(tempEntity.type !== 'fire'){
+                if(tempEntity.type !== 'fire' && tempEntity.type !== 'bag'){
                     // console.log(this.currentNode.mapData);
                     var centerPositionPlayer = {x:tempEntity.getPosition().x + tempEntity.centerPosition.x,
                         y:tempEntity.getPosition().y + tempEntity.centerPosition.y};

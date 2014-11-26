@@ -322,7 +322,8 @@ var Application = AbstractApplication.extend({
     init: function(width, height, infoSide, id) {
         if (this.text = "default", this.container = new PIXI.DisplayObjectContainer(), this.infoSide = infoSide, 
         this.width = width, this.height = height, this.background = new SimpleSprite("_dist/img/HUD/box.png"), 
-        this.img = null, this.infoImg = null, this.container.hitArea = new PIXI.Rectangle(0, 0, width, height), 
+        this.backgroundOver = new SimpleSprite("_dist/img/HUD/boxGlow.png"), this.img = null, 
+        this.infoImg = null, this.container.hitArea = new PIXI.Rectangle(0, 0, width, height), 
         0 !== infoSide) {
             this.infoContainer = new PIXI.DisplayObjectContainer(), this.backShapeInfo = new PIXI.Graphics(), 
             this.backShapeInfo.beginFill(1313571), this.backShapeInfo.moveTo(10, 2), this.backShapeInfo.lineTo(85, 0), 
@@ -334,6 +335,7 @@ var Application = AbstractApplication.extend({
             this.container.addChild(this.shortcut.getContent()), this.shortcut.getContent().position.x = 7, 
             this.shortcut.getContent().position.y = -14, this.setText(id + 1), this.setTextPos(20, -13)), 
             this.container.addChild(this.infoContainer), this.container.addChild(this.background.getContent()), 
+            this.container.addChild(this.backgroundOver.getContent()), this.backgroundOver.getContent().alpha = 0, 
             this.container.setInteractive(!0), this.model = null;
             var self = this;
             this.container.mouseover = function() {
@@ -348,10 +350,10 @@ var Application = AbstractApplication.extend({
         }
     },
     overState: function() {
-        this.background.getContent().tint = 16753926;
+        this.backgroundOver.getContent().alpha = 1;
     },
     outState: function() {
-        this.background.getContent().tint = 16777215;
+        this.backgroundOver.getContent().alpha = 0;
     },
     showInfo: function() {
         this.model && (this.infoContainer.scale.x = .5, this.infoContainer.scale.y = .5, 
@@ -447,11 +449,37 @@ var Application = AbstractApplication.extend({
     }
 }), HUDController = Class.extend({
     init: function(container, stage) {
-        this.container = container, this.dragged = null, this.currentModel = null, this.stage = stage;
+        this.container = container, this.dragged = null, this.currentModel = null, this.stage = stage, 
+        this.bagContent = new PIXI.DisplayObjectContainer(), this.bagContentBackground = new SimpleSprite("_dist/img/HUD/bagContent.png"), 
+        this.bagContent.addChild(this.bagContentBackground.getContent()), this.bagContent.pivot.x = 35, 
+        this.bagContent.pivot.y = 59, this.bagContent.alpha = 0, this.bagContent.position.x = windowWidth / 2 + 30, 
+        this.bagContent.position.y = windowHeight / 2 - 25, this.bagContentImg = null, this.container.addChild(this.bagContent), 
+        this.currentBag = null, this.bagContent.setInteractive(!0);
         var self = this;
-        this.stage.stage.mouseup = function() {
+        this.bagContent.mousedown = function() {
+            self.currentBag && (APP.getGame().addModelInventory(self.currentBag.model), self.removeBag());
+        }, this.stage.stage.mouseup = function() {
             self.releaseInventory();
         };
+    },
+    removeBag: function() {
+        this.currentBag && this.currentBag.getContent().parent && (this.currentBag.kill = !0, 
+        this.hideBagContent());
+    },
+    hideBagContent: function() {
+        this.bagContent.alpha = 0, this.currentBag = null;
+    },
+    showBagContent: function(bag) {
+        return bag === this.currentBag ? (this.bagContent.alpha = 1, void TweenLite.to(this.bagContent.scale, .4, {
+            x: 1,
+            y: 1
+        })) : (this.bagContentImg && this.bagContentImg.getContent().parent && (this.bagContentImg.getContent().parent.removeChild(this.bagContentImg.getContent()), 
+        this.bagContentImg = null), console.log(bag), this.currentBag = bag, this.bagContentImg = new SimpleSprite(bag.model.icoImg), 
+        this.bagContentImg.setPosition(13, 10), this.bagContent.addChild(this.bagContentImg.getContent()), 
+        this.bagContent.alpha = 1, void TweenLite.to(this.bagContent.scale, .4, {
+            x: 1,
+            y: 1
+        }));
     },
     releaseInventory: function() {
         if (this.dragged) {
@@ -1291,10 +1319,12 @@ var Application = AbstractApplication.extend({
         this.debugGraphic.endFill());
     }
 }), Bag = Entity.extend({
-    init: function() {
-        this._super(!0), this.updateable = !0, this.colidable = !0, this.range = 60, this.type = "fire", 
-        this.imgSource = "_dist/img/HUD/bags/bag1.png";
+    init: function(model, player) {
+        this._super(!0), this.updateable = !0, this.colidable = !1, this.range = 50, this.type = "bag", 
+        this.model = model, this.player = player, this.imgSource = "_dist/img/HUD/bags/bag1.png", 
+        this.isShow = !1;
     },
+    update: function() {},
     build: function() {
         this._super(this.imgSource), this.updateable = !0, this.collidable = !0, this.getContent().scale.x = 0, 
         this.getContent().scale.y = 0, TweenLite.to(this.getContent().scale, .5, {
@@ -1890,7 +1920,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/boxGlow.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onAssetsLoaded: function() {
@@ -1900,7 +1930,7 @@ var Application = AbstractApplication.extend({
         this.blackShape.beginFill(0), this.blackShape.drawRect(0, 0, windowWidth, windowHeight), 
         APP.getHUD().addChild(this.blackShape), this.collisionSystem = new BoundCollisionSystem(this, !1), 
         this.effectsContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.effectsContainer), 
-        this.levelGenerator = new LevelGenerator(this), this.resetLevel();
+        this.levelGenerator = new LevelGenerator(this), this.resetLevel(), this.arrayBags = [];
     },
     createHUD: function() {
         this.fog = new SimpleSprite("_dist/img/mask.png"), this.backInterface = new PIXI.Graphics(), 
@@ -1922,9 +1952,13 @@ var Application = AbstractApplication.extend({
         this.inventory[2].addModel(APP.itemList[2]), this.inventory[3].addModel(APP.spellList[0]), 
         this.inventory[4].addModel(APP.spellList[1]), this.inventory[5].addModel(APP.spellList[2]);
     },
-    addBag: function(pos) {
-        var tempBag = new Bag();
-        tempBag.build(), tempBag.setPosition(pos.x, pos.y), this.entityLayer.addChild(tempBag);
+    addBag: function(pos, model) {
+        var tempBag = new Bag(model, this.player);
+        tempBag.build(), tempBag.setPosition(pos.x, pos.y), this.entityLayer.addChild(tempBag), 
+        this.arrayBags.push(tempBag);
+    },
+    addModelInventory: function(model) {
+        for (var i = 0; i < this.inventory.length; i++) if (!this.inventory[i].model) return void this.inventory[i].addModel(model);
     },
     useShortcut: function(id) {
         console.log(this.inventory[id].model), this.inventory[id] && this.inventory[id].model && (this.inventory[id].model instanceof ItemModel ? this.useItem(this.inventory[id].model) : this.inventory[id].model instanceof SpellModel && this.spell(this.inventory[id].model));
@@ -1945,9 +1979,15 @@ var Application = AbstractApplication.extend({
             this.player.fireFreqAcum--, this.mouseDown && this.player.fireFreqAcum <= 0 && this.shoot(), 
             this.entityLayer.collideChilds(this.player), this.environmentLayer.collideChilds(this.player), 
             this.boundsCollision();
-            for (var i = 0; i < this.entityLayer.childs.length; i++) "fire" === this.entityLayer.childs[i].type && this.entityLayer.collideChilds(this.entityLayer.childs[i]);
+            for (var i = 0; i < this.entityLayer.childs.length; i++) ("fire" === this.entityLayer.childs[i].type || "bag" === this.entityLayer.childs[i].type) && this.entityLayer.collideChilds(this.entityLayer.childs[i]);
             this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs), 
             this.minimapHUD && this.minimapHUD.update(this.getPlayerTilePos());
+            var dist = 9999, bagNear = null;
+            if (this.arrayBags) for (i = this.arrayBags.length - 1; i >= 0; i--) {
+                var distance = pointDistance(this.arrayBags[i].getPosition().x, this.arrayBags[i].getPosition().y, this.player.getPosition().x + this.player.centerPosition.x, this.player.getPosition().y + this.player.centerPosition.y);
+                100 > distance && !this.arrayBags[i].kill && dist > distance && (bagNear = this.arrayBags[i], 
+                dist = distance), bagNear ? APP.getHUDController().showBagContent(bagNear) : APP.getHUDController().hideBagContent();
+            }
         }
         this._super(), this.entityLayer.getContent().children.sort(this.depthCompare), this.levelGenerator && this.levelGenerator.update(), 
         this.HPView && this.player && this.updateHUD(), this.player && this.player.endLevel ? (this.player.endLevel = !1, 
@@ -1981,7 +2021,7 @@ var Application = AbstractApplication.extend({
     },
     boundsCollision: function() {
         if (this.currentNode.mapData && this.player) for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if (tempEntity = this.entityLayer.childs[i], 
-        "fire" !== tempEntity.type) {
+        "fire" !== tempEntity.type && "bag" !== tempEntity.type) {
             var centerPositionPlayer = {
                 x: tempEntity.getPosition().x + tempEntity.centerPosition.x,
                 y: tempEntity.getPosition().y + tempEntity.centerPosition.y
