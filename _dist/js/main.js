@@ -194,16 +194,22 @@ var Application = AbstractApplication.extend({
         return this.hudController;
     },
     getEffectsContainer: function() {
-        return this.mainApp.effectsContainer;
+        return this.gameScreen.effectsContainer;
     },
     getGame: function() {
-        return this.mainApp;
+        return this.gameScreen;
     },
     getMousePos: function() {
         return this.stage.getMousePosition();
     },
+    getMousePosMapRelative: function() {
+        return {
+            x: -1 * (this.gameScreen.getContent().position.x - windowWidth / 2) + this.stage.getMousePosition().x - windowWidth / 2,
+            y: -1 * (this.gameScreen.getContent().position.y - windowHeight / 2) + this.stage.getMousePosition().y - windowHeight / 2
+        };
+    },
     getGameContent: function() {
-        return this.mainApp.getContent();
+        return this.gameScreen.getContent();
     },
     getHUD: function() {
         return this.HUD;
@@ -225,7 +231,7 @@ var Application = AbstractApplication.extend({
         this.jsonLoads--, this.jsonLoads <= 0 && this.initApplication();
     },
     initApplication: function() {
-        this.mainApp = new GameScreen("Main"), this.screenManager.addScreen(this.mainApp), 
+        this.gameScreen = new GameScreen("Main"), this.screenManager.addScreen(this.gameScreen), 
         this.HUD = new PIXI.DisplayObjectContainer(), this.stage.addChild(this.HUD), this.hudController = new HUDController(this.HUD, this.stage), 
         this.screenManager.change("Main");
     },
@@ -457,7 +463,8 @@ var Application = AbstractApplication.extend({
                     self.dragged.parent && self.dragged.parent.removeChild(self.dragged), self.dragged = null, 
                     self.currentBox = null;
                 }
-            });
+            }), APP.getMousePos().x < windowWidth && (APP.getGame().addBag(APP.getMousePosMapRelative(), this.currentModel), 
+            self.currentBox.removeModel());
         }
     },
     upThisBox: function(box) {
@@ -535,7 +542,7 @@ var Application = AbstractApplication.extend({
         this.maxValue = maxValue, this.text = "default", this.currentValue = currentValue, 
         this.container = new PIXI.DisplayObjectContainer(), this.width = width, this.height = height, 
         this.backShape = new PIXI.Graphics(), this.rect = [ [ 92, 18 ], [ 168, -32 ], [ 178, -23 ], [ 103, 28 ] ], 
-        this.frontRect = [ [ 92, -32 ], [ 168, -32 ], [ 235, 34 ], [ 90, 34 ] ];
+        this.frontRect = [ [ 92, -32 ], [ 168, -32 ], [ 240, 34 ], [ 90, 34 ] ];
         var i = 0;
         for (this.backShape.beginFill(16714560), this.backShape.moveTo(this.rect[0][0], this.rect[0][1]), 
         i = 1; i < this.rect.length; i++) this.backShape.lineTo(this.rect[i][0], this.rect[i][1]);
@@ -546,7 +553,7 @@ var Application = AbstractApplication.extend({
         this.mask.beginFill(8388608), this.mask.moveTo(this.rect[0][0], this.rect[0][1]), 
         i = 1; i < this.rect.length; i++) this.mask.lineTo(this.rect[i][0], this.rect[i][1]);
         for (this.mask.endFill(), this.baseRect = [ this.rect[3], this.rect[2], [ 173, -12 ], [ 95, 41 ] ], 
-        this.baseFrontRect = [ [ 90, -23 ], this.rect[2], [ 151, 41 ], [ 90, 41 ] ], this.backBaseShape = new PIXI.Graphics(), 
+        this.baseFrontRect = [ [ 90, -23 ], this.rect[2], [ 148, 41 ], [ 90, 41 ] ], this.backBaseShape = new PIXI.Graphics(), 
         this.backBaseShape.beginFill(9837082), this.backBaseShape.moveTo(this.baseRect[0][0], this.baseRect[0][1]), 
         i = 1; i < this.baseRect.length; i++) this.backBaseShape.lineTo(this.baseRect[i][0], this.baseRect[i][1]);
         for (this.backBaseShape.endFill(), this.container.addChild(this.backBaseShape), 
@@ -575,7 +582,7 @@ var Application = AbstractApplication.extend({
         return this.currentValue < 0 ? (this.frontShape.position.x = this.frontShape.width, 
         void (this.backFrontShape.position.x = this.backFrontShape.position.width)) : (this.currentValue = currentValue, 
         this.maxValue = maxValue, this.frontShape.position.x = 130 * (this.currentValue / this.maxValue) - 130, 
-        void (this.backFrontShape.position.x = 55 * (this.currentValue / this.maxValue) - 55));
+        void (this.backFrontShape.position.x = 51 * (this.currentValue / this.maxValue) - 51));
     },
     getContent: function() {
         return this.container;
@@ -1070,7 +1077,7 @@ var Application = AbstractApplication.extend({
         this.weaponModel = wModel;
     },
     updateAtt: function() {
-        this.defaultVelocity = this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3, 
+        this.defaultVelocity = .8 * this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3, 
         this.fireSpeed = this.fireModel.fireSpeed, this.fireSpeed < 1.1 * this.defaultVelocity && (this.fireSpeed = 1.1 * this.defaultVelocity), 
         this.fireStepLive = this.fireModel.fireStepLive;
     },
@@ -1154,7 +1161,7 @@ var Application = AbstractApplication.extend({
         }
     },
     update: function() {
-        this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = this.playerModel.velocity, 
+        this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = .8 * this.playerModel.velocity, 
         !this.isTouch && this.returnCollider <= 0 && (this.velocity = this.virtualVelocity), 
         this.mouseAngle = Math.atan2(windowHeight / 2 - APP.getMousePos().y + this.centerPosition.y, windowWidth / 2 - APP.getMousePos().x + this.centerPosition.x);
         var motion = "side";
@@ -1281,6 +1288,19 @@ var Application = AbstractApplication.extend({
         this.debugGraphic.beginFill(color, .5), this.debugGraphic.lineStyle(1, 16767232), 
         this.debugGraphic.drawCircle(this.getPosition().x + this.centerPosition.x, this.getPosition().y + this.centerPosition.y, this.range), 
         this.debugGraphic.endFill());
+    }
+}), Bag = Entity.extend({
+    init: function() {
+        this._super(!0), this.updateable = !0, this.colidable = !0, this.range = 60, this.type = "fire", 
+        this.imgSource = "_dist/img/HUD/bags/bag1.png";
+    },
+    build: function() {
+        this._super(this.imgSource), this.updateable = !0, this.collidable = !0, this.getContent().scale.x = 0, 
+        this.getContent().scale.y = 0, TweenLite.to(this.getContent().scale, .5, {
+            x: 1,
+            y: 1,
+            ease: "easeOutElastic"
+        });
     }
 }), Enemy = SpritesheetEntity.extend({
     init: function(player, model) {
@@ -1901,6 +1921,10 @@ var Application = AbstractApplication.extend({
         this.inventory[2].addModel(APP.itemList[2]), this.inventory[3].addModel(APP.spellList[0]), 
         this.inventory[4].addModel(APP.spellList[1]), this.inventory[5].addModel(APP.spellList[2]);
     },
+    addBag: function(pos) {
+        var tempBag = new Bag();
+        tempBag.build(), tempBag.setPosition(pos.x, pos.y), this.entityLayer.addChild(tempBag);
+    },
     useShortcut: function(id) {
         console.log(this.inventory[id].model), this.inventory[id] && this.inventory[id].model && (this.inventory[id].model instanceof ItemModel ? this.useItem(this.inventory[id].model) : this.inventory[id].model instanceof SpellModel && this.spell(this.inventory[id].model));
     },
@@ -2147,7 +2171,7 @@ var Application = AbstractApplication.extend({
         }), document.body.addEventListener("mousedown", function() {
             game.player && APP.getMousePos().x < windowWidth && (game.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
-            if (console.log(e.keyCode), game.player) {
+            if (game.player) {
                 if (87 === e.keyCode || 38 === e.keyCode && game.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && game.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && game.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && game.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) game.player.hurt(5); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode || 52 === e.keyCode || 81 === e.keyCode || 69 === e.keyCode) {
                     var id = 1;
                     50 === e.keyCode ? id = 2 : 51 === e.keyCode ? id = 3 : 52 === e.keyCode && (id = 4), 

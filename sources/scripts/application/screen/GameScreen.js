@@ -184,6 +184,8 @@ var GameScreen = AbstractScreen.extend({
         this.inventory[3].addModel(APP.spellList[0]);
         this.inventory[4].addModel(APP.spellList[1]);
         this.inventory[5].addModel(APP.spellList[2]);
+
+
         //for (var i = 0; i < 12; i++) {
         //     tempBox = new BoxHUD1(42,36, 3, i);
 
@@ -232,6 +234,12 @@ var GameScreen = AbstractScreen.extend({
         // this.minimap.getContent().scale.y = 0.5;
 
 
+    },
+    addBag:function(pos){
+        var tempBag = new Bag();
+        tempBag.build();
+        tempBag.setPosition(pos.x, pos.y);
+        this.entityLayer.addChild(tempBag);
     },
     //verifica qual model está no atalho e executa a ação daquele model
     useShortcut:function(id){
@@ -373,42 +381,6 @@ var GameScreen = AbstractScreen.extend({
             var centerPositionPlayer = {x:this.player.getPosition().x + this.player.centerPosition.x,
                 y:this.player.getPosition().y + this.player.centerPosition.y};
             var tilePosition = {x:Math.floor(centerPositionPlayer.x / APP.nTileSize),y:Math.floor(centerPositionPlayer.y / APP.nTileSize)};
-
-            // if(this.miniPlayer){
-            //     this.miniPlayer.clear();
-            //     this.miniPlayer.beginFill(0x0000FF);
-            //     this.miniPlayer.drawRect(tilePosition.x ,tilePosition.y,1,1);
-            //     this.miniPlayer.endFill();
-            // }
-            // for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
-            //     if(this.entityLayer.childs[i].type === 'enemy'){
-            //         var centerPositionE = {x:this.entityLayer.childs[i].getPosition().x + this.entityLayer.childs[i].centerPosition.x,
-            //             y:this.entityLayer.childs[i].getPosition().y + this.entityLayer.childs[i].centerPosition.y};
-            //         var tilePositionE = {x:Math.floor(centerPositionE.x / APP.nTileSize),y:Math.floor(centerPositionE.y / APP.nTileSize)};
-
-            //         if(!this.vecEnemiesMini)
-            //         {
-            //             this.vecEnemiesMini = [];
-            //         }
-            //         var tmpGr = null;
-            //         for (var j = this.vecEnemiesMini.length - 1; j >= 0; j--) {
-            //             if(this.vecEnemiesMini[j][1] === this.entityLayer.childs[i]){
-            //                 tmpGr = this.vecEnemiesMini[j][0];
-            //             }
-            //         }
-            //         if(tmpGr === null){
-            //             tmpGr = new PIXI.Graphics();
-            //             this.vecEnemiesMini.push([tmpGr,this.entityLayer.childs[i]]);
-            //             this.minimapContainer.addChild(tmpGr);
-            //         }
-            //         if(tmpGr){
-            //             tmpGr.clear();
-            //             tmpGr.beginFill(0xFF0000);
-            //             tmpGr.drawRect(tilePositionE.x,tilePositionE.y,1,1);
-            //             tmpGr.endFill();
-            //         }
-            //     }
-            // }
             return tilePosition;
         }
         return null;
@@ -644,11 +616,9 @@ var GameScreen = AbstractScreen.extend({
         }else{
             //this.player.setPosition(this.mapPosition.x + this.levelBounds.x/2,this.mapPosition.y + this.levelBounds.y/2);
         }
-        // this.simpleEnemy = new StaticEnemy(this.player, APP.monsterList[0].clone());
-        // this.simpleEnemy.build();
-        // this.simpleEnemy.setPosition(this.levelBounds.x/2 - 50,this.levelBounds.y/2 - 50);
-        this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y/2);
 
+        this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y/2);
+        // this.addBag({x:this.levelBounds.x/2, y:this.levelBounds.y/2});
 
         this.fairy1 = new Fairy(this.player);
         this.fairy1.build();

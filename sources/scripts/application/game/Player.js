@@ -51,7 +51,7 @@ var Player = SpritesheetEntity.extend({
         // this.mp = this.playerModel.mp;
         // this.mpMax = this.playerModel.mp;
 
-        this.defaultVelocity = this.playerModel.velocity;
+        this.defaultVelocity = this.playerModel.velocity * 0.8;
 
         this.fireFreq = this.playerModel.fireFreq - 3;
 
@@ -214,7 +214,7 @@ var Player = SpritesheetEntity.extend({
         if(this.hasteAcum > 0){
             this.hasteAcum --;
         }else{
-            this.defaultVelocity = this.playerModel.velocity;
+            this.defaultVelocity = this.playerModel.velocity  * 0.8;
         }
         if(!this.isTouch && this.returnCollider <= 0){
             this.velocity = this.virtualVelocity;

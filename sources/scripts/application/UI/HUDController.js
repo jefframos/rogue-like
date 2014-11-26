@@ -21,6 +21,11 @@ var HUDController = Class.extend({
 				self.dragged = null;
 				self.currentBox = null;
 			}});
+			if(APP.getMousePos().x < windowWidth){
+				APP.getGame().addBag(APP.getMousePosMapRelative(), this.currentModel);
+				self.currentBox.removeModel();
+				// console.log('larga no mapa', APP.getMousePosMapRelative());
+			}
 		}
 	},
 	upThisBox:function(box){

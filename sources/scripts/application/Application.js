@@ -24,16 +24,25 @@ var Application = AbstractApplication.extend({
         return this.hudController;
     },
     getEffectsContainer:function(){
-        return this.mainApp.effectsContainer;
+        return this.gameScreen.effectsContainer;
     },
     getGame:function(){
-        return this.mainApp;
+        return this.gameScreen;
     },
     getMousePos:function(){
         return this.stage.getMousePosition();
     },
+    getMousePosMapRelative:function(){
+        // console.log(this.gameScreen.levelBounds,
+        // this.gameScreen.getContent().position.x - windowWidth/2,
+        // this.gameScreen.getContent().position.y - windowHeight/2,
+        // this.stage.getMousePosition().x - windowWidth/2,
+        // this.stage.getMousePosition().y - windowHeight/2);
+        return {x:(this.gameScreen.getContent().position.x - windowWidth/2) * -1 + this.stage.getMousePosition().x - windowWidth/2,
+            y:(this.gameScreen.getContent().position.y - windowHeight/2) * -1 + this.stage.getMousePosition().y - windowHeight/2};
+    },
     getGameContent:function(){
-        return this.mainApp.getContent();
+        return this.gameScreen.getContent();
     },
     getHUD:function(){
         return this.HUD;
@@ -84,8 +93,8 @@ var Application = AbstractApplication.extend({
         }
     },
     initApplication:function(){
-        this.mainApp = new GameScreen('Main');
-        this.screenManager.addScreen(this.mainApp);
+        this.gameScreen = new GameScreen('Main');
+        this.screenManager.addScreen(this.gameScreen);
 
             // this.waitScreen = new WaitScreen('Wait');
             // this.screenManager.addScreen(this.waitScreen);
@@ -221,8 +230,8 @@ var Application = AbstractApplication.extend({
 
         });
         jsonLoaderPotion.load();
-        // this.mainApp = new GameScreen('Main');
-        // this.screenManager.addScreen(this.mainApp);
+        // this.gameScreen = new GameScreen('Main');
+        // this.screenManager.addScreen(this.gameScreen);
 
         //     // this.waitScreen = new WaitScreen('Wait');
         //     // this.screenManager.addScreen(this.waitScreen);

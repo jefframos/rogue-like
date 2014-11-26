@@ -15,7 +15,6 @@ var InputManager = Class.extend({
 			}
 		});
 		document.body.addEventListener('keyup', function(e){
-			console.log(e.keyCode);
 			if(game.player){
 				if(e.keyCode === 87 || e.keyCode === 38 && game.player.velocity.y < 0){
 					self.removePosition('up');

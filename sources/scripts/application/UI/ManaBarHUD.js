@@ -11,7 +11,7 @@ var ManaBarHUD = Class.extend({
 		this.backShape = new PIXI.Graphics();
 
 		this.rect = [[92,18],[168,-32],[178,-23],[103,28]];
-		this.frontRect = [[92,-32],[168,-32],[235,34],[90,34]];
+		this.frontRect = [[92,-32],[168,-32],[240,34],[90,34]];
 
 		// this.rect = [[92,18],[164,-32],[171,-23],[90,34]];
 		// this.frontRect = [[92,-32],[164,-32],[211,34],[90,34]];
@@ -46,7 +46,7 @@ var ManaBarHUD = Class.extend({
 
 
 		this.baseRect = [this.rect[3],this.rect[2], [173,-12], [95,41]];
-		this.baseFrontRect = [[90,-23],this.rect[2], [151,41], [90,41]];
+		this.baseFrontRect = [[90,-23],this.rect[2], [148,41], [90,41]];
 
 		// this.baseRect = [[90,34],[171,-23], [171,-12], [95,41]];
 		// this.baseFrontRect = [[90,-23],[171,-23], [171,41], [90,41]];
@@ -138,7 +138,7 @@ var ManaBarHUD = Class.extend({
 		this.maxValue = maxValue;
 		// console.log(this.currentValue, this.maxValue, 'mp');
 		this.frontShape.position.x = 130 * (this.currentValue/this.maxValue) - 130;
-		this.backFrontShape.position.x = 55 * (this.currentValue/this.maxValue) - 55;
+		this.backFrontShape.position.x = 51 * (this.currentValue/this.maxValue) - 51;
 
 		//}
 	},
