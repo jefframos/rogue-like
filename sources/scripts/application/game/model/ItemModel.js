@@ -7,5 +7,6 @@ var ItemModel = Class.extend({
 		this.baseValue = baseValue;
 		this.price = price;
 		this.icoImg = icoImg;
+		this.quant = 1;
 	}
 });

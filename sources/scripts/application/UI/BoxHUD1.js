@@ -63,17 +63,29 @@ var BoxHUD1 = Class.extend({
 			var self = this;
 			this.container.mouseover = function(mouseData){
 				self.showInfo();
+				self.overState();
 			};
 
 			this.container.mouseout = function(mouseData){
 				self.hideInfo();
+				self.outState();
+			};
+
+			this.container.mouseup = function(mouseData){
+				APP.getHUDController().upThisBox(self);
 			};
 
 			this.container.mousedown = function(mouseData){
-				console.log('down');
-				APP.getHUDController().dragInventory(self.infoImg.getContent());
+				APP.getHUDController().dragInventory(self);
 			};
 		}
+	},
+	overState: function(){
+		this.background.getContent().tint = 0xFFA506;
+	},
+	outState: function(){
+		this.background.getContent().tint = 0xffffff;
+
 	},
 	showInfo: function(){
 		if(this.model){
@@ -105,7 +117,33 @@ var BoxHUD1 = Class.extend({
 			this.quantLabel.position.y = y;
 		}
 	},
+	removeModel: function(){
+		if(this.img && this.img.getContent().parent){
+			this.img.getContent().parent.removeChild(this.img.getContent());
+		}
+
+		if(this.infoImg && this.infoImg.getContent().parent){
+			this.infoImg.getContent().parent.removeChild(this.infoImg.getContent());
+		}
+		if (this.quant && this.quant.getContent().parent){
+			this.quant.getContent().parent.removeChild(this.quant.getContent());
+		}
+		if(this.quantLabel && this.quantLabel.parent){
+			this.quantLabel.parent.removeChild(this.quantLabel);
+		}
+		if(this.infoLabel && this.infoLabel.parent){
+			this.infoLabel.parent.removeChild(this.infoLabel);
+		}
+		this.model = null;
+		this.quant = null;
+		this.quantLabel = null;
+		this.img = null;
+		this.infoImg = null;
+	},
 	addModel: function(model){
+		if(this.model !== null){
+			this.removeModel();
+		}
 		this.model = model;
 		this.addImage(this.model.icoImg);
 
@@ -136,7 +174,7 @@ var BoxHUD1 = Class.extend({
 					this.container.addChild(this.quant.getContent());
 					this.quant.getContent().position.x = -7;
 					this.quant.getContent().position.y = 24;
-					this.setQuantText('2');
+					this.setQuantText(model.quant);
 					this.setQuantTextPos(-3 , 26);
 				}
 			}
@@ -194,12 +232,12 @@ var BoxHUD1 = Class.extend({
 		}
 	},
 	addImage: function(src){
-		if(this.img && this.img.parent){
-			this.img.parent.removeChild(this.img.getContent());
+		if(this.img && this.img.getContent().parent){
+			this.img.getContent().parent.removeChild(this.img.getContent());
 		}
 
-		if(this.infoImg && this.infoImg.parent){
-			this.infoImg.parent.removeChild(this.infoImg.getContent());
+		if(this.infoImg && this.infoImg.getContent().parent){
+			this.infoImg.getContent().parent.removeChild(this.infoImg.getContent());
 		}
 
 		this.img = new SimpleSprite(src);

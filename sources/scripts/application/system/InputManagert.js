@@ -15,7 +15,7 @@ var InputManager = Class.extend({
 			}
 		});
 		document.body.addEventListener('keyup', function(e){
-			// console.log(e.keyCode);
+			console.log(e.keyCode);
 			if(game.player){
 				if(e.keyCode === 87 || e.keyCode === 38 && game.player.velocity.y < 0){
 					self.removePosition('up');
@@ -33,17 +33,20 @@ var InputManager = Class.extend({
 					// game.useShortcut(5);
 					game.player.hurt(5);
 				}
-				else if(e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51  || e.keyCode === 81  || e.keyCode === 69){
+				else if(e.keyCode === 49 || e.keyCode === 50 || e.keyCode === 51 || e.keyCode === 52 || e.keyCode === 81  || e.keyCode === 69){
 					var id = 1;
 					if(e.keyCode === 50){
 						id = 2;
 					}else if(e.keyCode === 51){
 						id = 3;
-					}else if(e.keyCode === 81){
+					}else if(e.keyCode === 52){
 						id = 4;
-					}else if(e.keyCode === 69){
-						id = 5;
 					}
+					// else if(e.keyCode === 81){ Q
+					// 	id = 4;
+					// }else if(e.keyCode === 69){ E
+					// 	id = 5;
+					// }
 
 
 					game.useShortcut(id - 1);

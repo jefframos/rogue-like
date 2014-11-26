@@ -19,8 +19,10 @@ var Application = AbstractApplication.extend({
         //size utilizado nos personagens
         this.tileSize = {x: this.nTileSize, y:  this.nTileSize};
         
-
 	},
+    getHUDController:function(){
+        return this.hudController;
+    },
     getEffectsContainer:function(){
         return this.mainApp.effectsContainer;
     },
@@ -35,6 +37,12 @@ var Application = AbstractApplication.extend({
     },
     getHUD:function(){
         return this.HUD;
+    },
+    update:function(){
+        this._super();
+        if(this.hudController){
+            this.hudController.update();
+        }
     },
     build:function(){
         // this.monsterList.push(new MonsterModel(1,80,50,20,13,13,70,70, 10));
@@ -61,7 +69,7 @@ var Application = AbstractApplication.extend({
             self.onAssetsLoaded();
         };
         this.assetsLoader.onProgress = function() {
-            //console.log('onProgress');
+            // console.log('onProgress');
             // self.onProgress();
         };
         this.assetsLoader.load();
@@ -85,18 +93,20 @@ var Application = AbstractApplication.extend({
             // this.screenManager.change('Wait');
         this.HUD = new PIXI.DisplayObjectContainer();
         this.stage.addChild(this.HUD);
+        this.hudController = new HUDController(this.HUD, this.stage);
+
         this.screenManager.change('Main');
     },
     onAssetsLoaded:function()
     {
-        console.log('assetsLoader');
+        // console.log('assetsLoader');
         var self = this;
 
         var jsonLoaderPlayers = new PIXI.JsonLoader('_dist/img/players/players.JSON');
         jsonLoaderPlayers.on('loaded', function(evt) {
-            // console.log('jsonLoaderPlayers',evt.content.json);
+            console.log('jsonLoaderPlayers',evt.content.json);
             for (var i = 0; i < evt.content.json.itens.length; i++) {
-                console.log(evt.content.json.itens[i].stats,'SJKALSKALSK');
+                // console.log(evt.content.json.itens[i].stats,'SJKALSKALSK');
                 self.playersList.push(new PlayerModel(
                     evt.content.json.itens[i].name,
                     evt.content.json.itens[i].label,
@@ -106,14 +116,14 @@ var Application = AbstractApplication.extend({
                     evt.content.json.itens[i].config
                 ));
             }
-            console.log('jsonLoaderPlayers',evt.content.json.itens[0]);
+            // console.log('jsonLoaderPlayers',evt.content.json.itens[0]);
             self.updateLoad();
         });
         jsonLoaderPlayers.load();
 
         var jsonLoaderMonsters = new PIXI.JsonLoader('_dist/img/enemies/enemies.JSON');
         jsonLoaderMonsters.on('loaded', function(evt) {
-            // console.log('jsonLoaderMonsters',evt.content.json);
+            console.log('jsonLoaderMonsters',evt.content.json);
             for (var i = 0; i < evt.content.json.itens.length; i++) {
                 self.monsterList.push(new MonsterModel(
                     evt.content.json.itens[i].name,
@@ -123,7 +133,7 @@ var Application = AbstractApplication.extend({
                     evt.content.json.itens[i].config
                 ));
             }
-            console.log('jsonLoaderMonsters',evt.content.json.itens[0]);
+            // console.log('jsonLoaderMonsters',evt.content.json.itens[0]);
             self.updateLoad();
         });
         jsonLoaderMonsters.load();
@@ -138,7 +148,7 @@ var Application = AbstractApplication.extend({
                     evt.content.json.itens[i].icoImg
                 ));
             }
-            console.log('jsonLoaderRelics',evt.content.json.itens.length);
+            // console.log('jsonLoaderRelics',evt.content.json.itens.length);
             self.updateLoad();
         });
         jsonLoaderRelics.load();
@@ -153,7 +163,7 @@ var Application = AbstractApplication.extend({
                     evt.content.json.itens[i].icoImg
                 ));
             }
-            console.log('jsonLoaderArmor',evt.content.json.itens.length);
+            // console.log('jsonLoaderArmor',evt.content.json.itens.length);
             self.updateLoad();
 
         });
@@ -171,7 +181,7 @@ var Application = AbstractApplication.extend({
                     evt.content.json.itens[i].srcImg
                 ));
             }
-            console.log('jsonLoaderWeapon',evt.content.json.itens.length);
+            // console.log('jsonLoaderWeapon',evt.content.json.itens.length);
             self.updateLoad();
 
         });
@@ -189,7 +199,7 @@ var Application = AbstractApplication.extend({
                     evt.content.json.itens[i].isMultiple
                 ));
             }
-            console.log('jsonLoaderSpell',evt.content.json.itens.length);
+            // console.log('jsonLoaderSpell',evt.content.json.itens.length);
             self.updateLoad();
 
         });
@@ -206,7 +216,7 @@ var Application = AbstractApplication.extend({
                     evt.content.json.itens[i].icoImg
                 ));
             }
-            console.log('jsonLoaderPotion',evt.content.json.itens.length);
+            // console.log('jsonLoaderPotion',evt.content.json.itens.length);
             self.updateLoad();
 
         });

@@ -1,4 +1,4 @@
-/*! jefframos 25-11-2014 */
+/*! jefframos 26-11-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -190,6 +190,9 @@ var Application = AbstractApplication.extend({
             y: this.nTileSize
         };
     },
+    getHUDController: function() {
+        return this.hudController;
+    },
     getEffectsContainer: function() {
         return this.mainApp.effectsContainer;
     },
@@ -204,6 +207,9 @@ var Application = AbstractApplication.extend({
     },
     getHUD: function() {
         return this.HUD;
+    },
+    update: function() {
+        this._super(), this.hudController && this.hudController.update();
     },
     build: function() {
         this.playersList = [], this.monsterList = [], this.spellList = [], this.weaponList = [], 
@@ -220,45 +226,46 @@ var Application = AbstractApplication.extend({
     },
     initApplication: function() {
         this.mainApp = new GameScreen("Main"), this.screenManager.addScreen(this.mainApp), 
-        this.HUD = new PIXI.DisplayObjectContainer(), this.stage.addChild(this.HUD), this.screenManager.change("Main");
+        this.HUD = new PIXI.DisplayObjectContainer(), this.stage.addChild(this.HUD), this.hudController = new HUDController(this.HUD, this.stage), 
+        this.screenManager.change("Main");
     },
     onAssetsLoaded: function() {
-        console.log("assetsLoader");
         var self = this, jsonLoaderPlayers = new PIXI.JsonLoader("_dist/img/players/players.JSON");
         jsonLoaderPlayers.on("loaded", function(evt) {
-            for (var i = 0; i < evt.content.json.itens.length; i++) console.log(evt.content.json.itens[i].stats, "SJKALSKALSK"), 
-            self.playersList.push(new PlayerModel(evt.content.json.itens[i].name, evt.content.json.itens[i].label, evt.content.json.itens[i].stats, evt.content.json.itens[i].modifiers, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
-            console.log("jsonLoaderPlayers", evt.content.json.itens[0]), self.updateLoad();
+            console.log("jsonLoaderPlayers", evt.content.json);
+            for (var i = 0; i < evt.content.json.itens.length; i++) self.playersList.push(new PlayerModel(evt.content.json.itens[i].name, evt.content.json.itens[i].label, evt.content.json.itens[i].stats, evt.content.json.itens[i].modifiers, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
+            self.updateLoad();
         }), jsonLoaderPlayers.load();
         var jsonLoaderMonsters = new PIXI.JsonLoader("_dist/img/enemies/enemies.JSON");
         jsonLoaderMonsters.on("loaded", function(evt) {
+            console.log("jsonLoaderMonsters", evt.content.json);
             for (var i = 0; i < evt.content.json.itens.length; i++) self.monsterList.push(new MonsterModel(evt.content.json.itens[i].name, evt.content.json.itens[i].stats, evt.content.json.itens[i].fire, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
-            console.log("jsonLoaderMonsters", evt.content.json.itens[0]), self.updateLoad();
+            self.updateLoad();
         }), jsonLoaderMonsters.load();
         var jsonLoaderRelics = new PIXI.JsonLoader("_dist/img/relics/relics.JSON");
         jsonLoaderRelics.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.relicList.push(new RelicModel(evt.content.json.itens[i].name, evt.content.json.itens[i].status, evt.content.json.itens[i].baseValue, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg));
-            console.log("jsonLoaderRelics", evt.content.json.itens.length), self.updateLoad();
+            self.updateLoad();
         }), jsonLoaderRelics.load();
         var jsonLoaderArmor = new PIXI.JsonLoader("_dist/img/armor/armor.JSON");
         jsonLoaderArmor.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.armorList.push(new ArmorModel(evt.content.json.itens[i].name, evt.content.json.itens[i].defenseArmor, evt.content.json.itens[i].magicDefenseArmor, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg));
-            console.log("jsonLoaderArmor", evt.content.json.itens.length), self.updateLoad();
+            self.updateLoad();
         }), jsonLoaderArmor.load();
         var jsonLoaderWeapon = new PIXI.JsonLoader("_dist/img/weapons/weapons.JSON");
         jsonLoaderWeapon.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.weaponList.push(new WeaponModel(evt.content.json.itens[i].name, evt.content.json.itens[i].battlePower, evt.content.json.itens[i].magicPower, evt.content.json.itens[i].hitRate, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg, evt.content.json.itens[i].srcImg));
-            console.log("jsonLoaderWeapon", evt.content.json.itens.length), self.updateLoad();
+            self.updateLoad();
         }), jsonLoaderWeapon.load();
         var jsonLoaderSpell = new PIXI.JsonLoader("_dist/img/spells/spells.JSON");
         jsonLoaderSpell.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.spellList.push(new SpellModel(evt.content.json.itens[i].level, evt.content.json.itens[i].name, evt.content.json.itens[i].mp, evt.content.json.itens[i].spellPower, evt.content.json.itens[i].icoImg, evt.content.json.itens[i].srcImg, evt.content.json.itens[i].isMultiple));
-            console.log("jsonLoaderSpell", evt.content.json.itens.length), self.updateLoad();
+            self.updateLoad();
         }), jsonLoaderSpell.load();
         var jsonLoaderPotion = new PIXI.JsonLoader("_dist/img/potions/potions.JSON");
         jsonLoaderPotion.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.itemList.push(new ItemModel(evt.content.json.itens[i].name, evt.content.json.itens[i].effect, evt.content.json.itens[i].baseValue, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg));
-            console.log("jsonLoaderPotion", evt.content.json.itens.length), self.updateLoad();
+            self.updateLoad();
         }), jsonLoaderPotion.load();
     },
     getMonsterByName: function(name) {
@@ -309,7 +316,8 @@ var Application = AbstractApplication.extend({
     init: function(width, height, infoSide, id) {
         if (this.text = "default", this.container = new PIXI.DisplayObjectContainer(), this.infoSide = infoSide, 
         this.width = width, this.height = height, this.background = new SimpleSprite("_dist/img/HUD/box.png"), 
-        this.container.hitArea = new PIXI.Rectangle(0, 0, width, height), 0 !== infoSide) {
+        this.img = null, this.infoImg = null, this.container.hitArea = new PIXI.Rectangle(0, 0, width, height), 
+        0 !== infoSide) {
             this.infoContainer = new PIXI.DisplayObjectContainer(), this.backShapeInfo = new PIXI.Graphics(), 
             this.backShapeInfo.beginFill(1313571), this.backShapeInfo.moveTo(10, 2), this.backShapeInfo.lineTo(85, 0), 
             this.backShapeInfo.lineTo(84, 70), this.backShapeInfo.lineTo(63, 95), this.backShapeInfo.lineTo(0, 84), 
@@ -323,11 +331,21 @@ var Application = AbstractApplication.extend({
             this.container.setInteractive(!0), this.model = null;
             var self = this;
             this.container.mouseover = function() {
-                self.showInfo(), console.log("over");
+                self.showInfo(), self.overState();
             }, this.container.mouseout = function() {
-                self.hideInfo();
+                self.hideInfo(), self.outState();
+            }, this.container.mouseup = function() {
+                APP.getHUDController().upThisBox(self);
+            }, this.container.mousedown = function() {
+                APP.getHUDController().dragInventory(self);
             };
         }
+    },
+    overState: function() {
+        this.background.getContent().tint = 16753926;
+    },
+    outState: function() {
+        this.background.getContent().tint = 16777215;
     },
     showInfo: function() {
         this.model && (this.infoContainer.scale.x = .5, this.infoContainer.scale.y = .5, 
@@ -354,14 +372,23 @@ var Application = AbstractApplication.extend({
     setQuantTextPos: function(x, y) {
         this.quantLabel && (this.quantLabel.position.x = x, this.quantLabel.position.y = y);
     },
+    removeModel: function() {
+        this.img && this.img.getContent().parent && this.img.getContent().parent.removeChild(this.img.getContent()), 
+        this.infoImg && this.infoImg.getContent().parent && this.infoImg.getContent().parent.removeChild(this.infoImg.getContent()), 
+        this.quant && this.quant.getContent().parent && this.quant.getContent().parent.removeChild(this.quant.getContent()), 
+        this.quantLabel && this.quantLabel.parent && this.quantLabel.parent.removeChild(this.quantLabel), 
+        this.infoLabel && this.infoLabel.parent && this.infoLabel.parent.removeChild(this.infoLabel), 
+        this.model = null, this.quant = null, this.quantLabel = null, this.img = null, this.infoImg = null;
+    },
     addModel: function(model) {
-        if (this.model = model, this.addImage(this.model.icoImg), 0 !== this.infoSide) {
+        if (null !== this.model && this.removeModel(), this.model = model, this.addImage(this.model.icoImg), 
+        0 !== this.infoSide) {
             var text = "";
             if (model && (textTitle = model.label), model instanceof WeaponModel) text = "PWR: +" + model.battlePower + "\nMPW: +" + model.magicPower; else if (model instanceof ArmorModel) text = "DEF: +" + model.defenseArmor + "\nMDF: +" + model.magicDefenseArmor; else if (model instanceof RelicModel) text = "STATUS: \n" + model.status; else if (model instanceof SpellModel) text = "MPW: " + model.spellPower + "\nMP: " + model.mp; else if (model instanceof ItemModel) {
                 var addicionalLabel = 0 !== model.baseValue ? "\n+ " + model.baseValue : "";
                 textTitle = model.label, text = model.effect + addicionalLabel, this.quant || (this.quant = new SimpleSprite("_dist/img/HUD/quantBox.png"), 
                 this.container.addChild(this.quant.getContent()), this.quant.getContent().position.x = -7, 
-                this.quant.getContent().position.y = 24, this.setQuantText("2"), this.setQuantTextPos(-3, 26));
+                this.quant.getContent().position.y = 24, this.setQuantText(model.quant), this.setQuantTextPos(-3, 26));
             }
             this.infoLabelTitle ? this.infoLabelTitle.setText(textTitle) : (this.infoLabelTitle = new PIXI.Text(textTitle, {
                 fill: "white",
@@ -396,8 +423,8 @@ var Application = AbstractApplication.extend({
         this.img && this.img.parent && this.img.setPosition(this.width / 2 - this.img.getContent().width / 2, this.height / 2 - this.img.getContent().height / 2);
     },
     addImage: function(src) {
-        this.img && this.img.parent && this.img.parent.removeChild(this.img.getContent()), 
-        this.infoImg && this.infoImg.parent && this.infoImg.parent.removeChild(this.infoImg.getContent()), 
+        this.img && this.img.getContent().parent && this.img.getContent().parent.removeChild(this.img.getContent()), 
+        this.infoImg && this.infoImg.getContent().parent && this.infoImg.getContent().parent.removeChild(this.infoImg.getContent()), 
         this.img = new SimpleSprite(src), this.infoImg = new SimpleSprite(src), this.container.addChild(this.img.getContent()), 
         this.img.getContent().scale.x = .8, this.img.getContent().scale.y = .8;
         var posCorrection = 12;
@@ -410,6 +437,47 @@ var Application = AbstractApplication.extend({
     },
     setPosition: function(x, y) {
         this.container.position.x = x, this.container.position.y = y;
+    }
+}), HUDController = Class.extend({
+    init: function(container, stage) {
+        this.container = container, this.dragged = null, this.currentModel = null, this.stage = stage;
+        var self = this;
+        this.stage.stage.mouseup = function() {
+            self.releaseInventory();
+        };
+    },
+    releaseInventory: function() {
+        if (this.dragged) {
+            var self = this;
+            TweenLite.to(this.dragged.scale, .2, {
+                x: 0,
+                y: 0,
+                ease: "easeInBack",
+                onComplete: function() {
+                    self.dragged.parent && self.dragged.parent.removeChild(self.dragged), self.dragged = null, 
+                    self.currentBox = null;
+                }
+            });
+        }
+    },
+    upThisBox: function(box) {
+        null !== this.currentModel && (null !== box.model ? this.currentBox.addModel(box.model) : this.currentBox.removeModel(), 
+        box.addModel(this.currentModel), this.currentModel = null, this.currentBox = null);
+    },
+    dragInventory: function(box) {
+        if (null !== this.currentBox && (this.currentBox = null), null !== this.dragged && this.container.removeChild(this.dragged), 
+        this.currentBox = box, this.currentModel = this.currentBox.model, this.currentBox.infoImg) {
+            var currentScale = .8;
+            this.dragged = this.currentBox.infoImg.getContent(), this.dragged.anchor.x = .5, 
+            this.dragged.anchor.y = .5, this.dragged.scale.x = this.dragged.scale.y = 0, TweenLite.to(this.dragged.scale, .4, {
+                x: currentScale,
+                y: currentScale,
+                ease: "easeOutBack"
+            }), this.container.addChild(this.dragged);
+        }
+    },
+    update: function() {
+        this.dragged && (this.dragged.position.x = APP.getMousePos().x, this.dragged.position.y = APP.getMousePos().y);
     }
 }), LifeBarHUD = Class.extend({
     init: function(width, height, maxValue, currentValue) {
@@ -1414,7 +1482,7 @@ var Application = AbstractApplication.extend({
 }), ItemModel = Class.extend({
     init: function(name, effect, baseValue, price, icoImg) {
         this.name = name, this.label = name, this.effect = effect, this.baseValue = baseValue, 
-        this.price = price, this.icoImg = icoImg;
+        this.price = price, this.icoImg = icoImg, this.quant = 1;
     }
 }), MonsterModel = Class.extend({
     init: function(name, stats, fire, graphicsData, config) {
@@ -1825,25 +1893,18 @@ var Application = AbstractApplication.extend({
         this.backInventory.moveTo(25, 0), this.backInventory.lineTo(170, 6), this.backInventory.lineTo(186, 32), 
         this.backInventory.lineTo(185, 121), this.backInventory.lineTo(146, 144), this.backInventory.lineTo(0, 134), 
         this.backInventory.lineTo(4, 21), APP.getHUD().addChild(this.backInventory), this.backInventory.position.x = windowWidth + 5, 
-        this.backInventory.position.y = 320, this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null ], 
-        this.inventory[0] = APP.itemList[0], this.inventory[1] = APP.itemList[1], this.inventory[2] = APP.itemList[2], 
-        this.inventory[3] = APP.spellList[0], this.inventory[4] = APP.spellList[1], this.inventory[5] = APP.spellList[2];
-        for (var tempBox = null, lineAccum = (120 * this.inventory.length, 0), rowAccum = 0, i = 0; i < this.inventory.length; i++) {
-            tempBox = new BoxHUD1(42, 36, 3, i), i > 0 && i % 4 === 0 && (lineAccum++, rowAccum = 0), 
-            tempBox.setPosition(windowWidth + 46 * rowAccum + 10, 325 + 42 * lineAccum), rowAccum++, 
-            APP.getHUD().addChild(tempBox.getContent());
-            var tempText = "";
-            this.inventory[i] && this.inventory[i].icoImg && (tempText = this.inventory[i].name, 
-            tempBox.addModel(this.inventory[i]));
-        }
+        this.backInventory.position.y = 320, this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null ];
+        for (var tempBox = null, lineAccum = 0, rowAccum = 0, i = 0; i < this.inventory.length; i++) tempBox = new BoxHUD1(42, 36, 3, i), 
+        i > 0 && i % 4 === 0 && (lineAccum++, rowAccum = 0), tempBox.setPosition(windowWidth + 46 * rowAccum + 10, 325 + 42 * lineAccum), 
+        rowAccum++, APP.getHUD().addChild(tempBox.getContent()), this.inventory[i] = tempBox;
+        this.inventory[0].addModel(APP.itemList[0]), this.inventory[1].addModel(APP.itemList[1]), 
+        this.inventory[2].addModel(APP.itemList[2]), this.inventory[3].addModel(APP.spellList[0]), 
+        this.inventory[4].addModel(APP.spellList[1]), this.inventory[5].addModel(APP.spellList[2]);
     },
     useShortcut: function(id) {
-        this.inventory[id] && (this.inventory[id] instanceof ItemModel ? this.useItem(this.inventory[id]) : this.inventory[id] instanceof SpellModel && this.spell(this.inventory[id]));
+        console.log(this.inventory[id].model), this.inventory[id] && this.inventory[id].model && (this.inventory[id].model instanceof ItemModel ? this.useItem(this.inventory[id].model) : this.inventory[id].model instanceof SpellModel && this.spell(this.inventory[id].model));
     },
-    updateInventory: function() {
-        if (this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
-        this.equips[2] = this.player.relicModel, this.equipsBoxHud) for (var i = 0; i < this.equipsBoxHud.length; i++) this.equips[i] && this.equipsBoxHud[i].addModel(this.equips[i]);
-    },
+    updateInventory: function() {},
     useItem: function(itemModel) {
         this.player.useItem(itemModel);
     },
@@ -2086,10 +2147,10 @@ var Application = AbstractApplication.extend({
         }), document.body.addEventListener("mousedown", function() {
             game.player && APP.getMousePos().x < windowWidth && (game.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
-            if (game.player) {
-                if (87 === e.keyCode || 38 === e.keyCode && game.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && game.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && game.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && game.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) game.player.hurt(5); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode || 81 === e.keyCode || 69 === e.keyCode) {
+            if (console.log(e.keyCode), game.player) {
+                if (87 === e.keyCode || 38 === e.keyCode && game.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && game.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && game.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && game.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) game.player.hurt(5); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode || 52 === e.keyCode || 81 === e.keyCode || 69 === e.keyCode) {
                     var id = 1;
-                    50 === e.keyCode ? id = 2 : 51 === e.keyCode ? id = 3 : 81 === e.keyCode ? id = 4 : 69 === e.keyCode && (id = 5), 
+                    50 === e.keyCode ? id = 2 : 51 === e.keyCode ? id = 3 : 52 === e.keyCode && (id = 4), 
                     game.useShortcut(id - 1);
                 }
                 game.player.updatePlayerVel(self.vecPositions);

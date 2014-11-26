@@ -153,16 +153,16 @@ var GameScreen = AbstractScreen.extend({
         this.inventory = [null,null,null,null,
         null,null,null,null,
         null,null,null,null];
-        this.inventory[0] = APP.itemList[0];
-        this.inventory[1] = APP.itemList[1];
-        this.inventory[2] = APP.itemList[2];
-        this.inventory[3] = APP.spellList[0];
-        this.inventory[4] = APP.spellList[1];
-        this.inventory[5] = APP.spellList[2];
+        // this.inventory[0] = APP.itemList[0];
+        // this.inventory[1] = APP.itemList[1];
+        // this.inventory[2] = APP.itemList[2];
+        // this.inventory[3] = APP.spellList[0];
+        // this.inventory[4] = APP.spellList[1];
+        // this.inventory[5] = APP.spellList[2];
         var tempBox = null;
-        var icosTotalWidth = (120 * this.inventory.length);
         var lineAccum = 0;
         var rowAccum = 0;
+
         for (var i = 0; i < this.inventory.length; i++) {
             tempBox = new BoxHUD1(42,36, 3, i);
 
@@ -174,24 +174,33 @@ var GameScreen = AbstractScreen.extend({
             tempBox.setPosition(windowWidth +rowAccum*46 + 10, 325 + lineAccum * 42);
             rowAccum ++;
             APP.getHUD().addChild(tempBox.getContent());
-            var tempText = '';
-            var shortcut = i + 1;
-            // if(i === 3){
-            //     shortcut = 'Q';
-            // }
-            // else if(i === 4){
-            //     shortcut = 'E';
-            // }
-            // else if(i === 5){
-            //     shortcut = 'SPACE';
-            // }
-            if(this.inventory[i] && this.inventory[i].icoImg){
-                // tempBox.addImage(this.inventory[i].icoImg);
-                tempText = this.inventory[i].name;
-                tempBox.addModel(this.inventory[i]);
-            }
+            this.inventory[i] = tempBox;
             // tempBox.setText(tempText + '\n\n\n' + shortcut);
         }
+
+        this.inventory[0].addModel(APP.itemList[0]);
+        this.inventory[1].addModel(APP.itemList[1]);
+        this.inventory[2].addModel(APP.itemList[2]);
+        this.inventory[3].addModel(APP.spellList[0]);
+        this.inventory[4].addModel(APP.spellList[1]);
+        this.inventory[5].addModel(APP.spellList[2]);
+        //for (var i = 0; i < 12; i++) {
+        //     tempBox = new BoxHUD1(42,36, 3, i);
+
+        //     if(i > 0 && i % 4 === 0){
+        //         lineAccum ++;
+        //         rowAccum = 0;
+        //     }
+
+        //     tempBox.setPosition(windowWidth +rowAccum*46 + 10, 325 + lineAccum * 42);
+        //     rowAccum ++;
+        //     APP.getHUD().addChild(tempBox.getContent());
+        //     if(this.inventory[i] && this.inventory[i].icoImg){
+        //         tempText = this.inventory[i].name;
+        //         tempBox.addModel(this.inventory[i]);
+        //     }
+        //     // tempBox.setText(tempText + '\n\n\n' + shortcut);
+        // }
 
         // this.equips = [null,null,null];
         // this.equipsBoxHud = [];
@@ -226,26 +235,28 @@ var GameScreen = AbstractScreen.extend({
     },
     //verifica qual model está no atalho e executa a ação daquele model
     useShortcut:function(id){
-        if(this.inventory[id]){
-            if(this.inventory[id] instanceof ItemModel){
-                this.useItem(this.inventory[id]);
-            }else if(this.inventory[id] instanceof SpellModel){
-                this.spell(this.inventory[id]);
+        console.log(this.inventory[id].model);
+        if(this.inventory[id] && this.inventory[id].model){
+            if(this.inventory[id].model instanceof ItemModel){
+                this.useItem(this.inventory[id].model);
+            }else if(this.inventory[id].model instanceof SpellModel){
+                this.spell(this.inventory[id].model);
             }
         }
     },
     //atualiza o inventorio
     updateInventory:function(){
-        this.equips[0] = this.player.weaponModel;
-        this.equips[1] = this.player.armorModel;
-        this.equips[2] = this.player.relicModel;
-        if(this.equipsBoxHud){
-            for (var i = 0; i < this.equipsBoxHud.length; i++) {
-                if(this.equips[i]){
-                    this.equipsBoxHud[i].addModel(this.equips[i]);
-                }
-            }
-        }
+
+        // this.equips[0] = this.player.weaponModel;
+        // this.equips[1] = this.player.armorModel;
+        // this.equips[2] = this.player.relicModel;
+        // if(this.equipsBoxHud){
+        //     for (var i = 0; i < this.equipsBoxHud.length; i++) {
+        //         if(this.equips[i]){
+        //             this.equipsBoxHud[i].addModel(this.equips[i]);
+        //         }
+        //     }
+        // }
     },
     //usa um item
     useItem:function(itemModel){
