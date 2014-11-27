@@ -414,6 +414,9 @@ var Application = AbstractApplication.extend({
             this.infoLabel.position.x = 15), model.icoImg && this.addImage(model.icoImg);
         }
     },
+    updateQuant: function() {
+        this.setQuantText(this.model.quant);
+    },
     setQuantText: function(text) {
         this.quantText !== text && (this.quantLabel ? this.quantLabel.setText(text) : (this.quantLabel = new PIXI.Text(text, {
             fill: "black",
@@ -435,12 +438,25 @@ var Application = AbstractApplication.extend({
         this.img && this.img.getContent().parent && this.img.getContent().parent.removeChild(this.img.getContent()), 
         this.infoImg && this.infoImg.getContent().parent && this.infoImg.getContent().parent.removeChild(this.infoImg.getContent()), 
         this.img = new SimpleSprite(src), this.infoImg = new SimpleSprite(src), this.container.addChild(this.img.getContent()), 
-        this.img.getContent().scale.x = .8, this.img.getContent().scale.y = .8;
-        var posCorrection = 12;
-        this.img.setPosition(this.width / 2 - posCorrection, this.height / 2 - posCorrection), 
+        this.img.getContent().scale.x = 0, this.img.getContent().scale.y = 0, this.img.getContent().anchor.x = .5, 
+        this.img.getContent().anchor.y = .5, TweenLite.to(this.img.getContent().scale, .4, {
+            x: .8,
+            y: .8,
+            ease: "easeOutBack"
+        });
+        var posCorrection = 12, otherCorrection = 12;
+        this.img.setPosition(this.width / 2 - posCorrection + otherCorrection, this.height / 2 - posCorrection + otherCorrection), 
         this.infoContainer && (this.infoContainer.addChild(this.infoImg.getContent()), this.infoImg.getContent().scale.x = .6, 
         this.infoImg.getContent().scale.y = .6, this.infoImg.setPosition(15, 15));
     },
+    getContent: function() {
+        return this.container;
+    },
+    setPosition: function(x, y) {
+        this.container.position.x = x, this.container.position.y = y;
+    }
+}), EquipsHUD = Class.extend({
+    init: function() {},
     getContent: function() {
         return this.container;
     },
@@ -489,23 +505,23 @@ var Application = AbstractApplication.extend({
                 y: 0,
                 ease: "easeInBack",
                 onComplete: function() {
-                    self.dragged.parent && self.dragged.parent.removeChild(self.dragged), self.dragged = null, 
-                    self.currentBox = null;
+                    self.dragged && self.dragged.parent && self.dragged.parent.removeChild(self.dragged), 
+                    self.dragged = null, self.currentBox = null;
                 }
             }), APP.getMousePos().x < windowWidth && (APP.getGame().addBag(APP.getMousePosMapRelative(), this.currentModel), 
-            self.currentBox.removeModel());
+            null !== self.currentBox && self.currentBox.removeModel());
         }
     },
     upThisBox: function(box) {
-        null !== this.currentModel && (null !== box.model ? this.currentBox.addModel(box.model) : this.currentBox.removeModel(), 
+        null !== this.currentModel && (null !== this.currentBox && null !== box.model ? this.currentBox.addModel(box.model) : null !== this.currentBox && this.currentBox.removeModel(), 
         box.addModel(this.currentModel), this.currentModel = null, this.currentBox = null);
     },
     dragInventory: function(box) {
         if (null !== this.currentBox && (this.currentBox = null), null !== this.dragged && this.container.removeChild(this.dragged), 
         this.currentBox = box, this.currentModel = this.currentBox.model, this.currentBox.infoImg) {
-            var currentScale = .8;
-            this.dragged = this.currentBox.infoImg.getContent(), this.dragged.anchor.x = .5, 
-            this.dragged.anchor.y = .5, this.dragged.scale.x = this.dragged.scale.y = 0, TweenLite.to(this.dragged.scale, .4, {
+            var currentScale = .8, temps = new SimpleSprite(this.currentBox.model.icoImg);
+            this.dragged = temps.getContent(), this.dragged.anchor.x = .5, this.dragged.anchor.y = .5, 
+            this.dragged.scale.x = this.dragged.scale.y = 0, TweenLite.to(this.dragged.scale, .4, {
                 x: currentScale,
                 y: currentScale,
                 ease: "easeOutBack"
@@ -824,7 +840,7 @@ var Application = AbstractApplication.extend({
         this._super(), this.updateable = !0, this.collidable = !1, this.player = player, 
         this.srcImg = "_dist/img/fairy/f1.png", this.type = "fairy", this.width = 25, this.height = 25, 
         this.bounceAcc = 0, this.bounceAccMax = 30, this.velYHelper = 1, this.fairyContainer = new PIXI.DisplayObjectContainer(), 
-        this.range = 0, this.fairyAngle = 0;
+        this.range = 0, this.fairyAngle = 0, this.noDepth = !0;
     },
     getBounds: function() {
         return this.bounds = {
@@ -860,7 +876,7 @@ var Application = AbstractApplication.extend({
         this.fairySprite.position.x += this.virtualVelocity.x, this.fairySprite.position.y += this.virtualVelocity.y, 
         this.player && this.player.centerPosition) {
             var playerPos = {
-                x: this.player.getPosition().x,
+                x: this.player.getPosition().x - this.player.centerPosition.x - 10,
                 y: this.player.getPosition().y + this.player.centerPosition.y
             }, dist = pointDistance(playerPos.x, playerPos.y, this.fairyContainer.position.x, this.fairyContainer.position.y);
             dist > 20 ? (angle = Math.atan2(playerPos.y - this.fairyContainer.position.y, playerPos.x - this.fairyContainer.position.x), 
@@ -1254,30 +1270,34 @@ var Application = AbstractApplication.extend({
     },
     regenHP: function(value) {
         if (value + this.playerModel.hp > this.playerModel.hpMax && (value = Math.floor(this.playerModel.hpMax - this.playerModel.hp)), 
-        0 !== value) {
-            this.playerModel.hp += value;
-            var pop = new PopUpText("green");
-            pop.setText("+" + value + "HP"), APP.getEffectsContainer().addChild(pop.getContent()), 
-            pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
-            pop.initMotion(-15 - 10 * Math.random(), .8);
-        }
+        0 === value) return !1;
+        this.playerModel.hp += value;
+        var pop = new PopUpText("green");
+        return pop.setText("+" + value + "HP"), APP.getEffectsContainer().addChild(pop.getContent()), 
+        pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
+        pop.initMotion(-15 - 10 * Math.random(), .8), !0;
     },
     regenMP: function(value) {
         if (value + this.playerModel.mp > this.playerModel.mpMax && (value = Math.floor(this.playerModel.mpMax - this.playerModel.mp)), 
-        0 !== value) {
-            this.playerModel.mp += value;
-            var pop = new PopUpText("blue");
-            pop.setText("+" + value + "MP"), APP.getEffectsContainer().addChild(pop.getContent()), 
-            pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
-            pop.initMotion(-15 - 10 * Math.random(), .8);
-        }
+        0 === value) return !1;
+        this.playerModel.mp += value;
+        var pop = new PopUpText("blue");
+        return pop.setText("+" + value + "MP"), APP.getEffectsContainer().addChild(pop.getContent()), 
+        pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
+        pop.initMotion(-15 - 10 * Math.random(), .8), !0;
     },
     useItem: function(itemModel) {
-        if ("regen HP" === itemModel.effect) this.regenHP(itemModel.baseValue); else if ("regen MP" === itemModel.effect) this.regenMP(itemModel.baseValue); else if ("haste" === itemModel.effect && this.hasteAcum <= 0) {
-            var pop = new PopUpText("white");
-            pop.setText("HASTE"), APP.getEffectsContainer().addChild(pop.getContent()), pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
-            pop.initMotion(-15 - 10 * Math.random(), .8), this.defaultVelocity = 1.5 * this.playerModel.velocity, 
-            this.hasteAcum = 200;
+        if ("regen HP" === itemModel.effect) return this.regenHP(itemModel.baseValue);
+        if ("regen MP" === itemModel.effect) return this.regenMP(itemModel.baseValue);
+        if ("haste" === itemModel.effect) {
+            if (this.hasteAcum <= 0) {
+                var pop = new PopUpText("white");
+                return pop.setText("HASTE"), APP.getEffectsContainer().addChild(pop.getContent()), 
+                pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
+                pop.initMotion(-15 - 10 * Math.random(), .8), this.defaultVelocity = 1.5 * this.playerModel.velocity, 
+                this.hasteAcum = 200, !0;
+            }
+            return !1;
         }
     },
     reset: function() {
@@ -1533,7 +1553,7 @@ var Application = AbstractApplication.extend({
 }), ItemModel = Class.extend({
     init: function(name, effect, baseValue, price, icoImg) {
         this.name = name, this.label = name, this.effect = effect, this.baseValue = baseValue, 
-        this.price = price, this.icoImg = icoImg, this.quant = 1;
+        this.price = price, this.icoImg = icoImg, this.quant = 2;
     }
 }), MonsterModel = Class.extend({
     init: function(name, stats, fire, graphicsData, config) {
@@ -1961,11 +1981,12 @@ var Application = AbstractApplication.extend({
         for (var i = 0; i < this.inventory.length; i++) if (!this.inventory[i].model) return void this.inventory[i].addModel(model);
     },
     useShortcut: function(id) {
-        console.log(this.inventory[id].model), this.inventory[id] && this.inventory[id].model && (this.inventory[id].model instanceof ItemModel ? this.useItem(this.inventory[id].model) : this.inventory[id].model instanceof SpellModel && this.spell(this.inventory[id].model));
+        console.log(this.inventory[id].model), this.inventory[id] && this.inventory[id].model && (this.inventory[id].model instanceof ItemModel ? this.useItem(this.inventory[id].model) && (this.inventory[id].model.quant--, 
+        this.inventory[id].model.quant <= 0 ? this.inventory[id].removeModel() : this.inventory[id].updateQuant()) : this.inventory[id].model instanceof SpellModel && this.spell(this.inventory[id].model));
     },
     updateInventory: function() {},
     useItem: function(itemModel) {
-        this.player.useItem(itemModel);
+        return this.player.useItem(itemModel);
     },
     spell: function(spellModel) {
         this.player.spell(APP.stage.getMousePosition(), spellModel);
@@ -2021,7 +2042,7 @@ var Application = AbstractApplication.extend({
     },
     boundsCollision: function() {
         if (this.currentNode.mapData && this.player) for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if (tempEntity = this.entityLayer.childs[i], 
-        "fire" !== tempEntity.type && "bag" !== tempEntity.type) {
+        "fire" !== tempEntity.type && "bag" !== tempEntity.type && "fairy" !== tempEntity.type) {
             var centerPositionPlayer = {
                 x: tempEntity.getPosition().x + tempEntity.centerPosition.x,
                 y: tempEntity.getPosition().y + tempEntity.centerPosition.y
@@ -2115,7 +2136,7 @@ var Application = AbstractApplication.extend({
         }, this.minimapHUD && (this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent()), 
         this.minimapHUD = null), this.minimapHUD = new MapHUD(), this.minimapHUD.build(this.currentNode), 
         APP.getHUD().addChild(this.minimapHUD.getContent()), this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth) / 2 - this.minimapHUD.width / 2, realWindowHeight - this.minimapHUD.height - 30), 
-        this.levelGenerator.createDoors(), this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
+        this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
         var monstersToLoaded = [], monstersAssets = [];
         if (1 !== this.currentNode.mode) {
             for (monstersToLoaded = this.levelGenerator.createHordes(), i = monstersToLoaded.length - 1; i >= 0; i--) monstersToLoaded[i].monsterModel.fire.srcImg && monstersAssets.push(monstersToLoaded[i].monsterModel.fire.srcImg), 

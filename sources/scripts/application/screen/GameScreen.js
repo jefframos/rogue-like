@@ -258,7 +258,15 @@ var GameScreen = AbstractScreen.extend({
         console.log(this.inventory[id].model);
         if(this.inventory[id] && this.inventory[id].model){
             if(this.inventory[id].model instanceof ItemModel){
-                this.useItem(this.inventory[id].model);
+                if(this.useItem(this.inventory[id].model)){
+                    this.inventory[id].model.quant --;
+                    if(this.inventory[id].model.quant <= 0){
+                        this.inventory[id].removeModel();
+                    }else
+                    {
+                        this.inventory[id].updateQuant();
+                    }
+                }
             }else if(this.inventory[id].model instanceof SpellModel){
                 this.spell(this.inventory[id].model);
             }
@@ -280,7 +288,7 @@ var GameScreen = AbstractScreen.extend({
     },
     //usa um item
     useItem:function(itemModel){
-        this.player.useItem(itemModel);
+        return this.player.useItem(itemModel);
     },
     //dispara um spell
     spell:function(spellModel){
@@ -426,8 +434,7 @@ var GameScreen = AbstractScreen.extend({
         if(this.currentNode.mapData && this.player){
             for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
                 tempEntity = this.entityLayer.childs[i];
-                if(tempEntity.type !== 'fire' && tempEntity.type !== 'bag'){
-                    // console.log(this.currentNode.mapData);
+                if(tempEntity.type !== 'fire' && tempEntity.type !== 'bag'  && tempEntity.type !== 'fairy'){
                     var centerPositionPlayer = {x:tempEntity.getPosition().x + tempEntity.centerPosition.x,
                         y:tempEntity.getPosition().y + tempEntity.centerPosition.y};
 
@@ -556,7 +563,7 @@ var GameScreen = AbstractScreen.extend({
         this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth)/2 - this.minimapHUD.width/2, realWindowHeight - this.minimapHUD.height - 30);
 
         // this.levelGenerator.debugBounds();
-        this.levelGenerator.createDoors();
+        // this.levelGenerator.createDoors();
         this.levelGenerator.putObstacles();
 
         if(this.currentNode.getNextFloat() > 0.5){

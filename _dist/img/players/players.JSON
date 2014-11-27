@@ -112,8 +112,8 @@
                 "srcJson":"_dist/img/players/foxy.json",
                 "sourceLabel":"fox0",
                 "positionSprite":{
-                    "x": 28,
-                    "y": -5
+                    "x": 22,
+                    "y": -8
                 },
                 "range":25,
                 "frames":{

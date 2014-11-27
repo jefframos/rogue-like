@@ -451,7 +451,7 @@ var Player = SpritesheetEntity.extend({
             value = Math.floor(this.playerModel.hpMax - this.playerModel.hp);
         }
         if(value === 0){
-            return;
+            return false;
         }
         this.playerModel.hp += value;
         var pop = new PopUpText('green');
@@ -459,6 +459,7 @@ var Player = SpritesheetEntity.extend({
         APP.getEffectsContainer().addChild(pop.getContent());
         pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2 - 20);
         pop.initMotion(-15 - (Math.random() * 10), 0.8);
+        return true;
         //dar baixa no inventório
     },
     regenMP:function(value){
@@ -466,7 +467,7 @@ var Player = SpritesheetEntity.extend({
             value = Math.floor(this.playerModel.mpMax - this.playerModel.mp);
         }
         if(value === 0){
-            return;
+            return false;
         }
         this.playerModel.mp += value;
         var pop = new PopUpText('blue');
@@ -474,14 +475,15 @@ var Player = SpritesheetEntity.extend({
         APP.getEffectsContainer().addChild(pop.getContent());
         pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2 - 20);
         pop.initMotion(-15 - (Math.random() * 10), 0.8);
+        return true;
         //dar baixa no inventório
     },
     useItem: function(itemModel){
         if(itemModel.effect === 'regen HP'){
-            this.regenHP(itemModel.baseValue);
+            return this.regenHP(itemModel.baseValue);
         }
         else if(itemModel.effect === 'regen MP'){
-            this.regenMP(itemModel.baseValue);
+            return this.regenMP(itemModel.baseValue);
         }
         else if(itemModel.effect === 'haste'){
             if(this.hasteAcum <= 0){
@@ -493,7 +495,9 @@ var Player = SpritesheetEntity.extend({
                 this.defaultVelocity = this.playerModel.velocity * 1.5;
 
                 this.hasteAcum = 200;
+                return true;
             }
+            return false;
         }
     },
     reset: function(){

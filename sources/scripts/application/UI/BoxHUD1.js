@@ -212,6 +212,9 @@ var BoxHUD1 = Class.extend({
 			}
 		}
 	},
+	updateQuant:function(){
+		this.setQuantText(this.model.quant);
+	},
 	setQuantText: function(text){
 		if(this.quantText !== text){
 			if(!this.quantLabel){
@@ -251,10 +254,15 @@ var BoxHUD1 = Class.extend({
 		this.img = new SimpleSprite(src);
 		this.infoImg = new SimpleSprite(src);
 		this.container.addChild(this.img.getContent());
-		this.img.getContent().scale.x = 0.8;
-		this.img.getContent().scale.y = 0.8;
+		this.img.getContent().scale.x = 0.0;
+		this.img.getContent().scale.y = 0.0;
+		this.img.getContent().anchor.x = 0.5;
+		this.img.getContent().anchor.y = 0.5;
+		TweenLite.to(this.img.getContent().scale, 0.4, {x: 0.8, y: 0.8, ease:'easeOutBack'});
 		var posCorrection = (30 / 2) * 0.8;
-		this.img.setPosition(this.width / 2 -posCorrection , this.height / 2 - posCorrection);
+		var otherCorrection = 12;
+		this.img.setPosition((this.width / 2 -posCorrection) + otherCorrection,
+		(this.height / 2 - posCorrection) + otherCorrection);
 
 		if(this.infoContainer){
 			this.infoContainer.addChild(this.infoImg.getContent());

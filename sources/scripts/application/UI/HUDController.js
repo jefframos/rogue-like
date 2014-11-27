@@ -67,7 +67,7 @@ var HUDController = Class.extend({
 		if(this.dragged){
 			var self = this;
 			TweenLite.to(this.dragged.scale, 0.2 ,{x:0, y:0, ease:'easeInBack', onComplete:function(){
-				if(self.dragged.parent){
+				if(self.dragged && self.dragged.parent){
 					self.dragged.parent.removeChild(self.dragged);
 				}
 				self.dragged = null;
@@ -75,16 +75,18 @@ var HUDController = Class.extend({
 			}});
 			if(APP.getMousePos().x < windowWidth){
 				APP.getGame().addBag(APP.getMousePosMapRelative(), this.currentModel);
-				self.currentBox.removeModel();
+				if(self.currentBox !== null){
+					self.currentBox.removeModel();
+				}
 				// console.log('larga no mapa', APP.getMousePosMapRelative());
 			}
 		}
 	},
 	upThisBox:function(box){
 		if(this.currentModel !== null){
-			if(box.model !== null){
+			if(this.currentBox !== null && box.model !== null){
 				this.currentBox.addModel(box.model);
-			}else{
+			}else if(this.currentBox !== null){
 				this.currentBox.removeModel();
 			}
 			box.addModel(this.currentModel);
@@ -107,7 +109,8 @@ var HUDController = Class.extend({
 			return;
 		}
 		var currentScale = 0.8;
-		this.dragged = this.currentBox.infoImg.getContent();
+		var temps = new SimpleSprite(this.currentBox.model.icoImg);
+		this.dragged = temps.getContent();// this.currentBox.infoImg.getContent();
 		this.dragged.anchor.x = 0.5;
 		this.dragged.anchor.y = 0.5;
 		this.dragged.scale.x = this.dragged.scale.y = 0.0;

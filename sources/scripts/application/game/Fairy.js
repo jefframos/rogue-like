@@ -26,7 +26,7 @@ var Fairy = Entity.extend({
         this.range = 0;
         this.fairyAngle = 0;
 
-        // this.noDepth = true;
+        this.noDepth = true;
     },
     getBounds: function(){
         this.bounds = {x: this.getPosition().x - this.width *this.fairySprite.anchor.x,
@@ -121,7 +121,7 @@ var Fairy = Entity.extend({
         if(this.player && this.player.centerPosition){
             var playerPos =
             {
-                x:this.player.getPosition().x,
+                x:this.player.getPosition().x - this.player.centerPosition.x - 10,
                 y:this.player.getPosition().y + this.player.centerPosition.y// + this.player.range
             };
             var dist = pointDistance(playerPos.x,playerPos.y, this.fairyContainer.position.x, this.fairyContainer.position.y);
