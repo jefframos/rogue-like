@@ -2,7 +2,7 @@
 var meter = new FPSMeter();
 $.ajaxSetup({ cache: false });
 function testMobile() {
-    return false;// Modernizr.touch || window.innerWidth < 600;
+	return false;// Modernizr.touch || window.innerWidth < 600;
 }
 
 var SOCKET = null;
@@ -82,9 +82,15 @@ var initialize = function(){
 	$(App.init);
 })();
 function pointDistance(x, y, x0, y0){
-    return Math.sqrt((x -= x0) * x + (y -= y0) * y);
+	return Math.sqrt((x -= x0) * x + (y -= y0) * y);
 }
 
+function degreesToRadians(deg) {
+	return deg * (Math.PI / 180);
+}
 
+function radiansToDegrees(rad) {
+	return rad / (Math.PI / 180);
+}
 
 

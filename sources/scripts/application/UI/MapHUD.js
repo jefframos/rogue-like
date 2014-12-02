@@ -122,19 +122,19 @@ var MapHUD = Class.extend({
 		this.background.mask = this.mask;
 
 
-		var tempRbUnion = {x:bottomEdge.x +5,y:bottomEdge.y + 20};
+		var tempRbUnion = {x:bottomEdge.x +5,y:bottomEdge.y + 10};
 
 		this.rightBottom = new PIXI.Graphics();
 		this.rightBottom.beginFill(0x212144);
 		this.rightBottom.moveTo(rightBottomEdge.x,rightBottomEdge.y);
 		this.rightBottom.lineTo(bottomEdge.x,bottomEdge.y);
 		this.rightBottom.lineTo(tempRbUnion.x,tempRbUnion.y);
-		this.rightBottom.lineTo(rightBottomEdge.x,rightBottomEdge.y + 20);
+		this.rightBottom.lineTo(rightBottomEdge.x,rightBottomEdge.y + 10);
 
 		this.rightBottom.endFill();
 
 
-		var tempBlUnion = {x:leftBottomEdge.x -5,y:leftBottomEdge.y + 20};
+		var tempBlUnion = {x:leftBottomEdge.x -5,y:leftBottomEdge.y + 10};
 		this.bottomLeft = new PIXI.Graphics();
 		this.bottomLeft.beginFill(0x31315B);
 		this.bottomLeft.moveTo(bottomEdge.x,bottomEdge.y);
@@ -149,7 +149,7 @@ var MapHUD = Class.extend({
 		this.leftleft.beginFill(0x5C5C8E);
 		this.leftleft.moveTo(leftBottomEdge.x,leftBottomEdge.y);
 		this.leftleft.lineTo(leftLeftEdge.x,leftLeftEdge.y);
-		this.leftleft.lineTo(leftLeftEdge.x + 5,leftLeftEdge.y + 20);
+		this.leftleft.lineTo(leftLeftEdge.x + 5,leftLeftEdge.y + 10);
 		this.leftleft.lineTo(tempBlUnion.x,tempBlUnion.y);
 
 		this.leftleft.endFill();

@@ -58,7 +58,10 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/pixel.jpg',
             '_dist/img/HUD/bags/bag1.png',
             '_dist/img/HUD/box.png',
-            '_dist/img/HUD/boxGlow.png',
+            '_dist/img/HUD/backWeapon.png',
+            '_dist/img/HUD/backArmor.png',
+            '_dist/img/HUD/backSpec.png',
+            '_dist/img/HUD/backFairy.png',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
@@ -121,11 +124,11 @@ var GameScreen = AbstractScreen.extend({
 
 
         this.HPView = new LifeBarHUD(80,10, 100,100);
-        this.HPView.setPosition(windowWidth + 10,150);
+        this.HPView.setPosition(windowWidth + 10,130);
         APP.getHUD().addChild(this.HPView.getContent());
 
         this.MPView = new ManaBarHUD(80,10, 100,100);
-        this.MPView.setPosition(windowWidth + 10,150);
+        this.MPView.setPosition(windowWidth + 10,130);
         APP.getHUD().addChild(this.MPView.getContent());
 
         this.XPBar = new BarView(80,10, 100,100);
@@ -152,8 +155,38 @@ var GameScreen = AbstractScreen.extend({
         this.backInventory.position.x = windowWidth + 5;
         this.backInventory.position.y = 320;
 
+
+        this.equips[0] = APP.weaponList[0];
+        this.equips[1] = APP.armorList[0];
+        this.equips[2] = APP.relicList[0];
+
+
+        var contentEquipPos = {x: 30, y: 180};
+
+        this.weaponEquip = new EquipsHUD('weapon');
+        APP.getHUD().addChild(this.weaponEquip.getContent());
+        this.weaponEquip.setPosition(windowWidth + 0 + contentEquipPos.x,0 + contentEquipPos.y);
+        this.weaponEquip.addModel(this.equips[0]);
+
+        this.armorEquip = new EquipsHUD('armor');
+        APP.getHUD().addChild(this.armorEquip.getContent());
+        this.armorEquip.setPosition(windowWidth + 73 + contentEquipPos.x,4 + contentEquipPos.y);
+        this.armorEquip.addModel(this.equips[1]);
+
+        this.fairyEquip = new EquipsHUD('fairy');
+        APP.getHUD().addChild(this.fairyEquip.getContent());
+        this.fairyEquip.setPosition(windowWidth + 73 + contentEquipPos.x,61 + contentEquipPos.y);
+        // this.weaponEquip.addModel(this.equips[1]);
+
+        this.relicEquip = new EquipsHUD('relic');
+        APP.getHUD().addChild(this.relicEquip.getContent());
+        this.relicEquip.setPosition(windowWidth + 7 + contentEquipPos.x,61 + contentEquipPos.y);
+        this.relicEquip.addModel(this.equips[2]);
+
+        
         //adiciona os inventory
-        this.inventory = [null,null,null,null,
+        this.inventory =
+        [null,null,null,null,
         null,null,null,null,
         null,null,null,null];
         // this.inventory[0] = APP.itemList[0];
@@ -174,11 +207,10 @@ var GameScreen = AbstractScreen.extend({
                 rowAccum = 0;
             }
 
-            tempBox.setPosition(windowWidth +rowAccum*46 + 10, 325 + lineAccum * 42);
+            tempBox.setPosition(windowWidth +rowAccum*46 + 10, 335 + lineAccum * 42);
             rowAccum ++;
             APP.getHUD().addChild(tempBox.getContent());
             this.inventory[i] = tempBox;
-            // tempBox.setText(tempText + '\n\n\n' + shortcut);
         }
 
         this.inventory[0].addModel(APP.itemList[0]);
@@ -668,9 +700,9 @@ var GameScreen = AbstractScreen.extend({
         this.fairy1.setPosition(this.player.getPosition().x, this.player.getPosition().y);
 
         // this.entityLayer.addChild(this.simpleEnemy);
-        this.equips[0] = this.player.weaponModel;
-        this.equips[1] = this.player.armorModel;
-        this.equips[2] = this.player.relicModel;
+        // this.equips[0] = this.player.weaponModel;
+        // this.equips[1] = this.player.armorModel;
+        // this.equips[2] = this.player.relicModel;
 
         this.updateInventory();
 

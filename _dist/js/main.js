@@ -1,4 +1,4 @@
-/*! jefframos 26-11-2014 */
+/*! jefframos 02-12-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -19,6 +19,14 @@ function update() {
 
 function pointDistance(x, y, x0, y0) {
     return Math.sqrt((x -= x0) * x + (y -= y0) * y);
+}
+
+function degreesToRadians(deg) {
+    return deg * (Math.PI / 180);
+}
+
+function radiansToDegrees(rad) {
+    return rad / (Math.PI / 180);
 }
 
 var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ], [ [ 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 2 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ] ], [ [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ] ], [ [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ] ], [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ] ], DungeonGenerator = Class.extend({
@@ -390,8 +398,7 @@ var Application = AbstractApplication.extend({
         this.infoLabel = null;
     },
     addModel: function(model) {
-        if (null !== this.model && this.removeModel(), this.model = model, this.addImage(this.model.icoImg), 
-        0 !== this.infoSide) {
+        if (null !== this.model && this.removeModel(), this.model = model, 0 !== this.infoSide) {
             var text = "";
             if (model && (textTitle = model.label), model instanceof WeaponModel) text = "PWR: +" + model.battlePower + "\nMPW: +" + model.magicPower; else if (model instanceof ArmorModel) text = "DEF: +" + model.defenseArmor + "\nMDF: +" + model.magicDefenseArmor; else if (model instanceof RelicModel) text = "STATUS: \n" + model.status; else if (model instanceof SpellModel) text = "MPW: " + model.spellPower + "\nMP: " + model.mp; else if (model instanceof ItemModel) {
                 var addicionalLabel = 0 !== model.baseValue ? "\n+ " + model.baseValue : "";
@@ -456,7 +463,65 @@ var Application = AbstractApplication.extend({
         this.container.position.x = x, this.container.position.y = y;
     }
 }), EquipsHUD = Class.extend({
-    init: function() {},
+    init: function(type) {
+        this.type = type, this.container = new PIXI.DisplayObjectContainer();
+        var imgScr = "_dist/img/HUD/backWeapon.png";
+        "fairy" === this.type ? imgScr = "_dist/img/HUD/backFairy.png" : "relic" === this.type ? imgScr = "_dist/img/HUD/backSpec.png" : "armor" === this.type && (imgScr = "_dist/img/HUD/backArmor.png"), 
+        this.background = new SimpleSprite(imgScr), this.container.addChild(this.background.getContent()), 
+        this.width = this.background.texture.width, this.height = this.background.texture.height, 
+        this.container.setInteractive(!0);
+        var self = this;
+        this.container.mouseover = function() {}, this.container.mouseout = function() {}, 
+        this.container.mouseup = function() {
+            APP.getHUDController().upEquipBox(self);
+        }, this.container.mousedown = function() {
+            APP.getHUDController().dragInventory(self);
+        };
+    },
+    overState: function() {
+        this.backgroundOver.getContent().alpha = 1;
+    },
+    outState: function() {
+        this.backgroundOver.getContent().alpha = 0;
+    },
+    removeModel: function() {
+        this.img && this.img.getContent().parent && this.img.getContent().parent.removeChild(this.img.getContent()), 
+        this.infoImg && this.infoImg.getContent().parent && this.infoImg.getContent().parent.removeChild(this.infoImg.getContent()), 
+        this.quant && this.quant.getContent().parent && this.quant.getContent().parent.removeChild(this.quant.getContent()), 
+        this.quantLabel && this.quantLabel.parent && this.quantLabel.parent.removeChild(this.quantLabel), 
+        this.infoLabel && this.infoLabel.parent && this.infoLabel.parent.removeChild(this.infoLabel), 
+        this.model = null, this.quant = null, this.quantLabel = null, this.img = null, this.infoImg = null, 
+        this.infoLabel = null;
+    },
+    addModel: function(model) {
+        if (null !== this.model && this.removeModel(), this.model = model, 0 !== this.infoSide) {
+            var text = "";
+            if (model instanceof WeaponModel && "weapon" === this.type) text = "PWR: +" + model.battlePower + "\nMPW: +" + model.magicPower; else if (model instanceof ArmorModel && "armor" === this.type) text = "DEF: +" + model.defenseArmor + "\nMDF: +" + model.magicDefenseArmor; else {
+                if (!(model instanceof RelicModel && "relic" === this.type)) return !1;
+                text = "STATUS: \n" + model.status;
+            }
+            model.icoImg && this.addImage(model.icoImg);
+        }
+    },
+    addImage: function(src) {
+        this.img && this.img.getContent().parent && this.img.getContent().parent.removeChild(this.img.getContent()), 
+        this.infoImg && this.infoImg.getContent().parent && this.infoImg.getContent().parent.removeChild(this.infoImg.getContent()), 
+        this.img = new SimpleSprite(src), this.infoImg = new SimpleSprite(src), this.container.addChild(this.img.getContent()), 
+        this.img.getContent().scale.x = 0, this.img.getContent().scale.y = 0, this.img.getContent().anchor.x = .5, 
+        this.img.getContent().anchor.y = .5, TweenLite.to(this.img.getContent().scale, .4, {
+            x: .8,
+            y: .8,
+            ease: "easeOutBack"
+        });
+        var posCorrection = {
+            x: 0,
+            y: 0
+        };
+        "weapon" === this.type ? (posCorrection.x = 5, posCorrection.y = 5) : "armor" === this.type ? posCorrection.x = -5 : "relic" === this.type && (posCorrection.x = 5), 
+        this.img.setPosition(this.width / 2 + posCorrection.x, this.height / 2 + posCorrection.y), 
+        this.infoContainer && (this.infoContainer.addChild(this.infoImg.getContent()), this.infoImg.getContent().scale.x = .6, 
+        this.infoImg.getContent().scale.y = .6, this.infoImg.setPosition(15, 15));
+    },
     getContent: function() {
         return this.container;
     },
@@ -511,6 +576,9 @@ var Application = AbstractApplication.extend({
             }), APP.getMousePos().x < windowWidth && (APP.getGame().addBag(APP.getMousePosMapRelative(), this.currentModel), 
             null !== self.currentBox && self.currentBox.removeModel());
         }
+    },
+    upEquipBox: function(equipBox) {
+        console.log(equipBox);
     },
     upThisBox: function(box) {
         null !== this.currentModel && (null !== this.currentBox && null !== box.model ? this.currentBox.addModel(box.model) : null !== this.currentBox && this.currentBox.removeModel(), 
@@ -679,20 +747,20 @@ var Application = AbstractApplication.extend({
         this.mapContainer.mask = this.mask, this.background.mask = this.mask;
         var tempRbUnion = {
             x: bottomEdge.x + 5,
-            y: bottomEdge.y + 20
+            y: bottomEdge.y + 10
         };
         this.rightBottom = new PIXI.Graphics(), this.rightBottom.beginFill(2171204), this.rightBottom.moveTo(rightBottomEdge.x, rightBottomEdge.y), 
         this.rightBottom.lineTo(bottomEdge.x, bottomEdge.y), this.rightBottom.lineTo(tempRbUnion.x, tempRbUnion.y), 
-        this.rightBottom.lineTo(rightBottomEdge.x, rightBottomEdge.y + 20), this.rightBottom.endFill();
+        this.rightBottom.lineTo(rightBottomEdge.x, rightBottomEdge.y + 10), this.rightBottom.endFill();
         var tempBlUnion = {
             x: leftBottomEdge.x - 5,
-            y: leftBottomEdge.y + 20
+            y: leftBottomEdge.y + 10
         };
         this.bottomLeft = new PIXI.Graphics(), this.bottomLeft.beginFill(3223899), this.bottomLeft.moveTo(bottomEdge.x, bottomEdge.y), 
         this.bottomLeft.lineTo(leftBottomEdge.x, leftBottomEdge.y), this.bottomLeft.lineTo(tempBlUnion.x, tempBlUnion.y), 
         this.bottomLeft.lineTo(tempRbUnion.x, tempRbUnion.y), this.bottomLeft.endFill(), 
         this.leftleft = new PIXI.Graphics(), this.leftleft.beginFill(6053006), this.leftleft.moveTo(leftBottomEdge.x, leftBottomEdge.y), 
-        this.leftleft.lineTo(leftLeftEdge.x, leftLeftEdge.y), this.leftleft.lineTo(leftLeftEdge.x + 5, leftLeftEdge.y + 20), 
+        this.leftleft.lineTo(leftLeftEdge.x, leftLeftEdge.y), this.leftleft.lineTo(leftLeftEdge.x + 5, leftLeftEdge.y + 10), 
         this.leftleft.lineTo(tempBlUnion.x, tempBlUnion.y), this.leftleft.endFill(), this.container.addChild(this.rightBottom), 
         this.container.addChild(this.bottomLeft), this.container.addChild(this.leftleft), 
         this.player = new PIXI.Graphics(), this.player.beginFill(8649781), this.player.moveTo(8, 7), 
@@ -1122,7 +1190,7 @@ var Application = AbstractApplication.extend({
         this.weaponModel = wModel;
     },
     updateAtt: function() {
-        this.defaultVelocity = .8 * this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3, 
+        this.defaultVelocity = .5 * this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3, 
         this.fireSpeed = this.fireModel.fireSpeed, this.fireSpeed < 1.1 * this.defaultVelocity && (this.fireSpeed = 1.1 * this.defaultVelocity), 
         this.fireStepLive = this.fireModel.fireStepLive;
     },
@@ -1206,7 +1274,7 @@ var Application = AbstractApplication.extend({
         }
     },
     update: function() {
-        this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = .8 * this.playerModel.velocity, 
+        this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = .5 * this.playerModel.velocity, 
         !this.isTouch && this.returnCollider <= 0 && (this.velocity = this.virtualVelocity), 
         this.mouseAngle = Math.atan2(windowHeight / 2 - APP.getMousePos().y + this.centerPosition.y, windowWidth / 2 - APP.getMousePos().x + this.centerPosition.x);
         var motion = "side";
@@ -1940,7 +2008,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/boxGlow.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onAssetsLoaded: function() {
@@ -1956,17 +2024,31 @@ var Application = AbstractApplication.extend({
         this.fog = new SimpleSprite("_dist/img/mask.png"), this.backInterface = new PIXI.Graphics(), 
         this.backInterface.beginFill(2496568), this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
         APP.getHUD().addChild(this.backInterface), this.HPView = new LifeBarHUD(80, 10, 100, 100), 
-        this.HPView.setPosition(windowWidth + 10, 150), APP.getHUD().addChild(this.HPView.getContent()), 
-        this.MPView = new ManaBarHUD(80, 10, 100, 100), this.MPView.setPosition(windowWidth + 10, 150), 
+        this.HPView.setPosition(windowWidth + 10, 130), APP.getHUD().addChild(this.HPView.getContent()), 
+        this.MPView = new ManaBarHUD(80, 10, 100, 100), this.MPView.setPosition(windowWidth + 10, 130), 
         APP.getHUD().addChild(this.MPView.getContent()), this.XPBar = new BarView(80, 10, 100, 100), 
         this.XPBar.setPosition(windowWidth + 10, 40), this.XPBar.setFrontColor(5592405), 
         this.XPBar.setBackColor(1118481), this.backInventory = new PIXI.Graphics(), this.backInventory.beginFill(1313571), 
         this.backInventory.moveTo(25, 0), this.backInventory.lineTo(170, 6), this.backInventory.lineTo(186, 32), 
         this.backInventory.lineTo(185, 121), this.backInventory.lineTo(146, 144), this.backInventory.lineTo(0, 134), 
         this.backInventory.lineTo(4, 21), APP.getHUD().addChild(this.backInventory), this.backInventory.position.x = windowWidth + 5, 
-        this.backInventory.position.y = 320, this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null ];
+        this.backInventory.position.y = 320, this.equips[0] = APP.weaponList[0], this.equips[1] = APP.armorList[0], 
+        this.equips[2] = APP.relicList[0];
+        var contentEquipPos = {
+            x: 30,
+            y: 180
+        };
+        this.weaponEquip = new EquipsHUD("weapon"), APP.getHUD().addChild(this.weaponEquip.getContent()), 
+        this.weaponEquip.setPosition(windowWidth + 0 + contentEquipPos.x, 0 + contentEquipPos.y), 
+        this.weaponEquip.addModel(this.equips[0]), this.armorEquip = new EquipsHUD("armor"), 
+        APP.getHUD().addChild(this.armorEquip.getContent()), this.armorEquip.setPosition(windowWidth + 73 + contentEquipPos.x, 4 + contentEquipPos.y), 
+        this.armorEquip.addModel(this.equips[1]), this.fairyEquip = new EquipsHUD("fairy"), 
+        APP.getHUD().addChild(this.fairyEquip.getContent()), this.fairyEquip.setPosition(windowWidth + 73 + contentEquipPos.x, 61 + contentEquipPos.y), 
+        this.relicEquip = new EquipsHUD("relic"), APP.getHUD().addChild(this.relicEquip.getContent()), 
+        this.relicEquip.setPosition(windowWidth + 7 + contentEquipPos.x, 61 + contentEquipPos.y), 
+        this.relicEquip.addModel(this.equips[2]), this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null ];
         for (var tempBox = null, lineAccum = 0, rowAccum = 0, i = 0; i < this.inventory.length; i++) tempBox = new BoxHUD1(42, 36, 3, i), 
-        i > 0 && i % 4 === 0 && (lineAccum++, rowAccum = 0), tempBox.setPosition(windowWidth + 46 * rowAccum + 10, 325 + 42 * lineAccum), 
+        i > 0 && i % 4 === 0 && (lineAccum++, rowAccum = 0), tempBox.setPosition(windowWidth + 46 * rowAccum + 10, 335 + 42 * lineAccum), 
         rowAccum++, APP.getHUD().addChild(tempBox.getContent()), this.inventory[i] = tempBox;
         this.inventory[0].addModel(APP.itemList[0]), this.inventory[1].addModel(APP.itemList[1]), 
         this.inventory[2].addModel(APP.itemList[2]), this.inventory[3].addModel(APP.spellList[0]), 
@@ -2163,8 +2245,7 @@ var Application = AbstractApplication.extend({
         this.entityLayer.addChild(this.player), "up" === this.currentPlayerSide || "down" === this.currentPlayerSide || "left" === this.currentPlayerSide || "right" === this.currentPlayerSide, 
         this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2), this.fairy1 = new Fairy(this.player), 
         this.fairy1.build(), this.entityLayer.addChild(this.fairy1), this.fairy1.setPosition(this.player.getPosition().x, this.player.getPosition().y), 
-        this.equips[0] = this.player.weaponModel, this.equips[1] = this.player.armorModel, 
-        this.equips[2] = this.player.relicModel, this.updateInventory();
+        this.updateInventory();
     },
     depthCompare: function(a, b) {
         var yA = a.position.y, yB = b.position.y;

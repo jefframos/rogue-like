@@ -82,6 +82,19 @@ var HUDController = Class.extend({
 			}
 		}
 	},
+	upEquipBox:function(equipBox){
+		console.log(equipBox);
+		// if(this.currentModel !== null){
+		// 	if(this.currentBox !== null && box.model !== null){
+		// 		this.currentBox.addModel(box.model);
+		// 	}else if(this.currentBox !== null){
+		// 		this.currentBox.removeModel();
+		// 	}
+		// 	box.addModel(this.currentModel);
+		// 	this.currentModel = null;
+		// 	this.currentBox = null;
+		// }
+	},
 	upThisBox:function(box){
 		if(this.currentModel !== null){
 			if(this.currentBox !== null && box.model !== null){
