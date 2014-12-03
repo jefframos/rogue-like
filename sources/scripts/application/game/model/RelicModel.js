@@ -8,6 +8,6 @@ var RelicModel = Class.extend({
 		this.price = price;
 		this.icoImg = icoImg;
 		this.type = 'relic';
-
+		this.type2 = 'equip';
 	}
 });

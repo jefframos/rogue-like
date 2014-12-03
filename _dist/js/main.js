@@ -328,8 +328,8 @@ var Application = AbstractApplication.extend({
     }
 }), BoxHUD1 = Class.extend({
     init: function(width, height, infoSide, id) {
-        if (this.text = "default", this.container = new PIXI.DisplayObjectContainer(), this.infoSide = infoSide, 
-        this.width = width, this.height = height, this.background = new SimpleSprite("_dist/img/HUD/box.png"), 
+        if (this.text = "default", this.type = "inventory", this.container = new PIXI.DisplayObjectContainer(), 
+        this.infoSide = infoSide, this.width = width, this.height = height, this.background = new SimpleSprite("_dist/img/HUD/box.png"), 
         this.backgroundOver = new SimpleSprite("_dist/img/HUD/boxGlow.png"), this.img = null, 
         this.infoImg = null, this.container.hitArea = new PIXI.Rectangle(0, 0, width, height), 
         0 !== infoSide) {
@@ -516,7 +516,8 @@ var Application = AbstractApplication.extend({
         this.quant && this.quant.getContent().parent && this.quant.getContent().parent.removeChild(this.quant.getContent()), 
         this.quantLabel && this.quantLabel.parent && this.quantLabel.parent.removeChild(this.quantLabel), 
         this.infoLabel && this.infoLabel.parent && this.infoLabel.parent.removeChild(this.infoLabel), 
-        this.model = null, this.quant = null, this.quantLabel = null, this.img = null, this.infoImg = null, 
+        this.model && this.model.type2 && (this.model.type2 = "equip"), this.model = null, 
+        this.quant = null, this.quantLabel = null, this.img = null, this.infoImg = null, 
         this.infoLabel = null;
     },
     addModel: function(model) {
@@ -526,7 +527,7 @@ var Application = AbstractApplication.extend({
                 if (!(model instanceof RelicModel && "relic" === this.type)) return !1;
                 text = "STATUS: \n" + model.status;
             }
-            this.infoLabelTitle ? this.infoLabelTitle.setText(textTitle) : (this.infoLabelTitle = new PIXI.Text(textTitle, {
+            this.model.type2 && (this.model.type2 = "currentEquip"), this.infoLabelTitle ? this.infoLabelTitle.setText(textTitle) : (this.infoLabelTitle = new PIXI.Text(textTitle, {
                 fill: "white",
                 align: "center",
                 font: "12px Arial",
@@ -618,13 +619,17 @@ var Application = AbstractApplication.extend({
     upEquipBox: function(equipBox) {
         if (console.log(this.currentModel), null !== this.currentModel) {
             if (equipBox.type !== this.currentModel.type) return;
-            null !== this.currentBox && null !== equipBox.model ? this.currentBox.addModel(equipBox.model) : null !== this.currentBox && this.currentBox.removeModel(), 
+            if (null !== this.currentBox && null !== equipBox.model) {
+                if (this.currentBox.model.type !== equipBox.type) return;
+                this.currentBox.addModel(equipBox.model);
+            } else null !== this.currentBox && this.currentBox.removeModel();
             equipBox.addModel(this.currentModel), APP.getGame().updatePlayerEquips(), this.currentModel = null, 
             this.currentBox = null;
         }
     },
     upThisBox: function(box) {
-        null !== this.currentModel && (null !== this.currentBox && null !== box.model ? this.currentBox.addModel(box.model) : null !== this.currentBox && this.currentBox.removeModel(), 
+        box.model && this.currentModel.type2 && "currentEquip" === this.currentModel.type2 && this.currentBox.model.type !== box.model.type || null !== this.currentModel && (null !== this.currentBox && null !== box.model ? (this.currentBox.addModel(box.model), 
+        "currentEquip" === box.model.type2 && APP.getGame().updatePlayerEquips()) : null !== this.currentBox && this.currentBox.removeModel(), 
         box.addModel(this.currentModel), this.currentModel = null, this.currentBox = null);
     },
     dragInventory: function(box) {
@@ -879,10 +884,6 @@ var Application = AbstractApplication.extend({
             self.showInfo(), self.overState();
         }, this.container.mouseout = function() {
             self.hideInfo(), self.outState();
-        }, this.container.mouseup = function() {
-            APP.getHUDController().upEquipBox(self);
-        }, this.container.mousedown = function() {
-            APP.getHUDController().dragInventory(self);
         };
     },
     overState: function() {},
@@ -930,12 +931,8 @@ var Application = AbstractApplication.extend({
         console.log(src), this.img && this.img.getContent().parent && this.img.getContent().parent.removeChild(this.img.getContent()), 
         this.infoImg && this.infoImg.getContent().parent && this.infoImg.getContent().parent.removeChild(this.infoImg.getContent()), 
         this.img = new SimpleSprite(src), this.infoImg = new SimpleSprite(src), this.container.addChild(this.img.getContent()), 
-        this.img.getContent().scale.x = 0, this.img.getContent().scale.y = 0, this.img.getContent().anchor.x = .5, 
-        this.img.getContent().anchor.y = .5, TweenLite.to(this.img.getContent().scale, .4, {
-            x: .8,
-            y: .8,
-            ease: "easeOutBack"
-        });
+        this.img.getContent().scale.x = 1, this.img.getContent().scale.y = 1, this.img.getContent().anchor.x = .5, 
+        this.img.getContent().anchor.y = .5;
         var posCorrection = {
             x: 0,
             y: 10
@@ -1743,7 +1740,7 @@ var Application = AbstractApplication.extend({
 }), ArmorModel = Class.extend({
     init: function(name, defenseArmor, magicDefenseArmor, price, icoImg) {
         this.name = name, this.label = name, this.defenseArmor = defenseArmor, this.magicDefenseArmor = magicDefenseArmor, 
-        this.price = price, this.icoImg = icoImg, this.type = "armor";
+        this.price = price, this.icoImg = icoImg, this.type = "armor", this.type2 = "equip";
     }
 }), FireModel = Class.extend({
     init: function() {
@@ -1905,7 +1902,7 @@ var Application = AbstractApplication.extend({
 }), RelicModel = Class.extend({
     init: function(name, status, baseValue, price, icoImg) {
         this.name = name, this.label = name, this.status = status, this.baseValue = baseValue, 
-        this.price = price, this.icoImg = icoImg, this.type = "relic";
+        this.price = price, this.icoImg = icoImg, this.type = "relic", this.type2 = "equip";
     }
 }), SpellModel = Class.extend({
     init: function(level, name, mp, spellPower, icoImg, srcImg, isMultiple) {
@@ -1916,7 +1913,7 @@ var Application = AbstractApplication.extend({
     init: function(name, battlePower, magicPower, hitRate, price, icoImg, srcImg) {
         this.name = name, this.label = name, this.battlePower = battlePower, this.magicPower = magicPower, 
         this.hitRate = hitRate, this.price = price, this.srcImg = srcImg, this.icoImg = icoImg, 
-        this.type = "weapon";
+        this.type = "weapon", this.type2 = "equip";
     }
 }), defaultColors = {
     OCEAN: 4473978,

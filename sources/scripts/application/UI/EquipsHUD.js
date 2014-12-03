@@ -117,6 +117,9 @@ var EquipsHUD = Class.extend({
 		if(this.infoLabel && this.infoLabel.parent){
 			this.infoLabel.parent.removeChild(this.infoLabel);
 		}
+		if(this.model && this.model.type2){
+			this.model.type2 = 'equip';
+		}
 		this.model = null;
 		this.quant = null;
 		this.quantLabel = null;
@@ -149,6 +152,9 @@ var EquipsHUD = Class.extend({
 			else
 			{
 				return false;
+			}
+			if(this.model.type2){
+				this.model.type2 = 'currentEquip';
 			}
 
 			if(!this.infoLabelTitle){

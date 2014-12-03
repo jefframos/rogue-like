@@ -89,6 +89,9 @@ var HUDController = Class.extend({
 				return;
 			}
 			if(this.currentBox !== null && equipBox.model !== null){
+				if(this.currentBox.model.type !== equipBox.type){
+					return;
+				}
 				this.currentBox.addModel(equipBox.model);
 			}else if(this.currentBox !== null){
 				this.currentBox.removeModel();
@@ -100,9 +103,18 @@ var HUDController = Class.extend({
 		}
 	},
 	upThisBox:function(box){
+
+		// console.log(box.model, this.currentModel.type2,this.currentModel.type2 === 'currentEquip',this.currentBox.model.type !== box.model.type);
+		if(box.model && this.currentModel.type2 && this.currentModel.type2 === 'currentEquip' && this.currentBox.model.type !== box.model.type){
+			return;
+		}
 		if(this.currentModel !== null){
 			if(this.currentBox !== null && box.model !== null){
+
 				this.currentBox.addModel(box.model);
+				if(box.model.type2 === 'currentEquip'){
+					APP.getGame().updatePlayerEquips();
+				}
 			}else if(this.currentBox !== null){
 				this.currentBox.removeModel();
 			}

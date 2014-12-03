@@ -2,6 +2,7 @@
 var BoxHUD1 = Class.extend({
 	init: function (width, height, infoSide, id){
 		this.text = 'default';
+		this.type = 'inventory';
 		this.container = new PIXI.DisplayObjectContainer();
 		this.infoSide = infoSide;
 

@@ -54,14 +54,6 @@ var PlayerHUD = Class.extend({
 			self.hideInfo();
 			self.outState();
 		};
-
-		this.container.mouseup = function(mouseData){
-			APP.getHUDController().upEquipBox(self);
-		};
-
-		this.container.mousedown = function(mouseData){
-			APP.getHUDController().dragInventory(self);
-		};
 	},
 	overState: function(){
 		// this.backgroundOver.getContent().alpha = 1;
@@ -191,11 +183,11 @@ var PlayerHUD = Class.extend({
 		this.img = new SimpleSprite(src);
 		this.infoImg = new SimpleSprite(src);
 		this.container.addChild(this.img.getContent());
-		this.img.getContent().scale.x = 0.0;
-		this.img.getContent().scale.y = 0.0;
+		this.img.getContent().scale.x = 1;
+		this.img.getContent().scale.y = 1;
 		this.img.getContent().anchor.x = 0.5;
 		this.img.getContent().anchor.y = 0.5;
-		TweenLite.to(this.img.getContent().scale, 0.4, {x: 0.8, y: 0.8, ease:'easeOutBack'});
+		// TweenLite.to(this.img.getContent().scale, 0.4, {x: 0.8, y: 0.8, ease:'easeOutBack'});
 		var posCorrection = {x:0, y:10};
 		
 		// console.log(this.background);

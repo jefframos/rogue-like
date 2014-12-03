@@ -8,5 +8,6 @@ var ArmorModel = Class.extend({
 		this.price = price;
 		this.icoImg = icoImg;
 		this.type = 'armor';
+		this.type2 = 'equip';
 	}
 });
