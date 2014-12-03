@@ -153,7 +153,7 @@ var BoxHUD1 = Class.extend({
 			this.removeModel();
 		}
 		this.model = model;
-		this.addImage(this.model.icoImg);
+		// this.addImage(this.model.icoImg);
 
 		if(this.infoSide !== 0){
 			var text = '';

@@ -8,5 +8,7 @@ var ItemModel = Class.extend({
 		this.price = price;
 		this.icoImg = icoImg;
 		this.quant = 2;
+		this.type = 'item';
+
 	}
 });

@@ -15,19 +15,51 @@ var EquipsHUD = Class.extend({
 		}
 		this.background = new SimpleSprite(imgScr);
 		this.container.addChild(this.background.getContent());
+
+
+		this.infoContainer = new PIXI.DisplayObjectContainer();
+		this.backShapeInfo = new PIXI.Graphics();
+		this.backShapeInfo.lineStyle(4, 0x39E239);
+		this.backShapeInfo.beginFill(0x140B23);
+		// this.backShapeInfo.beginFill(0xffffff);
+
+		this.backShapeInfo.moveTo(10,-20);
+		this.backShapeInfo.lineTo(85,-18);
+
+		this.backShapeInfo.lineTo(84,70);
+
+		this.backShapeInfo.lineTo(90,90);
+
+		this.backShapeInfo.lineTo(63,80);
+
+		this.backShapeInfo.lineTo(20,84);
+
+		this.backShapeInfo.lineTo(0,74);
+		this.backShapeInfo.lineTo(0,16);
+		this.backShapeInfo.lineTo(10,-20);
+		this.infoContainer.addChild(this.backShapeInfo);
+		this.infoContainer.pivot.x = 90;
+		this.infoContainer.pivot.y = 90;
+		this.infoContainer.position.x = -72 + this.infoContainer.pivot.x;
+		this.infoContainer.position.y = -80 + this.infoContainer.pivot.y;
+		this.infoContainer.alpha = 0;
+		
+		this.container.addChild(this.infoContainer);
+
+
 		// this.container.addChild(this.container);
 		this.width = this.background.texture.width;
 		this.height = this.background.texture.height;
 		this.container.setInteractive(true);
 		var self = this;
 		this.container.mouseover = function(mouseData){
-			// self.showInfo();
-			// self.overState();
+			self.showInfo();
+			self.overState();
 		};
 
 		this.container.mouseout = function(mouseData){
-			// self.hideInfo();
-			// self.outState();
+			self.hideInfo();
+			self.outState();
 		};
 
 		this.container.mouseup = function(mouseData){
@@ -37,37 +69,36 @@ var EquipsHUD = Class.extend({
 		this.container.mousedown = function(mouseData){
 			APP.getHUDController().dragInventory(self);
 		};
-			// var self = this;
-			// this.container.mouseover = function(mouseData){
-			// 	self.showInfo();
-			// 	self.overState();
-			// };
-
-			// this.container.mouseout = function(mouseData){
-			// 	self.hideInfo();
-			// 	self.outState();
-			// };
-
-			// this.container.mouseup = function(mouseData){
-			// 	APP.getHUDController().upThisBox(self);
-			// };
-
-			// this.container.mousedown = function(mouseData){
-			// 	APP.getHUDController().dragInventory(self);
-			// };
-		// }
 	},
 	overState: function(){
-		this.backgroundOver.getContent().alpha = 1;
+		// this.backgroundOver.getContent().alpha = 1;
+
 		// this.background.getContent().alpha = 0;
 		// this.background.getContent().tint = 0xFFA506;
 	},
 	outState: function(){
-		this.backgroundOver.getContent().alpha = 0;
+		// this.backgroundOver.getContent().alpha = 0;
+
 		// this.background.getContent().alpha = 1;
 		// this.background.getContent().filters = null;
 		// this.background.getContent().filters = [];
 
+	},
+	showInfo: function(){
+		if(this.model){
+			// this.infoContainer.alpha = 1;
+			this.infoContainer.scale.x = 0.5;
+			this.infoContainer.scale.y = 0.5;
+			TweenLite.to(this.infoContainer, 0.1, {alpha: 1 });
+			TweenLite.to(this.infoContainer.scale, 0.2, {x: 1, y: 1, ease:'easeOutBack' });
+		}
+	},
+	hideInfo: function(){
+		if(this.model){
+			// this.infoContainer.alpha = 0;
+			TweenLite.to(this.infoContainer, 0.1, {alpha: 0 });
+			TweenLite.to(this.infoContainer.scale, 0.3, {x: 0.5, y: 0.5, ease:'easeInBack'});
+		}
 	},
 	removeModel: function(){
 		if(this.img && this.img.getContent().parent){
@@ -103,7 +134,7 @@ var EquipsHUD = Class.extend({
 		if(this.infoSide !== 0){
 			var text = '';
 			if(model){
-				// textTitle = model.label;
+				textTitle = model.label;
 			}
 			if(model instanceof WeaponModel && this.type === 'weapon')
 			{
@@ -119,6 +150,27 @@ var EquipsHUD = Class.extend({
 			{
 				return false;
 			}
+
+			if(!this.infoLabelTitle){
+				this.infoLabelTitle = new PIXI.Text(textTitle, {fill:'white', align:'center', font:'12px Arial', wordWrap:true, wordWrapWidth:60});
+				this.infoContainer.addChildAt(this.infoLabelTitle,1);
+				this.infoLabelTitle.position.y = 25;
+				this.infoLabelTitle.position.x = 44 - this.infoLabelTitle.width / 2;
+			}else
+			{
+				this.infoLabelTitle.setText(textTitle);
+			}
+
+			if(!this.infoLabel){
+				this.infoLabel = new PIXI.Text(text, {fill:'white', align:'left', font:'12px Arial'});
+				this.infoContainer.addChildAt(this.infoLabel,1);
+				this.infoLabel.position.y = 45;
+				this.infoLabel.position.x = 15;
+			}else
+			{
+				this.infoLabel.setText(text);
+			}
+
 			if(model.icoImg){
 				this.addImage(model.icoImg);
 			}
@@ -158,9 +210,9 @@ var EquipsHUD = Class.extend({
 		if(this.infoContainer){
 			this.infoContainer.addChild(this.infoImg.getContent());
 
-			this.infoImg.getContent().scale.x = 0.6;
-			this.infoImg.getContent().scale.y = 0.6;
-			this.infoImg.setPosition(15 , 15);
+			this.infoImg.getContent().scale.x = 0.7;
+			this.infoImg.getContent().scale.y = 0.7;
+			this.infoImg.setPosition(32 , -10);
 		}
 	},
 	getContent: function(){

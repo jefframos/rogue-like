@@ -9,5 +9,7 @@ var SpellModel = Class.extend({
 		this.icoImg = icoImg;
 		this.srcImg = srcImg;
 		this.isMultiple = isMultiple;
+		this.type = 'spell';
+
 	}
 });

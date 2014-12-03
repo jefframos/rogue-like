@@ -1,4 +1,4 @@
-/*! jefframos 02-12-2014 */
+/*! jefframos 03-12-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -468,21 +468,47 @@ var Application = AbstractApplication.extend({
         var imgScr = "_dist/img/HUD/backWeapon.png";
         "fairy" === this.type ? imgScr = "_dist/img/HUD/backFairy.png" : "relic" === this.type ? imgScr = "_dist/img/HUD/backSpec.png" : "armor" === this.type && (imgScr = "_dist/img/HUD/backArmor.png"), 
         this.background = new SimpleSprite(imgScr), this.container.addChild(this.background.getContent()), 
-        this.width = this.background.texture.width, this.height = this.background.texture.height, 
-        this.container.setInteractive(!0);
+        this.infoContainer = new PIXI.DisplayObjectContainer(), this.backShapeInfo = new PIXI.Graphics(), 
+        this.backShapeInfo.lineStyle(4, 3793465), this.backShapeInfo.beginFill(1313571), 
+        this.backShapeInfo.moveTo(10, -20), this.backShapeInfo.lineTo(85, -18), this.backShapeInfo.lineTo(84, 70), 
+        this.backShapeInfo.lineTo(90, 90), this.backShapeInfo.lineTo(63, 80), this.backShapeInfo.lineTo(20, 84), 
+        this.backShapeInfo.lineTo(0, 74), this.backShapeInfo.lineTo(0, 16), this.backShapeInfo.lineTo(10, -20), 
+        this.infoContainer.addChild(this.backShapeInfo), this.infoContainer.pivot.x = 90, 
+        this.infoContainer.pivot.y = 90, this.infoContainer.position.x = -72 + this.infoContainer.pivot.x, 
+        this.infoContainer.position.y = -80 + this.infoContainer.pivot.y, this.infoContainer.alpha = 0, 
+        this.container.addChild(this.infoContainer), this.width = this.background.texture.width, 
+        this.height = this.background.texture.height, this.container.setInteractive(!0);
         var self = this;
-        this.container.mouseover = function() {}, this.container.mouseout = function() {}, 
-        this.container.mouseup = function() {
+        this.container.mouseover = function() {
+            self.showInfo(), self.overState();
+        }, this.container.mouseout = function() {
+            self.hideInfo(), self.outState();
+        }, this.container.mouseup = function() {
             APP.getHUDController().upEquipBox(self);
         }, this.container.mousedown = function() {
             APP.getHUDController().dragInventory(self);
         };
     },
-    overState: function() {
-        this.backgroundOver.getContent().alpha = 1;
+    overState: function() {},
+    outState: function() {},
+    showInfo: function() {
+        this.model && (this.infoContainer.scale.x = .5, this.infoContainer.scale.y = .5, 
+        TweenLite.to(this.infoContainer, .1, {
+            alpha: 1
+        }), TweenLite.to(this.infoContainer.scale, .2, {
+            x: 1,
+            y: 1,
+            ease: "easeOutBack"
+        }));
     },
-    outState: function() {
-        this.backgroundOver.getContent().alpha = 0;
+    hideInfo: function() {
+        this.model && (TweenLite.to(this.infoContainer, .1, {
+            alpha: 0
+        }), TweenLite.to(this.infoContainer.scale, .3, {
+            x: .5,
+            y: .5,
+            ease: "easeInBack"
+        }));
     },
     removeModel: function() {
         this.img && this.img.getContent().parent && this.img.getContent().parent.removeChild(this.img.getContent()), 
@@ -496,11 +522,23 @@ var Application = AbstractApplication.extend({
     addModel: function(model) {
         if (null !== this.model && this.removeModel(), this.model = model, 0 !== this.infoSide) {
             var text = "";
-            if (model instanceof WeaponModel && "weapon" === this.type) text = "PWR: +" + model.battlePower + "\nMPW: +" + model.magicPower; else if (model instanceof ArmorModel && "armor" === this.type) text = "DEF: +" + model.defenseArmor + "\nMDF: +" + model.magicDefenseArmor; else {
+            if (model && (textTitle = model.label), model instanceof WeaponModel && "weapon" === this.type) text = "PWR: +" + model.battlePower + "\nMPW: +" + model.magicPower; else if (model instanceof ArmorModel && "armor" === this.type) text = "DEF: +" + model.defenseArmor + "\nMDF: +" + model.magicDefenseArmor; else {
                 if (!(model instanceof RelicModel && "relic" === this.type)) return !1;
                 text = "STATUS: \n" + model.status;
             }
-            model.icoImg && this.addImage(model.icoImg);
+            this.infoLabelTitle ? this.infoLabelTitle.setText(textTitle) : (this.infoLabelTitle = new PIXI.Text(textTitle, {
+                fill: "white",
+                align: "center",
+                font: "12px Arial",
+                wordWrap: !0,
+                wordWrapWidth: 60
+            }), this.infoContainer.addChildAt(this.infoLabelTitle, 1), this.infoLabelTitle.position.y = 25, 
+            this.infoLabelTitle.position.x = 44 - this.infoLabelTitle.width / 2), this.infoLabel ? this.infoLabel.setText(text) : (this.infoLabel = new PIXI.Text(text, {
+                fill: "white",
+                align: "left",
+                font: "12px Arial"
+            }), this.infoContainer.addChildAt(this.infoLabel, 1), this.infoLabel.position.y = 45, 
+            this.infoLabel.position.x = 15), model.icoImg && this.addImage(model.icoImg);
         }
     },
     addImage: function(src) {
@@ -519,8 +557,8 @@ var Application = AbstractApplication.extend({
         };
         "weapon" === this.type ? (posCorrection.x = 5, posCorrection.y = 5) : "armor" === this.type ? posCorrection.x = -5 : "relic" === this.type && (posCorrection.x = 5), 
         this.img.setPosition(this.width / 2 + posCorrection.x, this.height / 2 + posCorrection.y), 
-        this.infoContainer && (this.infoContainer.addChild(this.infoImg.getContent()), this.infoImg.getContent().scale.x = .6, 
-        this.infoImg.getContent().scale.y = .6, this.infoImg.setPosition(15, 15));
+        this.infoContainer && (this.infoContainer.addChild(this.infoImg.getContent()), this.infoImg.getContent().scale.x = .7, 
+        this.infoImg.getContent().scale.y = .7, this.infoImg.setPosition(32, -10));
     },
     getContent: function() {
         return this.container;
@@ -578,7 +616,12 @@ var Application = AbstractApplication.extend({
         }
     },
     upEquipBox: function(equipBox) {
-        console.log(equipBox);
+        if (console.log(this.currentModel), null !== this.currentModel) {
+            if (equipBox.type !== this.currentModel.type) return;
+            null !== this.currentBox && null !== equipBox.model ? this.currentBox.addModel(equipBox.model) : null !== this.currentBox && this.currentBox.removeModel(), 
+            equipBox.addModel(this.currentModel), APP.getGame().updatePlayerEquips(), this.currentModel = null, 
+            this.currentBox = null;
+        }
     },
     upThisBox: function(box) {
         null !== this.currentModel && (null !== this.currentBox && null !== box.model ? this.currentBox.addModel(box.model) : null !== this.currentBox && this.currentBox.removeModel(), 
@@ -1611,7 +1654,7 @@ var Application = AbstractApplication.extend({
 }), ArmorModel = Class.extend({
     init: function(name, defenseArmor, magicDefenseArmor, price, icoImg) {
         this.name = name, this.label = name, this.defenseArmor = defenseArmor, this.magicDefenseArmor = magicDefenseArmor, 
-        this.price = price, this.icoImg = icoImg;
+        this.price = price, this.icoImg = icoImg, this.type = "armor";
     }
 }), FireModel = Class.extend({
     init: function() {
@@ -1621,7 +1664,7 @@ var Application = AbstractApplication.extend({
 }), ItemModel = Class.extend({
     init: function(name, effect, baseValue, price, icoImg) {
         this.name = name, this.label = name, this.effect = effect, this.baseValue = baseValue, 
-        this.price = price, this.icoImg = icoImg, this.quant = 2;
+        this.price = price, this.icoImg = icoImg, this.quant = 2, this.type = "item";
     }
 }), MonsterModel = Class.extend({
     init: function(name, stats, fire, graphicsData, config) {
@@ -1773,17 +1816,18 @@ var Application = AbstractApplication.extend({
 }), RelicModel = Class.extend({
     init: function(name, status, baseValue, price, icoImg) {
         this.name = name, this.label = name, this.status = status, this.baseValue = baseValue, 
-        this.price = price, this.icoImg = icoImg;
+        this.price = price, this.icoImg = icoImg, this.type = "relic";
     }
 }), SpellModel = Class.extend({
     init: function(level, name, mp, spellPower, icoImg, srcImg, isMultiple) {
         this.level = level, this.name = name, this.label = name, this.mp = mp, this.spellPower = spellPower, 
-        this.icoImg = icoImg, this.srcImg = srcImg, this.isMultiple = isMultiple;
+        this.icoImg = icoImg, this.srcImg = srcImg, this.isMultiple = isMultiple, this.type = "spell";
     }
 }), WeaponModel = Class.extend({
     init: function(name, battlePower, magicPower, hitRate, price, icoImg, srcImg) {
         this.name = name, this.label = name, this.battlePower = battlePower, this.magicPower = magicPower, 
-        this.hitRate = hitRate, this.price = price, this.srcImg = srcImg, this.icoImg = icoImg;
+        this.hitRate = hitRate, this.price = price, this.srcImg = srcImg, this.icoImg = icoImg, 
+        this.type = "weapon";
     }
 }), defaultColors = {
     OCEAN: 4473978,
@@ -2052,7 +2096,9 @@ var Application = AbstractApplication.extend({
         rowAccum++, APP.getHUD().addChild(tempBox.getContent()), this.inventory[i] = tempBox;
         this.inventory[0].addModel(APP.itemList[0]), this.inventory[1].addModel(APP.itemList[1]), 
         this.inventory[2].addModel(APP.itemList[2]), this.inventory[3].addModel(APP.spellList[0]), 
-        this.inventory[4].addModel(APP.spellList[1]), this.inventory[5].addModel(APP.spellList[2]);
+        this.inventory[4].addModel(APP.spellList[1]), this.inventory[5].addModel(APP.spellList[2]), 
+        this.inventory[8].addModel(APP.armorList[2]), this.inventory[9].addModel(APP.weaponList[2]), 
+        this.inventory[10].addModel(APP.relicList[2]);
     },
     addBag: function(pos, model) {
         var tempBag = new Bag(model, this.player);
@@ -2066,7 +2112,13 @@ var Application = AbstractApplication.extend({
         console.log(this.inventory[id].model), this.inventory[id] && this.inventory[id].model && (this.inventory[id].model instanceof ItemModel ? this.useItem(this.inventory[id].model) && (this.inventory[id].model.quant--, 
         this.inventory[id].model.quant <= 0 ? this.inventory[id].removeModel() : this.inventory[id].updateQuant()) : this.inventory[id].model instanceof SpellModel && this.spell(this.inventory[id].model));
     },
-    updateInventory: function() {},
+    updatePlayerEquips: function() {
+        this.weaponEquip && this.weaponEquip.model && this.weaponEquip.model !== this.equips[0] && (this.equips[0] = this.weaponEquip.model), 
+        this.armorEquip && this.armorEquip.model && this.armorEquip.model !== this.equips[0] && (this.equips[1] = this.armorEquip.model), 
+        this.relicEquip && this.relicEquip.model && this.relicEquip.model !== this.equips[0] && (this.equips[2] = this.relicEquip.model), 
+        this.equips[0] && this.player.setWeaponModel(this.equips[0]), this.equips[1] && this.player.setArmorModel(this.equips[1]), 
+        this.equips[2] && this.player.setRelicModel(this.equips[2]);
+    },
     useItem: function(itemModel) {
         return this.player.useItem(itemModel);
     },
@@ -2241,11 +2293,10 @@ var Application = AbstractApplication.extend({
         this.blackShape.alpha = 1, TweenLite.to(this.blackShape, 1, {
             alpha: 0
         }), this.playerReady = !0, this.entityLayer.updateable = !0, this.player.build(), 
-        this.player.setArmorModel(APP.armorList[0]), this.player.setWeaponModel(APP.weaponList[0]), 
         this.entityLayer.addChild(this.player), "up" === this.currentPlayerSide || "down" === this.currentPlayerSide || "left" === this.currentPlayerSide || "right" === this.currentPlayerSide, 
         this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2), this.fairy1 = new Fairy(this.player), 
         this.fairy1.build(), this.entityLayer.addChild(this.fairy1), this.fairy1.setPosition(this.player.getPosition().x, this.player.getPosition().y), 
-        this.updateInventory();
+        this.updatePlayerEquips();
     },
     depthCompare: function(a, b) {
         var yA = a.position.y, yB = b.position.y;

@@ -7,5 +7,7 @@ var RelicModel = Class.extend({
 		this.baseValue = baseValue;
 		this.price = price;
 		this.icoImg = icoImg;
+		this.type = 'relic';
+
 	}
 });

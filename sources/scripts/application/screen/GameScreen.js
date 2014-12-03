@@ -183,7 +183,7 @@ var GameScreen = AbstractScreen.extend({
         this.relicEquip.setPosition(windowWidth + 7 + contentEquipPos.x,61 + contentEquipPos.y);
         this.relicEquip.addModel(this.equips[2]);
 
-        
+
         //adiciona os inventory
         this.inventory =
         [null,null,null,null,
@@ -219,6 +219,9 @@ var GameScreen = AbstractScreen.extend({
         this.inventory[3].addModel(APP.spellList[0]);
         this.inventory[4].addModel(APP.spellList[1]);
         this.inventory[5].addModel(APP.spellList[2]);
+        this.inventory[8].addModel(APP.armorList[2]);
+        this.inventory[9].addModel(APP.weaponList[2]);
+        this.inventory[10].addModel(APP.relicList[2]);
 
 
         //for (var i = 0; i < 12; i++) {
@@ -305,18 +308,25 @@ var GameScreen = AbstractScreen.extend({
         }
     },
     //atualiza o inventorio
-    updateInventory:function(){
-
-        // this.equips[0] = this.player.weaponModel;
-        // this.equips[1] = this.player.armorModel;
-        // this.equips[2] = this.player.relicModel;
-        // if(this.equipsBoxHud){
-        //     for (var i = 0; i < this.equipsBoxHud.length; i++) {
-        //         if(this.equips[i]){
-        //             this.equipsBoxHud[i].addModel(this.equips[i]);
-        //         }
-        //     }
-        // }
+    updatePlayerEquips:function(){
+        if(this.weaponEquip && this.weaponEquip.model && this.weaponEquip.model !== this.equips[0]){
+            this.equips[0] = this.weaponEquip.model;
+        }
+        if(this.armorEquip && this.armorEquip.model && this.armorEquip.model !== this.equips[0]){
+            this.equips[1] = this.armorEquip.model;
+        }
+        if(this.relicEquip && this.relicEquip.model && this.relicEquip.model !== this.equips[0]){
+            this.equips[2] = this.relicEquip.model;
+        }
+        if(this.equips[0]){
+            this.player.setWeaponModel(this.equips[0]);
+        }
+        if(this.equips[1]){
+            this.player.setArmorModel(this.equips[1]);
+        }
+        if(this.equips[2]){
+            this.player.setRelicModel(this.equips[2]);
+        }
     },
     //usa um item
     useItem:function(itemModel){
@@ -666,8 +676,8 @@ var GameScreen = AbstractScreen.extend({
         // this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
 
         // this.player.setSpellModel(APP.spellList[1]);
-        this.player.setArmorModel(APP.armorList[0]);
-        this.player.setWeaponModel(APP.weaponList[0]);
+        // this.player.setArmorModel(APP.armorList[0]);
+        // this.player.setWeaponModel(APP.weaponList[0]);
         //this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
 
        
@@ -704,7 +714,7 @@ var GameScreen = AbstractScreen.extend({
         // this.equips[1] = this.player.armorModel;
         // this.equips[2] = this.player.relicModel;
 
-        this.updateInventory();
+        this.updatePlayerEquips();
 
         // console.log(this.levelBounds.x/2,this.levelBounds.y/2);
     },

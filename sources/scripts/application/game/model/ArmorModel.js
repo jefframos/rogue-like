@@ -7,5 +7,6 @@ var ArmorModel = Class.extend({
 		this.magicDefenseArmor = magicDefenseArmor;
 		this.price = price;
 		this.icoImg = icoImg;
+		this.type = 'armor';
 	}
 });

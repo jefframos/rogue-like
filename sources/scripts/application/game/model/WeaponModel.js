@@ -9,5 +9,6 @@ var WeaponModel = Class.extend({
 		this.price = price;
 		this.srcImg = srcImg;
 		this.icoImg = icoImg;
+		this.type = 'weapon';
 	}
 });
