@@ -107,7 +107,7 @@
                 "magicDefenseModifier":0.0025
             },
             "graphicsData":{
-                "icoImg":"_dist/img/players/foxy.png",
+                "icoImg":"_dist/img/players/foxyIco.png",
                 "srcImg":"_dist/img/players/foxy.png",
                 "srcJson":"_dist/img/players/foxy.json",
                 "sourceLabel":"fox0",

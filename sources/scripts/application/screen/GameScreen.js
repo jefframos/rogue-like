@@ -62,6 +62,7 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/HUD/backArmor.png',
             '_dist/img/HUD/backSpec.png',
             '_dist/img/HUD/backFairy.png',
+            '_dist/img/HUD/backPlayerHUD.png',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
@@ -121,7 +122,9 @@ var GameScreen = AbstractScreen.extend({
         this.backInterface.drawRect(windowWidth,0,realWindowWidth - windowWidth, realWindowHeight);
         APP.getHUD().addChild(this.backInterface);
 
-
+        this.playerHUD = new PlayerHUD('player');
+        this.playerHUD.setPosition(windowWidth + 10,10);
+        APP.getHUD().addChild(this.playerHUD.getContent());
 
         this.HPView = new LifeBarHUD(80,10, 100,100);
         this.HPView.setPosition(windowWidth + 10,130);
@@ -161,7 +164,7 @@ var GameScreen = AbstractScreen.extend({
         this.equips[2] = APP.relicList[0];
 
 
-        var contentEquipPos = {x: 30, y: 180};
+        var contentEquipPos = {x: 30, y: 190};
 
         this.weaponEquip = new EquipsHUD('weapon');
         APP.getHUD().addChild(this.weaponEquip.getContent());
@@ -327,6 +330,8 @@ var GameScreen = AbstractScreen.extend({
         if(this.equips[2]){
             this.player.setRelicModel(this.equips[2]);
         }
+        this.playerHUD.addModel(this.playerModel, this.player);
+
     },
     //usa um item
     useItem:function(itemModel){
@@ -439,27 +444,6 @@ var GameScreen = AbstractScreen.extend({
         var tempNext = Math.floor(this.playerModel.toNextLevel)- Math.floor(this.playerModel.toBeforeLevel);
         this.XPBar.updateBar(tempXP,tempNext);
         this.XPBar.setText(tempXP+'/ '+tempNext);
-        //atualiza label
-        if(this.levelLabel){
-            this.levelLabel.setText('room id:'+this.currentNode.id+'   -    state:'+'roomState'+'   -    playerClass:'+this.playerModel.playerClass+
-                '\nLEVEL: '+this.playerModel.level
-                );
-        }
-        if(this.boxStats && this.player.weaponModel)
-        {
-            this.boxStats.setText('\n'+'LEVEL: '+this.playerModel.level+' '+this.playerModel.playerClass+'\n'+
-                '\n'+'VIG: '+Math.floor(this.playerModel.vigor)+'\n'+
-                '\n'+'SPD: '+Math.floor(this.playerModel.speed)+'\n'+
-                '\n'+'STM: '+Math.floor(this.playerModel.stamina)+'\n'+
-                '\n'+'MPW: '+Math.floor(this.playerModel.magicPower)+' + '+this.player.weaponModel.magicPower+'\n'+
-                '\n'+'BPW: '+Math.floor(this.playerModel.battlePower)+' + '+this.player.weaponModel.battlePower+'\n'+
-                '\n'+'ATT: '+Math.floor(this.playerModel.attack)+'\n'+
-                '\n'+'DEF: '+Math.floor(this.playerModel.defense)+' + '+this.player.armorModel.defenseArmor+'\n'+
-                '\n'+'MDF: '+Math.floor(this.playerModel.magicDefense)+' + '+this.player.armorModel.magicDefenseArmor+'\n'
-                );
-            this.boxStats.setTextPos(20,0);
-
-        }
     },
     getPlayerTilePos:function(){
         if(this.playerReady && this.player){

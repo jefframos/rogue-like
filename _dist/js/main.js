@@ -859,6 +859,95 @@ var Application = AbstractApplication.extend({
     setPosition: function(x, y) {
         this.container.position.x = x, this.container.position.y = y;
     }
+}), PlayerHUD = Class.extend({
+    init: function(type) {
+        this.type = type, this.container = new PIXI.DisplayObjectContainer();
+        var imgScr = "_dist/img/HUD/backPlayerHUD.png";
+        this.background = new SimpleSprite(imgScr), this.container.addChild(this.background.getContent()), 
+        this.infoContainer = new PIXI.DisplayObjectContainer(), this.backShapeInfo = new PIXI.Graphics(), 
+        this.backShapeInfo.lineStyle(4, 3793465), this.backShapeInfo.beginFill(1313571), 
+        this.backShapeInfo.moveTo(2, 20), this.backShapeInfo.lineTo(25, 2), this.backShapeInfo.lineTo(140, 0), 
+        this.backShapeInfo.lineTo(138, 73), this.backShapeInfo.lineTo(185, 90), this.backShapeInfo.lineTo(145, 104), 
+        this.backShapeInfo.lineTo(143, 174), this.backShapeInfo.lineTo(118, 190), this.backShapeInfo.lineTo(20, 175), 
+        this.backShapeInfo.lineTo(0, 150), this.backShapeInfo.lineTo(2, 20), this.infoContainer.addChild(this.backShapeInfo), 
+        this.infoContainer.pivot.x = 185, this.infoContainer.pivot.y = 90, this.infoContainer.position.x = -165 + this.infoContainer.pivot.x, 
+        this.infoContainer.position.y = this.infoContainer.pivot.y, this.infoContainer.alpha = 0, 
+        this.container.addChild(this.infoContainer), this.width = this.background.texture.width, 
+        this.height = this.background.texture.height, this.container.setInteractive(!0);
+        var self = this;
+        this.container.mouseover = function() {
+            self.showInfo(), self.overState();
+        }, this.container.mouseout = function() {
+            self.hideInfo(), self.outState();
+        }, this.container.mouseup = function() {
+            APP.getHUDController().upEquipBox(self);
+        }, this.container.mousedown = function() {
+            APP.getHUDController().dragInventory(self);
+        };
+    },
+    overState: function() {},
+    outState: function() {},
+    showInfo: function() {
+        this.model && (this.infoContainer.scale.x = .5, this.infoContainer.scale.y = .5, 
+        TweenLite.to(this.infoContainer, .1, {
+            alpha: 1
+        }), TweenLite.to(this.infoContainer.scale, .2, {
+            x: 1,
+            y: 1,
+            ease: "easeOutBack"
+        }));
+    },
+    hideInfo: function() {
+        this.model && (TweenLite.to(this.infoContainer, .1, {
+            alpha: 0
+        }), TweenLite.to(this.infoContainer.scale, .3, {
+            x: .5,
+            y: .5,
+            ease: "easeInBack"
+        }));
+    },
+    removeModel: function() {
+        this.img && this.img.getContent().parent && this.img.getContent().parent.removeChild(this.img.getContent()), 
+        this.infoImg && this.infoImg.getContent().parent && this.infoImg.getContent().parent.removeChild(this.infoImg.getContent()), 
+        this.quant && this.quant.getContent().parent && this.quant.getContent().parent.removeChild(this.quant.getContent()), 
+        this.quantLabel && this.quantLabel.parent && this.quantLabel.parent.removeChild(this.quantLabel), 
+        this.infoLabel && this.infoLabel.parent && this.infoLabel.parent.removeChild(this.infoLabel), 
+        this.model = null, this.quant = null, this.quantLabel = null, this.img = null, this.infoImg = null, 
+        this.infoLabel = null;
+    },
+    addModel: function(model, player) {
+        this.player = player, null !== this.model && this.removeModel(), this.model = model;
+        var text = "";
+        textTitle = "model.label", text = "LEVEL: " + this.model.level + " " + this.model.playerClass + "\nVIG: " + Math.floor(this.model.vigor) + "\nSPD: " + Math.floor(this.model.speed) + "\nSTM: " + Math.floor(this.model.stamina) + "\nMPW: " + Math.floor(this.model.magicPower) + " + " + this.player.weaponModel.magicPower + "\nBPW: " + Math.floor(this.model.battlePower) + " + " + this.player.weaponModel.battlePower + "\nATT: " + Math.floor(this.model.attack) + "\nDEF: " + Math.floor(this.model.defense) + " + " + this.player.armorModel.defenseArmor + "\nMDF: " + Math.floor(this.model.magicDefense) + " + " + this.player.armorModel.magicDefenseArmor, 
+        this.infoLabel ? this.infoLabel.setText(text) : (this.infoLabel = new PIXI.Text(text, {
+            fill: "white",
+            align: "left",
+            font: "12px Arial"
+        }), this.infoContainer.addChildAt(this.infoLabel, 1), this.infoLabel.position.y = 25, 
+        this.infoLabel.position.x = 25), console.log(model.graphicsData), model.graphicsData.icoImg && this.addImage(model.graphicsData.icoImg);
+    },
+    addImage: function(src) {
+        console.log(src), this.img && this.img.getContent().parent && this.img.getContent().parent.removeChild(this.img.getContent()), 
+        this.infoImg && this.infoImg.getContent().parent && this.infoImg.getContent().parent.removeChild(this.infoImg.getContent()), 
+        this.img = new SimpleSprite(src), this.infoImg = new SimpleSprite(src), this.container.addChild(this.img.getContent()), 
+        this.img.getContent().scale.x = 0, this.img.getContent().scale.y = 0, this.img.getContent().anchor.x = .5, 
+        this.img.getContent().anchor.y = .5, TweenLite.to(this.img.getContent().scale, .4, {
+            x: .8,
+            y: .8,
+            ease: "easeOutBack"
+        });
+        var posCorrection = {
+            x: 0,
+            y: 10
+        };
+        this.img.setPosition(this.width / 2 + posCorrection.x, this.height / 2 + posCorrection.y);
+    },
+    getContent: function() {
+        return this.container;
+    },
+    setPosition: function(x, y) {
+        this.container.position.x = x, this.container.position.y = y;
+    }
 }), PopUpText = Class.extend({
     init: function(color) {
         this.color = color ? color : "white", this.label = new PIXI.Text("", {
@@ -2052,7 +2141,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/mask.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onAssetsLoaded: function() {
@@ -2067,20 +2156,21 @@ var Application = AbstractApplication.extend({
     createHUD: function() {
         this.fog = new SimpleSprite("_dist/img/mask.png"), this.backInterface = new PIXI.Graphics(), 
         this.backInterface.beginFill(2496568), this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
-        APP.getHUD().addChild(this.backInterface), this.HPView = new LifeBarHUD(80, 10, 100, 100), 
-        this.HPView.setPosition(windowWidth + 10, 130), APP.getHUD().addChild(this.HPView.getContent()), 
-        this.MPView = new ManaBarHUD(80, 10, 100, 100), this.MPView.setPosition(windowWidth + 10, 130), 
-        APP.getHUD().addChild(this.MPView.getContent()), this.XPBar = new BarView(80, 10, 100, 100), 
-        this.XPBar.setPosition(windowWidth + 10, 40), this.XPBar.setFrontColor(5592405), 
-        this.XPBar.setBackColor(1118481), this.backInventory = new PIXI.Graphics(), this.backInventory.beginFill(1313571), 
-        this.backInventory.moveTo(25, 0), this.backInventory.lineTo(170, 6), this.backInventory.lineTo(186, 32), 
-        this.backInventory.lineTo(185, 121), this.backInventory.lineTo(146, 144), this.backInventory.lineTo(0, 134), 
-        this.backInventory.lineTo(4, 21), APP.getHUD().addChild(this.backInventory), this.backInventory.position.x = windowWidth + 5, 
-        this.backInventory.position.y = 320, this.equips[0] = APP.weaponList[0], this.equips[1] = APP.armorList[0], 
-        this.equips[2] = APP.relicList[0];
+        APP.getHUD().addChild(this.backInterface), this.playerHUD = new PlayerHUD("player"), 
+        this.playerHUD.setPosition(windowWidth + 10, 10), APP.getHUD().addChild(this.playerHUD.getContent()), 
+        this.HPView = new LifeBarHUD(80, 10, 100, 100), this.HPView.setPosition(windowWidth + 10, 130), 
+        APP.getHUD().addChild(this.HPView.getContent()), this.MPView = new ManaBarHUD(80, 10, 100, 100), 
+        this.MPView.setPosition(windowWidth + 10, 130), APP.getHUD().addChild(this.MPView.getContent()), 
+        this.XPBar = new BarView(80, 10, 100, 100), this.XPBar.setPosition(windowWidth + 10, 40), 
+        this.XPBar.setFrontColor(5592405), this.XPBar.setBackColor(1118481), this.backInventory = new PIXI.Graphics(), 
+        this.backInventory.beginFill(1313571), this.backInventory.moveTo(25, 0), this.backInventory.lineTo(170, 6), 
+        this.backInventory.lineTo(186, 32), this.backInventory.lineTo(185, 121), this.backInventory.lineTo(146, 144), 
+        this.backInventory.lineTo(0, 134), this.backInventory.lineTo(4, 21), APP.getHUD().addChild(this.backInventory), 
+        this.backInventory.position.x = windowWidth + 5, this.backInventory.position.y = 320, 
+        this.equips[0] = APP.weaponList[0], this.equips[1] = APP.armorList[0], this.equips[2] = APP.relicList[0];
         var contentEquipPos = {
             x: 30,
-            y: 180
+            y: 190
         };
         this.weaponEquip = new EquipsHUD("weapon"), APP.getHUD().addChild(this.weaponEquip.getContent()), 
         this.weaponEquip.setPosition(windowWidth + 0 + contentEquipPos.x, 0 + contentEquipPos.y), 
@@ -2117,7 +2207,7 @@ var Application = AbstractApplication.extend({
         this.armorEquip && this.armorEquip.model && this.armorEquip.model !== this.equips[0] && (this.equips[1] = this.armorEquip.model), 
         this.relicEquip && this.relicEquip.model && this.relicEquip.model !== this.equips[0] && (this.equips[2] = this.relicEquip.model), 
         this.equips[0] && this.player.setWeaponModel(this.equips[0]), this.equips[1] && this.player.setArmorModel(this.equips[1]), 
-        this.equips[2] && this.player.setRelicModel(this.equips[2]);
+        this.equips[2] && this.player.setRelicModel(this.equips[2]), this.playerHUD.addModel(this.playerModel, this.player);
     },
     useItem: function(itemModel) {
         return this.player.useItem(itemModel);
@@ -2156,10 +2246,7 @@ var Application = AbstractApplication.extend({
         this.MPView.updateBar(Math.floor(this.playerModel.mp), Math.floor(this.playerModel.mpMax)), 
         this.MPView.setText(Math.floor(this.playerModel.mp) + "/ " + Math.floor(this.playerModel.mpMax));
         var tempXP = Math.floor(this.playerModel.xp) - Math.floor(this.playerModel.toBeforeLevel), tempNext = Math.floor(this.playerModel.toNextLevel) - Math.floor(this.playerModel.toBeforeLevel);
-        this.XPBar.updateBar(tempXP, tempNext), this.XPBar.setText(tempXP + "/ " + tempNext), 
-        this.levelLabel && this.levelLabel.setText("room id:" + this.currentNode.id + "   -    state:roomState   -    playerClass:" + this.playerModel.playerClass + "\nLEVEL: " + this.playerModel.level), 
-        this.boxStats && this.player.weaponModel && (this.boxStats.setText("\nLEVEL: " + this.playerModel.level + " " + this.playerModel.playerClass + "\n\nVIG: " + Math.floor(this.playerModel.vigor) + "\n\nSPD: " + Math.floor(this.playerModel.speed) + "\n\nSTM: " + Math.floor(this.playerModel.stamina) + "\n\nMPW: " + Math.floor(this.playerModel.magicPower) + " + " + this.player.weaponModel.magicPower + "\n\nBPW: " + Math.floor(this.playerModel.battlePower) + " + " + this.player.weaponModel.battlePower + "\n\nATT: " + Math.floor(this.playerModel.attack) + "\n\nDEF: " + Math.floor(this.playerModel.defense) + " + " + this.player.armorModel.defenseArmor + "\n\nMDF: " + Math.floor(this.playerModel.magicDefense) + " + " + this.player.armorModel.magicDefenseArmor + "\n"), 
-        this.boxStats.setTextPos(20, 0));
+        this.XPBar.updateBar(tempXP, tempNext), this.XPBar.setText(tempXP + "/ " + tempNext);
     },
     getPlayerTilePos: function() {
         if (this.playerReady && this.player) {
