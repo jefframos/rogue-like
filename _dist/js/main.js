@@ -577,14 +577,15 @@ var Application = AbstractApplication.extend({
         this.currentBag = null, this.bagContent.setInteractive(!0);
         var self = this;
         this.bagContent.mousedown = function() {
-            self.currentBag && (APP.getGame().addModelInventory(self.currentBag.model), self.removeBag());
+            self.currentBag && (APP.getGame().addModelInventory(self.currentBag.model), self.currentBag.model = null, 
+            self.removeBag());
         }, this.stage.stage.mouseup = function() {
             self.releaseInventory();
         };
     },
     removeBag: function() {
         this.currentBag && this.currentBag.getContent().parent && (this.currentBag.kill = !0, 
-        this.hideBagContent());
+        this.currentModel = null, this.hideBagContent());
     },
     hideBagContent: function() {
         this.bagContent.alpha = 0, this.currentBag = null;
@@ -594,7 +595,7 @@ var Application = AbstractApplication.extend({
             x: 1,
             y: 1
         })) : (this.bagContentImg && this.bagContentImg.getContent().parent && (this.bagContentImg.getContent().parent.removeChild(this.bagContentImg.getContent()), 
-        this.bagContentImg = null), console.log(bag), this.currentBag = bag, this.bagContentImg = new SimpleSprite(bag.model.icoImg), 
+        this.bagContentImg = null), this.currentBag = bag, this.bagContentImg = new SimpleSprite(bag.model.icoImg), 
         this.bagContentImg.setPosition(13, 10), this.bagContent.addChild(this.bagContentImg.getContent()), 
         this.bagContent.alpha = 1, void TweenLite.to(this.bagContent.scale, .4, {
             x: 1,
@@ -628,8 +629,8 @@ var Application = AbstractApplication.extend({
         }
     },
     upThisBox: function(box) {
-        box.model && this.currentModel.type2 && "currentEquip" === this.currentModel.type2 && this.currentBox.model.type !== box.model.type || null !== this.currentModel && (null !== this.currentBox && null !== box.model ? (this.currentBox.addModel(box.model), 
-        "currentEquip" === box.model.type2 && APP.getGame().updatePlayerEquips()) : null !== this.currentBox && this.currentBox.removeModel(), 
+        console.log("upThisBox", this.currentModel), box.model && null !== this.currentModel.type2 && "currentEquip" === this.currentModel.type2 && this.currentBox.model.type !== box.model.type || null !== this.currentModel && (null !== this.currentBox && null !== box.model ? (this.currentBox.addModel(box.model), 
+        null !== box.model && "currentEquip" === box.model.type2 && APP.getGame().updatePlayerEquips()) : null !== this.currentBox && this.currentBox.removeModel(), 
         box.addModel(this.currentModel), this.currentModel = null, this.currentBox = null);
     },
     dragInventory: function(box) {

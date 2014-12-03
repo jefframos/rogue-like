@@ -24,6 +24,7 @@ var HUDController = Class.extend({
 		this.bagContent.mousedown = function(mouseData){
 			if(self.currentBag){
 				APP.getGame().addModelInventory(self.currentBag.model);
+				self.currentBag.model = null;
 				self.removeBag();
 			}
 		};
@@ -35,13 +36,13 @@ var HUDController = Class.extend({
 	removeBag:function(){
 		if(this.currentBag && this.currentBag.getContent().parent){
 			this.currentBag.kill = true;
+			this.currentModel = null;
 			this.hideBagContent();
 		}
 	},
 	hideBagContent:function(){
 		this.bagContent.alpha = 0;
 		this.currentBag = null;
-		// this.bagContent.scale.x = this.bagContent.scale.y = 0.2;
 	},
 	showBagContent:function(bag){
 		if(bag === this.currentBag){
@@ -54,7 +55,6 @@ var HUDController = Class.extend({
 			this.bagContentImg.getContent().parent.removeChild(this.bagContentImg.getContent());
 			this.bagContentImg = null;
 		}
-		console.log(bag);
 		this.currentBag = bag;
 		this.bagContentImg = new SimpleSprite(bag.model.icoImg);
 		this.bagContentImg.setPosition(13,10);
@@ -103,16 +103,16 @@ var HUDController = Class.extend({
 		}
 	},
 	upThisBox:function(box){
-
+		console.log('upThisBox',this.currentModel);
 		// console.log(box.model, this.currentModel.type2,this.currentModel.type2 === 'currentEquip',this.currentBox.model.type !== box.model.type);
-		if(box.model && this.currentModel.type2 && this.currentModel.type2 === 'currentEquip' && this.currentBox.model.type !== box.model.type){
+		if(box.model && this.currentModel.type2!== null && this.currentModel.type2 === 'currentEquip' && this.currentBox.model.type !== box.model.type){
 			return;
 		}
 		if(this.currentModel !== null){
 			if(this.currentBox !== null && box.model !== null){
 
 				this.currentBox.addModel(box.model);
-				if(box.model.type2 === 'currentEquip'){
+				if(box.model !== null && box.model.type2 === 'currentEquip'){
 					APP.getGame().updatePlayerEquips();
 				}
 			}else if(this.currentBox !== null){
