@@ -11,7 +11,7 @@ var windowWidth = 600,
 // windowHeight = 456;
 windowHeight = 600;
 
-var realWindowWidth = 800,
+var realWindowWidth = 820,
 // var windowWidth = 810,
 // windowHeight = 456;
 realWindowHeight = 600;

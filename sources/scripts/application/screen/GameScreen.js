@@ -123,48 +123,29 @@ var GameScreen = AbstractScreen.extend({
         APP.getHUD().addChild(this.backInterface);
 
         this.playerHUD = new PlayerHUD('player');
-        this.playerHUD.setPosition(windowWidth + 10,10);
+        this.playerHUD.setPosition(windowWidth + 30,30);
         APP.getHUD().addChild(this.playerHUD.getContent());
 
         this.HPView = new LifeBarHUD(80,10, 100,100);
-        this.HPView.setPosition(windowWidth + 10,130);
+        this.HPView.setPosition(windowWidth + 30,150);
         APP.getHUD().addChild(this.HPView.getContent());
 
         this.MPView = new ManaBarHUD(80,10, 100,100);
-        this.MPView.setPosition(windowWidth + 10,130);
-        APP.getHUD().addChild(this.MPView.getContent());
+        this.MPView.setPosition(windowWidth + 30,150);
+        // APP.getHUD().addChild(this.MPView.getContent());
 
         this.XPBar = new BarView(80,10, 100,100);
         this.XPBar.setPosition(windowWidth + 10,40);
         this.XPBar.setFrontColor(0x555555);
         this.XPBar.setBackColor(0x111111);
-        // APP.getHUD().addChild(this.XPBar.getContent());
-
         
-
-        // this.levelLabel = new PIXI.Text('', {fill:'white', align:'left', font:'bold 15px Arial'});
-        // APP.getHUD().addChild(this.levelLabel);
-
-        this.backInventory = new PIXI.Graphics();
-        this.backInventory.beginFill(0x140B23);
-        this.backInventory.moveTo(25,0);
-        this.backInventory.lineTo(170,6);
-        this.backInventory.lineTo(186,32);
-        this.backInventory.lineTo(185,121);
-        this.backInventory.lineTo(146,144);
-        this.backInventory.lineTo(0,134);
-        this.backInventory.lineTo(4,21);
-        APP.getHUD().addChild(this.backInventory);
-        this.backInventory.position.x = windowWidth + 5;
-        this.backInventory.position.y = 320;
-
 
         this.equips[0] = APP.weaponList[0];
         this.equips[1] = APP.armorList[0];
         this.equips[2] = APP.relicList[0];
 
 
-        var contentEquipPos = {x: 30, y: 190};
+        var contentEquipPos = {x: 40, y: 250};
 
         this.weaponEquip = new EquipsHUD('weapon');
         APP.getHUD().addChild(this.weaponEquip.getContent());
@@ -201,6 +182,20 @@ var GameScreen = AbstractScreen.extend({
         var tempBox = null;
         var lineAccum = 0;
         var rowAccum = 0;
+        var inventoryPosition = {x:windowWidth + 20, y:450};
+
+        this.backInventory = new PIXI.Graphics();
+        this.backInventory.beginFill(0x140B23);
+        this.backInventory.moveTo(25,0);
+        this.backInventory.lineTo(170,6);
+        this.backInventory.lineTo(186,32);
+        this.backInventory.lineTo(185,121);
+        this.backInventory.lineTo(146,144);
+        this.backInventory.lineTo(0,134);
+        this.backInventory.lineTo(4,21);
+        APP.getHUD().addChild(this.backInventory);
+        this.backInventory.position.x = inventoryPosition.x - 5;
+        this.backInventory.position.y = inventoryPosition.y - 10;
 
         for (var i = 0; i < this.inventory.length; i++) {
             tempBox = new BoxHUD1(42,36, 3, i);
@@ -210,7 +205,7 @@ var GameScreen = AbstractScreen.extend({
                 rowAccum = 0;
             }
 
-            tempBox.setPosition(windowWidth +rowAccum*46 + 10, 335 + lineAccum * 42);
+            tempBox.setPosition(inventoryPosition.x +rowAccum*46, inventoryPosition.y + lineAccum * 42);
             rowAccum ++;
             APP.getHUD().addChild(tempBox.getContent());
             this.inventory[i] = tempBox;
@@ -578,6 +573,9 @@ var GameScreen = AbstractScreen.extend({
         }
 
         this.levelBounds= {x: this.currentNode.mapData.length * APP.nTileSize, y: this.currentNode.mapData[0].length * APP.nTileSize};
+        
+
+
         if(this.minimapHUD)
         {
             this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent());
@@ -586,7 +584,10 @@ var GameScreen = AbstractScreen.extend({
         this.minimapHUD = new MapHUD();
         this.minimapHUD.build(this.currentNode);
         APP.getHUD().addChild(this.minimapHUD.getContent());
-        this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth)/2 - this.minimapHUD.width/2, realWindowHeight - this.minimapHUD.height - 30);
+        var mapPosition = {x:20, y:realWindowHeight - this.minimapHUD.height - 30};
+        this.minimapHUD.setPosition(mapPosition.x,mapPosition.y);
+
+            // windowWidth + (realWindowWidth - windowWidth)/2 - this.minimapHUD.width/2, realWindowHeight - this.minimapHUD.height - 30);
 
         // this.levelGenerator.debugBounds();
         // this.levelGenerator.createDoors();

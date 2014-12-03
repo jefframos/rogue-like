@@ -652,8 +652,8 @@ var Application = AbstractApplication.extend({
     init: function(width, height, maxValue, currentValue) {
         this.maxValue = maxValue, this.text = "default", this.currentValue = currentValue, 
         this.container = new PIXI.DisplayObjectContainer(), this.width = width, this.height = height, 
-        this.backShape = new PIXI.Graphics(), this.rect = [ [ 3, 0 ], [ 92, 18 ], [ 90, 34 ], [ 0, 18 ] ], 
-        this.frontRect = [ [ 3, 0 ], [ 92, 0 ], [ 92, 34 ], [ -5, 43 ] ];
+        this.backShape = new PIXI.Graphics(), this.rect = [ [ 0, 14 ], [ 102, 0 ], [ 106, 20 ], [ 4, 34 ] ], 
+        this.frontRect = [ [ -4, 0 ], [ 102, 0 ], [ 108, 34 ], [ 2, 34 ] ];
         var i = 0;
         for (this.backShape.beginFill(16714560), this.backShape.moveTo(this.rect[0][0], this.rect[0][1]), 
         i = 1; i < this.rect.length; i++) this.backShape.lineTo(this.rect[i][0], this.rect[i][1]);
@@ -663,8 +663,8 @@ var Application = AbstractApplication.extend({
         for (this.frontShape.endFill(), this.container.addChild(this.frontShape), this.mask = new PIXI.Graphics(), 
         this.mask.beginFill(8388608), this.mask.moveTo(this.rect[0][0], this.rect[0][1]), 
         i = 1; i < this.rect.length; i++) this.mask.lineTo(this.rect[i][0], this.rect[i][1]);
-        for (this.mask.endFill(), this.baseRect = [ [ 0, 18 ], [ 90, 34 ], [ 95, 41 ], [ 6, 25 ] ], 
-        this.baseFrontRect = [ [ 0, 18 ], [ 95, 18 ], [ 95, 41 ], [ 14, 41 ] ], this.backBaseShape = new PIXI.Graphics(), 
+        for (this.mask.endFill(), this.baseRect = [ this.rect[3], this.rect[2], [ this.rect[2][0] - 4, this.rect[2][1] + 10 ], [ this.rect[3][0] - 4, this.rect[3][1] + 10 ] ], 
+        this.baseFrontRect = [ [ 9, 20 ], [ 108, 20 ], [ 100, 44 ], [ 0, 44 ] ], this.backBaseShape = new PIXI.Graphics(), 
         this.backBaseShape.beginFill(9837082), this.backBaseShape.moveTo(this.baseRect[0][0], this.baseRect[0][1]), 
         i = 1; i < this.baseRect.length; i++) this.backBaseShape.lineTo(this.baseRect[i][0], this.baseRect[i][1]);
         for (this.backBaseShape.endFill(), this.container.addChild(this.backBaseShape), 
@@ -674,11 +674,8 @@ var Application = AbstractApplication.extend({
         for (this.backFrontShape.endFill(), this.container.addChild(this.backFrontShape), 
         this.backMask = new PIXI.Graphics(), this.backMask.beginFill(255), this.backMask.moveTo(this.baseRect[0][0], this.baseRect[0][1]), 
         i = 1; i < this.baseRect.length; i++) this.backMask.lineTo(this.baseRect[i][0], this.baseRect[i][1]);
-        this.backMask.endFill(), this.supportShape = new PIXI.Graphics(), this.supportShape.beginFill(1739805), 
-        this.supportShape.moveTo(this.rect[1][0], this.rect[1][1]), this.supportShape.lineTo(this.baseRect[2][0], this.baseRect[2][1]), 
-        this.supportShape.lineTo(this.baseRect[1][0], this.baseRect[1][1]), this.supportShape.lineTo(this.rect[1][0], this.rect[1][1]), 
-        this.supportShape.endFill(), this.container.addChild(this.supportShape), this.container.addChild(this.mask), 
-        this.container.addChild(this.backMask), this.frontShape.mask = this.mask, this.backFrontShape.mask = this.backMask;
+        this.backMask.endFill(), this.container.addChild(this.mask), this.container.addChild(this.backMask), 
+        this.frontShape.mask = this.mask, this.backFrontShape.mask = this.backMask;
     },
     setText: function(text) {
         this.text !== text && (this.lifebar ? this.lifebar.setText(text) : this.lifebar = new PIXI.Text(text, {
@@ -690,8 +687,8 @@ var Application = AbstractApplication.extend({
     updateBar: function(currentValue, maxValue) {
         return this.currentValue < 0 ? (this.frontShape.position.x = this.frontShape.width, 
         void (this.backFrontShape.position.x = this.backFrontShape.position.width)) : (this.currentValue = currentValue, 
-        this.maxValue = maxValue, this.frontShape.position.x = 91 * (1 - this.currentValue / this.maxValue), 
-        void (this.backFrontShape.position.x = 79 * (1 - this.currentValue / this.maxValue)));
+        this.maxValue = maxValue, console.log(this.currentValue / this.maxValue), this.frontShape.position.x = 105 * (1 - this.currentValue / this.maxValue), 
+        void (this.backFrontShape.position.x = 95 * (1 - this.currentValue / this.maxValue)));
     },
     getContent: function() {
         return this.container;
@@ -2155,20 +2152,16 @@ var Application = AbstractApplication.extend({
         this.fog = new SimpleSprite("_dist/img/mask.png"), this.backInterface = new PIXI.Graphics(), 
         this.backInterface.beginFill(2496568), this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
         APP.getHUD().addChild(this.backInterface), this.playerHUD = new PlayerHUD("player"), 
-        this.playerHUD.setPosition(windowWidth + 10, 10), APP.getHUD().addChild(this.playerHUD.getContent()), 
-        this.HPView = new LifeBarHUD(80, 10, 100, 100), this.HPView.setPosition(windowWidth + 10, 130), 
+        this.playerHUD.setPosition(windowWidth + 30, 30), APP.getHUD().addChild(this.playerHUD.getContent()), 
+        this.HPView = new LifeBarHUD(80, 10, 100, 100), this.HPView.setPosition(windowWidth + 30, 150), 
         APP.getHUD().addChild(this.HPView.getContent()), this.MPView = new ManaBarHUD(80, 10, 100, 100), 
-        this.MPView.setPosition(windowWidth + 10, 130), APP.getHUD().addChild(this.MPView.getContent()), 
-        this.XPBar = new BarView(80, 10, 100, 100), this.XPBar.setPosition(windowWidth + 10, 40), 
-        this.XPBar.setFrontColor(5592405), this.XPBar.setBackColor(1118481), this.backInventory = new PIXI.Graphics(), 
-        this.backInventory.beginFill(1313571), this.backInventory.moveTo(25, 0), this.backInventory.lineTo(170, 6), 
-        this.backInventory.lineTo(186, 32), this.backInventory.lineTo(185, 121), this.backInventory.lineTo(146, 144), 
-        this.backInventory.lineTo(0, 134), this.backInventory.lineTo(4, 21), APP.getHUD().addChild(this.backInventory), 
-        this.backInventory.position.x = windowWidth + 5, this.backInventory.position.y = 320, 
-        this.equips[0] = APP.weaponList[0], this.equips[1] = APP.armorList[0], this.equips[2] = APP.relicList[0];
+        this.MPView.setPosition(windowWidth + 30, 150), this.XPBar = new BarView(80, 10, 100, 100), 
+        this.XPBar.setPosition(windowWidth + 10, 40), this.XPBar.setFrontColor(5592405), 
+        this.XPBar.setBackColor(1118481), this.equips[0] = APP.weaponList[0], this.equips[1] = APP.armorList[0], 
+        this.equips[2] = APP.relicList[0];
         var contentEquipPos = {
-            x: 30,
-            y: 190
+            x: 40,
+            y: 250
         };
         this.weaponEquip = new EquipsHUD("weapon"), APP.getHUD().addChild(this.weaponEquip.getContent()), 
         this.weaponEquip.setPosition(windowWidth + 0 + contentEquipPos.x, 0 + contentEquipPos.y), 
@@ -2179,8 +2172,17 @@ var Application = AbstractApplication.extend({
         this.relicEquip = new EquipsHUD("relic"), APP.getHUD().addChild(this.relicEquip.getContent()), 
         this.relicEquip.setPosition(windowWidth + 7 + contentEquipPos.x, 61 + contentEquipPos.y), 
         this.relicEquip.addModel(this.equips[2]), this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null ];
-        for (var tempBox = null, lineAccum = 0, rowAccum = 0, i = 0; i < this.inventory.length; i++) tempBox = new BoxHUD1(42, 36, 3, i), 
-        i > 0 && i % 4 === 0 && (lineAccum++, rowAccum = 0), tempBox.setPosition(windowWidth + 46 * rowAccum + 10, 335 + 42 * lineAccum), 
+        var tempBox = null, lineAccum = 0, rowAccum = 0, inventoryPosition = {
+            x: windowWidth + 20,
+            y: 450
+        };
+        this.backInventory = new PIXI.Graphics(), this.backInventory.beginFill(1313571), 
+        this.backInventory.moveTo(25, 0), this.backInventory.lineTo(170, 6), this.backInventory.lineTo(186, 32), 
+        this.backInventory.lineTo(185, 121), this.backInventory.lineTo(146, 144), this.backInventory.lineTo(0, 134), 
+        this.backInventory.lineTo(4, 21), APP.getHUD().addChild(this.backInventory), this.backInventory.position.x = inventoryPosition.x - 5, 
+        this.backInventory.position.y = inventoryPosition.y - 10;
+        for (var i = 0; i < this.inventory.length; i++) tempBox = new BoxHUD1(42, 36, 3, i), 
+        i > 0 && i % 4 === 0 && (lineAccum++, rowAccum = 0), tempBox.setPosition(inventoryPosition.x + 46 * rowAccum, inventoryPosition.y + 42 * lineAccum), 
         rowAccum++, APP.getHUD().addChild(tempBox.getContent()), this.inventory[i] = tempBox;
         this.inventory[0].addModel(APP.itemList[0]), this.inventory[1].addModel(APP.itemList[1]), 
         this.inventory[2].addModel(APP.itemList[2]), this.inventory[3].addModel(APP.spellList[0]), 
@@ -2354,8 +2356,13 @@ var Application = AbstractApplication.extend({
             y: this.currentNode.mapData[0].length * APP.nTileSize
         }, this.minimapHUD && (this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent()), 
         this.minimapHUD = null), this.minimapHUD = new MapHUD(), this.minimapHUD.build(this.currentNode), 
-        APP.getHUD().addChild(this.minimapHUD.getContent()), this.minimapHUD.setPosition(windowWidth + (realWindowWidth - windowWidth) / 2 - this.minimapHUD.width / 2, realWindowHeight - this.minimapHUD.height - 30), 
-        this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
+        APP.getHUD().addChild(this.minimapHUD.getContent());
+        var mapPosition = {
+            x: 20,
+            y: realWindowHeight - this.minimapHUD.height - 30
+        };
+        this.minimapHUD.setPosition(mapPosition.x, mapPosition.y), this.levelGenerator.putObstacles(), 
+        this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
         var monstersToLoaded = [], monstersAssets = [];
         if (1 !== this.currentNode.mode) {
             for (monstersToLoaded = this.levelGenerator.createHordes(), i = monstersToLoaded.length - 1; i >= 0; i--) monstersToLoaded[i].monsterModel.fire.srcImg && monstersAssets.push(monstersToLoaded[i].monsterModel.fire.srcImg), 
@@ -2479,7 +2486,7 @@ $.ajaxSetup({
     cache: !1
 });
 
-var SOCKET = null, windowWidth = 600, windowHeight = 600, realWindowWidth = 800, realWindowHeight = 600;
+var SOCKET = null, windowWidth = 600, windowHeight = 600, realWindowWidth = 820, realWindowHeight = 600;
 
 testMobile() && (windowWidth = 640, windowHeight = 960);
 

@@ -1,5 +1,5 @@
 /*jshint undef:false */
-var LifeBarHUD = Class.extend({
+var ManaBarHUD = Class.extend({
 	init: function (width, height, maxValue, currentValue){
 
 		this.maxValue = maxValue;
@@ -10,9 +10,11 @@ var LifeBarHUD = Class.extend({
 		this.height = height;
 		this.backShape = new PIXI.Graphics();
 
-		// this.rect = [[3,0],[92,18],[90,34],[0,18]];
-		this.rect = [[0,14],[102,0],[106,20],[4,34]];
-		this.frontRect = [[-4,0],[102,0],[108,34],[2,34]];
+		this.rect = [[92,18],[168,-32],[178,-23],[103,28]];
+		this.frontRect = [[92,-32],[168,-32],[240,34],[90,34]];
+
+		// this.rect = [[92,18],[164,-32],[171,-23],[90,34]];
+		// this.frontRect = [[92,-32],[164,-32],[211,34],[90,34]];
 
 		var i = 0;
 		this.backShape.beginFill(0xFF0B40);
@@ -21,19 +23,16 @@ var LifeBarHUD = Class.extend({
 			this.backShape.lineTo(this.rect[i][0],this.rect[i][1]);
 		}
 		this.backShape.endFill();
-		// this.backShape.scale.x = this.backShape.scale.y = 0.5;
-		// this.backShape.cacheAsBitmap = true;
 		this.container.addChild(this.backShape);
 
+
 		this.frontShape = new PIXI.Graphics();
-		this.frontShape.beginFill(0x83FC35);
+		this.frontShape.beginFill(0x89D5F4);
 		this.frontShape.moveTo(this.frontRect[0][0],this.frontRect[0][1]);
 		for (i = 1; i < this.frontRect.length; i++) {
 			this.frontShape.lineTo(this.frontRect[i][0],this.frontRect[i][1]);
 		}
 		this.frontShape.endFill();
-		// this.frontShape.scale.x = this.frontShape.scale.y = 0.5;
-		// this.frontShape.cacheAsBitmap = true;
 		this.container.addChild(this.frontShape);
 
 		this.mask = new PIXI.Graphics();
@@ -43,14 +42,14 @@ var LifeBarHUD = Class.extend({
 			this.mask.lineTo(this.rect[i][0],this.rect[i][1]);
 		}
 		this.mask.endFill();
-		// this.mask.scale.x = this.mask.scale.y = 0.5;
-		// this.mask.cacheAsBitmap = true;
 
 
 
-		// this.baseRect = [[0,18], [90,34], [95,41], [6,25]];
-		this.baseRect = [this.rect[3], this.rect[2], [this.rect[2][0] - 4,this.rect[2][1] + 10], [this.rect[3][0] - 4,this.rect[3][1] + 10]];
-		this.baseFrontRect = [[9,20], [108,20], [100,44], [0,44]];
+		this.baseRect = [this.rect[3],this.rect[2], [173,-12], [95,41]];
+		this.baseFrontRect = [[90,-23],this.rect[2], [148,41], [90,41]];
+
+		// this.baseRect = [[90,34],[171,-23], [171,-12], [95,41]];
+		// this.baseFrontRect = [[90,-23],[171,-23], [171,41], [90,41]];
 
 		this.backBaseShape = new PIXI.Graphics();
 		this.backBaseShape.beginFill(0x961A1A);
@@ -63,7 +62,7 @@ var LifeBarHUD = Class.extend({
 
 
 		this.backFrontShape = new PIXI.Graphics();
-		this.backFrontShape.beginFill(0x30B730);
+		this.backFrontShape.beginFill(0x217A89);
 		this.backFrontShape.moveTo(this.baseFrontRect[0][0],this.baseFrontRect[0][1]);
 		for (i = 1; i < this.baseFrontRect.length; i++) {
 			this.backFrontShape.lineTo(this.baseFrontRect[i][0],this.baseFrontRect[i][1]);
@@ -79,12 +78,42 @@ var LifeBarHUD = Class.extend({
 		}
 		this.backMask.endFill();
 
+		this.supportShape = new PIXI.Graphics();
+		this.supportShape.beginFill(0x216268);
+		this.supportShape.moveTo(this.rect[0][0],this.rect[0][1]);
+		this.supportShape.lineTo(this.baseRect[0][0],this.baseRect[0][1]);
+		this.supportShape.lineTo(this.baseRect[3][0],this.baseRect[3][1]);
+		this.supportShape.lineTo(this.rect[0][0],this.rect[0][1]);
 
+		this.supportShape.endFill();
+		this.container.addChild(this.supportShape);
 
 		this.container.addChild(this.mask);
 		this.container.addChild(this.backMask);
 		this.frontShape.mask = this.mask;
 		this.backFrontShape.mask = this.backMask;
+
+		// this.frontShape.scale.x = this.currentValue/this.maxValue;
+	},
+	setFrontColor: function(color){
+		// if(this.frontShape){
+		// 	this.container.removeChild(this.frontShape);
+		// }
+		// this.frontShape = new PIXI.Graphics();
+		// this.frontShape.beginFill(color);
+		// this.frontShape.drawRect(0,0,this.width, this.height);
+		// this.container.addChild(this.frontShape);
+
+	},
+	setBackColor: function(color){
+		// if(this.backShape){
+		// 	this.container.removeChild(this.backShape);
+		// }
+		// this.backShape = new PIXI.Graphics();
+		// this.backShape.beginFill(color);
+		// // this.backShape.lineStyle(1,0xEEEEEE);
+		// this.backShape.drawRect(0,0,this.width, this.height);
+		// this.container.addChildAt(this.backShape,0);
 
 	},
 	setText: function(text){
@@ -107,9 +136,9 @@ var LifeBarHUD = Class.extend({
 		}
 		this.currentValue = currentValue;
 		this.maxValue = maxValue;
-		console.log(this.currentValue/this.maxValue);
-		this.frontShape.position.x = 105 * (1 - this.currentValue/this.maxValue);
-		this.backFrontShape.position.x = 95 * (1 - this.currentValue/this.maxValue);
+		// console.log(this.currentValue, this.maxValue, 'mp');
+		this.frontShape.position.x = 130 * (this.currentValue/this.maxValue) - 130;
+		this.backFrontShape.position.x = 51 * (this.currentValue/this.maxValue) - 51;
 
 		//}
 	},
