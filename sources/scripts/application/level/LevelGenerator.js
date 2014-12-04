@@ -37,10 +37,12 @@ var displayColors = {
 	    COAST: 0x33335a,
 	    LAKESHORE: 0x225588,
 	    LAKE: 0x336699,
-	    RIVER: 0x225588,
 	    MARSH: 0x2f6666,
 	    ICE: 0x99ffff,
-	    BEACH: 0xa09077,
+	    RIVER: 0x225588,
+	    // BEACH: 0xa09077,
+	    BEACH: 0x4fa319,
+	    NULL: 0x4fa319,
 	    ROAD1: 0x442211,
 	    ROAD2: 0x553322,
 	    ROAD3: 0x664433,
@@ -53,16 +55,29 @@ var displayColors = {
 	    BARE: 0x3d8e09,
 	    SCORCHED: 0x3d8e09,
 	    TAIGA: 0x3d8e09,
-	    SHRUBLAND: 0x4fa319,
-	    TEMPERATE_DESERT: 0x4fa319,
+	    STANDARD1: 0x3d8e09,
+
 	    TEMPERATE_RAIN_FOREST: 0x315b16,
 	    TEMPERATE_DECIDUOUS_FOREST: 0x315b16,
+	    TROPICAL_RAIN_FOREST: 0x315b16,
+	    TROPICAL_SEASONAL_FOREST: 0x315b16,
+	    STANDARD2: 0x315b16,
+
+	    
+	    SHRUBLAND: 0x4fa319,
+	    TEMPERATE_DESERT: 0x4fa319,
 	    GRASSLAND: 0x4fa319,
 	    SUBTROPICAL_DESERT: 0x4fa319,
-	    TROPICAL_RAIN_FOREST: 0x315b16,
-	    TROPICAL_SEASONAL_FOREST: 0x315b16
-	};
+	    STANDARD3: 0x4fa319
 
+	};
+var tilesGraphics = {
+	TOP_LEFT : '_dist/img/levels/leftTop.png',
+	TOP_RIGHT : '_dist/img/levels/rightTop.png',
+	BOTTOM_LEFT : '_dist/img/levels/leftBottom.png',
+	BOTTOM_RIGHT : '_dist/img/levels/rightBottom.png',
+	CENTER : '_dist/img/levels/tile1.png'
+};
 var LevelGenerator = Class.extend({
 	init: function (parent){
 		this.parent = parent;
@@ -231,11 +246,54 @@ var LevelGenerator = Class.extend({
 			this.parent.currentNode.placedTilesLayer1[jy][ix] = null;
 			this.parent.currentNode.placedTilesLayer2[jy][ix] = null;
 			this.parent.currentNode.placedTilesLayer3[jy][ix] = null;
-			this.parent.currentNode.mapData[jy][ix] = this.map.centers[i].biome;
+			if(this.map.centers[i].biome === 'BEACH' || this.map.centers[i].biome === 'OCEAN' ){
+				this.parent.currentNode.mapData[jy][ix] = {bioma:this.map.centers[i].biome, tile:'CENTER'};
+			}else{
+				this.parent.currentNode.mapData[jy][ix] = {bioma:'NULL', tile:'CENTER'};
+			}
+			if(this.map.centers[i].biome === 'BEACH'){
+				this.parent.currentNode.mapDataLayer1[jy][ix] = {bioma:'OCEAN', tile:'CENTER'};
+			}else{
 
-			this.parent.currentNode.mapDataLayer1[jy][ix] = 'OCEAN';
-			this.parent.currentNode.mapDataLayer2[jy][ix] = 'OCEAN';
-			this.parent.currentNode.mapDataLayer3[jy][ix] = 'OCEAN';
+				var tempBioma = 'STANDARD1';
+				var tempBioma2 = this.map.centers[i].biome;
+				if(tempBioma2 === 'SNOW' ||
+					tempBioma2 === 'TUNDRA' ||
+					tempBioma2 === 'BARE' ||
+					tempBioma2 === 'TAIGA' ||
+					tempBioma2 === 'SCORCHED'){
+					tempBioma = 'STANDARD1';
+				}else if(tempBioma2 === 'TEMPERATE_RAIN_FOREST' ||
+					tempBioma2 === 'TEMPERATE_DECIDUOUS_FOREST' ||
+					tempBioma2 === 'TROPICAL_RAIN_FOREST' ||
+					tempBioma2 === 'TROPICAL_SEASONAL_FOREST'){
+					tempBioma = 'STANDARD2';
+				}else if(tempBioma2 === 'SHRUBLAND' ||
+					tempBioma2 === 'TEMPERATE_DESERT' ||
+					tempBioma2 === 'GRASSLAND' ||
+					tempBioma2 === 'SUBTROPICAL_DESERT'){
+					tempBioma = 'STANDARD3';
+				}else if(tempBioma2 === 'COAST' ||
+					tempBioma2 === 'LAKESHORE' ||
+					tempBioma2 === 'LAKE' ||
+					tempBioma2 === 'MARSH' ||
+					tempBioma2 === 'ICE' ||
+					tempBioma2 === 'RIVER'){
+					tempBioma = 'LAKE';
+				}else{
+					tempBioma = tempBioma2;
+				}
+				if(tempBioma === 'LAKE'){
+					this.parent.currentNode.mapDataLayer1[jy][ix] = {bioma:'OCEAN', tile:'CENTER'};
+					this.parent.currentNode.mapDataLayer2[jy][ix] = {bioma:tempBioma, tile:'CENTER'};
+				}else{
+					this.parent.currentNode.mapDataLayer1[jy][ix] = {bioma:tempBioma, tile:'CENTER'};
+					this.parent.currentNode.mapDataLayer2[jy][ix] = {biome:'OCEAN', position:'CENTER'};
+
+				}
+			}
+			
+			this.parent.currentNode.mapDataLayer3[jy][ix] = {biome:'OCEAN', position:'CENTER'};
 		}
 ////////////////////////////////////////
 		this.parent.currentNode.topTile = top;
@@ -257,7 +315,8 @@ var LevelGenerator = Class.extend({
 				tempX = Math.floor(roads.roadConnections[i][0].midpoint.y  / APP.nTileSize);
 				tempY = Math.floor(roads.roadConnections[i][0].midpoint.x  / APP.nTileSize);
 				// console.log(tempX,tempY);
-				this.parent.currentNode.mapDataLayer1[tempY][tempX] = 'ROAD3';
+				// this.parent.currentNode.mapDataLayer2[tempY][tempX].bioma = 'ROAD3';
+				// this.parent.currentNode.mapDataLayer2[tempY][tempX].tile = 'CENTER';
 
 				// console.log('MAP', this.parent.currentNode.mapData[jy][ix]);
 
@@ -277,6 +336,17 @@ var LevelGenerator = Class.extend({
 
 			// }
 		}
+
+		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD1');
+		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD2');
+		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD3');
+
+		this.roundTiles(this.parent.currentNode.mapDataLayer2, 'LAKE');
+
+		this.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
+		this.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
+		this.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
+		this.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
 		// console.log('MAP', this.parent.currentNode.mapData);
 		// this.tileTeste = new SimpleSprite('_dist/img/levels/tile'+(Math.floor(Math.random() * 4) + 1)+'.png');
 		this.parent.currentNode.bg = new PIXI.DisplayObjectContainer();
@@ -285,6 +355,195 @@ var LevelGenerator = Class.extend({
 		this.parent.currentNode.bgLayer3 = new PIXI.DisplayObjectContainer();
 		this.playerPostion = 0;
 		return this.parent.currentNode.bg;
+
+	},
+	roundTiles: function(data, type){
+		var tempType = type;
+		var ix = 0;
+		var jy = 0;
+		var tempTL = null;
+		var tempT = null;
+		var tempTR = null;
+		var tempL = null;
+		var tempR = null;
+		var tempBL = null;
+		var tempB = null;
+		var tempBR = null;
+		var current = null;
+
+		var ocean = function(data){
+			// console.log(tempType);
+			if(data === null){
+				return false;
+			}
+			return data.bioma !== tempType;
+		};
+		var verifyCross = function(data){
+			if(data === null){
+				return false;
+			}
+			return (ocean(tempB) && !ocean(tempT) && ocean(tempL) && ocean(tempR))||
+				(ocean(tempT) && !ocean(tempB) && ocean(tempL) && ocean(tempR))||
+				(!ocean(tempR) && ocean(tempL) && ocean(tempT) && ocean(tempB))||
+				(!ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB))||
+				(ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB));
+		};
+
+		
+		for (var i = data.length - 1; i >= 0; i--) {
+			for (var j = data[i].length - 1; j >= 0; j--) {
+				if(data[i][j].bioma === type){
+					current = data[i][j];
+					//topLeft
+					if(data[i-1][j-1] !== undefined){
+						tempTL = data[i-1][j-1];
+					}
+					//top
+					if(data[i][j-1] !== undefined){
+						tempT = data[i][j-1];
+					}
+					//topRight
+					if(data[i+1][j-1] !== undefined){
+						tempTR = data[i+1][j-1];
+					}
+					//Left
+					if(data[i-1][j] !== undefined){
+						tempL = data[i-1][j];
+					}
+					//Right
+					if(data[i+1][j] !== undefined){
+						tempR = data[i+1][j];
+					}
+					//bottomLeft
+					if(data[i-1][j+1] !== undefined){
+						tempBL = data[i-1][j+1];
+					}
+					//bottom
+					if(data[i][j+1] !== undefined){
+						tempB = data[i][j+1];
+					}
+					//bottomRight
+					if(data[i+1][j+1] !== undefined){
+						tempBR = data[i+1][j+1];
+					}
+				}
+				if(ocean(tempB) && ocean(tempL) && !ocean(tempR))
+				{
+					current.tile = 'TOP_RIGHT';
+				}
+				if(ocean(tempT) && ocean(tempL) && !ocean(tempR))
+				{
+					current.tile = 'BOTTOM_RIGHT';
+				}
+				if(ocean(tempB) && ocean(tempR) && !ocean(tempL))
+				{
+					current.tile = 'TOP_LEFT';
+				}
+				if(ocean(tempT) && ocean(tempR) && !ocean(tempL))
+				{
+					current.tile = 'BOTTOM_LEFT';
+				}
+
+				if(verifyCross(current)){
+					current.bioma = 'OCEAN';
+				}
+			}
+		}
+		
+
+	},
+	roundTilesCost: function(data, type){
+
+		var ix = 0;
+		var jy = 0;
+		var tempTL = null;
+		var tempT = null;
+		var tempTR = null;
+		var tempL = null;
+		var tempR = null;
+		var tempBL = null;
+		var tempB = null;
+		var tempBR = null;
+		var current = null;
+
+		var ocean = function(data){
+			if(data === null){
+				return false;
+			}
+			return data.bioma === 'OCEAN';
+		};
+		var verifyCross = function(data){
+			if(data === null){
+				return false;
+			}
+			return (ocean(tempB) && !ocean(tempT) && ocean(tempL) && ocean(tempR))||
+				(ocean(tempT) && !ocean(tempB) && ocean(tempL) && ocean(tempR))||
+				(!ocean(tempR) && ocean(tempL) && ocean(tempT) && ocean(tempB))||
+				(!ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB))||
+				(ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB));
+		};
+
+		
+		for (var i = data.length - 1; i >= 0; i--) {
+			for (var j = data[i].length - 1; j >= 0; j--) {
+				if(data[i][j].bioma === type){
+					current = data[i][j];
+					//topLeft
+					if(data[i-1][j-1] !== undefined){
+						tempTL = data[i-1][j-1];
+					}
+					//top
+					if(data[i][j-1] !== undefined){
+						tempT = data[i][j-1];
+					}
+					//topRight
+					if(data[i+1][j-1] !== undefined){
+						tempTR = data[i+1][j-1];
+					}
+					//Left
+					if(data[i-1][j] !== undefined){
+						tempL = data[i-1][j];
+					}
+					//Right
+					if(data[i+1][j] !== undefined){
+						tempR = data[i+1][j];
+					}
+					//bottomLeft
+					if(data[i-1][j+1] !== undefined){
+						tempBL = data[i-1][j+1];
+					}
+					//bottom
+					if(data[i][j+1] !== undefined){
+						tempB = data[i][j+1];
+					}
+					//bottomRight
+					if(data[i+1][j+1] !== undefined){
+						tempBR = data[i+1][j+1];
+					}
+				}
+				if(ocean(tempB) && ocean(tempL) && !ocean(tempR))
+				{
+					current.tile = 'TOP_RIGHT';
+				}
+				if(ocean(tempT) && ocean(tempL) && !ocean(tempR))
+				{
+					current.tile = 'BOTTOM_RIGHT';
+				}
+				if(ocean(tempB) && ocean(tempR) && !ocean(tempL))
+				{
+					current.tile = 'TOP_LEFT';
+				}
+				if(ocean(tempT) && ocean(tempR) && !ocean(tempL))
+				{
+					current.tile = 'BOTTOM_LEFT';
+				}
+
+				if(verifyCross(current)){
+					current.bioma = 'OCEAN';
+				}
+			}
+		}
+		
 
 	},
 	updateLayer: function(container, placeds, data, alpha){
@@ -300,20 +559,21 @@ var LevelGenerator = Class.extend({
 				for (var j = this.playerPostion.y - this.distanceToShowMap - 4; j < this.playerPostion.y+this.distanceToShowMap + 4; j++) {
 					if(j >= 0 && j <placeds[tempPlaced.x].length){
 						tempPlaced.y = j;
-						if(tempPlaced.x >= 0 && tempPlaced.y >= 0 && data[tempPlaced.x][tempPlaced.y] !== 'OCEAN'){
+						if(tempPlaced.x >= 0 && tempPlaced.y >= 0 && data[tempPlaced.x][tempPlaced.y].bioma !== 'OCEAN'){
 							tempPlacedSprite = placeds[tempPlaced.x][tempPlaced.y];
 							distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y,this.playerPostion.x,this.playerPostion.y));
-							if(tempPlacedSprite === null && distance < this.distanceToShowMap){
+							if(data[tempPlaced.x][tempPlaced.y].tile && tempPlacedSprite === null && distance < this.distanceToShowMap){
 								
 
-								var tempTile = new SimpleSprite('_dist/img/levels/tile'+(Math.floor(Math.random() * 4) + 1)+'.png');
+								var tempTile = new SimpleSprite(tilesGraphics[data[tempPlaced.x][tempPlaced.y].tile]);
 								// var tempTile = new SimpleSprite('_dist/img/tile1.png');
 								var tempX = tempPlaced.x * APP.nTileSize;
 								var tempY = tempPlaced.y * APP.nTileSize;
 								var sz = APP.nTileSize;
 								var scl = 1;
 								tempTile.setPosition(tempX*scl,tempY*scl);
-								tempTile.getContent().tint = displayColors[data[tempPlaced.x][tempPlaced.y]];
+								tempTile.getContent().tint = displayColors[data[tempPlaced.x][tempPlaced.y].bioma];
+								// console.log(data[tempPlaced.x][tempPlaced.y].bioma);
 								tempTile.getContent().alpha = alpha;
 								container.addChild(tempTile.getContent());
 								placeds[tempPlaced.x][tempPlaced.y] = tempTile.getContent();
@@ -337,11 +597,14 @@ var LevelGenerator = Class.extend({
 		}
 		this.playerPostion = playerPostion;
 		if(this.playerPostion && this.parent.currentNode.mapData){
+			// this.updateLayer(this.parent.currentNode.bgLayer2,this.parent.currentNode.placedTilesLayer2,this.parent.currentNode.mapDataLayer2,0.8);
 			this.updateLayer(this.parent.currentNode.bgLayer1,this.parent.currentNode.placedTilesLayer1,this.parent.currentNode.mapDataLayer1,0.8);
+			this.updateLayer(this.parent.currentNode.bgLayer2,this.parent.currentNode.placedTilesLayer2,this.parent.currentNode.mapDataLayer2,0.8);
 			this.updateLayer(this.parent.currentNode.bg,this.parent.currentNode.placedTiles,this.parent.currentNode.mapData);
 			
 		}
 	},
+
 	// debugBounds:function(){
 	// 	if(this.parent.levelBoundsGraph && this.parent.levelBoundsGraph.parent){
 	// 		this.parent.levelBoundsGraph.parent.removeChild(this.parent.levelBoundsGraph);

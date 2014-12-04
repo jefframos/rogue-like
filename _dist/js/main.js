@@ -766,7 +766,7 @@ var Application = AbstractApplication.extend({
         this.node = node;
         var tempMapContainer = new PIXI.DisplayObjectContainer(), tempRect = null;
         for (i = 0; i < node.mapData.length; i++) for (j = 0; j < node.mapData[i].length; j++) tempRect = new SimpleSprite("_dist/img/pixel.jpg"), 
-        tempRect.setPosition(i, j), tempMapContainer.addChild(tempRect.getContent()), tempRect.getContent().tint = displayColors[node.mapData[i][j]];
+        tempRect.setPosition(i, j), tempMapContainer.addChild(tempRect.getContent()), tempRect.getContent().tint = displayColors[node.mapData[i][j].bioma];
         tempMapContainer.scale.x = this.sizeTile.x, tempMapContainer.scale.y = this.sizeTile.y, 
         this.mapContainer.addChild(tempMapContainer), tempMapContainer.cacheAsBitmap = !0, 
         this.mask.beginFill(0), this.mask.moveTo(this.width / 1.8, 0);
@@ -1946,10 +1946,11 @@ var Application = AbstractApplication.extend({
     COAST: 3355482,
     LAKESHORE: 2250120,
     LAKE: 3368601,
-    RIVER: 2250120,
     MARSH: 3106406,
     ICE: 10092543,
-    BEACH: 10522743,
+    RIVER: 2250120,
+    BEACH: 5219097,
+    NULL: 5219097,
     ROAD1: 4465169,
     ROAD2: 5583650,
     ROAD3: 6702131,
@@ -1960,14 +1961,23 @@ var Application = AbstractApplication.extend({
     BARE: 4034057,
     SCORCHED: 4034057,
     TAIGA: 4034057,
-    SHRUBLAND: 5219097,
-    TEMPERATE_DESERT: 5219097,
+    STANDARD1: 4034057,
     TEMPERATE_RAIN_FOREST: 3234582,
     TEMPERATE_DECIDUOUS_FOREST: 3234582,
+    TROPICAL_RAIN_FOREST: 3234582,
+    TROPICAL_SEASONAL_FOREST: 3234582,
+    STANDARD2: 3234582,
+    SHRUBLAND: 5219097,
+    TEMPERATE_DESERT: 5219097,
     GRASSLAND: 5219097,
     SUBTROPICAL_DESERT: 5219097,
-    TROPICAL_RAIN_FOREST: 3234582,
-    TROPICAL_SEASONAL_FOREST: 3234582
+    STANDARD3: 5219097
+}, tilesGraphics = {
+    TOP_LEFT: "_dist/img/levels/leftTop.png",
+    TOP_RIGHT: "_dist/img/levels/rightTop.png",
+    BOTTOM_LEFT: "_dist/img/levels/leftBottom.png",
+    BOTTOM_RIGHT: "_dist/img/levels/rightBottom.png",
+    CENTER: "_dist/img/levels/tile1.png"
 }, LevelGenerator = Class.extend({
     init: function(parent) {
         this.parent = parent;
@@ -2029,20 +2039,81 @@ var Application = AbstractApplication.extend({
             x: this.parent.tempSizeTiles.x / 2 + 3,
             y: this.parent.tempSizeTiles.y / 2
         };
-        for (i = 0; i < this.map.centers.length; i++) ix = Math.floor(this.map.centers[i].point.y / APP.nTileSize), 
-        jy = Math.floor(this.map.centers[i].point.x / APP.nTileSize), this.parent.currentNode.placedTiles[jy][ix] = null, 
-        this.parent.currentNode.placedTilesLayer1[jy][ix] = null, this.parent.currentNode.placedTilesLayer2[jy][ix] = null, 
-        this.parent.currentNode.placedTilesLayer3[jy][ix] = null, this.parent.currentNode.mapData[jy][ix] = this.map.centers[i].biome, 
-        this.parent.currentNode.mapDataLayer1[jy][ix] = "OCEAN", this.parent.currentNode.mapDataLayer2[jy][ix] = "OCEAN", 
-        this.parent.currentNode.mapDataLayer3[jy][ix] = "OCEAN";
+        for (i = 0; i < this.map.centers.length; i++) {
+            if (ix = Math.floor(this.map.centers[i].point.y / APP.nTileSize), jy = Math.floor(this.map.centers[i].point.x / APP.nTileSize), 
+            this.parent.currentNode.placedTiles[jy][ix] = null, this.parent.currentNode.placedTilesLayer1[jy][ix] = null, 
+            this.parent.currentNode.placedTilesLayer2[jy][ix] = null, this.parent.currentNode.placedTilesLayer3[jy][ix] = null, 
+            this.parent.currentNode.mapData[jy][ix] = "BEACH" === this.map.centers[i].biome || "OCEAN" === this.map.centers[i].biome ? {
+                bioma: this.map.centers[i].biome,
+                tile: "CENTER"
+            } : {
+                bioma: "NULL",
+                tile: "CENTER"
+            }, "BEACH" === this.map.centers[i].biome) this.parent.currentNode.mapDataLayer1[jy][ix] = {
+                bioma: "OCEAN",
+                tile: "CENTER"
+            }; else {
+                var tempBioma = "STANDARD1", tempBioma2 = this.map.centers[i].biome;
+                tempBioma = "SNOW" === tempBioma2 || "TUNDRA" === tempBioma2 || "BARE" === tempBioma2 || "TAIGA" === tempBioma2 || "SCORCHED" === tempBioma2 ? "STANDARD1" : "TEMPERATE_RAIN_FOREST" === tempBioma2 || "TEMPERATE_DECIDUOUS_FOREST" === tempBioma2 || "TROPICAL_RAIN_FOREST" === tempBioma2 || "TROPICAL_SEASONAL_FOREST" === tempBioma2 ? "STANDARD2" : "SHRUBLAND" === tempBioma2 || "TEMPERATE_DESERT" === tempBioma2 || "GRASSLAND" === tempBioma2 || "SUBTROPICAL_DESERT" === tempBioma2 ? "STANDARD3" : "COAST" === tempBioma2 || "LAKESHORE" === tempBioma2 || "LAKE" === tempBioma2 || "MARSH" === tempBioma2 || "ICE" === tempBioma2 || "RIVER" === tempBioma2 ? "LAKE" : tempBioma2, 
+                "LAKE" === tempBioma ? (this.parent.currentNode.mapDataLayer1[jy][ix] = {
+                    bioma: "OCEAN",
+                    tile: "CENTER"
+                }, this.parent.currentNode.mapDataLayer2[jy][ix] = {
+                    bioma: tempBioma,
+                    tile: "CENTER"
+                }) : (this.parent.currentNode.mapDataLayer1[jy][ix] = {
+                    bioma: tempBioma,
+                    tile: "CENTER"
+                }, this.parent.currentNode.mapDataLayer2[jy][ix] = {
+                    biome: "OCEAN",
+                    position: "CENTER"
+                });
+            }
+            this.parent.currentNode.mapDataLayer3[jy][ix] = {
+                biome: "OCEAN",
+                position: "CENTER"
+            };
+        }
         this.parent.currentNode.topTile = top, this.parent.currentNode.bottomTile = bot, 
         this.parent.currentNode.leftTile = lef, this.parent.currentNode.rightTile = rig;
         var roads = voronoiMap.roads();
         for (roads.createRoads(this.map, [ 0, .15 ]), console.log(roads), i = roads.roadConnections.length - 1; i >= 0; i--) roads.roadConnections[i] && roads.roadConnections[i].length >= 0 && (tempX = Math.floor(roads.roadConnections[i][0].midpoint.y / APP.nTileSize), 
-        tempY = Math.floor(roads.roadConnections[i][0].midpoint.x / APP.nTileSize), this.parent.currentNode.mapDataLayer1[tempY][tempX] = "ROAD3");
-        return this.parent.currentNode.bg = new PIXI.DisplayObjectContainer(), this.parent.currentNode.bgLayer1 = new PIXI.DisplayObjectContainer(), 
+        tempY = Math.floor(roads.roadConnections[i][0].midpoint.x / APP.nTileSize));
+        return this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD1"), this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD2"), 
+        this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD3"), this.roundTiles(this.parent.currentNode.mapDataLayer2, "LAKE"), 
+        this.roundTilesCost(this.parent.currentNode.mapData, "BEACH"), this.roundTilesCost(this.parent.currentNode.mapData, "BEACH"), 
+        this.roundTilesCost(this.parent.currentNode.mapData, "BEACH"), this.roundTilesCost(this.parent.currentNode.mapData, "BEACH"), 
+        this.parent.currentNode.bg = new PIXI.DisplayObjectContainer(), this.parent.currentNode.bgLayer1 = new PIXI.DisplayObjectContainer(), 
         this.parent.currentNode.bgLayer2 = new PIXI.DisplayObjectContainer(), this.parent.currentNode.bgLayer3 = new PIXI.DisplayObjectContainer(), 
         this.playerPostion = 0, this.parent.currentNode.bg;
+    },
+    roundTiles: function(data, type) {
+        for (var tempType = type, tempTL = null, tempT = null, tempTR = null, tempL = null, tempR = null, tempBL = null, tempB = null, tempBR = null, current = null, ocean = function(data) {
+            return null === data ? !1 : data.bioma !== tempType;
+        }, verifyCross = function(data) {
+            return null === data ? !1 : ocean(tempB) && !ocean(tempT) && ocean(tempL) && ocean(tempR) || ocean(tempT) && !ocean(tempB) && ocean(tempL) && ocean(tempR) || !ocean(tempR) && ocean(tempL) && ocean(tempT) && ocean(tempB) || !ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB) || ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB);
+        }, i = data.length - 1; i >= 0; i--) for (var j = data[i].length - 1; j >= 0; j--) data[i][j].bioma === type && (current = data[i][j], 
+        void 0 !== data[i - 1][j - 1] && (tempTL = data[i - 1][j - 1]), void 0 !== data[i][j - 1] && (tempT = data[i][j - 1]), 
+        void 0 !== data[i + 1][j - 1] && (tempTR = data[i + 1][j - 1]), void 0 !== data[i - 1][j] && (tempL = data[i - 1][j]), 
+        void 0 !== data[i + 1][j] && (tempR = data[i + 1][j]), void 0 !== data[i - 1][j + 1] && (tempBL = data[i - 1][j + 1]), 
+        void 0 !== data[i][j + 1] && (tempB = data[i][j + 1]), void 0 !== data[i + 1][j + 1] && (tempBR = data[i + 1][j + 1])), 
+        ocean(tempB) && ocean(tempL) && !ocean(tempR) && (current.tile = "TOP_RIGHT"), ocean(tempT) && ocean(tempL) && !ocean(tempR) && (current.tile = "BOTTOM_RIGHT"), 
+        ocean(tempB) && ocean(tempR) && !ocean(tempL) && (current.tile = "TOP_LEFT"), ocean(tempT) && ocean(tempR) && !ocean(tempL) && (current.tile = "BOTTOM_LEFT"), 
+        verifyCross(current) && (current.bioma = "OCEAN");
+    },
+    roundTilesCost: function(data, type) {
+        for (var tempTL = null, tempT = null, tempTR = null, tempL = null, tempR = null, tempBL = null, tempB = null, tempBR = null, current = null, ocean = function(data) {
+            return null === data ? !1 : "OCEAN" === data.bioma;
+        }, verifyCross = function(data) {
+            return null === data ? !1 : ocean(tempB) && !ocean(tempT) && ocean(tempL) && ocean(tempR) || ocean(tempT) && !ocean(tempB) && ocean(tempL) && ocean(tempR) || !ocean(tempR) && ocean(tempL) && ocean(tempT) && ocean(tempB) || !ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB) || ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB);
+        }, i = data.length - 1; i >= 0; i--) for (var j = data[i].length - 1; j >= 0; j--) data[i][j].bioma === type && (current = data[i][j], 
+        void 0 !== data[i - 1][j - 1] && (tempTL = data[i - 1][j - 1]), void 0 !== data[i][j - 1] && (tempT = data[i][j - 1]), 
+        void 0 !== data[i + 1][j - 1] && (tempTR = data[i + 1][j - 1]), void 0 !== data[i - 1][j] && (tempL = data[i - 1][j]), 
+        void 0 !== data[i + 1][j] && (tempR = data[i + 1][j]), void 0 !== data[i - 1][j + 1] && (tempBL = data[i - 1][j + 1]), 
+        void 0 !== data[i][j + 1] && (tempB = data[i][j + 1]), void 0 !== data[i + 1][j + 1] && (tempBR = data[i + 1][j + 1])), 
+        ocean(tempB) && ocean(tempL) && !ocean(tempR) && (current.tile = "TOP_RIGHT"), ocean(tempT) && ocean(tempL) && !ocean(tempR) && (current.tile = "BOTTOM_RIGHT"), 
+        ocean(tempB) && ocean(tempR) && !ocean(tempL) && (current.tile = "TOP_LEFT"), ocean(tempT) && ocean(tempR) && !ocean(tempL) && (current.tile = "BOTTOM_LEFT"), 
+        verifyCross(current) && (current.bioma = "OCEAN");
     },
     updateLayer: function(container, placeds, data, alpha) {
         var tempPlaced = {
@@ -2053,12 +2124,12 @@ var Application = AbstractApplication.extend({
         for (var i = this.playerPostion.x - this.distanceToShowMap - 4; i < this.playerPostion.x + this.distanceToShowMap + 4; i++) if (i >= 0 && i < placeds.length) {
             tempPlaced.x = i;
             for (var j = this.playerPostion.y - this.distanceToShowMap - 4; j < this.playerPostion.y + this.distanceToShowMap + 4; j++) if (j >= 0 && j < placeds[tempPlaced.x].length && (tempPlaced.y = j, 
-            tempPlaced.x >= 0 && tempPlaced.y >= 0 && "OCEAN" !== data[tempPlaced.x][tempPlaced.y])) {
+            tempPlaced.x >= 0 && tempPlaced.y >= 0 && "OCEAN" !== data[tempPlaced.x][tempPlaced.y].bioma)) {
                 if (tempPlacedSprite = placeds[tempPlaced.x][tempPlaced.y], distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y, this.playerPostion.x, this.playerPostion.y)), 
-                null === tempPlacedSprite && distance < this.distanceToShowMap) {
-                    var tempTile = new SimpleSprite("_dist/img/levels/tile" + (Math.floor(4 * Math.random()) + 1) + ".png"), tempX = tempPlaced.x * APP.nTileSize, tempY = tempPlaced.y * APP.nTileSize, scl = (APP.nTileSize, 
+                data[tempPlaced.x][tempPlaced.y].tile && null === tempPlacedSprite && distance < this.distanceToShowMap) {
+                    var tempTile = new SimpleSprite(tilesGraphics[data[tempPlaced.x][tempPlaced.y].tile]), tempX = tempPlaced.x * APP.nTileSize, tempY = tempPlaced.y * APP.nTileSize, scl = (APP.nTileSize, 
                     1);
-                    tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = displayColors[data[tempPlaced.x][tempPlaced.y]], 
+                    tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = displayColors[data[tempPlaced.x][tempPlaced.y].bioma], 
                     tempTile.getContent().alpha = alpha, container.addChild(tempTile.getContent()), 
                     placeds[tempPlaced.x][tempPlaced.y] = tempTile.getContent();
                 }
@@ -2069,6 +2140,7 @@ var Application = AbstractApplication.extend({
     },
     updateTiles: function(playerPostion) {
         this.playerPostion !== playerPostion && (this.playerPostion = playerPostion, this.playerPostion && this.parent.currentNode.mapData && (this.updateLayer(this.parent.currentNode.bgLayer1, this.parent.currentNode.placedTilesLayer1, this.parent.currentNode.mapDataLayer1, .8), 
+        this.updateLayer(this.parent.currentNode.bgLayer2, this.parent.currentNode.placedTilesLayer2, this.parent.currentNode.mapDataLayer2, .8), 
         this.updateLayer(this.parent.currentNode.bg, this.parent.currentNode.placedTiles, this.parent.currentNode.mapData)));
     },
     createDoors: function() {
@@ -2332,14 +2404,14 @@ var Application = AbstractApplication.extend({
             }, tilePositionRight = {
                 x: Math.floor(nextStepRight.x / APP.nTileSize),
                 y: Math.floor(nextStepRight.y / APP.nTileSize)
-            }, pass = void 0 !== this.currentNode.mapData[tilePositionDown.x] && void 0 !== this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y];
-            pass && "OCEAN" === this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y] && tempEntity.virtualVelocity.y > 0 && (tempEntity.virtualVelocity.y = 0), 
-            pass = void 0 !== this.currentNode.mapData[tilePositionUp.x] && void 0 !== this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y], 
-            pass && "OCEAN" === this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y] && tempEntity.virtualVelocity.y < 0 && (tempEntity.virtualVelocity.y = 0), 
-            pass = void 0 !== this.currentNode.mapData[tilePositionRight.x] && void 0 !== this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y], 
-            this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] && "OCEAN" === this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] && tempEntity.virtualVelocity.x > 0 && (tempEntity.virtualVelocity.x = 0), 
-            pass = void 0 !== this.currentNode.mapData[tilePositionLeft.x] && void 0 !== this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y], 
-            this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] && "OCEAN" === this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] && tempEntity.virtualVelocity.x < 0 && (tempEntity.virtualVelocity.x = 0);
+            }, pass = void 0 !== this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y] && void 0 !== this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y];
+            pass && "OCEAN" === this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y].bioma && tempEntity.virtualVelocity.y > 0 && (tempEntity.virtualVelocity.y = 0), 
+            pass = void 0 !== this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y] && void 0 !== this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y], 
+            pass && "OCEAN" === this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y].bioma && tempEntity.virtualVelocity.y < 0 && (tempEntity.virtualVelocity.y = 0), 
+            pass = void 0 !== this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] && void 0 !== this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y], 
+            this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] && "OCEAN" === this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y].bioma && tempEntity.virtualVelocity.x > 0 && (tempEntity.virtualVelocity.x = 0), 
+            pass = void 0 !== this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] && void 0 !== this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y], 
+            this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] && "OCEAN" === this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y].bioma && tempEntity.virtualVelocity.x < 0 && (tempEntity.virtualVelocity.x = 0);
         }
     },
     killLevel: function() {
@@ -2378,11 +2450,11 @@ var Application = AbstractApplication.extend({
         }
         for (this.player = new Player(this.playerModel), this.level = getRandomLevel(), 
         this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
-        var i = 0;
+        var i = 0, sizeHelper = 30;
         this.currentNode.bg ? (this.bgContainer.addChild(this.currentNode.bg), this.bgContainer.addChild(this.currentNode.bgLayer1), 
         this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3)) : (this.marginTiles = {
-            x: Math.floor(this.mapPosition.x / APP.nTileSize) + 25,
-            y: Math.floor(this.mapPosition.y / APP.nTileSize) + 25
+            x: Math.floor(this.mapPosition.x / APP.nTileSize) + sizeHelper,
+            y: Math.floor(this.mapPosition.y / APP.nTileSize) + sizeHelper
         }, this.tempSizeTiles = 1 === this.currentNode.mode ? {
             x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x,
             y: Math.floor(windowHeight / APP.nTileSize) + this.marginTiles.y

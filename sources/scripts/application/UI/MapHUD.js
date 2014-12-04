@@ -81,7 +81,7 @@ var MapHUD = Class.extend({
 				tempRect = new SimpleSprite('_dist/img/pixel.jpg');
 				tempRect.setPosition(i,j);
 				tempMapContainer.addChild(tempRect.getContent());
-				tempRect.getContent().tint = displayColors[node.mapData[i][j]];
+				tempRect.getContent().tint = displayColors[node.mapData[i][j].bioma];
 			}
 		}
 
