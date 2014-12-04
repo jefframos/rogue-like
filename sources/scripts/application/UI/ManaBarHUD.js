@@ -10,14 +10,17 @@ var ManaBarHUD = Class.extend({
 		this.height = height;
 		this.backShape = new PIXI.Graphics();
 
-		this.rect = [[92,18],[168,-32],[178,-23],[103,28]];
-		this.frontRect = [[92,-32],[168,-32],[240,34],[90,34]];
+		var h = 11;
+		var w = 120;
+		var xAcc = 0;
+		this.rect = [[0,0],[w,0],[w + xAcc,h],[xAcc,h]];
+		this.frontRect = [[0,0],[w,0],[w + xAcc,h],[xAcc,h]];
 
 		// this.rect = [[92,18],[164,-32],[171,-23],[90,34]];
 		// this.frontRect = [[92,-32],[164,-32],[211,34],[90,34]];
 
 		var i = 0;
-		this.backShape.beginFill(0xFF0B40);
+		this.backShape.beginFill(0xF6315C);
 		this.backShape.moveTo(this.rect[0][0],this.rect[0][1]);
 		for (i = 1; i < this.rect.length; i++) {
 			this.backShape.lineTo(this.rect[i][0],this.rect[i][1]);
@@ -44,9 +47,10 @@ var ManaBarHUD = Class.extend({
 		this.mask.endFill();
 
 
-
-		this.baseRect = [this.rect[3],this.rect[2], [173,-12], [95,41]];
-		this.baseFrontRect = [[90,-23],this.rect[2], [148,41], [90,41]];
+		var acc = 7;
+		var xAcc2 = 5;
+		this.baseRect = [this.rect[3], this.rect[2], [this.rect[2][0] - xAcc2,this.rect[2][1] + acc], [this.rect[3][0] - xAcc2,this.rect[3][1] + acc]];
+		this.baseFrontRect = [this.rect[3], this.rect[2], [this.rect[2][0] - xAcc2,this.rect[2][1] + acc], [this.rect[3][0] - xAcc2,this.rect[3][1] + acc]];
 
 		// this.baseRect = [[90,34],[171,-23], [171,-12], [95,41]];
 		// this.baseFrontRect = [[90,-23],[171,-23], [171,41], [90,41]];
@@ -78,15 +82,15 @@ var ManaBarHUD = Class.extend({
 		}
 		this.backMask.endFill();
 
-		this.supportShape = new PIXI.Graphics();
-		this.supportShape.beginFill(0x216268);
-		this.supportShape.moveTo(this.rect[0][0],this.rect[0][1]);
-		this.supportShape.lineTo(this.baseRect[0][0],this.baseRect[0][1]);
-		this.supportShape.lineTo(this.baseRect[3][0],this.baseRect[3][1]);
-		this.supportShape.lineTo(this.rect[0][0],this.rect[0][1]);
+		// this.supportShape = new PIXI.Graphics();
+		// this.supportShape.beginFill(0x216268);
+		// this.supportShape.moveTo(this.rect[0][0],this.rect[0][1]);
+		// this.supportShape.lineTo(this.baseRect[0][0],this.baseRect[0][1]);
+		// this.supportShape.lineTo(this.baseRect[3][0],this.baseRect[3][1]);
+		// this.supportShape.lineTo(this.rect[0][0],this.rect[0][1]);
 
-		this.supportShape.endFill();
-		this.container.addChild(this.supportShape);
+		// this.supportShape.endFill();
+		// this.container.addChild(this.supportShape);
 
 		this.container.addChild(this.mask);
 		this.container.addChild(this.backMask);
@@ -94,27 +98,6 @@ var ManaBarHUD = Class.extend({
 		this.backFrontShape.mask = this.backMask;
 
 		// this.frontShape.scale.x = this.currentValue/this.maxValue;
-	},
-	setFrontColor: function(color){
-		// if(this.frontShape){
-		// 	this.container.removeChild(this.frontShape);
-		// }
-		// this.frontShape = new PIXI.Graphics();
-		// this.frontShape.beginFill(color);
-		// this.frontShape.drawRect(0,0,this.width, this.height);
-		// this.container.addChild(this.frontShape);
-
-	},
-	setBackColor: function(color){
-		// if(this.backShape){
-		// 	this.container.removeChild(this.backShape);
-		// }
-		// this.backShape = new PIXI.Graphics();
-		// this.backShape.beginFill(color);
-		// // this.backShape.lineStyle(1,0xEEEEEE);
-		// this.backShape.drawRect(0,0,this.width, this.height);
-		// this.container.addChildAt(this.backShape,0);
-
 	},
 	setText: function(text){
 		if(this.text !== text){
@@ -137,8 +120,8 @@ var ManaBarHUD = Class.extend({
 		this.currentValue = currentValue;
 		this.maxValue = maxValue;
 		// console.log(this.currentValue, this.maxValue, 'mp');
-		this.frontShape.position.x = 130 * (this.currentValue/this.maxValue) - 130;
-		this.backFrontShape.position.x = 51 * (this.currentValue/this.maxValue) - 51;
+		this.frontShape.position.x = this.frontShape.width * (this.currentValue/this.maxValue) - this.frontShape.width;
+		this.backFrontShape.position.x = this.backFrontShape.width * (this.currentValue/this.maxValue) - this.backFrontShape.width;
 
 		//}
 	},

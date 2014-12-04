@@ -10,12 +10,16 @@ var LifeBarHUD = Class.extend({
 		this.height = height;
 		this.backShape = new PIXI.Graphics();
 
-		// this.rect = [[3,0],[92,18],[90,34],[0,18]];
-		this.rect = [[0,14],[102,0],[106,20],[4,34]];
-		this.frontRect = [[-4,0],[102,0],[108,34],[2,34]];
+		// this.rect = [[0,14],[102,0],[106,20],[4,34]];
+		// this.frontRect = [[-4,0],[102,0],[108,34],[2,34]];
+		var h = 21;
+		var w = 120;
+		var xAcc = 0;
+		this.rect = [[0,0],[w,0],[w + xAcc,h],[xAcc,h]];
+		this.frontRect = [[0,0],[w,0],[w + xAcc,h],[xAcc,h]];
 
 		var i = 0;
-		this.backShape.beginFill(0xFF0B40);
+		this.backShape.beginFill(0xF6315C);
 		this.backShape.moveTo(this.rect[0][0],this.rect[0][1]);
 		for (i = 1; i < this.rect.length; i++) {
 			this.backShape.lineTo(this.rect[i][0],this.rect[i][1]);
@@ -49,8 +53,10 @@ var LifeBarHUD = Class.extend({
 
 
 		// this.baseRect = [[0,18], [90,34], [95,41], [6,25]];
-		this.baseRect = [this.rect[3], this.rect[2], [this.rect[2][0] - 4,this.rect[2][1] + 10], [this.rect[3][0] - 4,this.rect[3][1] + 10]];
-		this.baseFrontRect = [[9,20], [108,20], [100,44], [0,44]];
+		var acc = 8;
+		var xAcc2 = 6;
+		this.baseRect = [this.rect[3], this.rect[2], [this.rect[2][0] - xAcc2,this.rect[2][1] + acc], [this.rect[3][0] - xAcc2,this.rect[3][1] + acc]];
+		this.baseFrontRect = [this.rect[3], this.rect[2], [this.rect[2][0] - xAcc2,this.rect[2][1] + acc], [this.rect[3][0] - xAcc2,this.rect[3][1] + acc]];
 
 		this.backBaseShape = new PIXI.Graphics();
 		this.backBaseShape.beginFill(0x961A1A);
@@ -79,7 +85,15 @@ var LifeBarHUD = Class.extend({
 		}
 		this.backMask.endFill();
 
+		// this.supportShape = new PIXI.Graphics();
+		// this.supportShape.beginFill(0x1A8C1D);
+		// this.supportShape.moveTo(this.rect[0][0],this.rect[0][1]);
+		// this.supportShape.lineTo(this.baseRect[0][0],this.baseRect[0][1]);
+		// this.supportShape.lineTo(this.baseRect[3][0],this.baseRect[3][1]);
+		// this.supportShape.lineTo(this.rect[0][0],this.rect[0][1]);
 
+		// this.supportShape.endFill();
+		// this.container.addChild(this.supportShape);
 
 		this.container.addChild(this.mask);
 		this.container.addChild(this.backMask);
@@ -107,9 +121,8 @@ var LifeBarHUD = Class.extend({
 		}
 		this.currentValue = currentValue;
 		this.maxValue = maxValue;
-		console.log(this.currentValue/this.maxValue);
-		this.frontShape.position.x = 105 * (1 - this.currentValue/this.maxValue);
-		this.backFrontShape.position.x = 95 * (1 - this.currentValue/this.maxValue);
+		this.frontShape.position.x = this.frontShape.width * (1 - this.currentValue/this.maxValue);
+		this.backFrontShape.position.x = this.backFrontShape.width * (1 - this.currentValue/this.maxValue);
 
 		//}
 	},

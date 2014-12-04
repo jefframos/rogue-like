@@ -54,7 +54,6 @@ var GameScreen = AbstractScreen.extend({
         this._super();
         var assetsToLoader = [
             '_dist/img/drop.png',
-            '_dist/img/mask.png',
             '_dist/img/pixel.jpg',
             '_dist/img/HUD/bags/bag1.png',
             '_dist/img/HUD/box.png',
@@ -63,6 +62,7 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/HUD/backSpec.png',
             '_dist/img/HUD/backFairy.png',
             '_dist/img/HUD/backPlayerHUD.png',
+            '_dist/img/HUD/levelContent.png',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
@@ -112,10 +112,9 @@ var GameScreen = AbstractScreen.extend({
     //cria a HUD
     createHUD:function(){
 
-        this.fog = new SimpleSprite('_dist/img/mask.png');
-        //APP.getHUD().addChild(this.fog.getContent());
         
         // this.fog.build();
+        this.barsContainer = new PIXI.DisplayObjectContainer();
 
         this.backInterface = new PIXI.Graphics();
         this.backInterface.beginFill(0x261838);
@@ -125,20 +124,36 @@ var GameScreen = AbstractScreen.extend({
         this.playerHUD = new PlayerHUD('player');
         this.playerHUD.setPosition(windowWidth + 30,30);
         APP.getHUD().addChild(this.playerHUD.getContent());
+       
+        this.levelContent = new SimpleSprite('_dist/img/HUD/levelContent.png');
+        this.barsContainer.addChild(this.levelContent.getContent());
+
+        this.XPBar = new BarView(140,6, 100,100);
+        this.XPBar.setFrontColor(0xAD5587);
+        this.XPBar.setBackColor(0xFF8500);
+        this.XPBar.setPosition(this.levelContent.getContent().width-1,0);
+        this.barsContainer.addChild(this.XPBar.getContent());
 
         this.HPView = new LifeBarHUD(80,10, 100,100);
-        this.HPView.setPosition(windowWidth + 30,150);
-        APP.getHUD().addChild(this.HPView.getContent());
+        this.HPView.setPosition(this.levelContent.getContent().width-1,6);
+        this.barsContainer.addChild(this.HPView.getContent());
 
         this.MPView = new ManaBarHUD(80,10, 100,100);
-        this.MPView.setPosition(windowWidth + 30,150);
-        // APP.getHUD().addChild(this.MPView.getContent());
+        this.MPView.setPosition(this.levelContent.getContent().width - 7,35);
+        this.barsContainer.addChild(this.MPView.getContent());
 
-        this.XPBar = new BarView(80,10, 100,100);
-        this.XPBar.setPosition(windowWidth + 10,40);
-        this.XPBar.setFrontColor(0x555555);
-        this.XPBar.setBackColor(0x111111);
-        
+        this.levelLabel = new PIXI.Text('10', {fill:'black', align:'left', font:'16px Arial', wordWrap:true, wordWrapWidth:20});
+        this.levelLabel.position.y = 9;
+        this.levelLabel.position.x = 15;
+        this.levelLabel.rotation = degreesToRadians(-3);
+
+        this.barsContainer.addChild(this.levelLabel);
+        this.barsContainer.position.x = windowWidth + 15;
+        this.barsContainer.position.y = 170;
+        this.barsContainer.rotation = degreesToRadians(-5);
+
+        APP.getHUD().addChild(this.barsContainer);
+
 
         this.equips[0] = APP.weaponList[0];
         this.equips[1] = APP.armorList[0];
@@ -432,13 +447,20 @@ var GameScreen = AbstractScreen.extend({
         this.HPView.updateBar(Math.floor(this.playerModel.hp),Math.floor(this.playerModel.hpMax));
         this.HPView.setText(Math.floor(this.playerModel.hp)+'/ '+Math.floor(this.playerModel.hpMax));
 
+        if(this.playerModel.level < 10)
+        {
+            this.levelLabel.setText(' '+this.playerModel.level);
+        }else{
+            this.levelLabel.setText(this.playerModel.level);
+        }
+
         this.MPView.updateBar(Math.floor(this.playerModel.mp),Math.floor(this.playerModel.mpMax));
         this.MPView.setText(Math.floor(this.playerModel.mp)+'/ '+Math.floor(this.playerModel.mpMax));
 
         var tempXP = Math.floor(this.playerModel.xp)- Math.floor(this.playerModel.toBeforeLevel);
         var tempNext = Math.floor(this.playerModel.toNextLevel)- Math.floor(this.playerModel.toBeforeLevel);
         this.XPBar.updateBar(tempXP,tempNext);
-        this.XPBar.setText(tempXP+'/ '+tempNext);
+        // this.XPBar.setText(tempXP+'/ '+tempNext);
     },
     getPlayerTilePos:function(){
         if(this.playerReady && this.player){
