@@ -1990,12 +1990,22 @@ var Application = AbstractApplication.extend({
         this.distanceToShowMap = 9;
         var mapMaker = null;
         mapMaker = voronoiMap.islandShape.makePerlin(this.parent.currentNode.getNextFloat(), .5), 
-        this.parent.currentNode.mapData = [];
-        var tempDataLine = [], tempDataPlacedLine = [];
+        this.parent.currentNode.mapData = [], this.parent.currentNode.mapDataLayer1 = [], 
+        this.parent.currentNode.mapDataLayer2 = [], this.parent.currentNode.mapDataLayer3 = [], 
+        this.parent.currentNode.placedTiles = [], this.parent.currentNode.placedTilesLayer1 = [], 
+        this.parent.currentNode.placedTilesLayer2 = [], this.parent.currentNode.placedTilesLayer3 = [];
+        var tempDataLine = [], tempDataLineLayer1 = [], tempDataLineLayer2 = [], tempDataLineLayer3 = [], tempDataPlacedLine = [], tempDataPlacedLineLineLayer1 = [], tempDataPlacedLineLineLayer2 = [], tempDataPlacedLineLineLayer3 = [];
         for (i = this.parent.tempSizeTiles.x - 1; i >= 0; i--) {
-            tempDataLine = [], tempDataPlacedLine = [];
+            tempDataLine = [], tempDataLineLayer1 = [], tempDataLineLayer2 = [], tempDataLineLayer3 = [], 
+            tempDataPlacedLine = [], tempDataPlacedLineLineLayer1 = [], tempDataPlacedLineLineLayer2 = [], 
+            tempDataPlacedLineLineLayer3 = [];
             for (var j = this.parent.tempSizeTiles.y - 1; j >= 0; j--) tempDataLine.push({}), 
-            tempDataPlacedLine.push(0);
+            tempDataLineLayer1.push({}), tempDataLineLayer2.push({}), tempDataLineLayer3.push({}), 
+            tempDataPlacedLine.push(0), tempDataPlacedLineLineLayer1.push(0), tempDataPlacedLineLineLayer2.push(0), 
+            tempDataPlacedLineLineLayer3.push(0);
+            this.parent.currentNode.mapDataLayer1.push(tempDataLineLayer1), this.parent.currentNode.mapDataLayer2.push(tempDataLineLayer2), 
+            this.parent.currentNode.mapDataLayer3.push(tempDataLineLayer3), this.parent.currentNode.placedTilesLayer1.push(tempDataPlacedLineLineLayer1), 
+            this.parent.currentNode.placedTilesLayer2.push(tempDataPlacedLineLineLayer2), this.parent.currentNode.placedTilesLayer3.push(tempDataPlacedLineLineLayer3), 
             this.parent.currentNode.mapData.push(tempDataLine), this.parent.currentNode.placedTiles.push(tempDataPlacedLine);
         }
         var tempMapSize = {
@@ -2021,33 +2031,45 @@ var Application = AbstractApplication.extend({
         };
         for (i = 0; i < this.map.centers.length; i++) ix = Math.floor(this.map.centers[i].point.y / APP.nTileSize), 
         jy = Math.floor(this.map.centers[i].point.x / APP.nTileSize), this.parent.currentNode.placedTiles[jy][ix] = null, 
-        this.parent.currentNode.mapData[jy][ix] = this.map.centers[i].biome;
-        return this.parent.currentNode.topTile = top, this.parent.currentNode.bottomTile = bot, 
-        this.parent.currentNode.leftTile = lef, this.parent.currentNode.rightTile = rig, 
-        this.parent.currentNode.bg = new PIXI.DisplayObjectContainer(), this.playerPostion = 0, 
-        this.parent.currentNode.bg;
+        this.parent.currentNode.placedTilesLayer1[jy][ix] = null, this.parent.currentNode.placedTilesLayer2[jy][ix] = null, 
+        this.parent.currentNode.placedTilesLayer3[jy][ix] = null, this.parent.currentNode.mapData[jy][ix] = this.map.centers[i].biome, 
+        this.parent.currentNode.mapDataLayer1[jy][ix] = "OCEAN", this.parent.currentNode.mapDataLayer2[jy][ix] = "OCEAN", 
+        this.parent.currentNode.mapDataLayer3[jy][ix] = "OCEAN";
+        this.parent.currentNode.topTile = top, this.parent.currentNode.bottomTile = bot, 
+        this.parent.currentNode.leftTile = lef, this.parent.currentNode.rightTile = rig;
+        var roads = voronoiMap.roads();
+        for (roads.createRoads(this.map, [ 0, .15 ]), console.log(roads), i = roads.roadConnections.length - 1; i >= 0; i--) roads.roadConnections[i] && roads.roadConnections[i].length >= 0 && (tempX = Math.floor(roads.roadConnections[i][0].midpoint.y / APP.nTileSize), 
+        tempY = Math.floor(roads.roadConnections[i][0].midpoint.x / APP.nTileSize), this.parent.currentNode.mapDataLayer1[tempY][tempX] = "ROAD3");
+        return this.parent.currentNode.bg = new PIXI.DisplayObjectContainer(), this.parent.currentNode.bgLayer1 = new PIXI.DisplayObjectContainer(), 
+        this.parent.currentNode.bgLayer2 = new PIXI.DisplayObjectContainer(), this.parent.currentNode.bgLayer3 = new PIXI.DisplayObjectContainer(), 
+        this.playerPostion = 0, this.parent.currentNode.bg;
     },
-    updateTiles: function(playerPostion) {
-        if (this.playerPostion !== playerPostion && (this.playerPostion = playerPostion, 
-        playerPostion && this.parent.currentNode.mapData)) for (var tempPlaced = {
+    updateLayer: function(container, placeds, data, alpha) {
+        var tempPlaced = {
             x: 0,
             y: 0
-        }, tempPlacedSprite = null, distance = -999, i = playerPostion.x - this.distanceToShowMap - 4; i < playerPostion.x + this.distanceToShowMap + 4; i++) if (i >= 0 && i < this.parent.currentNode.placedTiles.length) {
+        }, tempPlacedSprite = null, distance = -999;
+        alpha || (alpha = 1);
+        for (var i = this.playerPostion.x - this.distanceToShowMap - 4; i < this.playerPostion.x + this.distanceToShowMap + 4; i++) if (i >= 0 && i < placeds.length) {
             tempPlaced.x = i;
-            for (var j = playerPostion.y - this.distanceToShowMap - 4; j < playerPostion.y + this.distanceToShowMap + 4; j++) if (j >= 0 && j < this.parent.currentNode.placedTiles[tempPlaced.x].length && (tempPlaced.y = j, 
-            tempPlaced.x >= 0 && tempPlaced.y >= 0 && "OCEAN" !== this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y])) {
-                if (tempPlacedSprite = this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y], 
-                distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y, playerPostion.x, playerPostion.y)), 
+            for (var j = this.playerPostion.y - this.distanceToShowMap - 4; j < this.playerPostion.y + this.distanceToShowMap + 4; j++) if (j >= 0 && j < placeds[tempPlaced.x].length && (tempPlaced.y = j, 
+            tempPlaced.x >= 0 && tempPlaced.y >= 0 && "OCEAN" !== data[tempPlaced.x][tempPlaced.y])) {
+                if (tempPlacedSprite = placeds[tempPlaced.x][tempPlaced.y], distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y, this.playerPostion.x, this.playerPostion.y)), 
                 null === tempPlacedSprite && distance < this.distanceToShowMap) {
                     var tempTile = new SimpleSprite("_dist/img/levels/tile" + (Math.floor(4 * Math.random()) + 1) + ".png"), tempX = tempPlaced.x * APP.nTileSize, tempY = tempPlaced.y * APP.nTileSize, scl = (APP.nTileSize, 
                     1);
-                    tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = displayColors[this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y]], 
-                    this.parent.currentNode.bg.addChild(tempTile.getContent()), this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = tempTile.getContent();
+                    tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = displayColors[data[tempPlaced.x][tempPlaced.y]], 
+                    tempTile.getContent().alpha = alpha, container.addChild(tempTile.getContent()), 
+                    placeds[tempPlaced.x][tempPlaced.y] = tempTile.getContent();
                 }
                 null !== tempPlacedSprite && distance > this.distanceToShowMap && tempPlacedSprite.parent && (tempPlacedSprite.parent.removeChild(tempPlacedSprite), 
-                this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = null);
+                placeds[tempPlaced.x][tempPlaced.y] = null);
             }
         }
+    },
+    updateTiles: function(playerPostion) {
+        this.playerPostion !== playerPostion && (this.playerPostion = playerPostion, this.playerPostion && this.parent.currentNode.mapData && (this.updateLayer(this.parent.currentNode.bgLayer1, this.parent.currentNode.placedTilesLayer1, this.parent.currentNode.mapDataLayer1, .8), 
+        this.updateLayer(this.parent.currentNode.bg, this.parent.currentNode.placedTiles, this.parent.currentNode.mapData)));
     },
     createDoors: function() {
         this.parent.currentNode.childrenSides[0] && this.parent.currentNode.leftTile && (this.parent.doorLeft = new Door("left"), 
@@ -2357,7 +2379,8 @@ var Application = AbstractApplication.extend({
         for (this.player = new Player(this.playerModel), this.level = getRandomLevel(), 
         this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
         var i = 0;
-        this.currentNode.bg ? this.bgContainer.addChild(this.currentNode.bg) : (this.marginTiles = {
+        this.currentNode.bg ? (this.bgContainer.addChild(this.currentNode.bg), this.bgContainer.addChild(this.currentNode.bgLayer1), 
+        this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3)) : (this.marginTiles = {
             x: Math.floor(this.mapPosition.x / APP.nTileSize) + 25,
             y: Math.floor(this.mapPosition.y / APP.nTileSize) + 25
         }, this.tempSizeTiles = 1 === this.currentNode.mode ? {
@@ -2366,8 +2389,9 @@ var Application = AbstractApplication.extend({
         } : {
             x: 100 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
             y: 120 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
-        }, this.currentNode.bg = this.levelGenerator.createRoom(), this.bgContainer.addChild(this.currentNode.bg)), 
-        this.levelBounds = {
+        }, this.currentNode.bg = this.levelGenerator.createRoom(), this.bgContainer.addChild(this.currentNode.bg), 
+        this.bgContainer.addChild(this.currentNode.bgLayer1), this.bgContainer.addChild(this.currentNode.bgLayer2), 
+        this.bgContainer.addChild(this.currentNode.bgLayer3)), this.levelBounds = {
             x: this.currentNode.mapData.length * APP.nTileSize,
             y: this.currentNode.mapData[0].length * APP.nTileSize
         }, this.minimapHUD && (this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent()), 

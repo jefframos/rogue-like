@@ -592,6 +592,9 @@ var GameScreen = AbstractScreen.extend({
         var j = 0;
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
+            this.bgContainer.addChild(this.currentNode.bgLayer1);
+            this.bgContainer.addChild(this.currentNode.bgLayer2);
+            this.bgContainer.addChild(this.currentNode.bgLayer3);
         }else{
             this.marginTiles = {x:Math.floor(this.mapPosition.x/ APP.nTileSize) + 25, y:Math.floor(this.mapPosition.y/ APP.nTileSize) + 25};
             if(this.currentNode.mode === 1){
@@ -601,6 +604,9 @@ var GameScreen = AbstractScreen.extend({
             }
             this.currentNode.bg = this.levelGenerator.createRoom();
             this.bgContainer.addChild(this.currentNode.bg);
+            this.bgContainer.addChild(this.currentNode.bgLayer1);
+            this.bgContainer.addChild(this.currentNode.bgLayer2);
+            this.bgContainer.addChild(this.currentNode.bgLayer3);
         }
 
         this.levelBounds= {x: this.currentNode.mapData.length * APP.nTileSize, y: this.currentNode.mapData[0].length * APP.nTileSize};

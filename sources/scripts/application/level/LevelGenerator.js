@@ -137,19 +137,57 @@ var LevelGenerator = Class.extend({
 		// mapMaker = voronoiMap.islandShape.makeSquare(this.parent.currentNode.getNextFloat(), 0.5);
 
 		mapMaker = voronoiMap.islandShape.makePerlin(this.parent.currentNode.getNextFloat(), 0.5);
-		// this.parent.tempSizeTiles.x *= 4;
-		// this.parent.tempSizeTiles.y *= 4;
+		
+		//inicializa o map data das layers
 		this.parent.currentNode.mapData = [];
-		// this.placedTiles = [];
+		this.parent.currentNode.mapDataLayer1 = [];
+		this.parent.currentNode.mapDataLayer2 = [];
+		this.parent.currentNode.mapDataLayer3 = [];
+
+		//inicializa as layers placeds
+		this.parent.currentNode.placedTiles = [];
+		this.parent.currentNode.placedTilesLayer1 = [];
+		this.parent.currentNode.placedTilesLayer2 = [];
+		this.parent.currentNode.placedTilesLayer3 = [];
+
 		var tempDataLine = [];
+		var tempDataLineLayer1 = [];
+		var tempDataLineLayer2 = [];
+		var tempDataLineLayer3 = [];
 		var tempDataPlacedLine = [];
+		var tempDataPlacedLineLineLayer1 = [];
+		var tempDataPlacedLineLineLayer2 = [];
+		var tempDataPlacedLineLineLayer3 = [];
 		for (i = this.parent.tempSizeTiles.x - 1; i >= 0; i--) {
 			tempDataLine = [];
+			tempDataLineLayer1 = [];
+			tempDataLineLayer2 = [];
+			tempDataLineLayer3 = [];
+
 			tempDataPlacedLine = [];
+			tempDataPlacedLineLineLayer1 = [];
+			tempDataPlacedLineLineLayer2 = [];
+			tempDataPlacedLineLineLayer3 = [];
+
 			for (var j = this.parent.tempSizeTiles.y - 1; j >= 0; j--) {
 				tempDataLine.push({});
+				tempDataLineLayer1.push({});
+				tempDataLineLayer2.push({});
+				tempDataLineLayer3.push({});
+
 				tempDataPlacedLine.push(0);
+				tempDataPlacedLineLineLayer1.push(0);
+				tempDataPlacedLineLineLayer2.push(0);
+				tempDataPlacedLineLineLayer3.push(0);
 			}
+			this.parent.currentNode.mapDataLayer1.push(tempDataLineLayer1);
+			this.parent.currentNode.mapDataLayer2.push(tempDataLineLayer2);
+			this.parent.currentNode.mapDataLayer3.push(tempDataLineLayer3);
+
+			this.parent.currentNode.placedTilesLayer1.push(tempDataPlacedLineLineLayer1);
+			this.parent.currentNode.placedTilesLayer2.push(tempDataPlacedLineLineLayer2);
+			this.parent.currentNode.placedTilesLayer3.push(tempDataPlacedLineLineLayer3);
+
 			this.parent.currentNode.mapData.push(tempDataLine);
 			this.parent.currentNode.placedTiles.push(tempDataPlacedLine);
 		}
@@ -189,37 +227,15 @@ var LevelGenerator = Class.extend({
 
 
 			
-			// if(ix === Math.floor(this.parent.tempSizeTiles.y / 2)){
-			// 	if(!top && this.map.centers[i].biome !== 'OCEAN')
-			// 	{
-			// 		top = {x:jy,y:ix};
-			// 		// console.log('top',top);
-			// 	}
-			// 	if(bot.y < jy){
-			// 		bot = {x:jy,y:ix};
-			// 		// console.log('bot',bot);
-			// 	}
-			// }
-
-			// if(jy === Math.floor(this.parent.tempSizeTiles.x / 2)){
-			// 	if(!lef && this.map.centers[i].biome !== 'OCEAN')
-			// 	{
-			// 		lef = {x:jy,y:ix};
-			// 		// console.log('lef',lef);
-			// 	}
-			// 	// console.log('ix',ix, jy);
-
-			// 	if(rig.x < ix){
-			// 		rig = {x:jy,y:ix};
-			// 		// console.log('rig',rig);
-			// 	}
-			// }
-
-
-		// 	tempX = ix * APP.nTileSize;
-		// 	tempY = jy * APP.nTileSize;
 			this.parent.currentNode.placedTiles[jy][ix] = null;
+			this.parent.currentNode.placedTilesLayer1[jy][ix] = null;
+			this.parent.currentNode.placedTilesLayer2[jy][ix] = null;
+			this.parent.currentNode.placedTilesLayer3[jy][ix] = null;
 			this.parent.currentNode.mapData[jy][ix] = this.map.centers[i].biome;
+
+			this.parent.currentNode.mapDataLayer1[jy][ix] = 'OCEAN';
+			this.parent.currentNode.mapDataLayer2[jy][ix] = 'OCEAN';
+			this.parent.currentNode.mapDataLayer3[jy][ix] = 'OCEAN';
 		}
 ////////////////////////////////////////
 		this.parent.currentNode.topTile = top;
@@ -229,95 +245,100 @@ var LevelGenerator = Class.extend({
 
 		//*** roads
 
-		// var roads = voronoiMap.roads();
-		// roads.createRoads(map, [0, 0.15]);
+		var roads = voronoiMap.roads();
+		roads.createRoads(this.map, [0, 0.15]);
 
 		// console.log(nacum);
-		// console.log(roads);
+		console.log(roads);
 
-		// for (i = roads.roadConnections.length - 1; i >= 0; i--) {
-		// 	if(roads.roadConnections[i]){
-		// 		console.log(roads.road[roads.roadConnections[i][0].index], roads.road[roads.roadConnections[i][1].index]);
+		for (i = roads.roadConnections.length - 1; i >= 0; i--) {
 
-		// 		tempTile = new SimpleSprite('_dist/img/tile1.png');
-		// 		tempTile.getContent().tint = 0x00000;
+			if (roads.roadConnections[i] && roads.roadConnections[i].length >= 0) {
+				tempX = Math.floor(roads.roadConnections[i][0].midpoint.y  / APP.nTileSize);
+				tempY = Math.floor(roads.roadConnections[i][0].midpoint.x  / APP.nTileSize);
+				// console.log(tempX,tempY);
+				this.parent.currentNode.mapDataLayer1[tempY][tempX] = 'ROAD3';
 
-		// 		// console.log(roads.roadConnections[i][0].d0.point);
-		// 		tempContainer.addChild(tempTile.getContent());
+				// console.log('MAP', this.parent.currentNode.mapData[jy][ix]);
 
-		// 		tempX = Math.floor(roads.roadConnections[i][0].midpoint.y / APP.nTileSize)* APP.nTileSize;
-		// 		tempY = Math.floor(roads.roadConnections[i][0].midpoint.x / APP.nTileSize)* APP.nTileSize;
-		// 		tempTile.setPosition(tempY*scl,tempX*scl);
+			}
+			// if(roads.roadConnections[i]){
+			// 	console.log(roads.road[roads.roadConnections[i][0].index], roads.road[roads.roadConnections[i][1].index]);
+			// 	roads.road[edge1.index]
+				// tempTile = new SimpleSprite('_dist/img/tile1.png');
+				// tempTile.getContent().tint = 0x00000;
 
-		// 	}
-		// }
+				// // console.log(roads.roadConnections[i][0].d0.point);
+				// tempContainer.addChild(tempTile.getContent());
+
+				// tempX = Math.floor(roads.roadConnections[i][0].midpoint.y / APP.nTileSize)* APP.nTileSize;
+				// tempY = Math.floor(roads.roadConnections[i][0].midpoint.x / APP.nTileSize)* APP.nTileSize;
+				// tempTile.setPosition(tempY*scl,tempX*scl);
+
+			// }
+		}
+		// console.log('MAP', this.parent.currentNode.mapData);
 		// this.tileTeste = new SimpleSprite('_dist/img/levels/tile'+(Math.floor(Math.random() * 4) + 1)+'.png');
 		this.parent.currentNode.bg = new PIXI.DisplayObjectContainer();
+		this.parent.currentNode.bgLayer1 = new PIXI.DisplayObjectContainer();
+		this.parent.currentNode.bgLayer2 = new PIXI.DisplayObjectContainer();
+		this.parent.currentNode.bgLayer3 = new PIXI.DisplayObjectContainer();
 		this.playerPostion = 0;
 		return this.parent.currentNode.bg;
 
 	},
-	updateTiles: function(playerPostion){
-		// console.log(this.parent.currentNode.bg.parent);
-		// if(this.parent.currentNode.bg && this.parent.currentNode.bg.parent === undefined){
-		// 	this.parent.bgContainer.addChild(this.parent.currentNode.bg);
-		// }
-		if(this.playerPostion === playerPostion){
-			return;
+	updateLayer: function(container, placeds, data, alpha){
+		var tempPlaced = {x:0,y:0};
+		var tempPlacedSprite = null;
+		var distance = -999;
+		if(!alpha){
+			alpha = 1;
 		}
-		this.playerPostion = playerPostion;
-		if(playerPostion && this.parent.currentNode.mapData){
-			var tempPlaced = {x:0,y:0};
-			var tempPlacedSprite = null;
-			var distance = -999;
-			for (var i = playerPostion.x - this.distanceToShowMap - 4; i < playerPostion.x+this.distanceToShowMap + 4; i++) {
-				if(i >= 0 && i <this.parent.currentNode.placedTiles.length){
-					tempPlaced.x = i;
-					for (var j = playerPostion.y - this.distanceToShowMap - 4; j < playerPostion.y+this.distanceToShowMap + 4; j++) {
-						if(j >= 0 && j <this.parent.currentNode.placedTiles[tempPlaced.x].length){
-							tempPlaced.y = j;
-							if(tempPlaced.x >= 0 && tempPlaced.y >= 0 && this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y] !== 'OCEAN'){
-								tempPlacedSprite = this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y];
-								distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y,playerPostion.x,playerPostion.y));
-								if(tempPlacedSprite === null && distance < this.distanceToShowMap){
-									
+		for (var i = this.playerPostion.x - this.distanceToShowMap - 4; i < this.playerPostion.x+this.distanceToShowMap + 4; i++) {
+			if(i >= 0 && i <placeds.length){
+				tempPlaced.x = i;
+				for (var j = this.playerPostion.y - this.distanceToShowMap - 4; j < this.playerPostion.y+this.distanceToShowMap + 4; j++) {
+					if(j >= 0 && j <placeds[tempPlaced.x].length){
+						tempPlaced.y = j;
+						if(tempPlaced.x >= 0 && tempPlaced.y >= 0 && data[tempPlaced.x][tempPlaced.y] !== 'OCEAN'){
+							tempPlacedSprite = placeds[tempPlaced.x][tempPlaced.y];
+							distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y,this.playerPostion.x,this.playerPostion.y));
+							if(tempPlacedSprite === null && distance < this.distanceToShowMap){
+								
 
-									var tempTile = new SimpleSprite('_dist/img/levels/tile'+(Math.floor(Math.random() * 4) + 1)+'.png');
-									// var tempTile = new SimpleSprite('_dist/img/tile1.png');
-									
-									var tempX = tempPlaced.x * APP.nTileSize;
-									var tempY = tempPlaced.y * APP.nTileSize;
+								var tempTile = new SimpleSprite('_dist/img/levels/tile'+(Math.floor(Math.random() * 4) + 1)+'.png');
+								// var tempTile = new SimpleSprite('_dist/img/tile1.png');
+								var tempX = tempPlaced.x * APP.nTileSize;
+								var tempY = tempPlaced.y * APP.nTileSize;
+								var sz = APP.nTileSize;
+								var scl = 1;
+								tempTile.setPosition(tempX*scl,tempY*scl);
+								tempTile.getContent().tint = displayColors[data[tempPlaced.x][tempPlaced.y]];
+								tempTile.getContent().alpha = alpha;
+								container.addChild(tempTile.getContent());
+								placeds[tempPlaced.x][tempPlaced.y] = tempTile.getContent();
+							}
 
-									var sz = APP.nTileSize;
-									var scl = 1;
-									// console.log(tempY*scl,tempX*scl);
-									tempTile.setPosition(tempX*scl,tempY*scl);
-
-									tempTile.getContent().tint = displayColors[this.parent.currentNode.mapData[tempPlaced.x][tempPlaced.y]];//0x0000FF * map.centers[i].elevation;
-
-									// tempTile.getContent().scale.x = scl / 2;
-									// tempTile.getContent().scale.y = scl / 2;
-									// tempTile.getContent().alpha = 0;
-									// TweenLite.to(tempTile.getContent(), 0.5, {alpha:1});
-									// TweenLite.to(tempTile.getContent().scale, 0.2, {x:scl, y:scl});
-									this.parent.currentNode.bg.addChild(tempTile.getContent());
-
-									this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = tempTile.getContent();
-
-								}
-
-								if (tempPlacedSprite !== null  && distance > this.distanceToShowMap){
-									if(tempPlacedSprite.parent){
-										// console.log(tempPlacedSprite, tempPlacedSprite.parent);
-										tempPlacedSprite.parent.removeChild(tempPlacedSprite);
-										this.parent.currentNode.placedTiles[tempPlaced.x][tempPlaced.y] = null;
-									}
+							if (tempPlacedSprite !== null  && distance > this.distanceToShowMap){
+								if(tempPlacedSprite.parent){
+									tempPlacedSprite.parent.removeChild(tempPlacedSprite);
+									placeds[tempPlaced.x][tempPlaced.y] = null;
 								}
 							}
 						}
 					}
 				}
 			}
+		}
+	},
+	updateTiles: function(playerPostion){
+		if(this.playerPostion === playerPostion){
+			return;
+		}
+		this.playerPostion = playerPostion;
+		if(this.playerPostion && this.parent.currentNode.mapData){
+			this.updateLayer(this.parent.currentNode.bgLayer1,this.parent.currentNode.placedTilesLayer1,this.parent.currentNode.mapDataLayer1,0.8);
+			this.updateLayer(this.parent.currentNode.bg,this.parent.currentNode.placedTiles,this.parent.currentNode.mapData);
 			
 		}
 	},
