@@ -63,6 +63,7 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/HUD/backFairy.png',
             '_dist/img/HUD/backPlayerHUD.png',
             '_dist/img/HUD/levelContent.png',
+            '_dist/img/HUD/backEquips.png',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
@@ -149,38 +150,48 @@ var GameScreen = AbstractScreen.extend({
 
         this.barsContainer.addChild(this.levelLabel);
         this.barsContainer.position.x = windowWidth + 15;
-        this.barsContainer.position.y = 170;
+        this.barsContainer.position.y = 160;
         this.barsContainer.rotation = degreesToRadians(-5);
 
         APP.getHUD().addChild(this.barsContainer);
 
 
+
+        ///EQUIPS
         this.equips[0] = APP.weaponList[0];
         this.equips[1] = APP.armorList[0];
-        this.equips[2] = APP.relicList[0];
+        // this.equips[2] = APP.relicList[1];
 
+        this.equipsContainer = new PIXI.DisplayObjectContainer();
+        this.backEquips = new SimpleSprite('_dist/img/HUD/backEquips.png');
+        this.backEquips.setPosition(-12,-14);
+        this.equipsContainer.addChild(this.backEquips.getContent());
 
-        var contentEquipPos = {x: 40, y: 250};
+        var contentEquipPos = {x:windowWidth + 40, y: 270};
 
         this.weaponEquip = new EquipsHUD('weapon');
-        APP.getHUD().addChild(this.weaponEquip.getContent());
-        this.weaponEquip.setPosition(windowWidth + 0 + contentEquipPos.x,0 + contentEquipPos.y);
+        this.equipsContainer.addChild(this.weaponEquip.getContent());
+        this.weaponEquip.setPosition(0,0);
         this.weaponEquip.addModel(this.equips[0]);
 
         this.armorEquip = new EquipsHUD('armor');
-        APP.getHUD().addChild(this.armorEquip.getContent());
-        this.armorEquip.setPosition(windowWidth + 73 + contentEquipPos.x,4 + contentEquipPos.y);
+        this.equipsContainer.addChild(this.armorEquip.getContent());
+        this.armorEquip.setPosition(73,4);
         this.armorEquip.addModel(this.equips[1]);
 
         this.fairyEquip = new EquipsHUD('fairy');
-        APP.getHUD().addChild(this.fairyEquip.getContent());
-        this.fairyEquip.setPosition(windowWidth + 73 + contentEquipPos.x,61 + contentEquipPos.y);
+        this.equipsContainer.addChild(this.fairyEquip.getContent());
+        this.fairyEquip.setPosition(73,61);
         // this.weaponEquip.addModel(this.equips[1]);
 
         this.relicEquip = new EquipsHUD('relic');
-        APP.getHUD().addChild(this.relicEquip.getContent());
-        this.relicEquip.setPosition(windowWidth + 7 + contentEquipPos.x,61 + contentEquipPos.y);
+        this.equipsContainer.addChild(this.relicEquip.getContent());
+        this.relicEquip.setPosition(7,61);
         this.relicEquip.addModel(this.equips[2]);
+
+        APP.getHUD().addChild(this.equipsContainer);
+        this.equipsContainer.position.x = contentEquipPos.x;
+        this.equipsContainer.position.y = contentEquipPos.y;
 
 
         //adiciona os inventory
@@ -188,17 +199,11 @@ var GameScreen = AbstractScreen.extend({
         [null,null,null,null,
         null,null,null,null,
         null,null,null,null];
-        // this.inventory[0] = APP.itemList[0];
-        // this.inventory[1] = APP.itemList[1];
-        // this.inventory[2] = APP.itemList[2];
-        // this.inventory[3] = APP.spellList[0];
-        // this.inventory[4] = APP.spellList[1];
-        // this.inventory[5] = APP.spellList[2];
+        this.inventoryContainer = new PIXI.DisplayObjectContainer();
         var tempBox = null;
         var lineAccum = 0;
         var rowAccum = 0;
         var inventoryPosition = {x:windowWidth + 20, y:450};
-
         this.backInventory = new PIXI.Graphics();
         this.backInventory.beginFill(0x140B23);
         this.backInventory.moveTo(25,0);
@@ -208,9 +213,9 @@ var GameScreen = AbstractScreen.extend({
         this.backInventory.lineTo(146,144);
         this.backInventory.lineTo(0,134);
         this.backInventory.lineTo(4,21);
-        APP.getHUD().addChild(this.backInventory);
-        this.backInventory.position.x = inventoryPosition.x - 5;
-        this.backInventory.position.y = inventoryPosition.y - 10;
+        this.inventoryContainer.addChild(this.backInventory);
+        this.backInventory.position.x = - 5;
+        this.backInventory.position.y = - 10;
 
         for (var i = 0; i < this.inventory.length; i++) {
             tempBox = new BoxHUD1(42,36, 3, i);
@@ -220,9 +225,10 @@ var GameScreen = AbstractScreen.extend({
                 rowAccum = 0;
             }
 
-            tempBox.setPosition(inventoryPosition.x +rowAccum*46, inventoryPosition.y + lineAccum * 42);
+            tempBox.setPosition(rowAccum*46, lineAccum * 42);
             rowAccum ++;
-            APP.getHUD().addChild(tempBox.getContent());
+            this.inventoryContainer.addChild(tempBox.getContent());
+           
             this.inventory[i] = tempBox;
         }
 
@@ -236,6 +242,9 @@ var GameScreen = AbstractScreen.extend({
         this.inventory[9].addModel(APP.weaponList[2]);
         this.inventory[10].addModel(APP.relicList[2]);
 
+        APP.getHUD().addChild(this.inventoryContainer);
+        this.inventoryContainer.position.x = inventoryPosition.x;
+        this.inventoryContainer.position.y = inventoryPosition.y;
 
         //for (var i = 0; i < 12; i++) {
         //     tempBox = new BoxHUD1(42,36, 3, i);

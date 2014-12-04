@@ -1,7 +1,7 @@
 /*jshint undef:false */
 var MapHUD = Class.extend({
 	init:function(img){
-		this.width = 150;
+		this.width = 100;
 		this.height = 100;
 		if(!img){
 			this.background = new PIXI.Graphics();

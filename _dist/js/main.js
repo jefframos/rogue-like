@@ -752,7 +752,7 @@ var Application = AbstractApplication.extend({
     }
 }), MapHUD = Class.extend({
     init: function(img) {
-        this.width = 150, this.height = 100, img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : (this.background = new PIXI.Graphics(), 
+        this.width = 100, this.height = 100, img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : (this.background = new PIXI.Graphics(), 
         this.background.beginFill(displayColors.OCEAN), this.background.drawRect(-15, -15, this.width + 30, this.height + 30), 
         this.background.endFill()), this.mask = new PIXI.Graphics(), this.container = new PIXI.DisplayObjectContainer(), 
         this.mapContainer = new PIXI.DisplayObjectContainer(), this.container.addChild(this.background), 
@@ -2137,7 +2137,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onAssetsLoaded: function() {
@@ -2168,22 +2168,24 @@ var Application = AbstractApplication.extend({
             wordWrapWidth: 20
         }), this.levelLabel.position.y = 9, this.levelLabel.position.x = 15, this.levelLabel.rotation = degreesToRadians(-3), 
         this.barsContainer.addChild(this.levelLabel), this.barsContainer.position.x = windowWidth + 15, 
-        this.barsContainer.position.y = 170, this.barsContainer.rotation = degreesToRadians(-5), 
+        this.barsContainer.position.y = 160, this.barsContainer.rotation = degreesToRadians(-5), 
         APP.getHUD().addChild(this.barsContainer), this.equips[0] = APP.weaponList[0], this.equips[1] = APP.armorList[0], 
-        this.equips[2] = APP.relicList[0];
+        this.equipsContainer = new PIXI.DisplayObjectContainer(), this.backEquips = new SimpleSprite("_dist/img/HUD/backEquips.png"), 
+        this.backEquips.setPosition(-12, -14), this.equipsContainer.addChild(this.backEquips.getContent());
         var contentEquipPos = {
-            x: 40,
-            y: 250
+            x: windowWidth + 40,
+            y: 270
         };
-        this.weaponEquip = new EquipsHUD("weapon"), APP.getHUD().addChild(this.weaponEquip.getContent()), 
-        this.weaponEquip.setPosition(windowWidth + 0 + contentEquipPos.x, 0 + contentEquipPos.y), 
-        this.weaponEquip.addModel(this.equips[0]), this.armorEquip = new EquipsHUD("armor"), 
-        APP.getHUD().addChild(this.armorEquip.getContent()), this.armorEquip.setPosition(windowWidth + 73 + contentEquipPos.x, 4 + contentEquipPos.y), 
+        this.weaponEquip = new EquipsHUD("weapon"), this.equipsContainer.addChild(this.weaponEquip.getContent()), 
+        this.weaponEquip.setPosition(0, 0), this.weaponEquip.addModel(this.equips[0]), this.armorEquip = new EquipsHUD("armor"), 
+        this.equipsContainer.addChild(this.armorEquip.getContent()), this.armorEquip.setPosition(73, 4), 
         this.armorEquip.addModel(this.equips[1]), this.fairyEquip = new EquipsHUD("fairy"), 
-        APP.getHUD().addChild(this.fairyEquip.getContent()), this.fairyEquip.setPosition(windowWidth + 73 + contentEquipPos.x, 61 + contentEquipPos.y), 
-        this.relicEquip = new EquipsHUD("relic"), APP.getHUD().addChild(this.relicEquip.getContent()), 
-        this.relicEquip.setPosition(windowWidth + 7 + contentEquipPos.x, 61 + contentEquipPos.y), 
-        this.relicEquip.addModel(this.equips[2]), this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null ];
+        this.equipsContainer.addChild(this.fairyEquip.getContent()), this.fairyEquip.setPosition(73, 61), 
+        this.relicEquip = new EquipsHUD("relic"), this.equipsContainer.addChild(this.relicEquip.getContent()), 
+        this.relicEquip.setPosition(7, 61), this.relicEquip.addModel(this.equips[2]), APP.getHUD().addChild(this.equipsContainer), 
+        this.equipsContainer.position.x = contentEquipPos.x, this.equipsContainer.position.y = contentEquipPos.y, 
+        this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null ], 
+        this.inventoryContainer = new PIXI.DisplayObjectContainer();
         var tempBox = null, lineAccum = 0, rowAccum = 0, inventoryPosition = {
             x: windowWidth + 20,
             y: 450
@@ -2191,16 +2193,17 @@ var Application = AbstractApplication.extend({
         this.backInventory = new PIXI.Graphics(), this.backInventory.beginFill(1313571), 
         this.backInventory.moveTo(25, 0), this.backInventory.lineTo(170, 6), this.backInventory.lineTo(186, 32), 
         this.backInventory.lineTo(185, 121), this.backInventory.lineTo(146, 144), this.backInventory.lineTo(0, 134), 
-        this.backInventory.lineTo(4, 21), APP.getHUD().addChild(this.backInventory), this.backInventory.position.x = inventoryPosition.x - 5, 
-        this.backInventory.position.y = inventoryPosition.y - 10;
+        this.backInventory.lineTo(4, 21), this.inventoryContainer.addChild(this.backInventory), 
+        this.backInventory.position.x = -5, this.backInventory.position.y = -10;
         for (var i = 0; i < this.inventory.length; i++) tempBox = new BoxHUD1(42, 36, 3, i), 
-        i > 0 && i % 4 === 0 && (lineAccum++, rowAccum = 0), tempBox.setPosition(inventoryPosition.x + 46 * rowAccum, inventoryPosition.y + 42 * lineAccum), 
-        rowAccum++, APP.getHUD().addChild(tempBox.getContent()), this.inventory[i] = tempBox;
+        i > 0 && i % 4 === 0 && (lineAccum++, rowAccum = 0), tempBox.setPosition(46 * rowAccum, 42 * lineAccum), 
+        rowAccum++, this.inventoryContainer.addChild(tempBox.getContent()), this.inventory[i] = tempBox;
         this.inventory[0].addModel(APP.itemList[0]), this.inventory[1].addModel(APP.itemList[1]), 
         this.inventory[2].addModel(APP.itemList[2]), this.inventory[3].addModel(APP.spellList[0]), 
         this.inventory[4].addModel(APP.spellList[1]), this.inventory[5].addModel(APP.spellList[2]), 
         this.inventory[8].addModel(APP.armorList[2]), this.inventory[9].addModel(APP.weaponList[2]), 
-        this.inventory[10].addModel(APP.relicList[2]);
+        this.inventory[10].addModel(APP.relicList[2]), APP.getHUD().addChild(this.inventoryContainer), 
+        this.inventoryContainer.position.x = inventoryPosition.x, this.inventoryContainer.position.y = inventoryPosition.y;
     },
     addBag: function(pos, model) {
         var tempBag = new Bag(model, this.player);
