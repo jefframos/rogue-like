@@ -75,13 +75,13 @@ var MapHUD = Class.extend({
 		var tempRect = null;
 		// this.miniPlayer.beginFill(0xFF0000);
 		// this.miniPlayer.drawRect(tileMiniSize,tileMiniSize,0,0);
-		for (i = 0; i < node.mapData.length; i++) {
+		for (i = 0; i < node.mapDataLayer1.length; i++) {
 
-			for (j = 0; j < node.mapData[i].length; j++) {
+			for (j = 0; j < node.mapDataLayer1[i].length; j++) {
 				tempRect = new SimpleSprite('_dist/img/pixel.jpg');
 				tempRect.setPosition(i,j);
 				tempMapContainer.addChild(tempRect.getContent());
-				tempRect.getContent().tint = displayColors[node.mapData[i][j].bioma];
+				tempRect.getContent().tint = displayColors[node.mapDataLayer1[i][j].bioma];
 			}
 		}
 
@@ -172,11 +172,11 @@ var MapHUD = Class.extend({
 		this.player.position.y = this.height/2;
 	},
 	update:function(playerPos){
-		// console.log(this.node.mapData[playerPos.x][playerPos.y]);
+		// console.log(this.node.mapDataLayer1[playerPos.x][playerPos.y]);
 		this.mouseAngle = Math.atan2( windowHeight/2 - APP.getMousePos().y,  windowWidth/2-APP.getMousePos().x);
 		this.player.rotation = this.mouseAngle;
-		this.mapContainer.position.x = -(playerPos.x * this.sizeTile.x) + this.width/2;// + (this.node.mapData.length  * this.sizeTile.x) /2;
-		this.mapContainer.position.y = -(playerPos.y * this.sizeTile.y) + this.height/2;// + (this.node.mapData[0].length  * this.sizeTile.y) /2;
+		this.mapContainer.position.x = -(playerPos.x * this.sizeTile.x) + this.width/2;// + (this.node.mapDataLayer1.length  * this.sizeTile.x) /2;
+		this.mapContainer.position.y = -(playerPos.y * this.sizeTile.y) + this.height/2;// + (this.node.mapDataLayer1[0].length  * this.sizeTile.y) /2;
 		
 	},
 	getContent:function(){

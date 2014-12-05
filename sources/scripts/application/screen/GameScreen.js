@@ -590,7 +590,7 @@ var GameScreen = AbstractScreen.extend({
         // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * APP.nTileSize - Math.floor(this.mapPosition.y*2)};
         var i = 0;
         var j = 0;
-        var sizeHelper = 80;
+        var sizeHelper = 10;
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
             this.bgContainer.addChild(this.currentNode.bgLayer1);
