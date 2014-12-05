@@ -15,7 +15,7 @@ var Application = AbstractApplication.extend({
         // this.gen.log();
 
         //size utilizado no tilemap
-        this.nTileSize = 64;
+        this.nTileSize = 50;
         //size utilizado nos personagens
         this.tileSize = {x: this.nTileSize, y:  this.nTileSize};
         

@@ -590,7 +590,7 @@ var GameScreen = AbstractScreen.extend({
         // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * APP.nTileSize - Math.floor(this.mapPosition.y*2)};
         var i = 0;
         var j = 0;
-        var sizeHelper = 80;
+        var sizeHelper = 30;
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
             this.bgContainer.addChild(this.currentNode.bgLayer1);
@@ -609,14 +609,6 @@ var GameScreen = AbstractScreen.extend({
             this.bgContainer.addChild(this.currentNode.bgLayer2);
             this.bgContainer.addChild(this.currentNode.bgLayer3);
         }
-
-        var maskk = new PIXI.Graphics();
-        maskk.beginFill(0);
-        maskk.drawRect(0,0,windowWidth,windowHeight);
-        maskk.endFill();
-        this.getContent().parent.addChild(maskk);
-        this.bgContainer.mask = maskk;
-        // this.bgContainer
 
         this.levelBounds= {x: this.currentNode.mapData.length * APP.nTileSize, y: this.currentNode.mapData[0].length * APP.nTileSize};
         
