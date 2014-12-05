@@ -341,7 +341,7 @@ var LevelGenerator = Class.extend({
 		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD2');
 		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD3');
 
-		this.roundTiles(this.parent.currentNode.mapDataLayer2, 'LAKE');
+		// this.roundTiles(this.parent.currentNode.mapDataLayer2, 'LAKE');
 
 		this.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
 		this.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
@@ -604,16 +604,6 @@ var LevelGenerator = Class.extend({
 			
 		}
 	},
-
-	// debugBounds:function(){
-	// 	if(this.parent.levelBoundsGraph && this.parent.levelBoundsGraph.parent){
-	// 		this.parent.levelBoundsGraph.parent.removeChild(this.parent.levelBoundsGraph);
-	// 	}
-	// 	this.parent.levelBoundsGraph = new PIXI.Graphics();
-	// 	this.parent.levelBoundsGraph.lineStyle(1,0xff0000);
-	// 	this.parent.levelBoundsGraph.drawRect(this.parent.mapPosition.x,this.parent.mapPosition.y,this.parent.levelBounds.x, this.parent.levelBounds.y);
-	// 	this.parent.addChild(this.parent.levelBoundsGraph);
-	// },
 	createDoors:function(){
 		
 		// console.log(this.parent.currentNode.childrenSides,'childrenSides');
