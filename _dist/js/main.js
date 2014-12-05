@@ -1,4 +1,4 @@
-/*! jefframos 04-12-2014 */
+/*! jefframos 05-12-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -193,7 +193,7 @@ var Application = AbstractApplication.extend({
         this._super(windowWidth, windowHeight), this.stage.setBackgroundColor(3153730), 
         this.stage.removeChild(this.loadText), this.isMobile = testMobile(), this.appContainer = document.getElementById("rect"), 
         this.id = parseInt(1e11 * Math.random()), this.gen = new DungeonGenerator(), this.gen.generate(16777215 * Math.random(), 1, [ 10, 15 ], [ 12, 12 ], 5), 
-        this.nTileSize = 50, this.tileSize = {
+        this.nTileSize = 64, this.tileSize = {
             x: this.nTileSize,
             y: this.nTileSize
         };
@@ -2450,7 +2450,7 @@ var Application = AbstractApplication.extend({
         }
         for (this.player = new Player(this.playerModel), this.level = getRandomLevel(), 
         this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
-        var i = 0, sizeHelper = 30;
+        var i = 0, sizeHelper = 80;
         this.currentNode.bg ? (this.bgContainer.addChild(this.currentNode.bg), this.bgContainer.addChild(this.currentNode.bgLayer1), 
         this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3)) : (this.marginTiles = {
             x: Math.floor(this.mapPosition.x / APP.nTileSize) + sizeHelper,
@@ -2463,7 +2463,10 @@ var Application = AbstractApplication.extend({
             y: 120 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
         }, this.currentNode.bg = this.levelGenerator.createRoom(), this.bgContainer.addChild(this.currentNode.bg), 
         this.bgContainer.addChild(this.currentNode.bgLayer1), this.bgContainer.addChild(this.currentNode.bgLayer2), 
-        this.bgContainer.addChild(this.currentNode.bgLayer3)), this.levelBounds = {
+        this.bgContainer.addChild(this.currentNode.bgLayer3));
+        var maskk = new PIXI.Graphics();
+        maskk.beginFill(0), maskk.drawRect(0, 0, windowWidth, windowHeight), maskk.endFill(), 
+        this.getContent().parent.addChild(maskk), this.bgContainer.mask = maskk, this.levelBounds = {
             x: this.currentNode.mapData.length * APP.nTileSize,
             y: this.currentNode.mapData[0].length * APP.nTileSize
         }, this.minimapHUD && (this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent()), 
