@@ -64,6 +64,11 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/HUD/backPlayerHUD.png',
             '_dist/img/HUD/levelContent.png',
             '_dist/img/HUD/backEquips.png',
+            '_dist/img/levels/leftTop.png',
+            '_dist/img/levels/rightTop.png',
+            '_dist/img/levels/leftBottom.png',
+            '_dist/img/levels/rightBottom.png',
+            '_dist/img/levels/tile1.png',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson

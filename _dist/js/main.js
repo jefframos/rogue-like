@@ -2238,7 +2238,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", "_dist/img/levels/leftTop.png", "_dist/img/levels/rightTop.png", "_dist/img/levels/leftBottom.png", "_dist/img/levels/rightBottom.png", "_dist/img/levels/tile1.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onAssetsLoaded: function() {
