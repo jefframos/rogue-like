@@ -1,4 +1,4 @@
-/*! jefframos 05-12-2014 */
+/*! jefframos 15-12-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -2000,22 +2000,24 @@ var Application = AbstractApplication.extend({
         this.distanceToShowMap = 8;
         var mapMaker = null;
         mapMaker = voronoiMap.islandShape.makePerlin(this.parent.currentNode.getNextFloat(), .5), 
-        this.parent.currentNode.mapData = [], this.parent.currentNode.mapDataLayer1 = [], 
-        this.parent.currentNode.mapDataLayer2 = [], this.parent.currentNode.mapDataLayer3 = [], 
+        this.parent.currentNode.backMapData = [], this.parent.currentNode.mapData = [], 
+        this.parent.currentNode.mapDataLayer1 = [], this.parent.currentNode.mapDataLayer2 = [], 
+        this.parent.currentNode.mapDataLayer3 = [], this.parent.currentNode.backPlacedTiles = [], 
         this.parent.currentNode.placedTiles = [], this.parent.currentNode.placedTilesLayer1 = [], 
         this.parent.currentNode.placedTilesLayer2 = [], this.parent.currentNode.placedTilesLayer3 = [];
-        var tempDataLine = [], tempDataLineLayer1 = [], tempDataLineLayer2 = [], tempDataLineLayer3 = [], tempDataPlacedLine = [], tempDataPlacedLineLineLayer1 = [], tempDataPlacedLineLineLayer2 = [], tempDataPlacedLineLineLayer3 = [];
+        var tempBackDataLine = [], tempDataLine = [], tempDataLineLayer1 = [], tempDataLineLayer2 = [], tempDataLineLayer3 = [], tempBackDataPlacedLine = [], tempDataPlacedLine = [], tempDataPlacedLineLineLayer1 = [], tempDataPlacedLineLineLayer2 = [], tempDataPlacedLineLineLayer3 = [];
         for (i = this.parent.tempSizeTiles.x - 1; i >= 0; i--) {
-            tempDataLine = [], tempDataLineLayer1 = [], tempDataLineLayer2 = [], tempDataLineLayer3 = [], 
-            tempDataPlacedLine = [], tempDataPlacedLineLineLayer1 = [], tempDataPlacedLineLineLayer2 = [], 
-            tempDataPlacedLineLineLayer3 = [];
-            for (var j = this.parent.tempSizeTiles.y - 1; j >= 0; j--) tempDataLine.push({}), 
-            tempDataLineLayer1.push({}), tempDataLineLayer2.push({}), tempDataLineLayer3.push({}), 
-            tempDataPlacedLine.push(0), tempDataPlacedLineLineLayer1.push(0), tempDataPlacedLineLineLayer2.push(0), 
-            tempDataPlacedLineLineLayer3.push(0);
+            tempBackDataLine = [], tempDataLine = [], tempDataLineLayer1 = [], tempDataLineLayer2 = [], 
+            tempDataLineLayer3 = [], tempBackDataPlacedLine = [], tempDataPlacedLine = [], tempDataPlacedLineLineLayer1 = [], 
+            tempDataPlacedLineLineLayer2 = [], tempDataPlacedLineLineLayer3 = [];
+            for (var j = this.parent.tempSizeTiles.y - 1; j >= 0; j--) tempBackDataLine.push({}), 
+            tempDataLine.push({}), tempDataLineLayer1.push({}), tempDataLineLayer2.push({}), 
+            tempDataLineLayer3.push({}), tempBackDataPlacedLine.push(0), tempDataPlacedLine.push(0), 
+            tempDataPlacedLineLineLayer1.push(0), tempDataPlacedLineLineLayer2.push(0), tempDataPlacedLineLineLayer3.push(0);
             this.parent.currentNode.mapDataLayer1.push(tempDataLineLayer1), this.parent.currentNode.mapDataLayer2.push(tempDataLineLayer2), 
             this.parent.currentNode.mapDataLayer3.push(tempDataLineLayer3), this.parent.currentNode.placedTilesLayer1.push(tempDataPlacedLineLineLayer1), 
             this.parent.currentNode.placedTilesLayer2.push(tempDataPlacedLineLineLayer2), this.parent.currentNode.placedTilesLayer3.push(tempDataPlacedLineLineLayer3), 
+            this.parent.currentNode.backMapData.push(tempBackDataLine), this.parent.currentNode.backPlacedTiles.push(tempBackDataPlacedLine), 
             this.parent.currentNode.mapData.push(tempDataLine), this.parent.currentNode.placedTiles.push(tempDataPlacedLine);
         }
         var tempMapSize = {
@@ -2074,25 +2076,33 @@ var Application = AbstractApplication.extend({
         for (roads.createRoads(this.map, [ 0, .15 ]), console.log(roads), i = roads.roadConnections.length - 1; i >= 0; i--) roads.roadConnections[i] && roads.roadConnections[i].length >= 0 && (tempX = Math.floor(roads.roadConnections[i][0].midpoint.y / APP.nTileSize), 
         tempY = Math.floor(roads.roadConnections[i][0].midpoint.x / APP.nTileSize), this.parent.currentNode.mapDataLayer2[tempY][tempX].bioma = "ROAD3", 
         this.parent.currentNode.mapDataLayer2[tempY][tempX].tile = "CENTER");
-        return this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD1"), this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD2"), 
+        this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD1"), this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD2"), 
         this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD3"), this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD1"), 
         this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD2"), this.roundTiles(this.parent.currentNode.mapDataLayer1, "STANDARD3"), 
         this.roundTilesCost(this.parent.currentNode.mapData, "BEACH"), this.roundTilesCost(this.parent.currentNode.mapData, "BEACH"), 
         this.roundTilesCost(this.parent.currentNode.mapData, "BEACH"), this.roundTilesCost(this.parent.currentNode.mapData, "BEACH"), 
-        this.roundTilesBorder(this.parent.currentNode.mapData, "OCEAN"), this.parent.currentNode.bg = new PIXI.DisplayObjectContainer(), 
+        this.roundTilesBorder(this.parent.currentNode.backMapData, this.parent.currentNode.mapData, "OCEAN"), 
+        this.roundTilesBorder(this.parent.currentNode.backMapData, this.parent.currentNode.mapData, "OCEAN");
+        for (var line = "", ii = 0; ii < this.parent.currentNode.backMapData.length; ii++) {
+            line = "";
+            for (var jj = 0; jj < this.parent.currentNode.backMapData[ii].length; jj++) line += void 0 !== this.parent.currentNode.backMapData[ii][jj].bioma ? "1" : "0";
+            console.log(ii, line);
+        }
+        return this.parent.currentNode.backLayer = new PIXI.DisplayObjectContainer(), this.parent.currentNode.bg = new PIXI.DisplayObjectContainer(), 
         this.parent.currentNode.bgLayer1 = new PIXI.DisplayObjectContainer(), this.parent.currentNode.bgLayer2 = new PIXI.DisplayObjectContainer(), 
         this.parent.currentNode.bgLayer3 = new PIXI.DisplayObjectContainer(), this.playerPostion = 0, 
         this.parent.currentNode.bg;
     },
-    roundTilesBorder: function(data, type) {
+    roundTilesBorder: function(data, dataCompare, type) {
         for (var tempTL = null, tempT = null, tempTR = null, tempL = null, tempR = null, tempBL = null, tempB = null, tempBR = null, current = null, ocean = function(data) {
             return null === data ? !1 : data.bioma === type;
-        }, i = data.length - 2; i >= 1; i--) for (var j = data[i].length - 2; j >= 1; j--) data[i][j].bioma === type && (current = data[i][j], 
-        void 0 !== data[i - 1][j - 1] && (tempTL = data[i - 1][j - 1]), void 0 !== data[i][j - 1] && (tempT = data[i][j - 1]), 
-        void 0 !== data[i + 1][j - 1] && (tempTR = data[i + 1][j - 1]), void 0 !== data[i - 1][j] && (tempL = data[i - 1][j]), 
-        void 0 !== data[i + 1][j] && (tempR = data[i + 1][j]), void 0 !== data[i - 1][j + 1] && (tempBL = data[i - 1][j + 1]), 
-        void 0 !== data[i][j + 1] && (tempB = data[i][j + 1]), void 0 !== data[i + 1][j + 1] && (tempBR = data[i + 1][j + 1])), 
-        !ocean(tempT) && ocean(tempB) && (console.log(tempT.tile), "CENTER" === tempT.tile ? current.tile = "CENTER" : "TOP_RIGHT" === tempT.tile ? current.tile = "TOP_RIGHT" : "TOP_LEFT" === tempT.tile && (current.tile = "TOP_LEFT"), 
+        }, i = dataCompare.length - 2; i >= 1; i--) for (var j = dataCompare[i].length - 2; j >= 1; j--) dataCompare[i][j].bioma === type && (current = data[i][j], 
+        void 0 !== dataCompare[i - 1][j - 1] && (tempTL = dataCompare[i - 1][j - 1]), void 0 !== dataCompare[i][j - 1] && (tempT = dataCompare[i][j - 1]), 
+        void 0 !== dataCompare[i + 1][j - 1] && (tempTR = dataCompare[i + 1][j - 1]), void 0 !== dataCompare[i - 1][j] && (tempL = dataCompare[i - 1][j]), 
+        void 0 !== dataCompare[i + 1][j] && (tempR = dataCompare[i + 1][j]), void 0 !== dataCompare[i - 1][j + 1] && (tempBL = dataCompare[i - 1][j + 1]), 
+        void 0 !== dataCompare[i][j + 1] && (tempB = dataCompare[i][j + 1]), void 0 !== dataCompare[i + 1][j + 1] && (tempBR = dataCompare[i + 1][j + 1])), 
+        "TOP_LEFT" === dataCompare[i][j].tile || "TOP_RIGHT" === dataCompare[i][j].tile ? (data[i][j].tile = "CENTER", 
+        data[i][j].bioma = "ROAD3") : ocean(tempT) || !ocean(tempB) && !ocean(current) || ("CENTER" === tempT.tile ? current.tile = "CENTER" : "TOP_RIGHT" === tempT.tile ? current.tile = "TOP_RIGHT" : "TOP_LEFT" === tempT.tile && (current.tile = "TOP_LEFT"), 
         current.bioma = "ROAD3");
     },
     roundTiles: function(data, type) {
@@ -2134,7 +2144,7 @@ var Application = AbstractApplication.extend({
             for (var j = this.playerPostion.y - this.distanceToShowMap - 4; j < this.playerPostion.y + this.distanceToShowMap + 4; j++) if (j >= 0 && j < placeds[tempPlaced.x].length && (tempPlaced.y = j, 
             tempPlaced.x >= 0 && tempPlaced.y >= 0 && "OCEAN" !== data[tempPlaced.x][tempPlaced.y].bioma)) {
                 if (tempPlacedSprite = placeds[tempPlaced.x][tempPlaced.y], distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y, this.playerPostion.x, this.playerPostion.y)), 
-                data[tempPlaced.x][tempPlaced.y].tile && null === tempPlacedSprite && distance < this.distanceToShowMap) {
+                data[tempPlaced.x][tempPlaced.y].bioma && (null === tempPlacedSprite || 0 === tempPlacedSprite) && distance < this.distanceToShowMap) {
                     var tempTile = new SimpleSprite(tilesGraphics[data[tempPlaced.x][tempPlaced.y].tile]), tempX = tempPlaced.x * APP.nTileSize, tempY = tempPlaced.y * APP.nTileSize, scl = (APP.nTileSize, 
                     1);
                     tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = displayColors[data[tempPlaced.x][tempPlaced.y].bioma], 
@@ -2147,7 +2157,8 @@ var Application = AbstractApplication.extend({
         }
     },
     updateTiles: function(playerPostion) {
-        this.playerPostion !== playerPostion && (this.playerPostion = playerPostion, this.playerPostion && this.parent.currentNode.mapData && (this.updateLayer(this.parent.currentNode.bgLayer1, this.parent.currentNode.placedTilesLayer1, this.parent.currentNode.mapDataLayer1, .8), 
+        this.playerPostion !== playerPostion && (this.playerPostion = playerPostion, this.playerPostion && this.parent.currentNode.mapData && (this.updateLayer(this.parent.currentNode.backLayer, this.parent.currentNode.backPlacedTiles, this.parent.currentNode.backMapData), 
+        this.updateLayer(this.parent.currentNode.bgLayer1, this.parent.currentNode.placedTilesLayer1, this.parent.currentNode.mapDataLayer1, .8), 
         this.updateLayer(this.parent.currentNode.bg, this.parent.currentNode.placedTiles, this.parent.currentNode.mapData)));
     },
     createDoors: function() {
@@ -2457,7 +2468,7 @@ var Application = AbstractApplication.extend({
         }
         for (this.player = new Player(this.playerModel), this.level = getRandomLevel(), 
         this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
-        var i = 0, sizeHelper = 10;
+        var i = 0, sizeHelper = 5;
         this.currentNode.bg ? (this.bgContainer.addChild(this.currentNode.bg), this.bgContainer.addChild(this.currentNode.bgLayer1), 
         this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3)) : (this.marginTiles = {
             x: Math.floor(this.mapPosition.x / APP.nTileSize) + sizeHelper,
@@ -2468,9 +2479,9 @@ var Application = AbstractApplication.extend({
         } : {
             x: 100 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
             y: 120 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
-        }, this.currentNode.bg = this.levelGenerator.createRoom(), this.bgContainer.addChild(this.currentNode.bg), 
-        this.bgContainer.addChild(this.currentNode.bgLayer1), this.bgContainer.addChild(this.currentNode.bgLayer2), 
-        this.bgContainer.addChild(this.currentNode.bgLayer3));
+        }, this.currentNode.bg = this.levelGenerator.createRoom(), this.bgContainer.addChild(this.currentNode.backLayer), 
+        this.bgContainer.addChild(this.currentNode.bg), this.bgContainer.addChild(this.currentNode.bgLayer1), 
+        this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3));
         var maskk = new PIXI.Graphics();
         maskk.beginFill(0), maskk.drawRect(0, 0, windowWidth, windowHeight), maskk.endFill(), 
         this.getContent().parent.addChild(maskk), this.bgContainer.mask = maskk, this.levelBounds = {
