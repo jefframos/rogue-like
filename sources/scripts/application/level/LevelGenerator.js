@@ -43,9 +43,9 @@ var displayColors = {
 	    // BEACH: 0xa09077,
 	    BEACH: 0x4fa319,
 	    NULL: 0x4fa319,
-	    ROAD1: 0x442211,
-	    ROAD2: 0x553322,
-	    ROAD3: 0x664433,
+	    ROAD1: 0x7F4F1F,
+	    ROAD2: 0x663B14,
+	    ROAD3: 0x472911,
 	    BRIDGE: 0x686860,
 	    LAVA: 0xcc3333,
 
@@ -76,11 +76,13 @@ var tilesGraphics = {
 	TOP_RIGHT : '_dist/img/levels/rightTop.png',
 	BOTTOM_LEFT : '_dist/img/levels/leftBottom.png',
 	BOTTOM_RIGHT : '_dist/img/levels/rightBottom.png',
-	CENTER : '_dist/img/levels/tile1.png'
+	CENTER : '_dist/img/levels/tile1.png',
+	BASE1 : '_dist/img/levels/base1.png'
 };
 var LevelGenerator = Class.extend({
 	init: function (parent){
 		this.parent = parent;
+		this.tileDesigner = new TileDesigner();
 	},
 	createHordes: function(){
 		var tempMonster = null;
@@ -358,24 +360,27 @@ var LevelGenerator = Class.extend({
 			}
 		}
 
-		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD1');
-		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD2');
-		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD3');
+		this.tileDesigner.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD1');
+		this.tileDesigner.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD2');
+		this.tileDesigner.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD3');
 
-		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD1');
-		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD2');
-		this.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD3');
+		this.tileDesigner.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD1');
+		this.tileDesigner.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD2');
+		this.tileDesigner.roundTiles(this.parent.currentNode.mapDataLayer1, 'STANDARD3');
 
-		// this.roundTiles(this.parent.currentNode.mapDataLayer2, 'LAKE');
+		// this.tileDesigner.roundTiles(this.parent.currentNode.mapDataLayer2, 'LAKE');
 
-		this.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
-		this.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
-		this.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
-		this.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
+		this.tileDesigner.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
+		this.tileDesigner.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
+		this.tileDesigner.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
+		this.tileDesigner.roundTilesCost(this.parent.currentNode.mapData, 'BEACH');
 
-		this.roundTilesBorder(this.parent.currentNode.backMapData, this.parent.currentNode.mapData, 'OCEAN');
-		this.roundTilesBorder(this.parent.currentNode.backMapData, this.parent.currentNode.mapData, 'OCEAN');
-		this.roundTilesBorder2(this.parent.currentNode.backMapData, 'ROAD3');
+		this.tileDesigner.roundTilesBorder(this.parent.currentNode.backMapData, this.parent.currentNode.mapData, 'OCEAN');
+		this.tileDesigner.roundTilesBorder(this.parent.currentNode.backMapData, this.parent.currentNode.mapData, 'OCEAN');
+		this.tileDesigner.roundTilesBorder2(this.parent.currentNode.backMapData, ['ROAD1','ROAD2','ROAD3'], 'ROAD3');
+		this.tileDesigner.roundTilesBorder2(this.parent.currentNode.backMapData, ['ROAD1','ROAD2','ROAD3'], 'ROAD2');
+		this.tileDesigner.roundTilesBaseIsland(this.parent.currentNode.backMapData, ['ROAD1','ROAD2','ROAD3']);
+		this.tileDesigner.roundTilesBaseIslandColors(this.parent.currentNode.backMapData);
 		// this.roundTilesBorder2(this.parent.currentNode.backMapData, 'ROAD3');
 		var line = '';
 		for (var ii = 0; ii < this.parent.currentNode.backMapData.length; ii++) {
@@ -396,358 +401,6 @@ var LevelGenerator = Class.extend({
 		this.parent.currentNode.bgLayer3 = new PIXI.DisplayObjectContainer();
 		this.playerPostion = 0;
 		return this.parent.currentNode.bg;
-
-	},
-	roundTilesBorder2: function(data, type){
-		var tempType = type;
-		var ix = 0;
-		var jy = 0;
-		var tempTL = null;
-		var tempT = null;
-		var tempTR = null;
-		var tempL = null;
-		var tempR = null;
-		var tempBL = null;
-		var tempB = null;
-		var tempBR = null;
-		var current = null;
-		var rnd = Math.random();
-		var ocean = function(data){
-			if(data === null){
-				return false;
-			}
-			return data.biome === type;
-		};
-		
-		for (var i = data.length - 2; i >= 1; i--) {
-			for (var j = data[i].length - 2; j >= 1; j--) {
-				current = data[i][j];
-				//topLeft
-				if(data[i-1][j-1] !== undefined){
-					tempTL = data[i-1][j-1];
-				}
-				//top
-				if(data[i][j-1] !== undefined){
-					tempT = data[i][j-1];
-				}
-				//topRight
-				if(data[i+1][j-1] !== undefined){
-					tempTR = data[i+1][j-1];
-				}
-				//Left
-				if(data[i-1][j] !== undefined){
-					tempL = data[i-1][j];
-				}
-				//Right
-				if(data[i+1][j] !== undefined){
-					tempR = data[i+1][j];
-				}
-				//bottomLeft
-				if(data[i-1][j+1] !== undefined){
-					tempBL = data[i-1][j+1];
-				}
-				//bottom
-				if(data[i][j+1] !== undefined){
-					tempB = data[i][j+1];
-				}
-				//bottomRight
-				if(data[i+1][j+1] !== undefined){
-					tempBR = data[i+1][j+1];
-				}
-				// if(current){
-				// 	console.log(rnd, current.biome);
-				// }
-				if(ocean(current))
-				{
-					data[i][j+1] = {tile :'CENTER', biome : 'ROAD3'};
-				}
-				
-			}
-		}
-		
-
-	},
-	roundTilesBorder: function(data, dataCompare, type){
-		var tempType = type;
-		var ix = 0;
-		var jy = 0;
-		var tempTL = null;
-		var tempT = null;
-		var tempTR = null;
-		var tempL = null;
-		var tempR = null;
-		var tempBL = null;
-		var tempB = null;
-		var tempBR = null;
-		var current = null;
-
-		var ocean = function(data){
-			// console.log(tempType);
-			if(data === null){
-				return false;
-			}
-			return data.biome === type;
-		};
-		var verifyCross = function(data){
-			if(data === null){
-				return false;
-			}
-			return (ocean(tempB) && !ocean(tempT) && ocean(tempL) && ocean(tempR))||
-				(ocean(tempT) && !ocean(tempB) && ocean(tempL) && ocean(tempR))||
-				(!ocean(tempR) && ocean(tempL) && ocean(tempT) && ocean(tempB))||
-				(!ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB))||
-				(ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB));
-		};
-
-		
-		for (var i = dataCompare.length - 2; i >= 1; i--) {
-			for (var j = dataCompare[i].length - 2; j >= 1; j--) {
-				if(dataCompare[i][j].biome === type){
-					current = data[i][j];
-					//topLeft
-					if(dataCompare[i-1][j-1] !== undefined){
-						tempTL = dataCompare[i-1][j-1];
-					}
-					//top
-					if(dataCompare[i][j-1] !== undefined){
-						tempT = dataCompare[i][j-1];
-					}
-					//topRight
-					if(dataCompare[i+1][j-1] !== undefined){
-						tempTR = dataCompare[i+1][j-1];
-					}
-					//Left
-					if(dataCompare[i-1][j] !== undefined){
-						tempL = dataCompare[i-1][j];
-					}
-					//Right
-					if(dataCompare[i+1][j] !== undefined){
-						tempR = dataCompare[i+1][j];
-					}
-					//bottomLeft
-					if(dataCompare[i-1][j+1] !== undefined){
-						tempBL = dataCompare[i-1][j+1];
-					}
-					//bottom
-					if(dataCompare[i][j+1] !== undefined){
-						tempB = dataCompare[i][j+1];
-					}
-					//bottomRight
-					if(dataCompare[i+1][j+1] !== undefined){
-						tempBR = dataCompare[i+1][j+1];
-					}
-				}
-				if(dataCompare[i][j].tile === 'TOP_LEFT' || dataCompare[i][j].tile === 'TOP_RIGHT'){
-					data[i][j].tile = 'CENTER';
-					data[i][j].biome = 'ROAD3';
-				}
-				else if(!ocean(tempT) && (ocean(tempB) ||ocean(current)))
-				{
-					if(tempT.tile === 'CENTER'){
-						current.tile = 'CENTER';
-					}else if(tempT.tile === 'TOP_RIGHT'){
-						current.tile = 'TOP_RIGHT';
-					}
-					else if(tempT.tile === 'TOP_LEFT'){
-						current.tile = 'TOP_LEFT';
-					}
-
-					current.biome = 'ROAD3';
-				}
-
-				
-			}
-		}
-		
-
-	},
-	roundTiles: function(data, type){
-		var tempType = type;
-		var ix = 0;
-		var jy = 0;
-		var tempTL = null;
-		var tempT = null;
-		var tempTR = null;
-		var tempL = null;
-		var tempR = null;
-		var tempBL = null;
-		var tempB = null;
-		var tempBR = null;
-		var current = null;
-
-		var ocean = function(data){
-			// console.log(tempType);
-			if(data === null){
-				return false;
-			}
-			return data.biome !== tempType;
-		};
-		var verifyCross = function(data){
-			if(data === null){
-				return false;
-			}
-			return (ocean(tempB) && !ocean(tempT) && ocean(tempL) && ocean(tempR))||
-				(ocean(tempT) && !ocean(tempB) && ocean(tempL) && ocean(tempR))||
-				(!ocean(tempR) && ocean(tempL) && ocean(tempT) && ocean(tempB))||
-				(!ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB))||
-				(ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB));
-		};
-
-		
-		for (var i = data.length - 1; i >= 0; i--) {
-			for (var j = data[i].length - 1; j >= 0; j--) {
-				if(data[i][j].biome === type){
-					current = data[i][j];
-					//topLeft
-					if(data[i-1][j-1] !== undefined){
-						tempTL = data[i-1][j-1];
-					}
-					//top
-					if(data[i][j-1] !== undefined){
-						tempT = data[i][j-1];
-					}
-					//topRight
-					if(data[i+1][j-1] !== undefined){
-						tempTR = data[i+1][j-1];
-					}
-					//Left
-					if(data[i-1][j] !== undefined){
-						tempL = data[i-1][j];
-					}
-					//Right
-					if(data[i+1][j] !== undefined){
-						tempR = data[i+1][j];
-					}
-					//bottomLeft
-					if(data[i-1][j+1] !== undefined){
-						tempBL = data[i-1][j+1];
-					}
-					//bottom
-					if(data[i][j+1] !== undefined){
-						tempB = data[i][j+1];
-					}
-					//bottomRight
-					if(data[i+1][j+1] !== undefined){
-						tempBR = data[i+1][j+1];
-					}
-				}
-				if(ocean(tempB) && ocean(tempL) && !ocean(tempR))
-				{
-					current.tile = 'TOP_RIGHT';
-				}
-				if(ocean(tempT) && ocean(tempL) && !ocean(tempR))
-				{
-					current.tile = 'BOTTOM_RIGHT';
-				}
-				if(ocean(tempB) && ocean(tempR) && !ocean(tempL))
-				{
-					current.tile = 'TOP_LEFT';
-				}
-				if(ocean(tempT) && ocean(tempR) && !ocean(tempL))
-				{
-					current.tile = 'BOTTOM_LEFT';
-				}
-
-				if(verifyCross(current)){
-					current.biome = 'OCEAN';
-				}
-			}
-		}
-		
-
-	},
-	roundTilesCost: function(data, type){
-
-		var ix = 0;
-		var jy = 0;
-		var tempTL = null;
-		var tempT = null;
-		var tempTR = null;
-		var tempL = null;
-		var tempR = null;
-		var tempBL = null;
-		var tempB = null;
-		var tempBR = null;
-		var current = null;
-
-		var ocean = function(data){
-			if(data === null){
-				return false;
-			}
-			return data.biome === 'OCEAN';
-		};
-		var verifyCross = function(data){
-			if(data === null){
-				return false;
-			}
-			return (ocean(tempB) && !ocean(tempT) && ocean(tempL) && ocean(tempR))||
-				(ocean(tempT) && !ocean(tempB) && ocean(tempL) && ocean(tempR))||
-				(!ocean(tempR) && ocean(tempL) && ocean(tempT) && ocean(tempB))||
-				(!ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB))||
-				(ocean(tempL) && ocean(tempR) && ocean(tempT) && ocean(tempB));
-		};
-
-		
-		for (var i = data.length - 1; i >= 0; i--) {
-			for (var j = data[i].length - 1; j >= 0; j--) {
-				if(data[i][j].biome === type){
-					current = data[i][j];
-					//topLeft
-					if(data[i-1][j-1] !== undefined){
-						tempTL = data[i-1][j-1];
-					}
-					//top
-					if(data[i][j-1] !== undefined){
-						tempT = data[i][j-1];
-					}
-					//topRight
-					if(data[i+1][j-1] !== undefined){
-						tempTR = data[i+1][j-1];
-					}
-					//Left
-					if(data[i-1][j] !== undefined){
-						tempL = data[i-1][j];
-					}
-					//Right
-					if(data[i+1][j] !== undefined){
-						tempR = data[i+1][j];
-					}
-					//bottomLeft
-					if(data[i-1][j+1] !== undefined){
-						tempBL = data[i-1][j+1];
-					}
-					//bottom
-					if(data[i][j+1] !== undefined){
-						tempB = data[i][j+1];
-					}
-					//bottomRight
-					if(data[i+1][j+1] !== undefined){
-						tempBR = data[i+1][j+1];
-					}
-				}
-				if(ocean(tempB) && ocean(tempL) && !ocean(tempR))
-				{
-					current.tile = 'TOP_RIGHT';
-				}
-				if(ocean(tempT) && ocean(tempL) && !ocean(tempR))
-				{
-					current.tile = 'BOTTOM_RIGHT';
-				}
-				if(ocean(tempB) && ocean(tempR) && !ocean(tempL))
-				{
-					current.tile = 'TOP_LEFT';
-				}
-				if(ocean(tempT) && ocean(tempR) && !ocean(tempL))
-				{
-					current.tile = 'BOTTOM_LEFT';
-				}
-
-				if(verifyCross(current)){
-					current.biome = 'OCEAN';
-				}
-			}
-		}
-		
 
 	},
 	updateLayer: function(container, placeds, data, alpha){
@@ -804,7 +457,7 @@ var LevelGenerator = Class.extend({
 			this.updateLayer(this.parent.currentNode.backLayer,this.parent.currentNode.backPlacedTiles,this.parent.currentNode.backMapData);
 
 			this.updateLayer(this.parent.currentNode.bgLayer1,this.parent.currentNode.placedTilesLayer1,this.parent.currentNode.mapDataLayer1,0.8);
-			this.updateLayer(this.parent.currentNode.bg,this.parent.currentNode.placedTiles,this.parent.currentNode.mapData,0.5);
+			this.updateLayer(this.parent.currentNode.bg,this.parent.currentNode.placedTiles,this.parent.currentNode.mapData);
 
 			// this.updateLayer(this.parent.currentNode.bgLayer2,this.parent.currentNode.placedTilesLayer2,this.parent.currentNode.mapDataLayer2,0.8);
 			
