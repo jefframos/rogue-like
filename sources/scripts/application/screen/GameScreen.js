@@ -513,25 +513,25 @@ var GameScreen = AbstractScreen.extend({
 
                     var pass = this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y] !== undefined && this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y] !== undefined;
                     if(pass &&
-                        this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y].bioma === 'OCEAN' && tempEntity.virtualVelocity.y > 0){
+                        this.currentNode.mapData[tilePositionDown.x][tilePositionDown.y].biome === 'OCEAN' && tempEntity.virtualVelocity.y > 0){
                         tempEntity.virtualVelocity.y = 0;
                     }
 
                     pass = this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y] !== undefined && this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y] !== undefined;
                     if(pass &&
-                        this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y].bioma === 'OCEAN' && tempEntity.virtualVelocity.y < 0){
+                        this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y].biome === 'OCEAN' && tempEntity.virtualVelocity.y < 0){
                         tempEntity.virtualVelocity.y = 0;
                     }
                     
                     pass = this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] !== undefined && this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] !== undefined;
                     if(this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] &&
-                        this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y].bioma === 'OCEAN' && tempEntity.virtualVelocity.x > 0){
+                        this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y].biome === 'OCEAN' && tempEntity.virtualVelocity.x > 0){
                         tempEntity.virtualVelocity.x = 0;
                     }
 
                     pass = this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] !== undefined && this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] !== undefined;
                     if(this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] &&
-                        this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y].bioma === 'OCEAN' && tempEntity.virtualVelocity.x < 0){
+                        this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y].biome === 'OCEAN' && tempEntity.virtualVelocity.x < 0){
                         tempEntity.virtualVelocity.x = 0;
                     }
                 }
@@ -595,7 +595,7 @@ var GameScreen = AbstractScreen.extend({
         // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * APP.nTileSize - Math.floor(this.mapPosition.y*2)};
         var i = 0;
         var j = 0;
-        var sizeHelper = 5;
+        var sizeHelper = 8;
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
             this.bgContainer.addChild(this.currentNode.bgLayer1);
