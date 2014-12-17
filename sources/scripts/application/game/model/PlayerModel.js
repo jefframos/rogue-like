@@ -139,6 +139,7 @@ var PlayerModel = Class.extend({
 
 		// this.velocity = 6 - (255 - this.speed) / 25 + 5;
 		this.velocity = 8 - (255 - this.speed) / 35 + 2;
+		this.velocity /= 3;
 		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * 1.3;
 
 
@@ -307,6 +308,7 @@ var PlayerModel = Class.extend({
 		this.mp = this.mpMax;
 
 		this.velocity = 8 - (255 - this.speed) / 35  + 2;// + 5;
+		this.velocity /= 3;
 		this.fireFreq = ((255 - this.speed) / (this.speed * 0.4)) * (1.1 + (this.speedModifier*1000));
 		if(this.fireFreq <= 4)
 		{

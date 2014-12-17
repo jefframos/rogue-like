@@ -24,8 +24,8 @@ var TileDesigner = Class.extend({
 		
 	},
 	improveColors: function(data,type){
-		for (var ii = data.length - 1; ii >= 0; ii--) {
-			for (var jj = data[ii].length - 1; jj >= 0; jj--) {
+		for (var ii = data.length - 2; ii >= 1; ii--) {
+			for (var jj = data[ii].length - 2; jj >= 1; jj--) {
 				if(data[ii][jj] !== undefined){
 					if(data[ii][jj].biome !== undefined && data[ii][jj].biome === type){
 						for (var kk = jj; kk >= jj - 4; kk--) {

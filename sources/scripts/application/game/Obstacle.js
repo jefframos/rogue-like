@@ -11,7 +11,7 @@ var Obstacle = Entity.extend({
   
         this.srcImg =  this.arrayObstacles[imgId];
         this.type = 'environment';
-        this.width = APP.nTileSize;
+        this.width = APP.nTileSize / 1.8;
         this.height = APP.nTileSize / 2;
 
         this.debugGraphic = new PIXI.Graphics();

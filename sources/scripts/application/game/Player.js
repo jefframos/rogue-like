@@ -51,7 +51,7 @@ var Player = SpritesheetEntity.extend({
         // this.mp = this.playerModel.mp;
         // this.mpMax = this.playerModel.mp;
 
-        this.defaultVelocity = this.playerModel.velocity * 0.5;
+        this.defaultVelocity = this.playerModel.velocity;
 
         this.fireFreq = this.playerModel.fireFreq - 3;
 
@@ -144,10 +144,11 @@ var Player = SpritesheetEntity.extend({
         this.reset();
         this.counter = 0;
 
-        this.debugGraphic = new PIXI.Graphics();
-        this.debugGraphic.beginFill(0xFF3300);
-        this.debugGraphic.lineStyle(1, 0xffd900, 1);
-        this.debugGraphic.endFill();
+        // this.debugGraphic = new PIXI.Graphics();
+        // this.debugGraphic.beginFill(0xFF3300);
+        // this.debugGraphic.lineStyle(1, 0xffd900, 1);
+        // this.debugGraphic.endFill();
+        
         // console.log('level', this.playerModel.level);
 
     },
@@ -214,7 +215,7 @@ var Player = SpritesheetEntity.extend({
         if(this.hasteAcum > 0){
             this.hasteAcum --;
         }else{
-            this.defaultVelocity = this.playerModel.velocity  * 0.5;
+            this.defaultVelocity = this.playerModel.velocity;
         }
         if(!this.isTouch && this.returnCollider <= 0){
             this.velocity = this.virtualVelocity;
@@ -307,7 +308,7 @@ var Player = SpritesheetEntity.extend({
             this.setVelocity(0,0);
         }
         this._super();
-        this.debugPolygon(0x556644, true);
+        // this.debugPolygon(0x556644, true);
 
         if(this.getTexture() && this.playerModel.graphicsData.positionSprite){
             if(this.playerModel.graphicsData.positionSprite.x){
@@ -441,7 +442,7 @@ var Player = SpritesheetEntity.extend({
     },
     preKill:function(){
         this._super();
-        if(this.debugGraphic.parent){
+        if(this.debugGraphic !== undefined && this.debugGraphic.parent){
             this.debugGraphic.parent.removeChild(this.debugGraphic);
             this.playerDead = true;
         }

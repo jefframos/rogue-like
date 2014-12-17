@@ -505,6 +505,11 @@ var GameScreen = AbstractScreen.extend({
                     var nextStepLeft = {x:nextStep.x - tempEntity.width,y:nextStep.y};
                     var nextStepRight = {x:nextStep.x + tempEntity.width,y:nextStep.y};
 
+                    // var nextStepDown = {x:nextStep.x,y:nextStep.y + tempEntity.range};
+                    // var nextStepUp = {x:nextStep.x,y:nextStep.y - tempEntity.range};
+                    // var nextStepLeft = {x:nextStep.x - tempEntity.range,y:nextStep.y};
+                    // var nextStepRight = {x:nextStep.x + tempEntity.range,y:nextStep.y};
+
 
                     var tilePositionDown = {x:Math.floor(nextStepDown.x / APP.nTileSize),y:Math.floor(nextStepDown.y / APP.nTileSize)};
                     var tilePositionUp = {x:Math.floor(nextStepUp.x / APP.nTileSize),y:Math.floor(nextStepUp.y / APP.nTileSize)};

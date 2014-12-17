@@ -1261,7 +1261,7 @@ var Application = AbstractApplication.extend({
 }), Obstacle = Entity.extend({
     init: function(imgId) {
         this._super(), this.updateable = !0, this.collidable = !0, this.arrayObstacles = [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png" ], 
-        this.srcImg = this.arrayObstacles[imgId], this.type = "environment", this.width = APP.nTileSize, 
+        this.srcImg = this.arrayObstacles[imgId], this.type = "environment", this.width = APP.nTileSize / 1.8, 
         this.height = APP.nTileSize / 2, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0;
     },
@@ -1316,7 +1316,7 @@ var Application = AbstractApplication.extend({
         this.weaponModel = wModel;
     },
     updateAtt: function() {
-        this.defaultVelocity = .5 * this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3, 
+        this.defaultVelocity = this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3, 
         this.fireSpeed = this.fireModel.fireSpeed, this.fireSpeed < 1.1 * this.defaultVelocity && (this.fireSpeed = 1.1 * this.defaultVelocity), 
         this.fireStepLive = this.fireModel.fireStepLive;
     },
@@ -1349,9 +1349,7 @@ var Application = AbstractApplication.extend({
         this.spritesheet.addAnimation(animationIdleDown), this.spritesheet.addAnimation(animationIdleUp), 
         this.spritesheet.addAnimation(animationDown), this.spritesheet.addAnimation(animationUp), 
         this.spritesheet.addAnimation(animationSide), this.spritesheet.addAnimation(animationIdleSide), 
-        this.spritesheet.play("idleDown"), this.reset(), this.counter = 0, this.debugGraphic = new PIXI.Graphics(), 
-        this.debugGraphic.beginFill(16724736), this.debugGraphic.lineStyle(1, 16767232, 1), 
-        this.debugGraphic.endFill();
+        this.spritesheet.play("idleDown"), this.reset(), this.counter = 0;
     },
     getBounds: function() {
         return this.bounds = {
@@ -1400,7 +1398,7 @@ var Application = AbstractApplication.extend({
         }
     },
     update: function() {
-        this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = .5 * this.playerModel.velocity, 
+        this.hasteAcum > 0 ? this.hasteAcum-- : this.defaultVelocity = this.playerModel.velocity, 
         !this.isTouch && this.returnCollider <= 0 && (this.velocity = this.virtualVelocity), 
         this.mouseAngle = Math.atan2(windowHeight / 2 - APP.getMousePos().y + this.centerPosition.y, windowWidth / 2 - APP.getMousePos().x + this.centerPosition.x);
         var motion = "side";
@@ -1408,7 +1406,7 @@ var Application = AbstractApplication.extend({
         "side" === motion && (this.spritesheet.scale.x = APP.getMousePos().x < windowWidth / 2 + this.centerPosition.x ? 1 : -1), 
         this.velocity.y + this.velocity.x !== 0 ? this.spritesheet.play(motion) : "side" === motion ? this.spritesheet.play("idleSide") : "up" === motion ? this.spritesheet.play("idleUp") : "down" === motion && this.spritesheet.play("idleDown"), 
         this.returnCollider > 0 && this.returnCollider--, this.deading && this.setVelocity(0, 0), 
-        this._super(), this.debugPolygon(5596740, !0), this.getTexture() && this.playerModel.graphicsData.positionSprite && (this.playerModel.graphicsData.positionSprite.x && (this.getContent().position.x = this.playerModel.graphicsData.positionSprite.x), 
+        this._super(), this.getTexture() && this.playerModel.graphicsData.positionSprite && (this.playerModel.graphicsData.positionSprite.x && (this.getContent().position.x = this.playerModel.graphicsData.positionSprite.x), 
         this.playerModel.graphicsData.positionSprite.y && (this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y));
     },
     spell: function(mousePos, spellModel) {
@@ -1459,7 +1457,7 @@ var Application = AbstractApplication.extend({
         }
     },
     preKill: function() {
-        this._super(), this.debugGraphic.parent && (this.debugGraphic.parent.removeChild(this.debugGraphic), 
+        this._super(), void 0 !== this.debugGraphic && this.debugGraphic.parent && (this.debugGraphic.parent.removeChild(this.debugGraphic), 
         this.playerDead = !0);
     },
     regenHP: function(value) {
@@ -1816,8 +1814,8 @@ var Application = AbstractApplication.extend({
         this.mpMax = this.baseMP * (this.magicPower + 32) / 32, this.mp = this.mpMax, this.critialChance = 0, 
         this.speedStatus = "normal", this.vigor2 = 2 * this.vigor, this.vigor >= 128 && (this.vigor2 = 255), 
         this.attack = this.battlePower + this.vigor2, this.xp = 0, this.velocity = 8 - (255 - this.speed) / 35 + 2, 
-        this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.3, this.entity = null, 
-        this.csvStr = "level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n", 
+        this.velocity /= 3, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.3, 
+        this.entity = null, this.csvStr = "level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n", 
         this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n", 
         console.log("PlayerModel", this);
         var nextl = this.level, befl = this.level - 1;
@@ -1864,7 +1862,7 @@ var Application = AbstractApplication.extend({
         this.baseHPModifier -= .008, this.baseMPModifier += .02, this.baseHP = this.level * (20 / this.baseHPModifier), 
         this.baseMP = this.level * (20 / this.baseMPModifier), this.hpMax += this.baseHP * (this.stamina + 32) / 32, 
         this.hp = this.hpMax, this.mpMax += this.baseMP * (this.magicPower + 32) / 32, this.mp = this.mpMax, 
-        this.velocity = 8 - (255 - this.speed) / 35 + 2, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * (1.1 + 1e3 * this.speedModifier), 
+        this.velocity = 8 - (255 - this.speed) / 35 + 2, this.velocity /= 3, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * (1.1 + 1e3 * this.speedModifier), 
         this.fireFreq <= 4 && (this.fireFreq = 4), this.fireFreq >= 25 && (this.fireFreq = 25), 
         this.velocity >= 9 && (this.velocity = 9), this.velocity <= 2 && (this.velocity = 2), 
         this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n", 
@@ -2219,7 +2217,7 @@ var Application = AbstractApplication.extend({
         this.improveColors(data, "ROAD2"), this.improveColors(data, "ROAD1"), this.improveColors(data, "ROAD3");
     },
     improveColors: function(data, type) {
-        for (var ii = data.length - 1; ii >= 0; ii--) for (var jj = data[ii].length - 1; jj >= 0; jj--) if (void 0 !== data[ii][jj] && void 0 !== data[ii][jj].biome && data[ii][jj].biome === type) for (var kk = jj; kk >= jj - 4; kk--) void 0 !== data[ii][kk].biome && (data[ii][kk].biome = type);
+        for (var ii = data.length - 2; ii >= 1; ii--) for (var jj = data[ii].length - 2; jj >= 1; jj--) if (void 0 !== data[ii][jj] && void 0 !== data[ii][jj].biome && data[ii][jj].biome === type) for (var kk = jj; kk >= jj - 4; kk--) void 0 !== data[ii][kk].biome && (data[ii][kk].biome = type);
     },
     roundTilesBaseIsland: function(data, type) {
         for (var tempTL = null, tempT = null, tempTR = null, tempL = null, tempR = null, tempBL = null, tempB = null, tempBR = null, current = null, ocean = function(data) {
