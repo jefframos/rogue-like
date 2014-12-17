@@ -31,7 +31,7 @@ var defaultColors = {
 	    TROPICAL_SEASONAL_FOREST: 0x559944
 	};
 
-var displayColors = {
+var displayColorsOld = {
 	    // Features
 	    OCEAN: 0x44447a,
 	    COAST: 0x33335a,
@@ -69,6 +69,50 @@ var displayColors = {
 	    GRASSLAND: 0x4fa319,
 	    SUBTROPICAL_DESERT: 0x4fa319,
 	    STANDARD3: 0x4fa319
+
+	};
+var displayColors = {
+	    // Features
+	    OCEAN: 0x44447a,
+	    COAST: 0x33335a,
+	    LAKESHORE: 0x225588,
+	    LAKE: 0x336699,
+	    MARSH: 0x2f6666,
+	    ICE: 0x99ffff,
+	    RIVER: 0x225588,
+	    // BEACH: 0xa09077,
+
+	    BEACH: 0x336339,
+	    NULL: 0x336339,
+	    // NULL: 0xFF0000,
+
+
+	    ROAD3: 0xC19C70,
+	    ROAD2: 0x9B6E4D,
+	    ROAD1: 0x402A1C,
+	    BRIDGE: 0x686860,
+	    LAVA: 0xcc3333,
+
+	    // Terrain 0x315b16
+	    SNOW: 0x3d8e09,
+	    TUNDRA: 0x3d8e09,
+	    BARE: 0x3d8e09,
+	    SCORCHED: 0x3d8e09,
+	    TAIGA: 0x3d8e09,
+	    STANDARD1: 0x488E5A,
+
+	    TEMPERATE_RAIN_FOREST: 0x315b16,
+	    TEMPERATE_DECIDUOUS_FOREST: 0x315b16,
+	    TROPICAL_RAIN_FOREST: 0x315b16,
+	    TROPICAL_SEASONAL_FOREST: 0x315b16,
+	    STANDARD2: 0x3D7747,
+
+	    
+	    SHRUBLAND: 0x4fa319,
+	    TEMPERATE_DESERT: 0x4fa319,
+	    GRASSLAND: 0x4fa319,
+	    SUBTROPICAL_DESERT: 0x4fa319,
+	    STANDARD3: 0x488E5A
 
 	};
 var tilesGraphics = {
@@ -122,20 +166,24 @@ var LevelGenerator = Class.extend({
 		// 		}
 		// 	}
 		// }
-
-
-
-		// for (var i = this.parent.marginTiles.x + 1; i < this.parent.tempSizeTiles.x-this.parent.marginTiles.x + 1; i++) {
-		// 	for (var j = this.parent.marginTiles.y + 1; j < this.parent.tempSizeTiles.y-this.parent.marginTiles.y + 1; j++) {
-		// 		if(this.parent.currentNode.getNextFloat() > 0.95)
-		// 		{
-		// 			var obs = new Obstacle(1);
-		// 			obs.build();
-		// 			obs.setPosition((j)* APP.nTileSize+ this.parent.mapPosition.x, (i+1)* APP.nTileSize+ this.parent.mapPosition.y);
-		// 			this.parent.entityLayer.addChild(obs);
-		// 		}
-		// 	}
-		// }
+		var accBounds = 2;
+		for (var i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) {
+			for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) {
+				if(Math.random() < 0.08 &&
+					this.parent.currentNode.mapData[i][j]!== undefined &&
+					this.parent.currentNode.mapData[i][j].biome !== undefined &&
+					this.parent.currentNode.mapData[i][j].biome !== 'OCEAN' &&
+					this.parent.currentNode.mapData[i][j].biome !== 'BEACH'){
+					
+					var obs = new Obstacle(Math.floor(Math.random() * 4));
+					obs.build();
+					obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize);
+					this.parent.entityLayer.addChild(obs);
+				}
+					// this.parent.currentNode.mapData[i][k] = {biome:'OCEAN', position:'CENTER'};
+				// }
+			}
+		}
 	},
 	createRoom: function(){
 		var i = 0;

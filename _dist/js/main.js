@@ -1260,9 +1260,9 @@ var Application = AbstractApplication.extend({
     }
 }), Obstacle = Entity.extend({
     init: function(imgId) {
-        this._super(), this.updateable = !0, this.collidable = !0, this.arrayObstacles = [ "_dist/img/2.png", "_dist/img/3.png", "_dist/img/2.png" ], 
-        this.srcImg = this.arrayObstacles[imgId], this.type = "environment", this.width = APP.tileSize.x, 
-        this.height = APP.tileSize.x, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
+        this._super(), this.updateable = !0, this.collidable = !0, this.arrayObstacles = [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png" ], 
+        this.srcImg = this.arrayObstacles[imgId], this.type = "environment", this.width = APP.nTileSize, 
+        this.height = APP.nTileSize / 2, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0;
     },
     preKill: function() {
@@ -1278,12 +1278,10 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super(this.srcImg);
-        this.sprite.anchor.x = 0, this.sprite.anchor.y = 1;
+        this.sprite.anchor.x = .5, this.sprite.anchor.y = 1;
     },
     update: function() {
-        this._super(), null === this.debugGraphic.parent && null !== this.getContent().parent && (this.getBounds(), 
-        this.debugGraphic.drawRect(this.bounds.x, this.bounds.y, this.bounds.w, this.bounds.h), 
-        this.getContent().parent.addChild(this.debugGraphic));
+        this._super();
     },
     respaw: function() {
         var rndPos = {
@@ -1941,7 +1939,7 @@ var Application = AbstractApplication.extend({
     SUBTROPICAL_DESERT: 13810059,
     TROPICAL_RAIN_FOREST: 3372885,
     TROPICAL_SEASONAL_FOREST: 5609796
-}, displayColors = {
+}, displayColorsOld = {
     OCEAN: 4473978,
     COAST: 3355482,
     LAKESHORE: 2250120,
@@ -1972,6 +1970,37 @@ var Application = AbstractApplication.extend({
     GRASSLAND: 5219097,
     SUBTROPICAL_DESERT: 5219097,
     STANDARD3: 5219097
+}, displayColors = {
+    OCEAN: 4473978,
+    COAST: 3355482,
+    LAKESHORE: 2250120,
+    LAKE: 3368601,
+    MARSH: 3106406,
+    ICE: 10092543,
+    RIVER: 2250120,
+    BEACH: 3367737,
+    NULL: 3367737,
+    ROAD3: 12688496,
+    ROAD2: 10186317,
+    ROAD1: 4205084,
+    BRIDGE: 6842464,
+    LAVA: 13382451,
+    SNOW: 4034057,
+    TUNDRA: 4034057,
+    BARE: 4034057,
+    SCORCHED: 4034057,
+    TAIGA: 4034057,
+    STANDARD1: 4755034,
+    TEMPERATE_RAIN_FOREST: 3234582,
+    TEMPERATE_DECIDUOUS_FOREST: 3234582,
+    TROPICAL_RAIN_FOREST: 3234582,
+    TROPICAL_SEASONAL_FOREST: 3234582,
+    STANDARD2: 4028231,
+    SHRUBLAND: 5219097,
+    TEMPERATE_DESERT: 5219097,
+    GRASSLAND: 5219097,
+    SUBTROPICAL_DESERT: 5219097,
+    STANDARD3: 4755034
 }, tilesGraphics = {
     TOP_LEFT: "_dist/img/levels/leftTop.png",
     TOP_RIGHT: "_dist/img/levels/rightTop.png",
@@ -1995,7 +2024,12 @@ var Application = AbstractApplication.extend({
         }
         return monsters;
     },
-    putObstacles: function() {},
+    putObstacles: function() {
+        for (var accBounds = 2, i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (Math.random() < .08 && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && "OCEAN" !== this.parent.currentNode.mapData[i][j].biome && "BEACH" !== this.parent.currentNode.mapData[i][j].biome) {
+            var obs = new Obstacle(Math.floor(4 * Math.random()));
+            obs.build(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize), this.parent.entityLayer.addChild(obs);
+        }
+    },
     createRoom: function() {
         var i = 0;
         this.distanceToShowMap = 8;
@@ -2185,7 +2219,7 @@ var Application = AbstractApplication.extend({
         this.improveColors(data, "ROAD2"), this.improveColors(data, "ROAD1"), this.improveColors(data, "ROAD3");
     },
     improveColors: function(data, type) {
-        for (var ii = data.length - 1; ii >= 0; ii--) for (var jj = data[ii].length - 1; jj >= 0; jj--) if (void 0 !== data[ii][jj].biome && data[ii][jj].biome === type) for (var kk = jj; kk >= jj - 4; kk--) void 0 !== data[ii][kk].biome && (data[ii][kk].biome = type);
+        for (var ii = data.length - 1; ii >= 0; ii--) for (var jj = data[ii].length - 1; jj >= 0; jj--) if (void 0 !== data[ii][jj] && void 0 !== data[ii][jj].biome && data[ii][jj].biome === type) for (var kk = jj; kk >= jj - 4; kk--) void 0 !== data[ii][kk].biome && (data[ii][kk].biome = type);
     },
     roundTilesBaseIsland: function(data, type) {
         for (var tempTL = null, tempT = null, tempTR = null, tempL = null, tempR = null, tempBL = null, tempB = null, tempBR = null, current = null, ocean = function(data) {

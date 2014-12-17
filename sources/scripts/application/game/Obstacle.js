@@ -4,12 +4,15 @@ var Obstacle = Entity.extend({
         this._super();
         this.updateable = true;
         this.collidable = true;
-        this.arrayObstacles = ['_dist/img/2.png','_dist/img/3.png','_dist/img/2.png'];
+        this.arrayObstacles = ['_dist/img/flora/florest1/tree1.png',
+        '_dist/img/flora/florest1/tree2.png',
+        '_dist/img/flora/florest1/tree3.png',
+        '_dist/img/flora/florest1/tree4.png'];
   
         this.srcImg =  this.arrayObstacles[imgId];
         this.type = 'environment';
-        this.width = APP.tileSize.x;
-        this.height = APP.tileSize.x;
+        this.width = APP.nTileSize;
+        this.height = APP.nTileSize / 2;
 
         this.debugGraphic = new PIXI.Graphics();
         this.debugGraphic.beginFill(0xFF3300);
@@ -38,7 +41,7 @@ var Obstacle = Entity.extend({
         this._super(this.srcImg);
         var self = this;
         // this.respaw();
-        this.sprite.anchor.x = 0;
+        this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 1;
 
         // this.sprite.scale.x = 0.5;
@@ -47,13 +50,13 @@ var Obstacle = Entity.extend({
     update: function(){
         this._super();
 
-        if(this.debugGraphic.parent === null && this.getContent().parent !== null)
-        {
-            this.getBounds();
-            this.debugGraphic.drawRect(this.bounds.x, this.bounds.y,this.bounds.w, this.bounds.h);
+        // if(this.debugGraphic.parent === null && this.getContent().parent !== null)
+        // {
+        //     this.getBounds();
+        //     this.debugGraphic.drawRect(this.bounds.x, this.bounds.y,this.bounds.w, this.bounds.h);
 
-            this.getContent().parent.addChild(this.debugGraphic);
-        }
+        //     this.getContent().parent.addChild(this.debugGraphic);
+        // }
     },
     respaw: function(){
         // var rndPos = {x:(windowWidth - 200) * Math.random() + 100,
