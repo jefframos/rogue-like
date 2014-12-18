@@ -1,4 +1,4 @@
-/*! jefframos 17-12-2014 */
+/*! jefframos 18-12-2014 */
 !function(m, j) {
     function s(a, e) {
         for (var g in e) try {
@@ -5237,7 +5237,7 @@ var DefaultButton = Class.extend({
         this.graphDebug.lineStyle(5, 16711680));
         for (var i = env.length - 1; i >= 0; i--) {
             var isTouch = !1;
-            if (tempEnv = env[i], "environment" === tempEnv.type) {
+            if (tempEnv = env[i], "environment" === tempEnv.type && tempEnv.collidable) {
                 tempEnvBounds = tempEnv.getBounds();
                 for (var j = entities.length - 1; j >= 0; j--) if (tempEntity = entities[j], "environment" !== tempEntity.type && tempEntity.collidable) {
                     if (tempEntityBounds = tempEntity.getBounds(), tempEntityBounds.y += tempEntity.virtualVelocity.y, 

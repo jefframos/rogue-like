@@ -30,7 +30,7 @@ var BoundCollisionSystem = Class.extend({
 
             //pega o ambiente
             tempEnv = env[i];
-            if(tempEnv.type === 'environment'){
+            if(tempEnv.type === 'environment' && tempEnv.collidable){
                 tempEnvBounds = tempEnv.getBounds();
                 for (var j = entities.length - 1; j >= 0; j--) {
                     tempEntity = entities[j];

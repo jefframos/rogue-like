@@ -1272,7 +1272,7 @@ var Application = AbstractApplication.extend({
     init: function() {
         this._super(), this.updateable = !0, this.collidable = !0, this.arrayObstacles = Math.random() < .5 ? arrayThrees[0] : arrayRocks[0], 
         this.srcImg = this.arrayObstacles[Math.floor(Math.random() * this.arrayObstacles.length)], 
-        this.type = "environment", this.width = APP.nTileSize / 1.8, this.height = APP.nTileSize / 2, 
+        this.type = "environment", this.width = APP.nTileSize / 1.8, this.height = APP.nTileSize / 2.5, 
         this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0, 
         this.life = 3;
@@ -1315,6 +1315,7 @@ var Application = AbstractApplication.extend({
         this.sprite.anchor.x = .5, this.sprite.anchor.y = 1, this.getContent().type = this.type;
     },
     update: function() {
+        this.collidable = APP.getGame().player && pointDistance(APP.getGame().player.getPosition().x, APP.getGame().player.getPosition().y, this.getPosition().x, this.getPosition().y) < windowHeight ? !0 : !1, 
         this._super();
     },
     respaw: function() {

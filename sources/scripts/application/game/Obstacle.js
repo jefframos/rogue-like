@@ -8,7 +8,7 @@ var Obstacle = Entity.extend({
         this.srcImg =  this.arrayObstacles[Math.floor(Math.random() * this.arrayObstacles.length)];
         this.type = 'environment';
         this.width = APP.nTileSize / 1.8;
-        this.height = APP.nTileSize / 2;
+        this.height = APP.nTileSize / 2.5;
 
         this.debugGraphic = new PIXI.Graphics();
         this.debugGraphic.beginFill(0xFF3300);
@@ -68,6 +68,16 @@ var Obstacle = Entity.extend({
         // this.sprite.scale.y = 0.5;
     },
     update: function(){
+        
+        if(APP.getGame().player && pointDistance(APP.getGame().player.getPosition().x, APP.getGame().player.getPosition().y, this.getPosition().x, this.getPosition().y) < windowHeight){
+            this.collidable = true;
+            // this.updateable = true;
+
+        }else{
+            this.collidable = false;
+            // this.updateable = false;
+        }
+
         this._super();
         // if(this.debugGraphic.parent === null && this.getContent().parent !== null)
         // {

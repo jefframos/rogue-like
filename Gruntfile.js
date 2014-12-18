@@ -42,36 +42,17 @@ module.exports = function(grunt) {
                 }
             },
 
-            // plugins: {
-            //     dest: '<%= globalConfig.dest %>js/lib/plugins.js',
-            //     src: [
-            //         '<%= globalConfig.src %>scripts/plugins/fpsmeter.js',
-            //         // '<%= globalConfig.src %>scripts/plugins/qrcode.min.js',
-            //         '<%= globalConfig.src %>scripts/plugins/microevent.js',
-            //         // '<%= globalConfig.src %>scripts/plugins/proton.js',
-            //         // '<%= globalConfig.src %>scripts/plugins/hammer.min.js',
-            //         '<%= globalConfig.src %>scripts/plugins/pixi.js',
-            //         // '<%= globalConfig.src %>scripts/plugins/modernizr-2.7.1.min.js',
-            //         // '<%= globalConfig.src %>scripts/plugins/jquery-1.11.0.min.js',
-            //         '<%= globalConfig.src %>scripts/plugins/class.js',
-            //         // '<%= globalConfig.src %>scripts/plugins/perlin-noise.js',
-            //         // '<%= globalConfig.src %>scripts/plugins/voronoi-map-min.js',
-            //         '<%= globalConfig.src %>scripts/plugins/easegame/**/*.js'
-            //     ]
-            // }
+            plugins: {
+                dest: '<%= globalConfig.dest %>js/lib/plugins.js',
+                src: [
+                    '<%= globalConfig.src %>scripts/plugins/fpsmeter.js',
+                    '<%= globalConfig.src %>scripts/plugins/microevent.js',
+                    '<%= globalConfig.src %>scripts/plugins/pixi.js',
+                    '<%= globalConfig.src %>scripts/plugins/class.js',
+                    '<%= globalConfig.src %>scripts/plugins/easegame/**/*.js'
+                ]
+            }
         },
-
-        // css preprocessor compiler, compression and concatenation
-        // stylus: {
-        //     options : {
-        //         banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
-        //     },
-        //     compile: {
-        //         files: {
-        //             '<%= globalConfig.dest %>/css/main.css': ['sources/styles/main.styl']
-        //         }
-        //     }
-        // },
 
         jshint: {
             all: [
@@ -101,17 +82,16 @@ module.exports = function(grunt) {
         //         }]
         //     }
         // },
+        plugins: {
+            js2: {
+                tasks: ['uglify:plugins']
+            }
+        }, // watch
 
         watch: {
-            // css: {
-            //     files: [
-            //         'sources/styles/*.styl'
-            //     ],
-            //     tasks: ['stylus']
-            // },
             js: {
                 files: ['<%= jshint.all %>'],
-                tasks: ['jshint','uglify']
+                tasks: ['jshint','uglify:dist']
             }
         } // watch
     });
@@ -121,7 +101,7 @@ module.exports = function(grunt) {
 
     // tasks
     grunt.registerTask('js', [ 'jshint', 'uglify' ]);
-    // grunt.registerTask('css', ['stylus']);
-    // grunt.registerTask('default', ['js','css']);
-    grunt.registerTask('w', ['default', 'watch']);
+    grunt.registerTask('js2', ['uglify' ]);
+    grunt.registerTask('pl', ['plugins']);
+    grunt.registerTask('w', ['watch']);
 };
