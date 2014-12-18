@@ -144,11 +144,17 @@ var Player = SpritesheetEntity.extend({
         this.reset();
         this.counter = 0;
 
+        this.lakeMask = new PIXI.Graphics();
+        this.lakeMask.beginFill(0xFF3300);
+        this.lakeMask.drawRect(0,-40,50,50);
+        this.lakeMask.endFill();
+        this.lakeMask.alpha = 0;
+
         // this.debugGraphic = new PIXI.Graphics();
         // this.debugGraphic.beginFill(0xFF3300);
         // this.debugGraphic.lineStyle(1, 0xffd900, 1);
         // this.debugGraphic.endFill();
-        
+
         // console.log('level', this.playerModel.level);
 
     },
@@ -253,62 +259,15 @@ var Player = SpritesheetEntity.extend({
             
         }
 
-        // if(this.velocity.y > 0){
-        //     this.spritesheet.scale.x = 1;
-        //     this.spritesheet.play(motion);
-        // }else if(this.velocity.y < 0){
-        //     this.spritesheet.scale.x = 1;
-        //     this.spritesheet.play(motion);
-        // }else if(this.velocity.x < 0){
-        //     this.spritesheet.scale.x = 1;
-        //     this.spritesheet.play(motion);
-        // }else if(this.velocity.x > 0){
-        //     this.spritesheet.scale.x = -1;
-        //     this.spritesheet.play(motion);
-        // }else{
-        //     // console.log(this.spritesheet.currentAnimation.label);
-        //     if(this.spritesheet.currentAnimation.label === motion){
-        //         this.spritesheet.play('idleSide');
-        //     }else if(this.spritesheet.currentAnimation.label === motion){
-        //         this.spritesheet.play('idleUp');
-        //     }else if(this.spritesheet.currentAnimation.label === motion){
-        //         this.spritesheet.play('idleDown');
-        //     }
-            
-        // }
-
-
-        // if(this.velocity.y > 0){
-        //     this.spritesheet.scale.x = 1;
-        //     this.spritesheet.play('down');
-        // }else if(this.velocity.y < 0){
-        //     this.spritesheet.scale.x = 1;
-        //     this.spritesheet.play('up');
-        // }else if(this.velocity.x < 0){
-        //     this.spritesheet.scale.x = 1;
-        //     this.spritesheet.play('side');
-        // }else if(this.velocity.x > 0){
-        //     this.spritesheet.scale.x = -1;
-        //     this.spritesheet.play('side');
-        // }else{
-        //     // console.log(this.spritesheet.currentAnimation.label);
-        //     if(this.spritesheet.currentAnimation.label === 'side'){
-        //         this.spritesheet.play('idleSide');
-        //     }else if(this.spritesheet.currentAnimation.label === 'up'){
-        //         this.spritesheet.play('idleUp');
-        //     }else if(this.spritesheet.currentAnimation.label === 'down'){
-        //         this.spritesheet.play('idleDown');
-        //     }
-            
-        // }
         if(this.returnCollider > 0){
             this.returnCollider --;
         }
         if(this.deading){
             this.setVelocity(0,0);
         }
-        this._super();
-        // this.debugPolygon(0x556644, true);
+        
+       
+
 
         if(this.getTexture() && this.playerModel.graphicsData.positionSprite){
             if(this.playerModel.graphicsData.positionSprite.x){
@@ -318,6 +277,26 @@ var Player = SpritesheetEntity.extend({
                 this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y;
             }
         }
+
+        // this.debugPolygon(0x556644, true);
+        if(this.getContent() && this.getContent().parent && this.lakeMask && !this.lakeMask.parent){
+            this.getContent().parent.addChild(this.lakeMask);
+        }else if(this.lakeMask){
+            this.lakeMask.position.x = this.getPosition().x;
+            this.lakeMask.position.y = this.getPosition().y;
+        }
+
+        if(APP.getPlayerTileType() === 'LAKE'){
+            // this.getContent().
+            this.getContent().mask = this.lakeMask;
+            this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y + 10;
+            this.defaultVelocity = this.playerModel.velocity / 2;
+        }else{
+            this.getContent().mask = null;
+            this.defaultVelocity = this.playerModel.velocity;
+        }
+
+        this._super();
     },
     //spell
     spell: function(mousePos, spellModel){

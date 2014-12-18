@@ -27,6 +27,9 @@ var Application = AbstractApplication.extend({
     getEffectsContainer:function(){
         return this.gameScreen.effectsContainer;
     },
+    getPlayerTileType:function(){
+        return this.gameScreen.getPlayerTileType();
+    },
     getGame:function(){
         return this.gameScreen;
     },

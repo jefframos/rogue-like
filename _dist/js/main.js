@@ -1,4 +1,4 @@
-/*! jefframos 17-12-2014 */
+/*! jefframos 18-12-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -203,6 +203,9 @@ var Application = AbstractApplication.extend({
     },
     getEffectsContainer: function() {
         return this.gameScreen.effectsContainer;
+    },
+    getPlayerTileType: function() {
+        return this.gameScreen.getPlayerTileType();
     },
     getGame: function() {
         return this.gameScreen;
@@ -1087,7 +1090,7 @@ var Application = AbstractApplication.extend({
     }
 }), Fire = Entity.extend({
     init: function(vel) {
-        this._super(!0), this.updateable = !1, this.deading = !1, this.range = 60, this.width = 1, 
+        this._super(!0), this.updateable = !1, this.deading = !1, this.range = 20, this.width = 1, 
         this.height = 1, this.type = "fire", this.target = "enemy", this.fireType = "physical", 
         this.node = null, this.velocity.x = vel.x, this.velocity.y = vel.y, this.timeLive = 10, 
         this.power = 1, this.defaultVelocity = 1, this.imgSource = "_dist/img/spells/fire1.png";
@@ -1145,8 +1148,8 @@ var Application = AbstractApplication.extend({
         this.debugGraphic.endFill();
     },
     update: function() {
-        this._super(), this.timeLive--, this.timeLive <= 0 && this.preKill(), this.getContent() && (this.width = this.getContent().width, 
-        this.height = this.getContent().height), this.getBounds(), this.range = this.width / 2;
+        this._super(), this.timeLive--, this.timeLive <= 0 && this.preKill(), this.getContent() && (this.width = .3 * this.getContent().width, 
+        this.height = .3 * this.getContent().height), this.getBounds(), this.range = this.width / .3;
     },
     collide: function(arrayCollide) {
         this.collidable && arrayCollide[0].type === this.target && (this.preKill(), arrayCollide[0].hurt(this.power, this.fireType));
@@ -1349,7 +1352,9 @@ var Application = AbstractApplication.extend({
         this.spritesheet.addAnimation(animationIdleDown), this.spritesheet.addAnimation(animationIdleUp), 
         this.spritesheet.addAnimation(animationDown), this.spritesheet.addAnimation(animationUp), 
         this.spritesheet.addAnimation(animationSide), this.spritesheet.addAnimation(animationIdleSide), 
-        this.spritesheet.play("idleDown"), this.reset(), this.counter = 0;
+        this.spritesheet.play("idleDown"), this.reset(), this.counter = 0, this.lakeMask = new PIXI.Graphics(), 
+        this.lakeMask.beginFill(16724736), this.lakeMask.drawRect(0, -40, 50, 50), this.lakeMask.endFill(), 
+        this.lakeMask.alpha = 0;
     },
     getBounds: function() {
         return this.bounds = {
@@ -1406,8 +1411,13 @@ var Application = AbstractApplication.extend({
         "side" === motion && (this.spritesheet.scale.x = APP.getMousePos().x < windowWidth / 2 + this.centerPosition.x ? 1 : -1), 
         this.velocity.y + this.velocity.x !== 0 ? this.spritesheet.play(motion) : "side" === motion ? this.spritesheet.play("idleSide") : "up" === motion ? this.spritesheet.play("idleUp") : "down" === motion && this.spritesheet.play("idleDown"), 
         this.returnCollider > 0 && this.returnCollider--, this.deading && this.setVelocity(0, 0), 
-        this._super(), this.getTexture() && this.playerModel.graphicsData.positionSprite && (this.playerModel.graphicsData.positionSprite.x && (this.getContent().position.x = this.playerModel.graphicsData.positionSprite.x), 
-        this.playerModel.graphicsData.positionSprite.y && (this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y));
+        this.getTexture() && this.playerModel.graphicsData.positionSprite && (this.playerModel.graphicsData.positionSprite.x && (this.getContent().position.x = this.playerModel.graphicsData.positionSprite.x), 
+        this.playerModel.graphicsData.positionSprite.y && (this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y)), 
+        this.getContent() && this.getContent().parent && this.lakeMask && !this.lakeMask.parent ? this.getContent().parent.addChild(this.lakeMask) : this.lakeMask && (this.lakeMask.position.x = this.getPosition().x, 
+        this.lakeMask.position.y = this.getPosition().y), "LAKE" === APP.getPlayerTileType() ? (this.getContent().mask = this.lakeMask, 
+        this.getContent().position.y = this.playerModel.graphicsData.positionSprite.y + 10, 
+        this.defaultVelocity = this.playerModel.velocity / 2) : (this.getContent().mask = null, 
+        this.defaultVelocity = this.playerModel.velocity), this._super();
     },
     spell: function(mousePos, spellModel) {
         if (spellModel.mp > this.playerModel.mp) {
@@ -2008,7 +2018,7 @@ var Application = AbstractApplication.extend({
     BASE1: "_dist/img/levels/base1.png"
 }, LevelGenerator = Class.extend({
     init: function(parent) {
-        this.parent = parent, this.tileDesigner = new TileDesigner();
+        this.parent = parent, this.tileDesigner = new TileDesigner(), this.nonPlaceObstaclesBiomes = [ "OCEAN", "BEACH", "LAKE" ];
     },
     createHordes: function() {
         for (var tempMonster = null, monsters = [], i = 0; 10 > i; i++) {
@@ -2022,8 +2032,12 @@ var Application = AbstractApplication.extend({
         }
         return monsters;
     },
+    possibleBiomesToObstacles: function(biome) {
+        for (var i = this.nonPlaceObstaclesBiomes.length - 1; i >= 0; i--) if (biome === this.nonPlaceObstaclesBiomes[i]) return !1;
+        return !0;
+    },
     putObstacles: function() {
-        for (var accBounds = 2, i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (Math.random() < .08 && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && "OCEAN" !== this.parent.currentNode.mapData[i][j].biome && "BEACH" !== this.parent.currentNode.mapData[i][j].biome) {
+        for (var accBounds = 2, i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (Math.random() < .08 && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome)) {
             var obs = new Obstacle(Math.floor(4 * Math.random()));
             obs.build(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize), this.parent.entityLayer.addChild(obs);
         }
@@ -2485,6 +2499,10 @@ var Application = AbstractApplication.extend({
         }
         return null;
     },
+    getPlayerTileType: function() {
+        var pos = this.getPlayerTilePos();
+        return this.currentNode.mapDataLayer1[pos.x][pos.y].biome;
+    },
     boundsCollision: function() {
         if (this.currentNode.mapData && this.player) for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if (tempEntity = this.entityLayer.childs[i], 
         "fire" !== tempEntity.type && "bag" !== tempEntity.type && "fairy" !== tempEntity.type) {
@@ -2709,13 +2727,7 @@ var Application = AbstractApplication.extend({
         for (var exists = !1, i = this.vecPositions.length - 1; i >= 0; i--) this.vecPositions[i] === position && (exists = !0);
         exists || this.vecPositions.push(position);
     }
-}), meter = new FPSMeter();
-
-$.ajaxSetup({
-    cache: !1
-});
-
-var SOCKET = null, windowWidth = 600, windowHeight = 600, realWindowWidth = 820, realWindowHeight = 600;
+}), meter = new FPSMeter(), SOCKET = null, windowWidth = 600, windowHeight = 600, realWindowWidth = 820, realWindowHeight = 600;
 
 testMobile() && (windowWidth = 640, windowHeight = 960);
 
@@ -2737,5 +2749,5 @@ var initialize = function() {
             initialize();
         }
     };
-    $(App.init);
+    App.init();
 }();

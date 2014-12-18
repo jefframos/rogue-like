@@ -1,6 +1,6 @@
 /*jshint undef:false */
 var meter = new FPSMeter();
-$.ajaxSetup({ cache: false });
+// $.ajaxSetup({ cache: false });
 function testMobile() {
 	return false;// Modernizr.touch || window.innerWidth < 600;
 }
@@ -79,7 +79,7 @@ var initialize = function(){
 			initialize();
 		}
 	};
-	$(App.init);
+	App.init();
 })();
 function pointDistance(x, y, x0, y0){
 	return Math.sqrt((x -= x0) * x + (y -= y0) * y);

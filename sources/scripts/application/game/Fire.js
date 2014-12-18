@@ -4,7 +4,7 @@ var Fire = Entity.extend({
         this._super( true );
         this.updateable = false;
         this.deading = false;
-        this.range = 60;
+        this.range = 20;
         this.width = 1;
         this.height = 1;
         this.type = 'fire';
@@ -87,11 +87,11 @@ var Fire = Entity.extend({
         // }
 
         if(this.getContent()){
-            this.width = this.getContent().width;
-            this.height = this.getContent().height;
+            this.width = this.getContent().width * 0.3;
+            this.height = this.getContent().height * 0.3;
         }
         this.getBounds();
-        this.range = this.width / 2;
+        this.range = this.width / 0.3;
         // this.debugGraphic.clear();
         // this.debugGraphic.beginFill(0xFF3300);
         // this.debugGraphic.lineStyle(1, 0xffd900, 1);

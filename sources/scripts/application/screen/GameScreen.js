@@ -485,6 +485,10 @@ var GameScreen = AbstractScreen.extend({
         }
         return null;
     },
+    getPlayerTileType:function(){
+        var pos = this.getPlayerTilePos();
+        return this.currentNode.mapDataLayer1[pos.x][pos.y].biome;
+    },
     //faz a colisão por tile map
     boundsCollision:function(){
         // console.log(this.currentNode.mapData[0], 'data');

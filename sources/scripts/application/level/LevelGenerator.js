@@ -127,6 +127,7 @@ var LevelGenerator = Class.extend({
 	init: function (parent){
 		this.parent = parent;
 		this.tileDesigner = new TileDesigner();
+		this.nonPlaceObstaclesBiomes = ['OCEAN', 'BEACH', 'LAKE'];
 	},
 	createHordes: function(){
 		var tempMonster = null;
@@ -154,6 +155,14 @@ var LevelGenerator = Class.extend({
 		}
 		return monsters;
 	},
+	possibleBiomesToObstacles: function(biome){
+		for (var i = this.nonPlaceObstaclesBiomes.length - 1; i >= 0; i--) {
+			if(biome === this.nonPlaceObstaclesBiomes[i]){
+				return false;
+			}
+		}
+		return true;
+	},
 	putObstacles: function(){
 		// for (var i = this.parent.level.length - 1; i >= 0; i--) {
 		// 	for (var j = this.parent.level[i].length - 1; j >= 0; j--) {
@@ -172,9 +181,8 @@ var LevelGenerator = Class.extend({
 				if(Math.random() < 0.08 &&
 					this.parent.currentNode.mapData[i][j]!== undefined &&
 					this.parent.currentNode.mapData[i][j].biome !== undefined &&
-					this.parent.currentNode.mapData[i][j].biome !== 'OCEAN' &&
-					this.parent.currentNode.mapData[i][j].biome !== 'BEACH'){
-					
+					this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome)){
+
 					var obs = new Obstacle(Math.floor(Math.random() * 4));
 					obs.build();
 					obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize);
