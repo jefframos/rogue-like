@@ -604,7 +604,7 @@ var GameScreen = AbstractScreen.extend({
         // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * APP.nTileSize - Math.floor(this.mapPosition.y*2)};
         var i = 0;
         var j = 0;
-        var sizeHelper = 8;
+        var sizeHelper = 80;
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
             this.bgContainer.addChild(this.currentNode.bgLayer1);
@@ -766,8 +766,15 @@ var GameScreen = AbstractScreen.extend({
     },
     //atualiza o z index da layer
     depthCompare:function(a,b) {
+        // if(a.type === 'environment' && b.type === 'environment'){
+        //     return 0;
+        // }
+
         var yA = a.position.y;
         var yB = b.position.y;
+        if(yA === yB){
+            return 0;
+        }
         if(a.noDepth || b.noDepth){
             return 0;
         }

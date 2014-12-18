@@ -43,7 +43,7 @@ var Obstacle = Entity.extend({
         // this.respaw();
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 1;
-
+        this.getContent().type = this.type;
         // this.sprite.scale.x = 0.5;
         // this.sprite.scale.y = 0.5;
     },

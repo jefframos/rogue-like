@@ -9,9 +9,9 @@ var defaultColors = {
 	    MARSH: 0x2f6666,
 	    ICE: 0x99ffff,
 	    BEACH: 0xa09077,
-	    ROAD1: 0x442211,
-	    ROAD2: 0x553322,
-	    ROAD3: 0x664433,
+	    ISLAND1: 0x442211,
+	    ISLAND2: 0x553322,
+	    ISLAND3: 0x664433,
 	    BRIDGE: 0x686860,
 	    LAVA: 0xcc3333,
 
@@ -42,10 +42,10 @@ var displayColorsOld = {
 	    RIVER: 0x225588,
 	    // BEACH: 0xa09077,
 	    BEACH: 0x4fa319,
-	    NULL: 0x4fa319,
-	    ROAD1: 0x7F4F1F,
-	    ROAD2: 0x663B14,
-	    ROAD3: 0x472911,
+	    BASE_GRASS: 0x4fa319,
+	    ISLAND1: 0x7F4F1F,
+	    ISLAND2: 0x663B14,
+	    ISLAND3: 0x472911,
 	    BRIDGE: 0x686860,
 	    LAVA: 0xcc3333,
 
@@ -83,15 +83,16 @@ var displayColors = {
 	    // BEACH: 0xa09077,
 
 	    BEACH: 0x336339,
-	    NULL: 0x336339,
-	    // NULL: 0xFF0000,
+	    BASE_GRASS: 0x336339,
+	    // BASE_GRASS: 0xFF0000,
 
 
-	    ROAD3: 0xC19C70,
-	    ROAD2: 0x9B6E4D,
-	    ROAD1: 0x402A1C,
+	    ISLAND3: 0xC19C70,
+	    ISLAND2: 0x9B6E4D,
+	    ISLAND1: 0x402A1C,
 	    BRIDGE: 0x686860,
 	    LAVA: 0xcc3333,
+	    ROAD1: 0xcc3333,
 
 	    // Terrain 0x315b16
 	    SNOW: 0x3d8e09,
@@ -127,7 +128,8 @@ var LevelGenerator = Class.extend({
 	init: function (parent){
 		this.parent = parent;
 		this.tileDesigner = new TileDesigner();
-		this.nonPlaceObstaclesBiomes = ['OCEAN', 'BEACH', 'LAKE'];
+		this.nonPlaceObstaclesBiomes = ['OCEAN', 'BEACH', 'LAKE', 'ISLAND1', 'ISLAND2', 'ISLAND3', 'ROAD1'];
+		this.nullTiles = ['NULL', 'OCEAN'];
 	},
 	createHordes: function(){
 		var tempMonster = null;
@@ -155,6 +157,14 @@ var LevelGenerator = Class.extend({
 		}
 		return monsters;
 	},
+	isNullTiles: function(biome){
+		for (var i = this.nullTiles.length - 1; i >= 0; i--) {
+			if(biome === this.nullTiles[i]){
+				return false;
+			}
+		}
+		return true;
+	},
 	possibleBiomesToObstacles: function(biome){
 		for (var i = this.nonPlaceObstaclesBiomes.length - 1; i >= 0; i--) {
 			if(biome === this.nonPlaceObstaclesBiomes[i]){
@@ -176,16 +186,20 @@ var LevelGenerator = Class.extend({
 		// 	}
 		// }
 		var accBounds = 2;
+		var yAcc = 0.00001;
 		for (var i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) {
 			for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) {
 				if(Math.random() < 0.08 &&
 					this.parent.currentNode.mapData[i][j]!== undefined &&
 					this.parent.currentNode.mapData[i][j].biome !== undefined &&
-					this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome)){
+					this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome) &&
+					this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer1[i][j].biome) &&
+					this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer2[i][j].biome)){
 
 					var obs = new Obstacle(Math.floor(Math.random() * 4));
 					obs.build();
-					obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize);
+					obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize + yAcc);
+					yAcc += 0.0001;
 					this.parent.entityLayer.addChild(obs);
 				}
 					// this.parent.currentNode.mapData[i][k] = {biome:'OCEAN', position:'CENTER'};
@@ -334,7 +348,7 @@ var LevelGenerator = Class.extend({
 			if(this.map.centers[i].biome === 'BEACH' || this.map.centers[i].biome === 'OCEAN' ){
 				this.parent.currentNode.mapData[jy][ix] = {biome:this.map.centers[i].biome, tile:'CENTER'};
 			}else{
-				this.parent.currentNode.mapData[jy][ix] = {biome:'NULL', tile:'CENTER'};
+				this.parent.currentNode.mapData[jy][ix] = {biome:'BASE_GRASS', tile:'CENTER'};
 			}
 			if(this.map.centers[i].biome === 'BEACH'){
 				this.parent.currentNode.mapDataLayer1[jy][ix] = {biome:'OCEAN', tile:'CENTER'};
@@ -378,8 +392,8 @@ var LevelGenerator = Class.extend({
 				// }
 			}
 			
-			this.parent.currentNode.mapDataLayer2[jy][ix] = {biome:'OCEAN', position:'CENTER'};
-			this.parent.currentNode.mapDataLayer3[jy][ix] = {biome:'OCEAN', position:'CENTER'};
+			this.parent.currentNode.mapDataLayer2[jy][ix] = {biome:'NULL', position:'CENTER'};
+			this.parent.currentNode.mapDataLayer3[jy][ix] = {biome:'NULL', position:'CENTER'};
 		}
 
 		for (i = this.parent.tempSizeTiles.x - 1; i >= 0; i--) {
@@ -402,7 +416,7 @@ var LevelGenerator = Class.extend({
 		roads.createRoads(this.map, [0, 0.15]);
 
 		// console.log(nacum);
-		console.log(roads);
+		// console.log(roads);
 
 		for (i = roads.roadConnections.length - 1; i >= 0; i--) {
 
@@ -410,7 +424,7 @@ var LevelGenerator = Class.extend({
 				tempX = Math.floor(roads.roadConnections[i][0].midpoint.y  / APP.nTileSize);
 				tempY = Math.floor(roads.roadConnections[i][0].midpoint.x  / APP.nTileSize);
 				// console.log(tempX,tempY);
-				this.parent.currentNode.mapDataLayer2[tempY][tempX].biome = 'ROAD3';
+				this.parent.currentNode.mapDataLayer2[tempY][tempX].biome = 'ROAD1';
 				this.parent.currentNode.mapDataLayer2[tempY][tempX].tile = 'CENTER';
 
 			}
@@ -433,11 +447,11 @@ var LevelGenerator = Class.extend({
 
 		this.tileDesigner.roundTilesBorder(this.parent.currentNode.backMapData, this.parent.currentNode.mapData, 'OCEAN');
 		this.tileDesigner.roundTilesBorder(this.parent.currentNode.backMapData, this.parent.currentNode.mapData, 'OCEAN');
-		this.tileDesigner.roundTilesBorder2(this.parent.currentNode.backMapData, ['ROAD1','ROAD2','ROAD3'], 'ROAD3');
-		this.tileDesigner.roundTilesBorder2(this.parent.currentNode.backMapData, ['ROAD1','ROAD2','ROAD3'], 'ROAD2');
-		this.tileDesigner.roundTilesBaseIsland(this.parent.currentNode.backMapData, ['ROAD1','ROAD2','ROAD3']);
+		this.tileDesigner.roundTilesBorder2(this.parent.currentNode.backMapData, ['ISLAND1','ISLAND2','ISLAND3'], 'ISLAND3');
+		this.tileDesigner.roundTilesBorder2(this.parent.currentNode.backMapData, ['ISLAND1','ISLAND2','ISLAND3'], 'ISLAND2');
+		this.tileDesigner.roundTilesBaseIsland(this.parent.currentNode.backMapData, ['ISLAND1','ISLAND2','ISLAND3']);
 		this.tileDesigner.roundTilesBaseIslandColors(this.parent.currentNode.backMapData);
-		// this.roundTilesBorder2(this.parent.currentNode.backMapData, 'ROAD3');
+		// this.roundTilesBorder2(this.parent.currentNode.backMapData, 'ISLAND3');
 		var line = '';
 		for (var ii = 0; ii < this.parent.currentNode.backMapData.length; ii++) {
 			line = '';
@@ -445,7 +459,7 @@ var LevelGenerator = Class.extend({
 				// console.log(this.parent.currentNode.backMapData[ii][jj]);
 				line += this.parent.currentNode.backMapData[ii][jj].biome !== undefined?'1':'0';
 			}
-			console.log(ii,line);
+			// console.log(ii,line);
 		}
 		// console.log(this.parent.currentNode.backMapData);
 		// console.log('MAP', this.parent.currentNode.mapData);
@@ -474,7 +488,7 @@ var LevelGenerator = Class.extend({
 				for (var j = this.playerPostion.y - this.distanceToShowMap - acc; j < this.playerPostion.y+this.distanceToShowMap + acc; j++) {
 					if(j >= 0 && j <placeds[tempPlaced.x].length){
 						tempPlaced.y = j;
-						if(tempPlaced.x >= 0 && tempPlaced.y >= 0 && data[tempPlaced.x][tempPlaced.y].biome !== 'OCEAN'){
+						if(tempPlaced.x >= 0 && tempPlaced.y >= 0 && this.isNullTiles(data[tempPlaced.x][tempPlaced.y].biome)){//} !== 'OCEAN'&& data[tempPlaced.x][tempPlaced.y].biome !== 'NULL'){
 							tempPlacedSprite = placeds[tempPlaced.x][tempPlaced.y];
 							distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y,this.playerPostion.x,this.playerPostion.y));
 							if(data[tempPlaced.x][tempPlaced.y].biome && (tempPlacedSprite === null || tempPlacedSprite === 0)  && distance < this.distanceToShowMap){
@@ -509,7 +523,7 @@ var LevelGenerator = Class.extend({
 		}
 		this.playerPostion = playerPostion;
 		if(this.playerPostion && this.parent.currentNode.mapData){
-			// this.updateLayer(this.parent.currentNode.bgLayer2,this.parent.currentNode.placedTilesLayer2,this.parent.currentNode.mapDataLayer2,0.8);
+			this.updateLayer(this.parent.currentNode.bgLayer2,this.parent.currentNode.placedTilesLayer2,this.parent.currentNode.mapDataLayer2,0.8);
 			this.updateLayer(this.parent.currentNode.backLayer,this.parent.currentNode.backPlacedTiles,this.parent.currentNode.backMapData);
 
 			this.updateLayer(this.parent.currentNode.bgLayer1,this.parent.currentNode.placedTilesLayer1,this.parent.currentNode.mapDataLayer1,0.8);

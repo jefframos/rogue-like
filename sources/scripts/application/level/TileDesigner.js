@@ -8,24 +8,24 @@ var TileDesigner = Class.extend({
 			for (var j = data[i].length - 1; j >= 0; j--) {
 				if(data[i][j].biome !== undefined){
 					if(data[i][j].tile === 'TOP_LEFT'){
-						data[i][j].biome = 'ROAD1';
+						data[i][j].biome = 'ISLAND1';
 					}else if(data[i][j].tile === 'TOP_RIGHT'){
-						data[i][j].biome = 'ROAD3';
+						data[i][j].biome = 'ISLAND3';
 					}else{
-						data[i][j].biome = 'ROAD2';
+						data[i][j].biome = 'ISLAND2';
 					}
 				}
 			}
 		}
 
-		this.improveColors(data,'ROAD2');
-		this.improveColors(data,'ROAD1');
-		this.improveColors(data,'ROAD3');
+		this.improveColors(data,'ISLAND2');
+		this.improveColors(data,'ISLAND1');
+		this.improveColors(data,'ISLAND3');
 		
 	},
 	improveColors: function(data,type){
-		for (var ii = data.length - 2; ii >= 1; ii--) {
-			for (var jj = data[ii].length - 2; jj >= 1; jj--) {
+		for (var ii = data.length - 2; ii >= 5; ii--) {
+			for (var jj = data[ii].length - 2; jj >= 5; jj--) {
 				if(data[ii][jj] !== undefined){
 					if(data[ii][jj].biome !== undefined && data[ii][jj].biome === type){
 						for (var kk = jj; kk >= jj - 4; kk--) {
@@ -295,7 +295,7 @@ var TileDesigner = Class.extend({
 				}
 				if(dataCompare[i][j].tile === 'TOP_LEFT' || dataCompare[i][j].tile === 'TOP_RIGHT'){
 					data[i][j].tile = 'CENTER';
-					data[i][j].biome = 'ROAD3';
+					data[i][j].biome = 'ISLAND3';
 				}
 				else if(!ocean(tempT) && (ocean(tempB) ||ocean(current)))
 				{
@@ -308,7 +308,7 @@ var TileDesigner = Class.extend({
 						current.tile = 'TOP_LEFT';
 					}
 
-					current.biome = 'ROAD3';
+					current.biome = 'ISLAND3';
 				}
 
 				
