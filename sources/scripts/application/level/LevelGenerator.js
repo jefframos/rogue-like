@@ -116,6 +116,13 @@ var displayColors = {
 	    STANDARD3: 0x488E5A
 
 	};
+var arrayThrees = [['_dist/img/flora/florest1/tree1.png',
+        '_dist/img/flora/florest1/tree2.png',
+        '_dist/img/flora/florest1/tree3.png',
+        '_dist/img/flora/florest1/tree4.png']];
+var arrayRocks = [['_dist/img/flora/florest1/rock1.png',
+        '_dist/img/flora/florest1/rock2.png',
+        '_dist/img/flora/florest1/rock3.png']];
 var tilesGraphics = {
 	TOP_LEFT : '_dist/img/levels/leftTop.png',
 	TOP_RIGHT : '_dist/img/levels/rightTop.png',
@@ -196,7 +203,7 @@ var LevelGenerator = Class.extend({
 					this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer1[i][j].biome) &&
 					this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer2[i][j].biome)){
 
-					var obs = new Obstacle(Math.floor(Math.random() * 4));
+					var obs = new Obstacle();
 					obs.build();
 					obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize + yAcc);
 					yAcc += 0.0001;

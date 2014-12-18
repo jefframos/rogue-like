@@ -130,7 +130,9 @@ var Fire = Entity.extend({
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     },
     touch: function(collection){
-
+        if(collection.object && collection.object.type === 'environment'){
+            collection.object.fireCollide();
+        }
         // console.log(collection);
         // if(collection.object.getPosition().y > this.getPosition().y)
         // {

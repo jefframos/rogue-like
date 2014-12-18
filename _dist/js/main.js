@@ -580,8 +580,14 @@ var Application = AbstractApplication.extend({
         this.currentBag = null, this.bagContent.setInteractive(!0);
         var self = this;
         this.bagContent.mousedown = function() {
-            self.currentBag && (APP.getGame().addModelInventory(self.currentBag.model), self.currentBag.model = null, 
-            self.removeBag());
+            if (self.currentBag) if (APP.getGame().addModelInventory(self.currentBag.model)) self.currentBag.model = null, 
+            self.removeBag(); else {
+                console.log("inventory is full");
+                var pop = new PopUpText("red");
+                pop.setText("inventory is full!"), APP.getEffectsContainer().addChild(pop.getContent()), 
+                pop.setPosition(self.currentBag.getPosition().x - 50, self.currentBag.getPosition().y - 5 + 10 * Math.random()), 
+                pop.initMotion(-15 - 10 * Math.random(), .8);
+            }
         }, this.stage.stage.mouseup = function() {
             self.releaseInventory();
         };
@@ -1169,7 +1175,8 @@ var Application = AbstractApplication.extend({
     pointDistance: function(x, y, x0, y0) {
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     },
-    touch: function() {
+    touch: function(collection) {
+        collection.object && "environment" === collection.object.type && collection.object.fireCollide(), 
         this.preKill();
     }
 }), Heart = SpritesheetEntity.extend({
@@ -1262,14 +1269,30 @@ var Application = AbstractApplication.extend({
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     }
 }), Obstacle = Entity.extend({
-    init: function(imgId) {
-        this._super(), this.updateable = !0, this.collidable = !0, this.arrayObstacles = [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png" ], 
-        this.srcImg = this.arrayObstacles[imgId], this.type = "environment", this.width = APP.nTileSize / 1.8, 
-        this.height = APP.nTileSize / 2, this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
-        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0;
+    init: function() {
+        this._super(), this.updateable = !0, this.collidable = !0, this.arrayObstacles = Math.random() < .5 ? arrayThrees[0] : arrayRocks[0], 
+        this.srcImg = this.arrayObstacles[Math.floor(Math.random() * this.arrayObstacles.length)], 
+        this.type = "environment", this.width = APP.nTileSize / 1.8, this.height = APP.nTileSize / 2, 
+        this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
+        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0, 
+        this.life = 3;
     },
     preKill: function() {
-        this._super(), this.getContent().cacheAsBitmap = !0, this.debugGraphic.parent && this.debugGraphic.parent.removeChild(this.debugGraphic);
+        var self = this;
+        Math.random() < .2 && APP.getGame().addBag({
+            x: self.getPosition().x,
+            y: self.getPosition().y - 20
+        }, APP.itemList[0]), TweenLite.to(this.getContent(), .3, {
+            delay: .2,
+            alpha: 0
+        }), TweenLite.to(this.getContent().scale, .4, {
+            x: .85,
+            y: .85,
+            ease: "easeInBack",
+            onComplete: function() {
+                self.kill = !0;
+            }
+        });
     },
     getBounds: function() {
         return this.bounds = {
@@ -1278,6 +1301,14 @@ var Application = AbstractApplication.extend({
             w: this.width,
             h: this.height
         }, this.bounds;
+    },
+    fireCollide: function() {
+        this.life <= 0 || (this.life--, this.getContent().scale.x = .95, this.getContent().scale.y = .95, 
+        TweenLite.to(this.getContent().scale, .5, {
+            x: 1,
+            y: 1,
+            ease: "easeOutElastic"
+        }), this.life <= 0 && (this.collidable = !1, this.updateable = !1, this.preKill()));
     },
     build: function() {
         this._super(this.srcImg);
@@ -1753,9 +1784,12 @@ var Application = AbstractApplication.extend({
     },
     update: function() {}
 }), ItemModel = Class.extend({
-    init: function(name, effect, baseValue, price, icoImg) {
+    init: function(name, effect, baseValue, price, icoImg, quant) {
         this.name = name, this.label = name, this.effect = effect, this.baseValue = baseValue, 
-        this.price = price, this.icoImg = icoImg, this.quant = 2, this.type = "item";
+        this.price = price, this.icoImg = icoImg, this.quant = quant ? quant : 1, this.type = "item";
+    },
+    clone: function() {
+        return new ItemModel(this.name, this.effect, this.baseValue, this.price, this.icoImg, this.quant);
     }
 }), MonsterModel = Class.extend({
     init: function(name, stats, fire, graphicsData, config) {
@@ -2010,7 +2044,7 @@ var Application = AbstractApplication.extend({
     GRASSLAND: 5219097,
     SUBTROPICAL_DESERT: 5219097,
     STANDARD3: 4755034
-}, tilesGraphics = {
+}, arrayThrees = [ [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png" ] ], arrayRocks = [ [ "_dist/img/flora/florest1/rock1.png", "_dist/img/flora/florest1/rock2.png", "_dist/img/flora/florest1/rock3.png" ] ], tilesGraphics = {
     TOP_LEFT: "_dist/img/levels/leftTop.png",
     TOP_RIGHT: "_dist/img/levels/rightTop.png",
     BOTTOM_LEFT: "_dist/img/levels/leftBottom.png",
@@ -2044,7 +2078,7 @@ var Application = AbstractApplication.extend({
     },
     putObstacles: function() {
         for (var accBounds = 2, yAcc = 1e-5, i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (Math.random() < .08 && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer1[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer2[i][j].biome)) {
-            var obs = new Obstacle(Math.floor(4 * Math.random()));
+            var obs = new Obstacle();
             obs.build(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize + yAcc), 
             yAcc += 1e-4, this.parent.entityLayer.addChild(obs);
         }
@@ -2366,7 +2400,8 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", "_dist/img/levels/leftTop.png", "_dist/img/levels/rightTop.png", "_dist/img/levels/leftBottom.png", "_dist/img/levels/rightBottom.png", "_dist/img/levels/tile1.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ];
+        for (var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", "_dist/img/levels/leftTop.png", "_dist/img/levels/rightTop.png", "_dist/img/levels/leftBottom.png", "_dist/img/levels/rightBottom.png", "_dist/img/levels/tile1.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ], i = arrayThrees.length - 1; i >= 0; i--) for (var j = arrayThrees[i].length - 1; j >= 0; j--) assetsToLoader.push(arrayThrees[i][j]);
+        for (var k = arrayRocks.length - 1; k >= 0; k--) for (var l = arrayRocks[k].length - 1; l >= 0; l--) assetsToLoader.push(arrayRocks[k][l]);
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onAssetsLoaded: function() {
@@ -2430,9 +2465,11 @@ var Application = AbstractApplication.extend({
         this.inventory[0].addModel(APP.itemList[0]), this.inventory[1].addModel(APP.itemList[1]), 
         this.inventory[2].addModel(APP.itemList[2]), this.inventory[3].addModel(APP.spellList[0]), 
         this.inventory[4].addModel(APP.spellList[1]), this.inventory[5].addModel(APP.spellList[2]), 
+        this.inventory[6].addModel(APP.spellList[2]), this.inventory[7].addModel(APP.spellList[2]), 
         this.inventory[8].addModel(APP.armorList[2]), this.inventory[9].addModel(APP.weaponList[2]), 
-        this.inventory[10].addModel(APP.relicList[2]), APP.getHUD().addChild(this.inventoryContainer), 
-        this.inventoryContainer.position.x = inventoryPosition.x, this.inventoryContainer.position.y = inventoryPosition.y;
+        this.inventory[10].addModel(APP.relicList[2]), this.inventory[11].addModel(APP.relicList[2]), 
+        APP.getHUD().addChild(this.inventoryContainer), this.inventoryContainer.position.x = inventoryPosition.x, 
+        this.inventoryContainer.position.y = inventoryPosition.y;
     },
     addBag: function(pos, model) {
         var tempBag = new Bag(model, this.player);
@@ -2440,7 +2477,15 @@ var Application = AbstractApplication.extend({
         this.arrayBags.push(tempBag);
     },
     addModelInventory: function(model) {
-        for (var i = 0; i < this.inventory.length; i++) if (!this.inventory[i].model) return void this.inventory[i].addModel(model);
+        for (var i = 0; i < this.inventory.length; i++) if (this.inventory[i].model && this.inventory[i].model.name === model.name && model.quant && this.inventory[i].model.quant < 9) {
+            console.log(model.quant, this.inventory[i].model.quant);
+            var tempModel = this.inventory[i].model.clone();
+            return tempModel.quant += model.quant, this.inventory[i].model = tempModel, this.inventory[i].updateQuant(), 
+            !0;
+        }
+        for (i = 0; i < this.inventory.length; i++) if (!this.inventory[i].model) return this.inventory[i].addModel(model), 
+        !0;
+        return !1;
     },
     useShortcut: function(id) {
         console.log(this.inventory[id].model), this.inventory[id] && this.inventory[id].model && (this.inventory[id].model instanceof ItemModel ? this.useItem(this.inventory[id].model) && (this.inventory[id].model.quant--, 

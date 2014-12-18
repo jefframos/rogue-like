@@ -73,6 +73,16 @@ var GameScreen = AbstractScreen.extend({
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
         ];
+        for (var i = arrayThrees.length - 1; i >= 0; i--) {
+            for (var j = arrayThrees[i].length - 1; j >= 0; j--) {
+                assetsToLoader.push(arrayThrees[i][j]);
+            }
+        }
+        for (var k = arrayRocks.length - 1; k >= 0; k--) {
+            for (var l = arrayRocks[k].length - 1; l >= 0; l--) {
+                assetsToLoader.push(arrayRocks[k][l]);
+            }
+        }
         this.loader = new PIXI.AssetLoader(assetsToLoader);
         this.initLoad();
 
@@ -243,9 +253,12 @@ var GameScreen = AbstractScreen.extend({
         this.inventory[3].addModel(APP.spellList[0]);
         this.inventory[4].addModel(APP.spellList[1]);
         this.inventory[5].addModel(APP.spellList[2]);
+        this.inventory[6].addModel(APP.spellList[2]);
+        this.inventory[7].addModel(APP.spellList[2]);
         this.inventory[8].addModel(APP.armorList[2]);
         this.inventory[9].addModel(APP.weaponList[2]);
         this.inventory[10].addModel(APP.relicList[2]);
+        this.inventory[11].addModel(APP.relicList[2]);
 
         APP.getHUD().addChild(this.inventoryContainer);
         this.inventoryContainer.position.x = inventoryPosition.x;
@@ -309,11 +322,23 @@ var GameScreen = AbstractScreen.extend({
     },
     addModelInventory:function(model){
         for (var i = 0; i < this.inventory.length; i++) {
-            if(!this.inventory[i].model){
-                this.inventory[i].addModel(model);
-                return;
+            if(this.inventory[i].model && this.inventory[i].model.name === model.name && model.quant && this.inventory[i].model.quant < 9){
+                console.log(model.quant, this.inventory[i].model.quant);
+                var tempModel = this.inventory[i].model.clone();
+                tempModel.quant += model.quant;
+                // this.inventory[i].model.quant += model.quant;
+                this.inventory[i].model = tempModel;//addModel(tempModel);
+                this.inventory[i].updateQuant();
+                return true;
             }
         }
+        for (i = 0; i < this.inventory.length; i++) {
+            if(!this.inventory[i].model){
+                this.inventory[i].addModel(model);
+                return true;
+            }
+        }
+        return false;
     },
     //verifica qual model está no atalho e executa a ação daquele model
     useShortcut:function(id){

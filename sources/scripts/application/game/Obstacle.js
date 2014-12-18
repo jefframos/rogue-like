@@ -1,15 +1,11 @@
 /*jshint undef:false */
 var Obstacle = Entity.extend({
-    init:function(imgId){
+    init:function(){
         this._super();
         this.updateable = true;
         this.collidable = true;
-        this.arrayObstacles = ['_dist/img/flora/florest1/tree1.png',
-        '_dist/img/flora/florest1/tree2.png',
-        '_dist/img/flora/florest1/tree3.png',
-        '_dist/img/flora/florest1/tree4.png'];
-  
-        this.srcImg =  this.arrayObstacles[imgId];
+        this.arrayObstacles = Math.random() < 0.5?arrayThrees[0]:arrayRocks[0];
+        this.srcImg =  this.arrayObstacles[Math.floor(Math.random() * this.arrayObstacles.length)];
         this.type = 'environment';
         this.width = APP.nTileSize / 1.8;
         this.height = APP.nTileSize / 2;
@@ -21,13 +17,23 @@ var Obstacle = Entity.extend({
         // this.scale.x = 0.5;
         // this.scale.y = 0.5;
         this.range = 0;
+        this.life = 3;
     },
     preKill:function(){
-        this._super();
-        this.getContent().cacheAsBitmap = true;
-        if(this.debugGraphic.parent){
-            this.debugGraphic.parent.removeChild(this.debugGraphic);
+        // this._super();
+        //this.getContent().cacheAsBitmap = true;
+        // if(this.debugGraphic.parent){
+        //     this.debugGraphic.parent.removeChild(this.debugGraphic);
+        // }
+        
+        var self = this;
+        if(Math.random() < 0.2){
+            APP.getGame().addBag({x:self.getPosition().x, y:self.getPosition().y - 20}, APP.itemList[0]);
         }
+        TweenLite.to(this.getContent(), 0.3, {delay:0.2, alpha:0});
+        TweenLite.to(this.getContent().scale, 0.4, {x:0.85, y:0.85, ease:'easeInBack', onComplete:function(){
+            self.kill = true;
+        }});
     },
     getBounds: function(){
         this.bounds = {x: this.getPosition().x - this.width *this.sprite.anchor.x,
@@ -35,6 +41,20 @@ var Obstacle = Entity.extend({
             w: this.width,
             h: this.height};
         return this.bounds;
+    },
+    fireCollide: function(){
+        if(this.life <= 0){
+            return;
+        }
+        this.life --;
+        this.getContent().scale.x = 0.95;
+        this.getContent().scale.y = 0.95;
+        TweenLite.to(this.getContent().scale, 0.5, {x:1, y:1, ease:'easeOutElastic'});
+        if(this.life <= 0){
+            this.collidable = false;
+            this.updateable = false;
+            this.preKill();
+        }
     },
     build: function(){
         // console.log('criou o Obstacle');
@@ -49,7 +69,6 @@ var Obstacle = Entity.extend({
     },
     update: function(){
         this._super();
-
         // if(this.debugGraphic.parent === null && this.getContent().parent !== null)
         // {
         //     this.getBounds();

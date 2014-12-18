@@ -23,9 +23,17 @@ var HUDController = Class.extend({
 
 		this.bagContent.mousedown = function(mouseData){
 			if(self.currentBag){
-				APP.getGame().addModelInventory(self.currentBag.model);
-				self.currentBag.model = null;
-				self.removeBag();
+				if(APP.getGame().addModelInventory(self.currentBag.model)){
+					self.currentBag.model = null;
+					self.removeBag();
+				}else{
+					console.log('inventory is full');
+					var pop = new PopUpText('red');
+		            pop.setText('inventory is full!');
+		            APP.getEffectsContainer().addChild(pop.getContent());
+		            pop.setPosition(self.currentBag.getPosition().x - 50, self.currentBag.getPosition().y-5 + Math.random() * 10);
+		            pop.initMotion(-15 - (Math.random() * 10), 0.8);
+				}
 			}
 		};
 
