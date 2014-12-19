@@ -530,7 +530,7 @@ var LevelGenerator = Class.extend({
 		}
 		this.playerPostion = playerPostion;
 		if(this.playerPostion && this.parent.currentNode.mapData){
-			this.updateLayer(this.parent.currentNode.bgLayer2,this.parent.currentNode.placedTilesLayer2,this.parent.currentNode.mapDataLayer2,0.8);
+			// this.updateLayer(this.parent.currentNode.bgLayer2,this.parent.currentNode.placedTilesLayer2,this.parent.currentNode.mapDataLayer2,0.8);
 			this.updateLayer(this.parent.currentNode.backLayer,this.parent.currentNode.backPlacedTiles,this.parent.currentNode.backMapData);
 
 			this.updateLayer(this.parent.currentNode.bgLayer1,this.parent.currentNode.placedTilesLayer1,this.parent.currentNode.mapDataLayer1,0.8);

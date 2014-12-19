@@ -88,10 +88,26 @@ var GameScreen = AbstractScreen.extend({
 
         this.equips = [null,null,null];
     },
+    onProgress:function()
+    {
+        this.loadPercent = ((this.loader.assetURLs.length - this.loader.loadCount) / this.loader.assetURLs.length);
+        // if(this.loadText.parent){
+        //     this.container.removeChild(this.loadText);
+        // }
+        if(this.loadText)
+        {
+            this.loadText.setText(Math.floor(this.loadPercent* 100) + '%');
+        }
+        // this.loadText = new PIXI.Text(Math.floor(this.loadPercent* 100) + "%", {fill:"black", align:"center"});;
+        // this.container.addChild(this.loadText);
+        this.loadText.position.x = this.canvasArea.x/2 - this.loadText.width/2;
+        this.loadText.position.y = this.canvasArea.y/2 - this.loadText.height/2;
+
+    },
     onAssetsLoaded:function()
     {
+        this.loadText.setText('Generating Map');
         this._super();
-
         this.currentNode = APP.gen.firstNode;
         this.currentNode.applySeed();
 
@@ -213,12 +229,13 @@ var GameScreen = AbstractScreen.extend({
         this.inventory =
         [null,null,null,null,
         null,null,null,null,
+        null,null,null,null,
         null,null,null,null];
         this.inventoryContainer = new PIXI.DisplayObjectContainer();
         var tempBox = null;
         var lineAccum = 0;
         var rowAccum = 0;
-        var inventoryPosition = {x:windowWidth + 20, y:450};
+        var inventoryPosition = {x:windowWidth + 20, y:420};
         this.backInventory = new PIXI.Graphics();
         this.backInventory.beginFill(0x140B23);
         this.backInventory.moveTo(25,0);
@@ -667,11 +684,11 @@ var GameScreen = AbstractScreen.extend({
             this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent());
             this.minimapHUD = null;
         }
-        this.minimapHUD = new MapHUD();
-        this.minimapHUD.build(this.currentNode);
-        APP.getHUD().addChild(this.minimapHUD.getContent());
-        var mapPosition = {x:20, y:realWindowHeight - this.minimapHUD.height - 30};
-        this.minimapHUD.setPosition(mapPosition.x,mapPosition.y);
+        // this.minimapHUD = new MapHUD();
+        // this.minimapHUD.build(this.currentNode);
+        // APP.getHUD().addChild(this.minimapHUD.getContent());
+        // var mapPosition = {x:20, y:realWindowHeight - this.minimapHUD.height - 30};
+        // this.minimapHUD.setPosition(mapPosition.x,mapPosition.y);
 
             // windowWidth + (realWindowWidth - windowWidth)/2 - this.minimapHUD.width/2, realWindowHeight - this.minimapHUD.height - 30);
 

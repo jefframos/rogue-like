@@ -2227,8 +2227,7 @@ var Application = AbstractApplication.extend({
         }
     },
     updateTiles: function(playerPostion) {
-        this.playerPostion !== playerPostion && (this.playerPostion = playerPostion, this.playerPostion && this.parent.currentNode.mapData && (this.updateLayer(this.parent.currentNode.bgLayer2, this.parent.currentNode.placedTilesLayer2, this.parent.currentNode.mapDataLayer2, .8), 
-        this.updateLayer(this.parent.currentNode.backLayer, this.parent.currentNode.backPlacedTiles, this.parent.currentNode.backMapData), 
+        this.playerPostion !== playerPostion && (this.playerPostion = playerPostion, this.playerPostion && this.parent.currentNode.mapData && (this.updateLayer(this.parent.currentNode.backLayer, this.parent.currentNode.backPlacedTiles, this.parent.currentNode.backMapData), 
         this.updateLayer(this.parent.currentNode.bgLayer1, this.parent.currentNode.placedTilesLayer1, this.parent.currentNode.mapDataLayer1, .8), 
         this.updateLayer(this.parent.currentNode.bg, this.parent.currentNode.placedTiles, this.parent.currentNode.mapData)));
     },
@@ -2405,8 +2404,14 @@ var Application = AbstractApplication.extend({
         for (var k = arrayRocks.length - 1; k >= 0; k--) for (var l = arrayRocks[k].length - 1; l >= 0; l--) assetsToLoader.push(arrayRocks[k][l]);
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
+    onProgress: function() {
+        this.loadPercent = (this.loader.assetURLs.length - this.loader.loadCount) / this.loader.assetURLs.length, 
+        this.loadText && this.loadText.setText(Math.floor(100 * this.loadPercent) + "%"), 
+        this.loadText.position.x = this.canvasArea.x / 2 - this.loadText.width / 2, this.loadText.position.y = this.canvasArea.y / 2 - this.loadText.height / 2;
+    },
     onAssetsLoaded: function() {
-        this._super(), this.currentNode = APP.gen.firstNode, this.currentNode.applySeed();
+        this.loadText.setText("Generating Map"), this._super(), this.currentNode = APP.gen.firstNode, 
+        this.currentNode.applySeed();
         this.vecPositions = [], this.keyboardInput = new InputManager(this), this.graphDebug = new PIXI.Graphics(), 
         this.addChild(this.graphDebug), this.createHUD(), this.blackShape = new PIXI.Graphics(), 
         this.blackShape.beginFill(0), this.blackShape.drawRect(0, 0, windowWidth, windowHeight), 
@@ -2449,11 +2454,11 @@ var Application = AbstractApplication.extend({
         this.relicEquip = new EquipsHUD("relic"), this.equipsContainer.addChild(this.relicEquip.getContent()), 
         this.relicEquip.setPosition(7, 61), this.relicEquip.addModel(this.equips[2]), APP.getHUD().addChild(this.equipsContainer), 
         this.equipsContainer.position.x = contentEquipPos.x, this.equipsContainer.position.y = contentEquipPos.y, 
-        this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null ], 
+        this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ], 
         this.inventoryContainer = new PIXI.DisplayObjectContainer();
         var tempBox = null, lineAccum = 0, rowAccum = 0, inventoryPosition = {
             x: windowWidth + 20,
-            y: 450
+            y: 420
         };
         this.backInventory = new PIXI.Graphics(), this.backInventory.beginFill(1313571), 
         this.backInventory.moveTo(25, 0), this.backInventory.lineTo(170, 6), this.backInventory.lineTo(186, 32), 
@@ -2655,14 +2660,7 @@ var Application = AbstractApplication.extend({
             x: this.currentNode.mapData.length * APP.nTileSize,
             y: this.currentNode.mapData[0].length * APP.nTileSize
         }, this.minimapHUD && (this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent()), 
-        this.minimapHUD = null), this.minimapHUD = new MapHUD(), this.minimapHUD.build(this.currentNode), 
-        APP.getHUD().addChild(this.minimapHUD.getContent());
-        var mapPosition = {
-            x: 20,
-            y: realWindowHeight - this.minimapHUD.height - 30
-        };
-        this.minimapHUD.setPosition(mapPosition.x, mapPosition.y), this.levelGenerator.putObstacles(), 
-        this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
+        this.minimapHUD = null), this.levelGenerator.putObstacles(), this.currentNode.getNextFloat() > .5 ? this.levelGenerator.createRain() : this.levelGenerator.removeRain();
         var monstersToLoaded = [], monstersAssets = [];
         if (1 !== this.currentNode.mode) {
             for (monstersToLoaded = this.levelGenerator.createHordes(), i = monstersToLoaded.length - 1; i >= 0; i--) monstersToLoaded[i].monsterModel.fire.srcImg && monstersAssets.push(monstersToLoaded[i].monsterModel.fire.srcImg), 
