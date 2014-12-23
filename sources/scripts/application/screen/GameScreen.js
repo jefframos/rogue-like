@@ -46,6 +46,7 @@ var GameScreen = AbstractScreen.extend({
         //     this.playerModel.levelUp();
         // }
         // this.playerModel.logCSV();
+        this.gameMadness = 1;
     },
     destroy: function () {
         this._super();
@@ -147,12 +148,6 @@ var GameScreen = AbstractScreen.extend({
         
         // this.fog.build();
         this.barsContainer = new PIXI.DisplayObjectContainer();
-
-        this.backInterface = new PIXI.Graphics();
-        this.backInterface.beginFill(0x261838);
-        this.backInterface.drawRect(windowWidth,0,realWindowWidth - windowWidth, realWindowHeight);
-        //APP.getHUD().addChild(this.backInterface);
-
         this.playerHUD = new PlayerHUD('player');
         this.playerHUD.setPosition(15, - this.playerHUD.getContent().height + 100);
         this.barsContainer.addChild(this.playerHUD.getContent());
@@ -208,15 +203,6 @@ var GameScreen = AbstractScreen.extend({
 
         var contentEquipPos = {x:windowWidth - 110, y: 15};
 
-        this.weaponEquip = new EquipsHUD('weapon');
-        this.equipsContainer.addChild(this.weaponEquip.getContent());
-        this.weaponEquip.setPosition(0,0);
-        this.weaponEquip.addModel(this.equips[0]);
-
-        this.armorEquip = new EquipsHUD('armor');
-        this.equipsContainer.addChild(this.armorEquip.getContent());
-        this.armorEquip.setPosition(73,4);
-        this.armorEquip.addModel(this.equips[1]);
 
         this.fairyEquip = new EquipsHUD('fairy');
         this.equipsContainer.addChild(this.fairyEquip.getContent());
@@ -227,6 +213,19 @@ var GameScreen = AbstractScreen.extend({
         this.equipsContainer.addChild(this.relicEquip.getContent());
         this.relicEquip.setPosition(7,61);
         this.relicEquip.addModel(this.equips[2]);
+
+
+        this.weaponEquip = new EquipsHUD('weapon');
+        this.equipsContainer.addChild(this.weaponEquip.getContent());
+        this.weaponEquip.setPosition(0,0);
+        this.weaponEquip.addModel(this.equips[0]);
+
+        this.armorEquip = new EquipsHUD('armor');
+        this.equipsContainer.addChild(this.armorEquip.getContent());
+        this.armorEquip.setPosition(73,4);
+        this.armorEquip.addModel(this.equips[1]);
+
+        
 
         APP.getHUD().addChild(this.equipsContainer);
         this.equipsContainer.position.x = contentEquipPos.x;
@@ -262,12 +261,9 @@ var GameScreen = AbstractScreen.extend({
         this.inventory[3].addModel(APP.spellList[0]);
         this.inventory[4].addModel(APP.spellList[1]);
         this.inventory[5].addModel(APP.spellList[2]);
-        this.inventory[6].addModel(APP.spellList[2]);
-        this.inventory[7].addModel(APP.spellList[2]);
-        this.inventory[8].addModel(APP.armorList[2]);
         this.inventory[9].addModel(APP.weaponList[2]);
         this.inventory[10].addModel(APP.relicList[2]);
-        this.inventory[11].addModel(APP.relicList[2]);
+        this.inventory[11].addModel(APP.relicList[1]);
 
         APP.getHUD().addChild(this.inventoryContainer);
         this.inventoryContainer.position.x = inventoryPosition.x;
@@ -378,6 +374,16 @@ var GameScreen = AbstractScreen.extend({
                 if(this.entityLayer.childs[i].type === 'fire' || this.entityLayer.childs[i].type === 'bag'){
                     this.entityLayer.collideChilds(this.entityLayer.childs[i]);
                 }
+                if(this.entityLayer.childs[i].type === 'environment'){
+                    if(APP.getGame().player && pointDistance(APP.getGame().player.getPosition().x, APP.getGame().player.getPosition().y, this.entityLayer.childs[i].getPosition().x, this.entityLayer.childs[i].getPosition().y) < windowHeight){
+                        this.entityLayer.childs[i].collidable = true;
+                        this.entityLayer.childs[i].updateable = true;
+
+                    }else{
+                        this.entityLayer.childs[i].collidable = false;
+                        this.entityLayer.childs[i].updateable = false;
+                    }
+                }
             }
             //atualiza o sistema de colisão
             this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs);
@@ -460,6 +466,9 @@ var GameScreen = AbstractScreen.extend({
         var tempXP = Math.floor(this.playerModel.xp)- Math.floor(this.playerModel.toBeforeLevel);
         var tempNext = Math.floor(this.playerModel.toNextLevel)- Math.floor(this.playerModel.toBeforeLevel);
         this.XPBar.updateBar(tempXP,tempNext);
+
+        this.humanityBar.updateBar(this.gameMadness,2);
+
         // this.XPBar.setText(tempXP+'/ '+tempNext);
     },
     getPlayerTilePos:function(){
@@ -590,7 +599,7 @@ var GameScreen = AbstractScreen.extend({
         // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * APP.nTileSize - Math.floor(this.mapPosition.y*2)};
         var i = 0;
         var j = 0;
-        var sizeHelper = 80;
+        var sizeHelper = 150;
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
             this.bgContainer.addChild(this.currentNode.bgLayer1);
@@ -736,10 +745,12 @@ var GameScreen = AbstractScreen.extend({
         this.player.setPosition(this.levelBounds.x/2,this.levelBounds.y/2);
         // this.addBag({x:this.levelBounds.x/2, y:this.levelBounds.y/2});
 
-        this.fairy1 = new Fairy(this.player);
-        this.fairy1.build();
-        this.entityLayer.addChild(this.fairy1);
-        this.fairy1.setPosition(this.player.getPosition().x, this.player.getPosition().y);
+
+        //ADICIONA FADINHA
+        // this.fairy1 = new Fairy(this.player);
+        // this.fairy1.build();
+        // this.entityLayer.addChild(this.fairy1);
+        // this.fairy1.setPosition(this.player.getPosition().x, this.player.getPosition().y);
 
         // this.entityLayer.addChild(this.simpleEnemy);
         // this.equips[0] = this.player.weaponModel;

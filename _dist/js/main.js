@@ -198,6 +198,12 @@ var Application = AbstractApplication.extend({
             y: this.nTileSize
         };
     },
+    updateMadness: function(value) {
+        this.gameScreen.gameMadness += value, this.gameScreen.gameMadness > 2 && (this.gameScreen.gameMadness = 2);
+    },
+    getMadness: function() {
+        return this.gameScreen.gameMadness;
+    },
     getHUDController: function() {
         return this.hudController;
     },
@@ -476,9 +482,9 @@ var Application = AbstractApplication.extend({
         this.backShapeInfo.moveTo(10, -20), this.backShapeInfo.lineTo(85, -18), this.backShapeInfo.lineTo(84, 70), 
         this.backShapeInfo.lineTo(90, 90), this.backShapeInfo.lineTo(63, 80), this.backShapeInfo.lineTo(20, 84), 
         this.backShapeInfo.lineTo(0, 74), this.backShapeInfo.lineTo(0, 16), this.backShapeInfo.lineTo(10, -20), 
-        this.infoContainer.addChild(this.backShapeInfo), this.infoContainer.pivot.x = 90, 
-        this.infoContainer.pivot.y = 90, this.infoContainer.position.x = -72 + this.infoContainer.pivot.x, 
-        this.infoContainer.position.y = -80 + this.infoContainer.pivot.y, this.infoContainer.alpha = 0, 
+        this.backShapeInfo.scale.y = -1, this.backShapeInfo.position.y = 65, this.infoContainer.addChild(this.backShapeInfo), 
+        this.infoContainer.pivot.x = 90, this.infoContainer.pivot.y = 90, this.infoContainer.position.x = -75 + this.infoContainer.pivot.x, 
+        this.infoContainer.position.y = 75 + this.infoContainer.pivot.y, this.infoContainer.alpha = 0, 
         this.container.addChild(this.infoContainer), this.width = this.background.texture.width, 
         this.height = this.background.texture.height, this.container.setInteractive(!0);
         var self = this;
@@ -1275,7 +1281,7 @@ var Application = AbstractApplication.extend({
         this.type = "environment", this.width = APP.nTileSize / 1.8, this.height = APP.nTileSize / 2.5, 
         this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0, 
-        this.life = 3;
+        this.life = 3, this.seed = 0, this.currentMadness = APP.getMadness();
     },
     preKill: function() {
         var self = this;
@@ -1303,8 +1309,8 @@ var Application = AbstractApplication.extend({
         }, this.bounds;
     },
     fireCollide: function() {
-        this.life <= 0 || (this.life--, this.getContent().scale.x = .95, this.getContent().scale.y = .95, 
-        TweenLite.to(this.getContent().scale, .5, {
+        this.life <= 0 || (this.life--, APP.updateMadness(.05), this.getContent().scale.x = .95, 
+        this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
             x: 1,
             y: 1,
             ease: "easeOutElastic"
@@ -1314,9 +1320,15 @@ var Application = AbstractApplication.extend({
         this._super(this.srcImg);
         this.sprite.anchor.x = .5, this.sprite.anchor.y = 1, this.getContent().type = this.type;
     },
+    updateGraphic: function() {
+        this.texture.destroy(), this.sprite.setTexture(PIXI.Texture.fromImage("_dist/img/flora/florest1/treeEvil.png"));
+    },
     update: function() {
-        this.collidable = APP.getGame().player && pointDistance(APP.getGame().player.getPosition().x, APP.getGame().player.getPosition().y, this.getPosition().x, this.getPosition().y) < windowHeight ? !0 : !1, 
-        this._super();
+        if (this._super(), this.currentMadness !== APP.getMadness()) {
+            this.currentMadness = APP.getMadness();
+            var dist = pointDistance(this.currentMadness, 0, 1, 0);
+            dist > this.seed && this.updateGraphic();
+        }
     },
     respaw: function() {
         var rndPos = {
@@ -1325,9 +1337,6 @@ var Application = AbstractApplication.extend({
         };
         this.pointDistance(rndPos.x, rndPos.y, windowWidth / 2, windowHeight / 2) < 200 && this.respaw(), 
         this.setPosition(rndPos.x, rndPos.y), this.collidable = !0;
-    },
-    pointDistance: function(x, y, x0, y0) {
-        return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     }
 }), Player = SpritesheetEntity.extend({
     init: function(model) {
@@ -1431,7 +1440,8 @@ var Application = AbstractApplication.extend({
             hasAxysY = !0), "left" === vecPositions[i] ? (this.virtualVelocity.x = -this.defaultVelocity, 
             hasAxysX = !0) : "right" === vecPositions[i] && (this.virtualVelocity.x = this.defaultVelocity, 
             hasAxysX = !0);
-            hasAxysY || (this.virtualVelocity.y = 0), hasAxysX || (this.virtualVelocity.x = 0);
+            0 !== this.virtualVelocity.y && 0 !== this.virtualVelocity.x && (this.virtualVelocity.y /= 1.5, 
+            this.virtualVelocity.x /= 1.5), hasAxysY || (this.virtualVelocity.y = 0), hasAxysX || (this.virtualVelocity.x = 0);
         }
     },
     update: function() {
@@ -2078,9 +2088,9 @@ var Application = AbstractApplication.extend({
         return !0;
     },
     putObstacles: function() {
-        for (var accBounds = 2, yAcc = 1e-5, i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (Math.random() < .08 && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer1[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer2[i][j].biome)) {
+        for (var accBounds = 2, yAcc = 1e-5, i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (this.parent.currentNode.getNextFloat() < .1 && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer1[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer2[i][j].biome)) {
             var obs = new Obstacle();
-            obs.build(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize + yAcc), 
+            obs.build(), obs.seed = this.parent.currentNode.getNextFloat(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize + yAcc), 
             yAcc += 1e-4, this.parent.entityLayer.addChild(obs);
         }
     },
@@ -2393,7 +2403,8 @@ var Application = AbstractApplication.extend({
         }, this.mouseDown = !1;
         var clss = "thief", rnd = Math.random();
         .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = APP.playersList[2].clone(), 
-        this.playerModel.mp = 100, this.playerModel.mpMax = 100, this.playerReady = !1;
+        this.playerModel.mp = 100, this.playerModel.mpMax = 100, this.playerReady = !1, 
+        this.gameMadness = 1;
     },
     destroy: function() {
         this._super();
@@ -2420,13 +2431,11 @@ var Application = AbstractApplication.extend({
         this.levelGenerator = new LevelGenerator(this), this.resetLevel(), this.arrayBags = [];
     },
     createHUD: function() {
-        this.barsContainer = new PIXI.DisplayObjectContainer(), this.backInterface = new PIXI.Graphics(), 
-        this.backInterface.beginFill(2496568), this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
-        this.playerHUD = new PlayerHUD("player"), this.playerHUD.setPosition(15, -this.playerHUD.getContent().height + 100), 
-        this.barsContainer.addChild(this.playerHUD.getContent()), this.levelContent = new SimpleSprite("_dist/img/HUD/levelContent.png"), 
-        this.barsContainer.addChild(this.levelContent.getContent()), this.humanityBar = new BarView(240, 10, 100, 100), 
-        this.humanityBar.setFrontColor(11359623), this.humanityBar.setBackColor(16745728), 
-        this.humanityBar.setPosition(windowWidth / 2 - this.humanityBar.width / 2, 20), 
+        this.barsContainer = new PIXI.DisplayObjectContainer(), this.playerHUD = new PlayerHUD("player"), 
+        this.playerHUD.setPosition(15, -this.playerHUD.getContent().height + 100), this.barsContainer.addChild(this.playerHUD.getContent()), 
+        this.levelContent = new SimpleSprite("_dist/img/HUD/levelContent.png"), this.barsContainer.addChild(this.levelContent.getContent()), 
+        this.humanityBar = new BarView(240, 10, 100, 100), this.humanityBar.setFrontColor(11359623), 
+        this.humanityBar.setBackColor(16745728), this.humanityBar.setPosition(windowWidth / 2 - this.humanityBar.width / 2, 20), 
         this.humanityBar.updateBar(50, 100), APP.getHUD().addChild(this.humanityBar.getContent()), 
         this.XPBar = new BarView(140, 6, 100, 100), this.XPBar.setFrontColor(11359623), 
         this.XPBar.setBackColor(16745728), this.XPBar.setPosition(this.levelContent.getContent().width - 1, 0), 
@@ -2450,13 +2459,13 @@ var Application = AbstractApplication.extend({
             x: windowWidth - 110,
             y: 15
         };
-        this.weaponEquip = new EquipsHUD("weapon"), this.equipsContainer.addChild(this.weaponEquip.getContent()), 
-        this.weaponEquip.setPosition(0, 0), this.weaponEquip.addModel(this.equips[0]), this.armorEquip = new EquipsHUD("armor"), 
+        this.fairyEquip = new EquipsHUD("fairy"), this.equipsContainer.addChild(this.fairyEquip.getContent()), 
+        this.fairyEquip.setPosition(73, 61), this.relicEquip = new EquipsHUD("relic"), this.equipsContainer.addChild(this.relicEquip.getContent()), 
+        this.relicEquip.setPosition(7, 61), this.relicEquip.addModel(this.equips[2]), this.weaponEquip = new EquipsHUD("weapon"), 
+        this.equipsContainer.addChild(this.weaponEquip.getContent()), this.weaponEquip.setPosition(0, 0), 
+        this.weaponEquip.addModel(this.equips[0]), this.armorEquip = new EquipsHUD("armor"), 
         this.equipsContainer.addChild(this.armorEquip.getContent()), this.armorEquip.setPosition(73, 4), 
-        this.armorEquip.addModel(this.equips[1]), this.fairyEquip = new EquipsHUD("fairy"), 
-        this.equipsContainer.addChild(this.fairyEquip.getContent()), this.fairyEquip.setPosition(73, 61), 
-        this.relicEquip = new EquipsHUD("relic"), this.equipsContainer.addChild(this.relicEquip.getContent()), 
-        this.relicEquip.setPosition(7, 61), this.relicEquip.addModel(this.equips[2]), APP.getHUD().addChild(this.equipsContainer), 
+        this.armorEquip.addModel(this.equips[1]), APP.getHUD().addChild(this.equipsContainer), 
         this.equipsContainer.position.x = contentEquipPos.x, this.equipsContainer.position.y = contentEquipPos.y, 
         this.equipsContainer.scale.x = .7, this.equipsContainer.scale.y = .7, this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ], 
         this.inventoryContainer = new PIXI.DisplayObjectContainer();
@@ -2468,11 +2477,9 @@ var Application = AbstractApplication.extend({
         this.inventory[0].addModel(APP.itemList[0]), this.inventory[1].addModel(APP.itemList[1]), 
         this.inventory[2].addModel(APP.itemList[2]), this.inventory[3].addModel(APP.spellList[0]), 
         this.inventory[4].addModel(APP.spellList[1]), this.inventory[5].addModel(APP.spellList[2]), 
-        this.inventory[6].addModel(APP.spellList[2]), this.inventory[7].addModel(APP.spellList[2]), 
-        this.inventory[8].addModel(APP.armorList[2]), this.inventory[9].addModel(APP.weaponList[2]), 
-        this.inventory[10].addModel(APP.relicList[2]), this.inventory[11].addModel(APP.relicList[2]), 
-        APP.getHUD().addChild(this.inventoryContainer), this.inventoryContainer.position.x = inventoryPosition.x, 
-        this.inventoryContainer.position.y = inventoryPosition.y;
+        this.inventory[9].addModel(APP.weaponList[2]), this.inventory[10].addModel(APP.relicList[2]), 
+        this.inventory[11].addModel(APP.relicList[1]), APP.getHUD().addChild(this.inventoryContainer), 
+        this.inventoryContainer.position.x = inventoryPosition.x, this.inventoryContainer.position.y = inventoryPosition.y;
     },
     addBag: function(pos, model) {
         var tempBag = new Bag(model, this.player);
@@ -2516,7 +2523,10 @@ var Application = AbstractApplication.extend({
             this.player.fireFreqAcum--, this.mouseDown && this.player.fireFreqAcum <= 0 && this.shoot(), 
             this.entityLayer.collideChilds(this.player), this.environmentLayer.collideChilds(this.player), 
             this.boundsCollision();
-            for (var i = 0; i < this.entityLayer.childs.length; i++) ("fire" === this.entityLayer.childs[i].type || "bag" === this.entityLayer.childs[i].type) && this.entityLayer.collideChilds(this.entityLayer.childs[i]);
+            for (var i = 0; i < this.entityLayer.childs.length; i++) ("fire" === this.entityLayer.childs[i].type || "bag" === this.entityLayer.childs[i].type) && this.entityLayer.collideChilds(this.entityLayer.childs[i]), 
+            "environment" === this.entityLayer.childs[i].type && (APP.getGame().player && pointDistance(APP.getGame().player.getPosition().x, APP.getGame().player.getPosition().y, this.entityLayer.childs[i].getPosition().x, this.entityLayer.childs[i].getPosition().y) < windowHeight ? (this.entityLayer.childs[i].collidable = !0, 
+            this.entityLayer.childs[i].updateable = !0) : (this.entityLayer.childs[i].collidable = !1, 
+            this.entityLayer.childs[i].updateable = !1));
             this.collisionSystem.applyCollision(this.entityLayer.childs, this.entityLayer.childs), 
             this.minimapHUD && this.minimapHUD.update(this.getPlayerTilePos());
             var dist = 9999, bagNear = null;
@@ -2539,7 +2549,7 @@ var Application = AbstractApplication.extend({
         this.MPView.updateBar(Math.floor(this.playerModel.mp), Math.floor(this.playerModel.mpMax)), 
         this.MPView.setText(Math.floor(this.playerModel.mp) + "/ " + Math.floor(this.playerModel.mpMax));
         var tempXP = Math.floor(this.playerModel.xp) - Math.floor(this.playerModel.toBeforeLevel), tempNext = Math.floor(this.playerModel.toNextLevel) - Math.floor(this.playerModel.toBeforeLevel);
-        this.XPBar.updateBar(tempXP, tempNext);
+        this.XPBar.updateBar(tempXP, tempNext), this.humanityBar.updateBar(this.gameMadness, 2);
     },
     getPlayerTilePos: function() {
         if (this.playerReady && this.player) {
@@ -2637,7 +2647,7 @@ var Application = AbstractApplication.extend({
         }
         for (this.player = new Player(this.playerModel), this.level = getRandomLevel(), 
         this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
-        var i = 0, sizeHelper = 80;
+        var i = 0, sizeHelper = 150;
         this.currentNode.bg ? (this.bgContainer.addChild(this.currentNode.bg), this.bgContainer.addChild(this.currentNode.bgLayer1), 
         this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3)) : (this.marginTiles = {
             x: Math.floor(this.mapPosition.x / APP.nTileSize) + sizeHelper,
@@ -2679,9 +2689,7 @@ var Application = AbstractApplication.extend({
             alpha: 0
         }), this.playerReady = !0, this.entityLayer.updateable = !0, this.player.build(), 
         this.entityLayer.addChild(this.player), "up" === this.currentPlayerSide || "down" === this.currentPlayerSide || "left" === this.currentPlayerSide || "right" === this.currentPlayerSide, 
-        this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2), this.fairy1 = new Fairy(this.player), 
-        this.fairy1.build(), this.entityLayer.addChild(this.fairy1), this.fairy1.setPosition(this.player.getPosition().x, this.player.getPosition().y), 
-        this.updatePlayerEquips();
+        this.player.setPosition(this.levelBounds.x / 2, this.levelBounds.y / 2), this.updatePlayerEquips();
     },
     depthCompare: function(a, b) {
         var yA = a.position.y, yB = b.position.y;

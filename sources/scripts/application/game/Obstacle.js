@@ -18,6 +18,8 @@ var Obstacle = Entity.extend({
         // this.scale.y = 0.5;
         this.range = 0;
         this.life = 3;
+        this.seed = 0;
+        this.currentMadness = APP.getMadness();
     },
     preKill:function(){
         // this._super();
@@ -47,6 +49,7 @@ var Obstacle = Entity.extend({
             return;
         }
         this.life --;
+        APP.updateMadness(0.05);
         this.getContent().scale.x = 0.95;
         this.getContent().scale.y = 0.95;
         TweenLite.to(this.getContent().scale, 0.5, {x:1, y:1, ease:'easeOutElastic'});
@@ -67,18 +70,28 @@ var Obstacle = Entity.extend({
         // this.sprite.scale.x = 0.5;
         // this.sprite.scale.y = 0.5;
     },
+    updateGraphic: function(){
+        this.texture.destroy();
+
+        // this.srcImg = '_dist/img/flora/florest1/treeEvil.png';
+        // this.build();
+
+        this.sprite.setTexture(PIXI.Texture.fromImage('_dist/img/flora/florest1/treeEvil.png'));// = new PIXI.Sprite(this.texture);
+
+        //this.sprite.anchor.x = 0.5;
+        //this.sprite.anchor.y = 0.5;
+    },
     update: function(){
         
-        if(APP.getGame().player && pointDistance(APP.getGame().player.getPosition().x, APP.getGame().player.getPosition().y, this.getPosition().x, this.getPosition().y) < windowHeight){
-            this.collidable = true;
-            // this.updateable = true;
-
-        }else{
-            this.collidable = false;
-            // this.updateable = false;
-        }
-
         this._super();
+
+        if(this.currentMadness !== APP.getMadness()){
+            this.currentMadness = APP.getMadness();
+            var dist = pointDistance(this.currentMadness,0,1,0);
+            if(dist > this.seed){
+                this.updateGraphic();
+            }
+        }
         // if(this.debugGraphic.parent === null && this.getContent().parent !== null)
         // {
         //     this.getBounds();
@@ -101,8 +114,5 @@ var Obstacle = Entity.extend({
 
         this.setPosition( rndPos.x,rndPos.y) ;
         this.collidable = true;
-    },
-    pointDistance: function(x, y, x0, y0){
-        return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     },
 });

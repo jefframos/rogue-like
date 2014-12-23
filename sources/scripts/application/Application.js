@@ -21,6 +21,15 @@ var Application = AbstractApplication.extend({
         this.tileSize = {x: this.nTileSize, y:  this.nTileSize};
         
 	},
+    updateMadness:function(value){
+        this.gameScreen.gameMadness += value;
+        if(this.gameScreen.gameMadness > 2){
+            this.gameScreen.gameMadness = 2;
+        }
+    },
+    getMadness:function(){
+        return this.gameScreen.gameMadness;
+    },
     getHUDController:function(){
         return this.hudController;
     },

@@ -181,22 +181,11 @@ var LevelGenerator = Class.extend({
 		return true;
 	},
 	putObstacles: function(){
-		// for (var i = this.parent.level.length - 1; i >= 0; i--) {
-		// 	for (var j = this.parent.level[i].length - 1; j >= 0; j--) {
-		// 		if(this.parent.level[i][j] > 0)
-		// 		{
-		// 			var obs = new Obstacle(this.parent.level[i][j] - 1);
-		// 			obs.build();
-		// 			obs.setPosition((j)* APP.nTileSize+ this.parent.mapPosition.x, (i+1)* APP.tileSize.y+ this.parent.mapPosition.y);
-		// 			this.parent.entityLayer.addChild(obs);
-		// 		}
-		// 	}
-		// }
 		var accBounds = 2;
 		var yAcc = 0.00001;
 		for (var i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) {
 			for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) {
-				if(Math.random() < 0.08 &&
+				if(this.parent.currentNode.getNextFloat() <  0.1 &&
 					this.parent.currentNode.mapData[i][j]!== undefined &&
 					this.parent.currentNode.mapData[i][j].biome !== undefined &&
 					this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome) &&
@@ -205,6 +194,7 @@ var LevelGenerator = Class.extend({
 
 					var obs = new Obstacle();
 					obs.build();
+					obs.seed = this.parent.currentNode.getNextFloat();
 					obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize + yAcc);
 					yAcc += 0.0001;
 					this.parent.entityLayer.addChild(obs);

@@ -207,7 +207,10 @@ var Player = SpritesheetEntity.extend({
                     hasAxysX = true;
                 }
             }
-
+            if(this.virtualVelocity.y !== 0 && this.virtualVelocity.x !== 0){
+                this.virtualVelocity.y /= 1.5;
+                this.virtualVelocity.x /= 1.5;
+            }
             if(!hasAxysY){
                 this.virtualVelocity.y = 0;
             }

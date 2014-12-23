@@ -37,11 +37,14 @@ var EquipsHUD = Class.extend({
 		this.backShapeInfo.lineTo(0,74);
 		this.backShapeInfo.lineTo(0,16);
 		this.backShapeInfo.lineTo(10,-20);
+
+		this.backShapeInfo.scale.y = -1;
+		this.backShapeInfo.position.y = 65;
 		this.infoContainer.addChild(this.backShapeInfo);
 		this.infoContainer.pivot.x = 90;
 		this.infoContainer.pivot.y = 90;
-		this.infoContainer.position.x = -72 + this.infoContainer.pivot.x;
-		this.infoContainer.position.y = -80 + this.infoContainer.pivot.y;
+		this.infoContainer.position.x = -75 + this.infoContainer.pivot.x;
+		this.infoContainer.position.y = 75 + this.infoContainer.pivot.y;
 		this.infoContainer.alpha = 0;
 		
 		this.container.addChild(this.infoContainer);
