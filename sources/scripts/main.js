@@ -6,7 +6,8 @@ function testMobile() {
 }
 
 var SOCKET = null;
-var windowWidth = 600,
+// var windowWidth = 600,
+var windowWidth = 820,
 // var windowWidth = 810,
 // windowHeight = 456;
 windowHeight = 600;

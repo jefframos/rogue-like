@@ -81,7 +81,7 @@ var HUDController = Class.extend({
 				self.dragged = null;
 				self.currentBox = null;
 			}});
-			if(APP.getMousePos().x < windowWidth){
+			if(APP.getMousePos().y < windowHeight - 80){
 				APP.getGame().addBag(APP.getMousePosMapRelative(), this.currentModel);
 				if(self.currentBox !== null){
 					self.currentBox.removeModel();

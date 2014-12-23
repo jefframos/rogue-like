@@ -1,4 +1,4 @@
-/*! jefframos 18-12-2014 */
+/*! jefframos 23-12-2014 */
 function getRandomLevel() {
     var id = 4;
     return ALL_LEVELS[id];
@@ -622,7 +622,7 @@ var Application = AbstractApplication.extend({
                     self.dragged && self.dragged.parent && self.dragged.parent.removeChild(self.dragged), 
                     self.dragged = null, self.currentBox = null;
                 }
-            }), APP.getMousePos().x < windowWidth && (APP.getGame().addBag(APP.getMousePosMapRelative(), this.currentModel), 
+            }), APP.getMousePos().y < windowHeight - 80 && (APP.getGame().addBag(APP.getMousePosMapRelative(), this.currentModel), 
             null !== self.currentBox && self.currentBox.removeModel());
         }
     },
@@ -883,9 +883,9 @@ var Application = AbstractApplication.extend({
         this.backShapeInfo.lineTo(138, 73), this.backShapeInfo.lineTo(185, 90), this.backShapeInfo.lineTo(145, 104), 
         this.backShapeInfo.lineTo(143, 174), this.backShapeInfo.lineTo(118, 190), this.backShapeInfo.lineTo(20, 175), 
         this.backShapeInfo.lineTo(0, 150), this.backShapeInfo.lineTo(2, 20), this.infoContainer.addChild(this.backShapeInfo), 
-        this.infoContainer.pivot.x = 185, this.infoContainer.pivot.y = 90, this.infoContainer.position.x = -165 + this.infoContainer.pivot.x, 
+        this.infoContainer.pivot.x = 185, this.infoContainer.pivot.y = 90, this.infoContainer.position.x = 530, 
         this.infoContainer.position.y = this.infoContainer.pivot.y, this.infoContainer.alpha = 0, 
-        this.container.addChild(this.infoContainer), this.width = this.background.texture.width, 
+        this.container.addChild(this.infoContainer), this.backShapeInfo.scale.x = -1, this.width = this.background.texture.width, 
         this.height = this.background.texture.height, this.container.setInteractive(!0);
         var self = this;
         this.container.mouseover = function() {
@@ -933,7 +933,7 @@ var Application = AbstractApplication.extend({
             align: "left",
             font: "12px Arial"
         }), this.infoContainer.addChildAt(this.infoLabel, 1), this.infoLabel.position.y = 25, 
-        this.infoLabel.position.x = 25), console.log(model.graphicsData), model.graphicsData.icoImg && this.addImage(model.graphicsData.icoImg);
+        this.infoLabel.position.x = -120), console.log(model.graphicsData), model.graphicsData.icoImg && this.addImage(model.graphicsData.icoImg);
     },
     addImage: function(src) {
         console.log(src), this.img && this.img.getContent().parent && this.img.getContent().parent.removeChild(this.img.getContent()), 
@@ -2086,7 +2086,7 @@ var Application = AbstractApplication.extend({
     },
     createRoom: function() {
         var i = 0;
-        this.distanceToShowMap = 8;
+        this.distanceToShowMap = 9;
         var mapMaker = null;
         mapMaker = voronoiMap.islandShape.makePerlin(this.parent.currentNode.getNextFloat(), .5), 
         this.parent.currentNode.backMapData = [], this.parent.currentNode.mapData = [], 
@@ -2207,11 +2207,11 @@ var Application = AbstractApplication.extend({
         var tempPlaced = {
             x: 0,
             y: 0
-        }, tempPlacedSprite = null, distance = -999, acc = 4;
+        }, tempPlacedSprite = null, distance = -999, accX = 3, accY = 3;
         alpha || (alpha = 1);
-        for (var i = this.playerPostion.x - this.distanceToShowMap - acc; i < this.playerPostion.x + this.distanceToShowMap + acc; i++) if (i >= 0 && i < placeds.length) {
+        for (var i = this.playerPostion.x - this.distanceToShowMap - accX; i < this.playerPostion.x + this.distanceToShowMap + accX; i++) if (i >= 0 && i < placeds.length) {
             tempPlaced.x = i;
-            for (var j = this.playerPostion.y - this.distanceToShowMap - acc; j < this.playerPostion.y + this.distanceToShowMap + acc; j++) if (j >= 0 && j < placeds[tempPlaced.x].length && (tempPlaced.y = j, 
+            for (var j = this.playerPostion.y - this.distanceToShowMap - accY; j < this.playerPostion.y + this.distanceToShowMap + accY; j++) if (j >= 0 && j < placeds[tempPlaced.x].length && (tempPlaced.y = j, 
             tempPlaced.x >= 0 && tempPlaced.y >= 0 && this.isNullTiles(data[tempPlaced.x][tempPlaced.y].biome))) {
                 if (tempPlacedSprite = placeds[tempPlaced.x][tempPlaced.y], distance = Math.floor(this.pointDistance(tempPlaced.x, tempPlaced.y, this.playerPostion.x, this.playerPostion.y)), 
                 data[tempPlaced.x][tempPlaced.y].biome && (null === tempPlacedSprite || 0 === tempPlacedSprite) && distance < this.distanceToShowMap) {
@@ -2422,9 +2422,12 @@ var Application = AbstractApplication.extend({
     createHUD: function() {
         this.barsContainer = new PIXI.DisplayObjectContainer(), this.backInterface = new PIXI.Graphics(), 
         this.backInterface.beginFill(2496568), this.backInterface.drawRect(windowWidth, 0, realWindowWidth - windowWidth, realWindowHeight), 
-        APP.getHUD().addChild(this.backInterface), this.playerHUD = new PlayerHUD("player"), 
-        this.playerHUD.setPosition(windowWidth + 30, 30), APP.getHUD().addChild(this.playerHUD.getContent()), 
-        this.levelContent = new SimpleSprite("_dist/img/HUD/levelContent.png"), this.barsContainer.addChild(this.levelContent.getContent()), 
+        this.playerHUD = new PlayerHUD("player"), this.playerHUD.setPosition(15, -this.playerHUD.getContent().height + 100), 
+        this.barsContainer.addChild(this.playerHUD.getContent()), this.levelContent = new SimpleSprite("_dist/img/HUD/levelContent.png"), 
+        this.barsContainer.addChild(this.levelContent.getContent()), this.humanityBar = new BarView(240, 10, 100, 100), 
+        this.humanityBar.setFrontColor(11359623), this.humanityBar.setBackColor(16745728), 
+        this.humanityBar.setPosition(windowWidth / 2 - this.humanityBar.width / 2, 20), 
+        this.humanityBar.updateBar(50, 100), APP.getHUD().addChild(this.humanityBar.getContent()), 
         this.XPBar = new BarView(140, 6, 100, 100), this.XPBar.setFrontColor(11359623), 
         this.XPBar.setBackColor(16745728), this.XPBar.setPosition(this.levelContent.getContent().width - 1, 0), 
         this.barsContainer.addChild(this.XPBar.getContent()), this.HPView = new LifeBarHUD(80, 10, 100, 100), 
@@ -2437,14 +2440,15 @@ var Application = AbstractApplication.extend({
             wordWrap: !0,
             wordWrapWidth: 20
         }), this.levelLabel.position.y = 9, this.levelLabel.position.x = 15, this.levelLabel.rotation = degreesToRadians(-3), 
-        this.barsContainer.addChild(this.levelLabel), this.barsContainer.position.x = windowWidth + 15, 
-        this.barsContainer.position.y = 160, this.barsContainer.rotation = degreesToRadians(-5), 
-        APP.getHUD().addChild(this.barsContainer), this.equips[0] = APP.weaponList[0], this.equips[1] = APP.armorList[0], 
-        this.equipsContainer = new PIXI.DisplayObjectContainer(), this.backEquips = new SimpleSprite("_dist/img/HUD/backEquips.png"), 
-        this.backEquips.setPosition(-12, -14), this.equipsContainer.addChild(this.backEquips.getContent());
+        this.barsContainer.addChild(this.levelLabel), this.barsContainer.position.x = 15, 
+        this.barsContainer.position.y = 100, this.barsContainer.rotation = degreesToRadians(-5), 
+        this.barsContainer.scale.x = .7, this.barsContainer.scale.y = .7, APP.getHUD().addChild(this.barsContainer), 
+        this.equips[0] = APP.weaponList[0], this.equips[1] = APP.armorList[0], this.equipsContainer = new PIXI.DisplayObjectContainer(), 
+        this.backEquips = new SimpleSprite("_dist/img/HUD/backEquips.png"), this.backEquips.setPosition(-12, -14), 
+        this.equipsContainer.addChild(this.backEquips.getContent());
         var contentEquipPos = {
-            x: windowWidth + 40,
-            y: 270
+            x: windowWidth - 110,
+            y: 15
         };
         this.weaponEquip = new EquipsHUD("weapon"), this.equipsContainer.addChild(this.weaponEquip.getContent()), 
         this.weaponEquip.setPosition(0, 0), this.weaponEquip.addModel(this.equips[0]), this.armorEquip = new EquipsHUD("armor"), 
@@ -2454,19 +2458,12 @@ var Application = AbstractApplication.extend({
         this.relicEquip = new EquipsHUD("relic"), this.equipsContainer.addChild(this.relicEquip.getContent()), 
         this.relicEquip.setPosition(7, 61), this.relicEquip.addModel(this.equips[2]), APP.getHUD().addChild(this.equipsContainer), 
         this.equipsContainer.position.x = contentEquipPos.x, this.equipsContainer.position.y = contentEquipPos.y, 
-        this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ], 
+        this.equipsContainer.scale.x = .7, this.equipsContainer.scale.y = .7, this.inventory = [ null, null, null, null, null, null, null, null, null, null, null, null, null, null, null ], 
         this.inventoryContainer = new PIXI.DisplayObjectContainer();
-        var tempBox = null, lineAccum = 0, rowAccum = 0, inventoryPosition = {
-            x: windowWidth + 20,
-            y: 420
-        };
-        this.backInventory = new PIXI.Graphics(), this.backInventory.beginFill(1313571), 
-        this.backInventory.moveTo(25, 0), this.backInventory.lineTo(170, 6), this.backInventory.lineTo(186, 32), 
-        this.backInventory.lineTo(185, 121), this.backInventory.lineTo(146, 144), this.backInventory.lineTo(0, 134), 
-        this.backInventory.lineTo(4, 21), this.inventoryContainer.addChild(this.backInventory), 
-        this.backInventory.position.x = -5, this.backInventory.position.y = -10;
-        for (var i = 0; i < this.inventory.length; i++) tempBox = new BoxHUD1(42, 36, 3, i), 
-        i > 0 && i % 4 === 0 && (lineAccum++, rowAccum = 0), tempBox.setPosition(46 * rowAccum, 42 * lineAccum), 
+        for (var tempBox = null, lineAccum = 0, rowAccum = 0, inventoryPosition = {
+            x: realWindowWidth / 2 - 46 * this.inventory.length / 2 + 10,
+            y: windowHeight - 50
+        }, i = 0; i < this.inventory.length; i++) tempBox = new BoxHUD1(42, 36, 3, i), tempBox.setPosition(46 * rowAccum, 42 * lineAccum), 
         rowAccum++, this.inventoryContainer.addChild(tempBox.getContent()), this.inventory[i] = tempBox;
         this.inventory[0].addModel(APP.itemList[0]), this.inventory[1].addModel(APP.itemList[1]), 
         this.inventory[2].addModel(APP.itemList[2]), this.inventory[3].addModel(APP.spellList[0]), 
@@ -2653,10 +2650,8 @@ var Application = AbstractApplication.extend({
             y: 120 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
         }, this.currentNode.bg = this.levelGenerator.createRoom(), this.bgContainer.addChild(this.currentNode.backLayer), 
         this.bgContainer.addChild(this.currentNode.bg), this.bgContainer.addChild(this.currentNode.bgLayer1), 
-        this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3));
-        var maskk = new PIXI.Graphics();
-        maskk.beginFill(0), maskk.drawRect(0, 0, windowWidth, windowHeight), maskk.endFill(), 
-        this.getContent().parent.addChild(maskk), this.bgContainer.mask = maskk, this.levelBounds = {
+        this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3)), 
+        this.levelBounds = {
             x: this.currentNode.mapData.length * APP.nTileSize,
             y: this.currentNode.mapData[0].length * APP.nTileSize
         }, this.minimapHUD && (this.minimapHUD.getContent().parent.removeChild(this.minimapHUD.getContent()), 
@@ -2753,7 +2748,7 @@ var Application = AbstractApplication.extend({
         this.vecPositions = [], document.body.addEventListener("mouseup", function() {
             game.player && (game.mouseDown = !1);
         }), document.body.addEventListener("mousedown", function() {
-            game.player && APP.getMousePos().x < windowWidth && (game.mouseDown = !0);
+            game.player && APP.getMousePos().x < windowWidth && APP.getMousePos().y < windowHeight - 70 && (game.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
             if (game.player) {
                 if (87 === e.keyCode || 38 === e.keyCode && game.player.velocity.y < 0) self.removePosition("up"); else if (83 === e.keyCode || 40 === e.keyCode && game.player.velocity.y > 0) self.removePosition("down"); else if (65 === e.keyCode || 37 === e.keyCode && game.player.velocity.x < 0) self.removePosition("left"); else if (68 === e.keyCode || 39 === e.keyCode && game.player.velocity.x > 0) self.removePosition("right"); else if (32 === e.keyCode) game.player.hurt(5); else if (49 === e.keyCode || 50 === e.keyCode || 51 === e.keyCode || 52 === e.keyCode || 81 === e.keyCode || 69 === e.keyCode) {
@@ -2778,7 +2773,7 @@ var Application = AbstractApplication.extend({
         for (var exists = !1, i = this.vecPositions.length - 1; i >= 0; i--) this.vecPositions[i] === position && (exists = !0);
         exists || this.vecPositions.push(position);
     }
-}), meter = new FPSMeter(), SOCKET = null, windowWidth = 600, windowHeight = 600, realWindowWidth = 820, realWindowHeight = 600;
+}), meter = new FPSMeter(), SOCKET = null, windowWidth = 820, windowHeight = 600, realWindowWidth = 820, realWindowHeight = 600;
 
 testMobile() && (windowWidth = 640, windowHeight = 960);
 

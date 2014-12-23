@@ -151,14 +151,21 @@ var GameScreen = AbstractScreen.extend({
         this.backInterface = new PIXI.Graphics();
         this.backInterface.beginFill(0x261838);
         this.backInterface.drawRect(windowWidth,0,realWindowWidth - windowWidth, realWindowHeight);
-        APP.getHUD().addChild(this.backInterface);
+        //APP.getHUD().addChild(this.backInterface);
 
         this.playerHUD = new PlayerHUD('player');
-        this.playerHUD.setPosition(windowWidth + 30,30);
-        APP.getHUD().addChild(this.playerHUD.getContent());
+        this.playerHUD.setPosition(15, - this.playerHUD.getContent().height + 100);
+        this.barsContainer.addChild(this.playerHUD.getContent());
        
         this.levelContent = new SimpleSprite('_dist/img/HUD/levelContent.png');
         this.barsContainer.addChild(this.levelContent.getContent());
+
+        this.humanityBar = new BarView(240,10, 100,100);
+        this.humanityBar.setFrontColor(0xAD5587);
+        this.humanityBar.setBackColor(0xFF8500);
+        this.humanityBar.setPosition(windowWidth/2 - this.humanityBar.width/2,20);
+        this.humanityBar.updateBar(50, 100);
+        APP.getHUD().addChild(this.humanityBar.getContent());
 
         this.XPBar = new BarView(140,6, 100,100);
         this.XPBar.setFrontColor(0xAD5587);
@@ -180,10 +187,11 @@ var GameScreen = AbstractScreen.extend({
         this.levelLabel.rotation = degreesToRadians(-3);
 
         this.barsContainer.addChild(this.levelLabel);
-        this.barsContainer.position.x = windowWidth + 15;
-        this.barsContainer.position.y = 160;
+        this.barsContainer.position.x = 15;
+        this.barsContainer.position.y = 100;
         this.barsContainer.rotation = degreesToRadians(-5);
-
+        this.barsContainer.scale.x = 0.7;
+        this.barsContainer.scale.y = 0.7;
         APP.getHUD().addChild(this.barsContainer);
 
 
@@ -198,7 +206,7 @@ var GameScreen = AbstractScreen.extend({
         this.backEquips.setPosition(-12,-14);
         this.equipsContainer.addChild(this.backEquips.getContent());
 
-        var contentEquipPos = {x:windowWidth + 40, y: 270};
+        var contentEquipPos = {x:windowWidth - 110, y: 15};
 
         this.weaponEquip = new EquipsHUD('weapon');
         this.equipsContainer.addChild(this.weaponEquip.getContent());
@@ -224,39 +232,23 @@ var GameScreen = AbstractScreen.extend({
         this.equipsContainer.position.x = contentEquipPos.x;
         this.equipsContainer.position.y = contentEquipPos.y;
 
+        this.equipsContainer.scale.x = 0.7;
+        this.equipsContainer.scale.y = 0.7;
 
         //adiciona os inventory
         this.inventory =
         [null,null,null,null,
         null,null,null,null,
         null,null,null,null,
-        null,null,null,null];
+        null,null,null];
         this.inventoryContainer = new PIXI.DisplayObjectContainer();
         var tempBox = null;
         var lineAccum = 0;
         var rowAccum = 0;
-        var inventoryPosition = {x:windowWidth + 20, y:420};
-        this.backInventory = new PIXI.Graphics();
-        this.backInventory.beginFill(0x140B23);
-        this.backInventory.moveTo(25,0);
-        this.backInventory.lineTo(170,6);
-        this.backInventory.lineTo(186,32);
-        this.backInventory.lineTo(185,121);
-        this.backInventory.lineTo(146,144);
-        this.backInventory.lineTo(0,134);
-        this.backInventory.lineTo(4,21);
-        this.inventoryContainer.addChild(this.backInventory);
-        this.backInventory.position.x = - 5;
-        this.backInventory.position.y = - 10;
-
+        var inventoryPosition = {x: (realWindowWidth / 2) - (46 * this.inventory.length) / 2 + 10, y:windowHeight - 50};
+       
         for (var i = 0; i < this.inventory.length; i++) {
             tempBox = new BoxHUD1(42,36, 3, i);
-
-            if(i > 0 && i % 4 === 0){
-                lineAccum ++;
-                rowAccum = 0;
-            }
-
             tempBox.setPosition(rowAccum*46, lineAccum * 42);
             rowAccum ++;
             this.inventoryContainer.addChild(tempBox.getContent());
@@ -280,54 +272,6 @@ var GameScreen = AbstractScreen.extend({
         APP.getHUD().addChild(this.inventoryContainer);
         this.inventoryContainer.position.x = inventoryPosition.x;
         this.inventoryContainer.position.y = inventoryPosition.y;
-
-        //for (var i = 0; i < 12; i++) {
-        //     tempBox = new BoxHUD1(42,36, 3, i);
-
-        //     if(i > 0 && i % 4 === 0){
-        //         lineAccum ++;
-        //         rowAccum = 0;
-        //     }
-
-        //     tempBox.setPosition(windowWidth +rowAccum*46 + 10, 325 + lineAccum * 42);
-        //     rowAccum ++;
-        //     APP.getHUD().addChild(tempBox.getContent());
-        //     if(this.inventory[i] && this.inventory[i].icoImg){
-        //         tempText = this.inventory[i].name;
-        //         tempBox.addModel(this.inventory[i]);
-        //     }
-        //     // tempBox.setText(tempText + '\n\n\n' + shortcut);
-        // }
-
-        // this.equips = [null,null,null];
-        // this.equipsBoxHud = [];
-        // for (i = 0; i < this.equips.length; i++) {
-        //     tempBox = new BoxHUD1(100,70,1);
-        //     tempBox.setPosition(windowWidth - 120, windowHeight / 2.5 + 90*i);
-        //     if(i === 0){
-        //         tempBox.setText('Weapon');
-        //     }else if(i === 1){
-        //         tempBox.setText('Armor');
-        //     }else if(i === 2){
-        //         tempBox.setText('Relic');
-        //     }
-        //     APP.getHUD().addChild(tempBox.getContent());
-        //     this.equipsBoxHud.push(tempBox);
-        // }
-
-        // this.boxStats = new BoxHUD1(200,310,0);
-        // APP.getHUD().addChild(this.boxStats.getContent());
-        // this.boxStats.setPosition(20, 320);
-
-
-        // //adiciona minimap
-        // this.minimap = new Minimap();
-        // APP.getHUD().addChild(this.minimap.getContent());
-        // this.minimap.build();
-        // this.minimap.setPosition(windowWidth - this.minimap.getContent().width * 0.5 - 5, 10);
-        // this.minimap.getContent().scale.x = 0.5;
-        // this.minimap.getContent().scale.y = 0.5;
-
 
     },
     addBag:function(pos, model){
@@ -667,12 +611,12 @@ var GameScreen = AbstractScreen.extend({
             this.bgContainer.addChild(this.currentNode.bgLayer3);
         }
 
-        var maskk = new PIXI.Graphics();
-        maskk.beginFill(0);
-        maskk.drawRect(0,0,windowWidth,windowHeight);
-        maskk.endFill();
-        this.getContent().parent.addChild(maskk);
-        this.bgContainer.mask = maskk;
+        // var maskk = new PIXI.Graphics();
+        // maskk.beginFill(0);
+        // maskk.drawRect(0,0,windowWidth,windowHeight);
+        // maskk.endFill();
+        // this.getContent().parent.addChild(maskk);
+        //this.bgContainer.mask = maskk;
         // this.bgContainer
 
         this.levelBounds= {x: this.currentNode.mapData.length * APP.nTileSize, y: this.currentNode.mapData[0].length * APP.nTileSize};

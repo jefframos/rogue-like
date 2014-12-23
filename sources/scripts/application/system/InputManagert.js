@@ -10,7 +10,9 @@ var InputManager = Class.extend({
 			}
 		});
 		document.body.addEventListener('mousedown', function(e){
-			if(game.player && APP.getMousePos().x < windowWidth){
+			//só atira se não tiver na interface abaixo
+			//TODO: melhorar isso
+			if(game.player && APP.getMousePos().x < windowWidth && APP.getMousePos().y < windowHeight - 70){
 				game.mouseDown = true;
 			}
 		});

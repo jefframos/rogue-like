@@ -30,15 +30,19 @@ var PlayerHUD = Class.extend({
 		this.backShapeInfo.lineTo(20,175);
 		this.backShapeInfo.lineTo(0,150);
 		this.backShapeInfo.lineTo(2,20);
+
+
 		this.infoContainer.addChild(this.backShapeInfo);
 		this.infoContainer.pivot.x = 185;
 		this.infoContainer.pivot.y = 90;
-		this.infoContainer.position.x = -165 + this.infoContainer.pivot.x;
+		this.infoContainer.position.x = 530;//-165 + this.infoContainer.pivot.x;
 		this.infoContainer.position.y = this.infoContainer.pivot.y;
 		this.infoContainer.alpha = 0;
 		
 		this.container.addChild(this.infoContainer);
 
+
+		this.backShapeInfo.scale.x = -1;
 
 		// this.container.addChild(this.container);
 		this.width = this.background.texture.width;
@@ -160,7 +164,7 @@ var PlayerHUD = Class.extend({
 			this.infoLabel = new PIXI.Text(text, {fill:'white', align:'left', font:'12px Arial'});
 			this.infoContainer.addChildAt(this.infoLabel,1);
 			this.infoLabel.position.y = 25;
-			this.infoLabel.position.x = 25;
+			this.infoLabel.position.x = -120;//25;
 		}else
 		{
 			this.infoLabel.setText(text);

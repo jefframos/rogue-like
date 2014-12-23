@@ -216,7 +216,7 @@ var LevelGenerator = Class.extend({
 	},
 	createRoom: function(){
 		var i = 0;
-		this.distanceToShowMap = 8;
+		this.distanceToShowMap = 9;
 		var mapMaker = null;
 		// if(this.parent.currentNode.getNextFloat()< 0.3){
 		// 	mapMaker = voronoiMap.islandShape.makeBlob(this.parent.currentNode.getNextFloat(), 0.5);
@@ -484,15 +484,17 @@ var LevelGenerator = Class.extend({
 		var tempPlaced = {x:0,y:0};
 		var tempPlacedSprite = null;
 		var distance = -999;
-		var acc = 4;
+		// this.distanceToShowMap = 8;
+		var accX = 3;
+		var accY = 3;
 		if(!alpha){
 			alpha = 1;
 		}
-		for (var i = this.playerPostion.x - this.distanceToShowMap - acc; i < this.playerPostion.x+this.distanceToShowMap + acc; i++) {
+		for (var i = this.playerPostion.x - this.distanceToShowMap - accX; i < this.playerPostion.x+this.distanceToShowMap + accX; i++) {
 			if(i >= 0 && i <placeds.length){
 				tempPlaced.x = i;
 				// console.log(placeds[tempPlaced.x].length);
-				for (var j = this.playerPostion.y - this.distanceToShowMap - acc; j < this.playerPostion.y+this.distanceToShowMap + acc; j++) {
+				for (var j = this.playerPostion.y - this.distanceToShowMap - accY; j < this.playerPostion.y+this.distanceToShowMap + accY; j++) {
 					if(j >= 0 && j <placeds[tempPlaced.x].length){
 						tempPlaced.y = j;
 						if(tempPlaced.x >= 0 && tempPlaced.y >= 0 && this.isNullTiles(data[tempPlaced.x][tempPlaced.y].biome)){//} !== 'OCEAN'&& data[tempPlaced.x][tempPlaced.y].biome !== 'NULL'){
@@ -507,7 +509,7 @@ var LevelGenerator = Class.extend({
 								var scl = 1;
 								tempTile.setPosition(tempX*scl,tempY*scl);
 								tempTile.getContent().tint = displayColors[data[tempPlaced.x][tempPlaced.y].biome];
-								tempTile.getContent().alpha = alpha;
+								tempTile.getContent().alpha = alpha;//this.distanceToShowMap /distance;//alpha;
 								container.addChild(tempTile.getContent());
 								placeds[tempPlaced.x][tempPlaced.y] = tempTile.getContent();
 							}
