@@ -587,7 +587,7 @@ var GameScreen = AbstractScreen.extend({
         }
 
         this.player = new Player(this.playerModel);
-        this.level = getRandomLevel();
+        // this.level = getRandomLevel();
         this.currentNode.applySeed();
 
         while(this.bgContainer.children.length){
@@ -709,19 +709,6 @@ var GameScreen = AbstractScreen.extend({
         this.entityLayer.updateable = true;
 
         this.player.build();
-
-
-        // this.player.setSpellModel(APP.spellList[Math.floor(APP.spellList.length * Math.random())]);
-        // this.player.setArmorModel(APP.armorList[Math.floor(APP.armorList.length * Math.random())]);
-        // this.player.setWeaponModel(APP.weaponList[Math.floor(APP.weaponList.length * Math.random())]);
-        // this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
-
-        // this.player.setSpellModel(APP.spellList[1]);
-        // this.player.setArmorModel(APP.armorList[0]);
-        // this.player.setWeaponModel(APP.weaponList[0]);
-        //this.player.setRelicModel(APP.relicList[Math.floor(APP.relicList.length * Math.random())]);
-
-       
 
         this.entityLayer.addChild(this.player);
 

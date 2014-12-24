@@ -34,7 +34,6 @@ module.exports = function(grunt) {
             dist : {
                 files : {
                     '<%= globalConfig.dest %>js/main.js':[
-                        '<%= globalConfig.src %>scripts/Levels.js',
                         '<%= globalConfig.src %>scripts/framework/**/*.js',
                         '<%= globalConfig.src %>scripts/application/**/*.js',
                         '<%= globalConfig.src %>scripts/main.js'

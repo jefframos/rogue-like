@@ -119,7 +119,8 @@ var displayColors = {
 var arrayThrees = [['_dist/img/flora/florest1/tree1.png',
         '_dist/img/flora/florest1/tree2.png',
         '_dist/img/flora/florest1/tree3.png',
-        '_dist/img/flora/florest1/tree4.png']];
+        '_dist/img/flora/florest1/tree4.png',
+        '_dist/img/flora/florest1/treeEvil.png']];
 var arrayRocks = [['_dist/img/flora/florest1/rock1.png',
         '_dist/img/flora/florest1/rock2.png',
         '_dist/img/flora/florest1/rock3.png']];
@@ -194,7 +195,7 @@ var LevelGenerator = Class.extend({
 
 					var obs = new Obstacle();
 					obs.build();
-					obs.seed = this.parent.currentNode.getNextFloat();
+					obs.seed = this.parent.currentNode.getNextFloat() * 1.1;
 					obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize + yAcc);
 					yAcc += 0.0001;
 					this.parent.entityLayer.addChild(obs);

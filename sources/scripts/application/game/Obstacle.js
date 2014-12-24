@@ -20,6 +20,7 @@ var Obstacle = Entity.extend({
         this.life = 3;
         this.seed = 0;
         this.currentMadness = APP.getMadness();
+        this.state = 0;
     },
     preKill:function(){
         // this._super();
@@ -49,7 +50,7 @@ var Obstacle = Entity.extend({
             return;
         }
         this.life --;
-        APP.updateMadness(0.05);
+        APP.updateMadness(0.01);
         this.getContent().scale.x = 0.95;
         this.getContent().scale.y = 0.95;
         TweenLite.to(this.getContent().scale, 0.5, {x:1, y:1, ease:'easeOutElastic'});
@@ -71,13 +72,26 @@ var Obstacle = Entity.extend({
         // this.sprite.scale.y = 0.5;
     },
     updateGraphic: function(){
-        this.texture.destroy();
+        if(this.state === -1){
+            return;
+        }
+        
 
-        // this.srcImg = '_dist/img/flora/florest1/treeEvil.png';
-        // this.build();
+        this.getContent().tint = 0xFFFFFF;
 
-        this.sprite.setTexture(PIXI.Texture.fromImage('_dist/img/flora/florest1/treeEvil.png'));// = new PIXI.Sprite(this.texture);
-
+        var self = this;
+        // setTimeout(function(){
+        if(self.state === -1){
+            return;
+        }
+        self.texture.destroy();
+        self.sprite.setTexture(PIXI.Texture.fromImage('_dist/img/flora/florest1/treeEvil.png'));// = new PIXI.Sprite(self.texture);
+        self.getContent().scale.x = 0.95;
+        self.getContent().scale.y = 0.95;
+        TweenLite.to(self.getContent().scale, 0.5, {x:1, y:1, ease:'easeOutElastic'});
+        self.state = -1;
+        // },200);
+        
         //this.sprite.anchor.x = 0.5;
         //this.sprite.anchor.y = 0.5;
     },
@@ -88,6 +102,7 @@ var Obstacle = Entity.extend({
         if(this.currentMadness !== APP.getMadness()){
             this.currentMadness = APP.getMadness();
             var dist = pointDistance(this.currentMadness,0,1,0);
+            // console.log(this.seed, dist);
             if(dist > this.seed){
                 this.updateGraphic();
             }

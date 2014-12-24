@@ -1,34 +1,4 @@
 /*! jefframos 23-12-2014 */
-function getRandomLevel() {
-    var id = 4;
-    return ALL_LEVELS[id];
-}
-
-function testMobile() {
-    return !1;
-}
-
-function update() {
-    requestAnimFrame(update), meter.tickStart();
-    var tempRation = window.innerHeight / windowHeight, ratio = tempRation < window.innerWidth / realWindowWidth ? tempRation : window.innerWidth / realWindowWidth;
-    windowWidthVar = realWindowWidth * ratio, windowHeightVar = realWindowHeight * ratio, 
-    windowWidthVar > realWindowWidth && (windowWidthVar = realWindowWidth), windowHeightVar > realWindowHeight && (windowHeightVar = realWindowHeight), 
-    renderer.view.style.width = windowWidthVar + "px", renderer.view.style.height = windowHeightVar + "px", 
-    APP.update(), renderer.render(APP.stage), meter.tick();
-}
-
-function pointDistance(x, y, x0, y0) {
-    return Math.sqrt((x -= x0) * x + (y -= y0) * y);
-}
-
-function degreesToRadians(deg) {
-    return deg * (Math.PI / 180);
-}
-
-function radiansToDegrees(rad) {
-    return rad / (Math.PI / 180);
-}
-
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -95,7 +65,32 @@ function addSaturation(color, value) {
     rgbToHex(rgb.r, rgb.g, rgb.b);
 }
 
-var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ], [ [ 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 2 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ] ], [ [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ] ], [ [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ] ], [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ] ], DungeonGenerator = Class.extend({
+function pointDistance(x, y, x0, y0) {
+    return Math.sqrt((x -= x0) * x + (y -= y0) * y);
+}
+
+function degreesToRadians(deg) {
+    return deg * (Math.PI / 180);
+}
+
+function radiansToDegrees(rad) {
+    return rad / (Math.PI / 180);
+}
+
+function testMobile() {
+    return !1;
+}
+
+function update() {
+    requestAnimFrame(update), meter.tickStart();
+    var tempRation = window.innerHeight / windowHeight, ratio = tempRation < window.innerWidth / realWindowWidth ? tempRation : window.innerWidth / realWindowWidth;
+    windowWidthVar = realWindowWidth * ratio, windowHeightVar = realWindowHeight * ratio, 
+    windowWidthVar > realWindowWidth && (windowWidthVar = realWindowWidth), windowHeightVar > realWindowHeight && (windowHeightVar = realWindowHeight), 
+    renderer.view.style.width = windowWidthVar + "px", renderer.view.style.height = windowHeightVar + "px", 
+    APP.update(), renderer.render(APP.stage), meter.tick();
+}
+
+var DungeonGenerator = Class.extend({
     init: function() {
         this.random = 0, this.numActivesNodes = 0, this.maxDist = 5, this.minNodes = 5, 
         this.seeds = 1, this.rooms = [], this.maxNodes = 10, this.mostDistant = new NodeModel(), 
@@ -1347,7 +1342,7 @@ var Application = AbstractApplication.extend({
         this.type = "environment", this.width = APP.nTileSize / 1.8, this.height = APP.nTileSize / 2.5, 
         this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0, 
-        this.life = 3, this.seed = 0, this.currentMadness = APP.getMadness();
+        this.life = 3, this.seed = 0, this.currentMadness = APP.getMadness(), this.state = 0;
     },
     preKill: function() {
         var self = this;
@@ -1375,7 +1370,7 @@ var Application = AbstractApplication.extend({
         }, this.bounds;
     },
     fireCollide: function() {
-        this.life <= 0 || (this.life--, APP.updateMadness(.05), this.getContent().scale.x = .95, 
+        this.life <= 0 || (this.life--, APP.updateMadness(.01), this.getContent().scale.x = .95, 
         this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
             x: 1,
             y: 1,
@@ -1387,7 +1382,16 @@ var Application = AbstractApplication.extend({
         this.sprite.anchor.x = .5, this.sprite.anchor.y = 1, this.getContent().type = this.type;
     },
     updateGraphic: function() {
-        this.texture.destroy(), this.sprite.setTexture(PIXI.Texture.fromImage("_dist/img/flora/florest1/treeEvil.png"));
+        if (-1 !== this.state) {
+            this.getContent().tint = 16777215;
+            var self = this;
+            -1 !== self.state && (self.texture.destroy(), self.sprite.setTexture(PIXI.Texture.fromImage("_dist/img/flora/florest1/treeEvil.png")), 
+            self.getContent().scale.x = .95, self.getContent().scale.y = .95, TweenLite.to(self.getContent().scale, .5, {
+                x: 1,
+                y: 1,
+                ease: "easeOutElastic"
+            }), self.state = -1);
+        }
     },
     update: function() {
         if (this._super(), this.currentMadness !== APP.getMadness()) {
@@ -2121,7 +2125,7 @@ var Application = AbstractApplication.extend({
     GRASSLAND: 5219097,
     SUBTROPICAL_DESERT: 5219097,
     STANDARD3: 4755034
-}, arrayThrees = [ [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png" ] ], arrayRocks = [ [ "_dist/img/flora/florest1/rock1.png", "_dist/img/flora/florest1/rock2.png", "_dist/img/flora/florest1/rock3.png" ] ], tilesGraphics = {
+}, arrayThrees = [ [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png", "_dist/img/flora/florest1/treeEvil.png" ] ], arrayRocks = [ [ "_dist/img/flora/florest1/rock1.png", "_dist/img/flora/florest1/rock2.png", "_dist/img/flora/florest1/rock3.png" ] ], tilesGraphics = {
     TOP_LEFT: "_dist/img/levels/leftTop.png",
     TOP_RIGHT: "_dist/img/levels/rightTop.png",
     BOTTOM_LEFT: "_dist/img/levels/leftBottom.png",
@@ -2156,7 +2160,7 @@ var Application = AbstractApplication.extend({
     putObstacles: function() {
         for (var accBounds = 2, yAcc = 1e-5, i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (this.parent.currentNode.getNextFloat() < .1 && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer1[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer2[i][j].biome)) {
             var obs = new Obstacle();
-            obs.build(), obs.seed = this.parent.currentNode.getNextFloat(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize + yAcc), 
+            obs.build(), obs.seed = 1.1 * this.parent.currentNode.getNextFloat(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize + yAcc), 
             yAcc += 1e-4, this.parent.entityLayer.addChild(obs);
         }
     },
@@ -2711,8 +2715,7 @@ var Application = AbstractApplication.extend({
           case 6:
             roomState = "key";
         }
-        for (this.player = new Player(this.playerModel), this.level = getRandomLevel(), 
-        this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
+        for (this.player = new Player(this.playerModel), this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
         var i = 0, sizeHelper = 150;
         this.currentNode.bg ? (this.bgContainer.addChild(this.currentNode.bg), this.bgContainer.addChild(this.currentNode.bgLayer1), 
         this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3)) : (this.marginTiles = {
@@ -2870,4 +2873,4 @@ var initialize = function() {
         }
     };
     App.init();
-}(), console.log(addSaturation(7605043, .5));
+}();
