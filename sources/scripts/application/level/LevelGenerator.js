@@ -498,7 +498,7 @@ var LevelGenerator = Class.extend({
 								var sz = APP.nTileSize;
 								var scl = 1;
 								tempTile.setPosition(tempX*scl,tempY*scl);
-								tempTile.getContent().tint = displayColors[data[tempPlaced.x][tempPlaced.y].biome];
+								tempTile.getContent().tint = addSaturation(displayColors[data[tempPlaced.x][tempPlaced.y].biome] , 1.5 - APP.getMadness() / 2);
 								tempTile.getContent().alpha = alpha;//this.distanceToShowMap /distance;//alpha;
 								container.addChild(tempTile.getContent());
 								placeds[tempPlaced.x][tempPlaced.y] = tempTile.getContent();

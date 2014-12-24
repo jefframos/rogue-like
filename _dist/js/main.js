@@ -29,6 +29,72 @@ function radiansToDegrees(rad) {
     return rad / (Math.PI / 180);
 }
 
+function rgbToHsl(r, g, b) {
+    r /= 255, g /= 255, b /= 255;
+    var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
+    if (max === min) h = s = 0; else {
+        var d = max - min;
+        switch (s = l > .5 ? d / (2 - max - min) : d / (max + min), max) {
+          case r:
+            h = (g - b) / d + (b > g ? 6 : 0);
+            break;
+
+          case g:
+            h = (b - r) / d + 2;
+            break;
+
+          case b:
+            h = (r - g) / d + 4;
+        }
+        h /= 6;
+    }
+    return {
+        h: h,
+        s: s,
+        l: l
+    };
+}
+
+function hslToRgb(h, s, l) {
+    function hue2rgb(p, q, t) {
+        return 0 > t && (t += 1), t > 1 && (t -= 1), 1 / 6 > t ? p + 6 * (q - p) * t : .5 > t ? q : 2 / 3 > t ? p + (q - p) * (2 / 3 - t) * 6 : p;
+    }
+    var r, g, b;
+    if (0 === s) r = g = b = l; else {
+        var q = .5 > l ? l * (1 + s) : l + s - l * s, p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1 / 3), g = hue2rgb(p, q, h), b = hue2rgb(p, q, h - 1 / 3);
+    }
+    return {
+        r: Math.round(255 * r),
+        g: Math.round(255 * g),
+        b: Math.round(255 * b)
+    };
+}
+
+function toHex(n) {
+    return n = parseInt(n, 10), isNaN(n) ? "00" : (n = Math.max(0, Math.min(n, 255)), 
+    "0123456789ABCDEF".charAt((n - n % 16) / 16) + "0123456789ABCDEF".charAt(n % 16));
+}
+
+function rgbToHex(R, G, B) {
+    return parseInt("0x" + toHex(R) + toHex(G) + toHex(B));
+}
+
+function hexToRgb(hex) {
+    var r = hex >> 16, g = hex >> 8 & 255, b = 255 & hex;
+    return {
+        r: r,
+        g: g,
+        b: b
+    };
+}
+
+function addSaturation(color, value) {
+    var rgb = hexToRgb(color), hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    return hsl.s *= value, hsl.s > 1 && (hsl.s = 1), hsl.s < 0 && (hsl.s = 0), rgb = hslToRgb(hsl.h, hsl.s, hsl.l), 
+    rgbToHex(rgb.r, rgb.g, rgb.b);
+}
+
 var ALL_LEVELS = [ [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0 ], [ 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ], [ [ 2, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 2 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 2, 2, 0, 0, 0, 0, 0, 0, 2, 2, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ] ], [ [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ], [ 0, 3, 0, 0, 2, 0, 0, 2, 0, 0, 3, 0 ], [ 0, 0, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0 ] ], [ [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3 ] ], [ [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] ] ], DungeonGenerator = Class.extend({
     init: function() {
         this.random = 0, this.numActivesNodes = 0, this.maxDist = 5, this.minNodes = 5, 
@@ -2227,7 +2293,7 @@ var Application = AbstractApplication.extend({
                 data[tempPlaced.x][tempPlaced.y].biome && (null === tempPlacedSprite || 0 === tempPlacedSprite) && distance < this.distanceToShowMap) {
                     var tempTile = new SimpleSprite(tilesGraphics[data[tempPlaced.x][tempPlaced.y].tile]), tempX = tempPlaced.x * APP.nTileSize, tempY = tempPlaced.y * APP.nTileSize, scl = (APP.nTileSize, 
                     1);
-                    tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = displayColors[data[tempPlaced.x][tempPlaced.y].biome], 
+                    tempTile.setPosition(tempX * scl, tempY * scl), tempTile.getContent().tint = addSaturation(displayColors[data[tempPlaced.x][tempPlaced.y].biome], 1.5 - APP.getMadness() / 2), 
                     tempTile.getContent().alpha = alpha, container.addChild(tempTile.getContent()), 
                     placeds[tempPlaced.x][tempPlaced.y] = tempTile.getContent();
                 }
@@ -2804,4 +2870,4 @@ var initialize = function() {
         }
     };
     App.init();
-}();
+}(), console.log(addSaturation(7605043, .5));
