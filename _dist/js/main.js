@@ -1,4 +1,4 @@
-/*! jefframos 23-12-2014 */
+/*! jefframos 24-12-2014 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -2125,7 +2125,7 @@ var Application = AbstractApplication.extend({
     GRASSLAND: 5219097,
     SUBTROPICAL_DESERT: 5219097,
     STANDARD3: 4755034
-}, arrayThrees = [ [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png", "_dist/img/flora/florest1/treeEvil.png" ] ], arrayRocks = [ [ "_dist/img/flora/florest1/rock1.png", "_dist/img/flora/florest1/rock2.png", "_dist/img/flora/florest1/rock3.png" ] ], tilesGraphics = {
+}, arrayThrees = [ [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png" ], [ "_dist/img/flora/florest1/treeEvil.png" ] ], arrayRocks = [ [ "_dist/img/flora/florest1/rock1.png", "_dist/img/flora/florest1/rock2.png", "_dist/img/flora/florest1/rock3.png" ] ], tilesGraphics = {
     TOP_LEFT: "_dist/img/levels/leftTop.png",
     TOP_RIGHT: "_dist/img/levels/rightTop.png",
     BOTTOM_LEFT: "_dist/img/levels/leftBottom.png",

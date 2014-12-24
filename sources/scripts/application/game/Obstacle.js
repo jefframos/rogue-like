@@ -76,7 +76,6 @@ var Obstacle = Entity.extend({
             return;
         }
         
-
         this.getContent().tint = 0xFFFFFF;
 
         var self = this;
