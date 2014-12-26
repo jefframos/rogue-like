@@ -1,121 +1,121 @@
 /*jshint undef:false */
-var defaultColors = {
-		// Features
-		OCEAN: 0x44447a,
-		COAST: 0x33335a,
-		LAKESHORE: 0x225588,
-		LAKE: 0x336699,
-		RIVER: 0x225588,
-		MARSH: 0x2f6666,
-		ICE: 0x99ffff,
-		BEACH: 0xa09077,
-		ISLAND1: 0x442211,
-		ISLAND2: 0x553322,
-		ISLAND3: 0x664433,
-		BRIDGE: 0x686860,
-		LAVA: 0xcc3333,
+// var defaultColors = {
+// 		// Features
+// 		OCEAN: 0x44447a,
+// 		COAST: 0x33335a,
+// 		LAKESHORE: 0x225588,
+// 		LAKE: 0x336699,
+// 		RIVER: 0x225588,
+// 		MARSH: 0x2f6666,
+// 		ICE: 0x99ffff,
+// 		BEACH: 0xa09077,
+// 		ISLAND1: 0x442211,
+// 		ISLAND2: 0x553322,
+// 		ISLAND3: 0x664433,
+// 		BRIDGE: 0x686860,
+// 		LAVA: 0xcc3333,
 
-		// Terrain
-		SNOW: 0xffffff,
-		TUNDRA: 0xbbbbaa,
-		BARE: 0x888888,
-		SCORCHED: 0x555555,
-		TAIGA: 0x99aa77,
-		SHRUBLAND: 0x889977,
-		TEMPERATE_DESERT: 0xc9d29b,
-		TEMPERATE_RAIN_FOREST: 0x448855,
-		TEMPERATE_DECIDUOUS_FOREST: 0x679459,
-		GRASSLAND: 0x88aa55,
-		SUBTROPICAL_DESERT: 0xd2b98b,
-		TROPICAL_RAIN_FOREST: 0x337755,
-		TROPICAL_SEASONAL_FOREST: 0x559944
-	};
+// 		// Terrain
+// 		SNOW: 0xffffff,
+// 		TUNDRA: 0xbbbbaa,
+// 		BARE: 0x888888,
+// 		SCORCHED: 0x555555,
+// 		TAIGA: 0x99aa77,
+// 		SHRUBLAND: 0x889977,
+// 		TEMPERATE_DESERT: 0xc9d29b,
+// 		TEMPERATE_RAIN_FOREST: 0x448855,
+// 		TEMPERATE_DECIDUOUS_FOREST: 0x679459,
+// 		GRASSLAND: 0x88aa55,
+// 		SUBTROPICAL_DESERT: 0xd2b98b,
+// 		TROPICAL_RAIN_FOREST: 0x337755,
+// 		TROPICAL_SEASONAL_FOREST: 0x559944
+// 	};
 
-var displayColorsOld = {
-		// Features
-		OCEAN: 0x44447a,
-		COAST: 0x33335a,
-		LAKESHORE: 0x225588,
-		LAKE: 0x336699,
-		MARSH: 0x2f6666,
-		ICE: 0x99ffff,
-		RIVER: 0x225588,
-		// BEACH: 0xa09077,
-		BEACH: 0x4fa319,
-		BASE_GRASS: 0x4fa319,
-		ISLAND1: 0x7F4F1F,
-		ISLAND2: 0x663B14,
-		ISLAND3: 0x472911,
-		BRIDGE: 0x686860,
-		LAVA: 0xcc3333,
+// var displayColorsOld = {
+// 		// Features
+// 		OCEAN: 0x44447a,
+// 		COAST: 0x33335a,
+// 		LAKESHORE: 0x225588,
+// 		LAKE: 0x336699,
+// 		MARSH: 0x2f6666,
+// 		ICE: 0x99ffff,
+// 		RIVER: 0x225588,
+// 		// BEACH: 0xa09077,
+// 		BEACH: 0x4fa319,
+// 		BASE: 0x4fa319,
+// 		ISLAND1: 0x7F4F1F,
+// 		ISLAND2: 0x663B14,
+// 		ISLAND3: 0x472911,
+// 		BRIDGE: 0x686860,
+// 		LAVA: 0xcc3333,
 
-		// Terrain 0x315b16
-		SNOW: 0x3d8e09,
-		TUNDRA: 0x3d8e09,
-		BARE: 0x3d8e09,
-		SCORCHED: 0x3d8e09,
-		TAIGA: 0x3d8e09,
-		STANDARD1: 0x3d8e09,
+// 		// Terrain 0x315b16
+// 		SNOW: 0x3d8e09,
+// 		TUNDRA: 0x3d8e09,
+// 		BARE: 0x3d8e09,
+// 		SCORCHED: 0x3d8e09,
+// 		TAIGA: 0x3d8e09,
+// 		STANDARD1: 0x3d8e09,
 
-		TEMPERATE_RAIN_FOREST: 0x315b16,
-		TEMPERATE_DECIDUOUS_FOREST: 0x315b16,
-		TROPICAL_RAIN_FOREST: 0x315b16,
-		TROPICAL_SEASONAL_FOREST: 0x315b16,
-		STANDARD2: 0x315b16,
-
-		
-		SHRUBLAND: 0x4fa319,
-		TEMPERATE_DESERT: 0x4fa319,
-		GRASSLAND: 0x4fa319,
-		SUBTROPICAL_DESERT: 0x4fa319,
-		STANDARD3: 0x4fa319
-
-	};
-var displayColors = {
-		// Features
-		OCEAN: 0x44447a,
-		COAST: 0x33335a,
-		LAKESHORE: 0x225588,
-		LAKE: 0x336699,
-		MARSH: 0x2f6666,
-		ICE: 0x99ffff,
-		RIVER: 0x225588,
-		// BEACH: 0xa09077,
-
-		BEACH: 0x336339,
-		BASE_GRASS: 0x336339,
-		// BASE_GRASS: 0xFF0000,
-
-
-		ISLAND3: 0xC19C70,
-		ISLAND2: 0x9B6E4D,
-		ISLAND1: 0x402A1C,
-		BRIDGE: 0x686860,
-		LAVA: 0xcc3333,
-		ROAD1: 0xcc3333,
-
-		// Terrain 0x315b16
-		SNOW: 0x3d8e09,
-		TUNDRA: 0x3d8e09,
-		BARE: 0x3d8e09,
-		SCORCHED: 0x3d8e09,
-		TAIGA: 0x3d8e09,
-		STANDARD1: 0x488E5A,
-
-		TEMPERATE_RAIN_FOREST: 0x315b16,
-		TEMPERATE_DECIDUOUS_FOREST: 0x315b16,
-		TROPICAL_RAIN_FOREST: 0x315b16,
-		TROPICAL_SEASONAL_FOREST: 0x315b16,
-		STANDARD2: 0x3D7747,
+// 		TEMPERATE_RAIN_FOREST: 0x315b16,
+// 		TEMPERATE_DECIDUOUS_FOREST: 0x315b16,
+// 		TROPICAL_RAIN_FOREST: 0x315b16,
+// 		TROPICAL_SEASONAL_FOREST: 0x315b16,
+// 		STANDARD2: 0x315b16,
 
 		
-		SHRUBLAND: 0x4fa319,
-		TEMPERATE_DESERT: 0x4fa319,
-		GRASSLAND: 0x4fa319,
-		SUBTROPICAL_DESERT: 0x4fa319,
-		STANDARD3: 0x488E5A
+// 		SHRUBLAND: 0x4fa319,
+// 		TEMPERATE_DESERT: 0x4fa319,
+// 		GRASSLAND: 0x4fa319,
+// 		SUBTROPICAL_DESERT: 0x4fa319,
+// 		STANDARD3: 0x4fa319
 
-	};
+// 	};
+var displayColors = {};
+// 		// Features
+// 		OCEAN: 0x44447a,
+// 		COAST: 0x33335a,
+// 		LAKESHORE: 0x225588,
+// 		LAKE: 0x336699,
+// 		MARSH: 0x2f6666,
+// 		ICE: 0x99ffff,
+// 		RIVER: 0x225588,
+// 		// BEACH: 0xa09077,
+
+// 		BEACH: 0x336339,
+// 		BASE: 0x336339,
+// 		// BASE: 0xFF0000,
+
+
+// 		ISLAND3: 0xC19C70,
+// 		ISLAND2: 0x9B6E4D,
+// 		ISLAND1: 0x402A1C,
+// 		BRIDGE: 0x686860,
+// 		LAVA: 0xcc3333,
+// 		ROAD1: 0xcc3333,
+
+// 		// Terrain 0x315b16
+// 		SNOW: 0x3d8e09,
+// 		TUNDRA: 0x3d8e09,
+// 		BARE: 0x3d8e09,
+// 		SCORCHED: 0x3d8e09,
+// 		TAIGA: 0x3d8e09,
+// 		STANDARD1: 0x488E5A,
+
+// 		TEMPERATE_RAIN_FOREST: 0x315b16,
+// 		TEMPERATE_DECIDUOUS_FOREST: 0x315b16,
+// 		TROPICAL_RAIN_FOREST: 0x315b16,
+// 		TROPICAL_SEASONAL_FOREST: 0x315b16,
+// 		STANDARD2: 0x3D7747,
+
+		
+// 		SHRUBLAND: 0x4fa319,
+// 		TEMPERATE_DESERT: 0x4fa319,
+// 		GRASSLAND: 0x4fa319,
+// 		SUBTROPICAL_DESERT: 0x4fa319,
+// 		STANDARD3: 0x488E5A
+
+// 	};
 var arrayThrees = [['_dist/img/flora/florest1/tree1.png',
 					'_dist/img/flora/florest1/tree2.png',
 					'_dist/img/flora/florest1/tree3.png',
@@ -140,6 +140,7 @@ var LevelGenerator = Class.extend({
 		this.tileDesigner = new TileDesigner();
 		this.nonPlaceObstaclesBiomes = ['OCEAN', 'BEACH', 'LAKE', 'ISLAND1', 'ISLAND2', 'ISLAND3', 'ROAD1'];
 		this.nullTiles = ['NULL', 'OCEAN'];
+		displayColors = APP.environmentList[0].colors;
 	},
 	createHordes: function(){
 		var tempMonster = null;
@@ -195,7 +196,13 @@ var LevelGenerator = Class.extend({
 					this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer1[i][j].biome) &&
 					this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer2[i][j].biome)){
 
-					var obs = new Obstacle();
+					// var obs = new Obstacle();
+					// obs.build();
+					// obs.seed = this.parent.currentNode.getNextFloat() * 1.1;
+					// obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize + yAcc);
+					// yAcc += 0.0001;
+					// this.parent.entityLayer.addChild(obs);
+					var obs = new EnvironmentObject(APP.environmentList[0].threes[0]);
 					obs.build();
 					obs.seed = this.parent.currentNode.getNextFloat() * 1.1;
 					obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize + yAcc);
@@ -348,7 +355,7 @@ var LevelGenerator = Class.extend({
 			if(this.map.centers[i].biome === 'BEACH' || this.map.centers[i].biome === 'OCEAN' ){
 				this.parent.currentNode.mapData[jy][ix] = {biome:this.map.centers[i].biome, tile:'CENTER'};
 			}else{
-				this.parent.currentNode.mapData[jy][ix] = {biome:'BASE_GRASS', tile:'CENTER'};
+				this.parent.currentNode.mapData[jy][ix] = {biome:'BASE', tile:'CENTER'};
 			}
 			if(this.map.centers[i].biome === 'BEACH'){
 				this.parent.currentNode.mapDataLayer1[jy][ix] = {biome:'OCEAN', tile:'CENTER'};

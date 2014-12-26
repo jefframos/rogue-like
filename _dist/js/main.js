@@ -1,4 +1,4 @@
-/*! jefframos 24-12-2014 */
+/*! jefframos 26-12-2014 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -297,8 +297,9 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this.playersList = [], this.monsterList = [], this.spellList = [], this.weaponList = [], 
-        this.armorList = [], this.itemList = [], this.relicList = [], this._super();
-        var JSONToLoader = [ "_dist/img/relics/relics.JSON", "_dist/img/weapons/weapons.JSON", "_dist/img/spells/spells.JSON", "_dist/img/potions/potions.JSON", "_dist/img/enemies/enemies.JSON", "_dist/img/armor/armor.JSON", "_dist/img/players/players.JSON" ];
+        this.armorList = [], this.itemList = [], this.relicList = [], this.environmentList = [], 
+        this._super();
+        var JSONToLoader = [ "_dist/img/relics/relics.JSON", "_dist/img/weapons/weapons.JSON", "_dist/img/spells/spells.JSON", "_dist/img/potions/potions.JSON", "_dist/img/enemies/enemies.JSON", "_dist/img/armor/armor.JSON", "_dist/img/flora/flora.JSON", "_dist/img/players/players.JSON" ];
         this.assetsLoader = new PIXI.AssetLoader(JSONToLoader);
         var self = this;
         this.assetsLoader.onComplete = function() {
@@ -314,7 +315,14 @@ var Application = AbstractApplication.extend({
         this.screenManager.change("Main");
     },
     onAssetsLoaded: function() {
-        var self = this, jsonLoaderPlayers = new PIXI.JsonLoader("_dist/img/players/players.JSON");
+        var self = this, jsonLoaderEnvironment = new PIXI.JsonLoader("_dist/img/flora/flora.JSON");
+        jsonLoaderEnvironment.on("loaded", function(evt) {
+            console.log("jsonLoaderEnvironment", evt.content.json);
+            for (var i = 0; i < evt.content.json.itens.biomas.length; i++) self.environmentList.push(new EnvironmentModel(evt.content.json.itens.biomas[i].name, evt.content.json.itens.biomas[i].threes, evt.content.json.itens.biomas[i].colors)), 
+            console.log("env", self.environmentList);
+            self.updateLoad();
+        }), jsonLoaderEnvironment.load();
+        var jsonLoaderPlayers = new PIXI.JsonLoader("_dist/img/players/players.JSON");
         jsonLoaderPlayers.on("loaded", function(evt) {
             console.log("jsonLoaderPlayers", evt.content.json);
             for (var i = 0; i < evt.content.json.itens.length; i++) self.playersList.push(new PlayerModel(evt.content.json.itens[i].name, evt.content.json.itens[i].label, evt.content.json.itens[i].stats, evt.content.json.itens[i].modifiers, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
@@ -1107,6 +1115,74 @@ var Application = AbstractApplication.extend({
     pointDistance: function(x, y, x0, y0) {
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     }
+}), EnvironmentObject = Entity.extend({
+    init: function(envModel) {
+        this.envModel = envModel, this._super(), this.updateable = !0, this.collidable = !0, 
+        this.arrayObstacles = Math.random() < .5 ? arrayThrees[0] : arrayRocks[0], this.srcImg = this.arrayObstacles[Math.floor(Math.random() * this.arrayObstacles.length)], 
+        this.type = "environment", this.width = APP.nTileSize / 1.8, this.height = APP.nTileSize / 2.5, 
+        this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
+        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0, 
+        this.life = 3, this.seed = 0, this.currentMadness = APP.getMadness(), this.state = 0;
+    },
+    preKill: function() {
+        var self = this;
+        Math.random() < .2 && APP.getGame().addBag({
+            x: self.getPosition().x,
+            y: self.getPosition().y - 20
+        }, APP.itemList[0]), TweenLite.to(this.getContent(), .3, {
+            delay: .2,
+            alpha: 0
+        }), TweenLite.to(this.getContent().scale, .4, {
+            x: .85,
+            y: .85,
+            ease: "easeInBack",
+            onComplete: function() {
+                self.kill = !0;
+            }
+        });
+    },
+    getBounds: function() {
+        return this.bounds = {
+            x: this.getPosition().x - this.width * this.sprite.anchor.x,
+            y: this.getPosition().y - this.height * this.sprite.anchor.y,
+            w: this.width,
+            h: this.height
+        }, this.bounds;
+    },
+    fireCollide: function() {
+        this.life <= 0 || (this.life--, APP.updateMadness(.9), this.getContent().scale.x = .95, 
+        this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
+            x: 1,
+            y: 1,
+            ease: "easeOutElastic"
+        }), this.life <= 0 && (this.collidable = !1, this.updateable = !1, this.preKill()));
+    },
+    build: function() {
+        this.sprite = new PIXI.Sprite.fromFrame("three10000");
+        this.sprite.anchor.x = .5, this.sprite.anchor.y = 1, this.getContent().type = this.type;
+    },
+    updateGraphic: function() {
+        if (-1 !== this.state) {
+            this.getContent().tint = 16777215;
+            var self = this;
+            -1 !== self.state && (this.sprite.parent.removeChild(this.sprite), this.sprite = new PIXI.Sprite.fromFrame("three10001"));
+        }
+    },
+    update: function() {
+        if (this._super(), this.currentMadness !== APP.getMadness()) {
+            this.currentMadness = APP.getMadness();
+            var dist = pointDistance(this.currentMadness, 0, 1, 0);
+            dist > this.seed && this.updateGraphic();
+        }
+    },
+    respaw: function() {
+        var rndPos = {
+            x: 142 * Math.floor(12 * Math.random() * 142 / 142) + 104,
+            y: 142 * Math.floor(7 * Math.random() * 142 / 142) + 177 + 142
+        };
+        this.pointDistance(rndPos.x, rndPos.y, windowWidth / 2, windowHeight / 2) < 200 && this.respaw(), 
+        this.setPosition(rndPos.x, rndPos.y), this.collidable = !0;
+    }
 }), Fairy = Entity.extend({
     init: function(player) {
         this._super(), this.updateable = !0, this.collidable = !1, this.player = player, 
@@ -1335,6 +1411,79 @@ var Application = AbstractApplication.extend({
     pointDistance: function(x, y, x0, y0) {
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     }
+}), Obstacle = Class.extend({
+    init: function() {
+        this.updateable = !0, this.collidable = !0, this.arrayObstacles = Math.random() < .5 ? arrayThrees[0] : arrayRocks[0], 
+        this.srcImg = this.arrayObstacles[Math.floor(Math.random() * this.arrayObstacles.length)], 
+        this.type = "environment", this.width = APP.nTileSize / 1.8, this.height = APP.nTileSize / 2.5, 
+        this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
+        this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0, 
+        this.life = 3, this.seed = 0, this.currentMadness = APP.getMadness(), this.state = 0;
+    },
+    preKill: function() {
+        var self = this;
+        Math.random() < .2 && APP.getGame().addBag({
+            x: self.getPosition().x,
+            y: self.getPosition().y - 20
+        }, APP.itemList[0]), TweenLite.to(this.getContent(), .3, {
+            delay: .2,
+            alpha: 0
+        }), TweenLite.to(this.getContent().scale, .4, {
+            x: .85,
+            y: .85,
+            ease: "easeInBack",
+            onComplete: function() {
+                self.kill = !0;
+            }
+        });
+    },
+    getBounds: function() {
+        return this.bounds = {
+            x: this.getPosition().x - this.width * this.sprite.anchor.x,
+            y: this.getPosition().y - this.height * this.sprite.anchor.y,
+            w: this.width,
+            h: this.height
+        }, this.bounds;
+    },
+    fireCollide: function() {
+        this.life <= 0 || (this.life--, APP.updateMadness(.01), this.getContent().scale.x = .95, 
+        this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
+            x: 1,
+            y: 1,
+            ease: "easeOutElastic"
+        }), this.life <= 0 && (this.collidable = !1, this.updateable = !1, this.preKill()));
+    },
+    build: function() {
+        this.texture = PIXI.Texture.fromImage(this.srcImg), this.sprite = new PIXI.Sprite(this.texture);
+        this.sprite.anchor.x = .5, this.sprite.anchor.y = 1, this.getContent().type = this.type;
+    },
+    updateGraphic: function() {
+        if (-1 !== this.state) {
+            this.getContent().tint = 16777215;
+            var self = this;
+            -1 !== self.state && (self.texture.destroy(), self.sprite.setTexture(PIXI.Texture.fromImage("_dist/img/flora/florest1/treeEvil.png")), 
+            self.getContent().scale.x = .95, self.getContent().scale.y = .95, TweenLite.to(self.getContent().scale, .5, {
+                x: 1,
+                y: 1,
+                ease: "easeOutElastic"
+            }), self.state = -1);
+        }
+    },
+    update: function() {
+        if (this._super(), this.currentMadness !== APP.getMadness()) {
+            this.currentMadness = APP.getMadness();
+            var dist = pointDistance(this.currentMadness, 0, 1, 0);
+            dist > this.seed && this.updateGraphic();
+        }
+    },
+    respaw: function() {
+        var rndPos = {
+            x: 142 * Math.floor(12 * Math.random() * 142 / 142) + 104,
+            y: 142 * Math.floor(7 * Math.random() * 142 / 142) + 177 + 142
+        };
+        this.pointDistance(rndPos.x, rndPos.y, windowWidth / 2, windowHeight / 2) < 200 && this.respaw(), 
+        this.setPosition(rndPos.x, rndPos.y), this.collidable = !0;
+    }
 }), Obstacle = Entity.extend({
     init: function() {
         this._super(), this.updateable = !0, this.collidable = !0, this.arrayObstacles = Math.random() < .5 ? arrayThrees[0] : arrayRocks[0], 
@@ -1378,7 +1527,7 @@ var Application = AbstractApplication.extend({
         }), this.life <= 0 && (this.collidable = !1, this.updateable = !1, this.preKill()));
     },
     build: function() {
-        this._super(this.srcImg);
+        this.texture = PIXI.Texture.fromImage(this.srcImg), this.sprite = new PIXI.Sprite(this.texture);
         this.sprite.anchor.x = .5, this.sprite.anchor.y = 1, this.getContent().type = this.type;
     },
     updateGraphic: function() {
@@ -1859,6 +2008,10 @@ var Application = AbstractApplication.extend({
         this.name = name, this.label = name, this.defenseArmor = defenseArmor, this.magicDefenseArmor = magicDefenseArmor, 
         this.price = price, this.icoImg = icoImg, this.type = "armor", this.type2 = "equip";
     }
+}), EnvironmentModel = Class.extend({
+    init: function(name, threes, colors) {
+        this.name = name, this.threes = threes, this.colors = colors;
+    }
 }), FireModel = Class.extend({
     init: function() {
         this.fireSpeed = 12, this.fireStepLive = 65;
@@ -2035,97 +2188,7 @@ var Application = AbstractApplication.extend({
         this.hitRate = hitRate, this.price = price, this.srcImg = srcImg, this.icoImg = icoImg, 
         this.type = "weapon", this.type2 = "equip";
     }
-}), defaultColors = {
-    OCEAN: 4473978,
-    COAST: 3355482,
-    LAKESHORE: 2250120,
-    LAKE: 3368601,
-    RIVER: 2250120,
-    MARSH: 3106406,
-    ICE: 10092543,
-    BEACH: 10522743,
-    ISLAND1: 4465169,
-    ISLAND2: 5583650,
-    ISLAND3: 6702131,
-    BRIDGE: 6842464,
-    LAVA: 13382451,
-    SNOW: 16777215,
-    TUNDRA: 12303274,
-    BARE: 8947848,
-    SCORCHED: 5592405,
-    TAIGA: 10070647,
-    SHRUBLAND: 8952183,
-    TEMPERATE_DESERT: 13226651,
-    TEMPERATE_RAIN_FOREST: 4491349,
-    TEMPERATE_DECIDUOUS_FOREST: 6788185,
-    GRASSLAND: 8956501,
-    SUBTROPICAL_DESERT: 13810059,
-    TROPICAL_RAIN_FOREST: 3372885,
-    TROPICAL_SEASONAL_FOREST: 5609796
-}, displayColorsOld = {
-    OCEAN: 4473978,
-    COAST: 3355482,
-    LAKESHORE: 2250120,
-    LAKE: 3368601,
-    MARSH: 3106406,
-    ICE: 10092543,
-    RIVER: 2250120,
-    BEACH: 5219097,
-    BASE_GRASS: 5219097,
-    ISLAND1: 8343327,
-    ISLAND2: 6699796,
-    ISLAND3: 4663569,
-    BRIDGE: 6842464,
-    LAVA: 13382451,
-    SNOW: 4034057,
-    TUNDRA: 4034057,
-    BARE: 4034057,
-    SCORCHED: 4034057,
-    TAIGA: 4034057,
-    STANDARD1: 4034057,
-    TEMPERATE_RAIN_FOREST: 3234582,
-    TEMPERATE_DECIDUOUS_FOREST: 3234582,
-    TROPICAL_RAIN_FOREST: 3234582,
-    TROPICAL_SEASONAL_FOREST: 3234582,
-    STANDARD2: 3234582,
-    SHRUBLAND: 5219097,
-    TEMPERATE_DESERT: 5219097,
-    GRASSLAND: 5219097,
-    SUBTROPICAL_DESERT: 5219097,
-    STANDARD3: 5219097
-}, displayColors = {
-    OCEAN: 4473978,
-    COAST: 3355482,
-    LAKESHORE: 2250120,
-    LAKE: 3368601,
-    MARSH: 3106406,
-    ICE: 10092543,
-    RIVER: 2250120,
-    BEACH: 3367737,
-    BASE_GRASS: 3367737,
-    ISLAND3: 12688496,
-    ISLAND2: 10186317,
-    ISLAND1: 4205084,
-    BRIDGE: 6842464,
-    LAVA: 13382451,
-    ROAD1: 13382451,
-    SNOW: 4034057,
-    TUNDRA: 4034057,
-    BARE: 4034057,
-    SCORCHED: 4034057,
-    TAIGA: 4034057,
-    STANDARD1: 4755034,
-    TEMPERATE_RAIN_FOREST: 3234582,
-    TEMPERATE_DECIDUOUS_FOREST: 3234582,
-    TROPICAL_RAIN_FOREST: 3234582,
-    TROPICAL_SEASONAL_FOREST: 3234582,
-    STANDARD2: 4028231,
-    SHRUBLAND: 5219097,
-    TEMPERATE_DESERT: 5219097,
-    GRASSLAND: 5219097,
-    SUBTROPICAL_DESERT: 5219097,
-    STANDARD3: 4755034
-}, arrayThrees = [ [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png" ], [ "_dist/img/flora/florest1/treeEvil.png" ] ], arrayRocks = [ [ "_dist/img/flora/florest1/rock1.png", "_dist/img/flora/florest1/rock2.png", "_dist/img/flora/florest1/rock3.png" ] ], tilesGraphics = {
+}), displayColors = {}, arrayThrees = [ [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png" ], [ "_dist/img/flora/florest1/treeEvil.png" ] ], arrayRocks = [ [ "_dist/img/flora/florest1/rock1.png", "_dist/img/flora/florest1/rock2.png", "_dist/img/flora/florest1/rock3.png" ] ], tilesGraphics = {
     TOP_LEFT: "_dist/img/levels/leftTop.png",
     TOP_RIGHT: "_dist/img/levels/rightTop.png",
     BOTTOM_LEFT: "_dist/img/levels/leftBottom.png",
@@ -2135,7 +2198,7 @@ var Application = AbstractApplication.extend({
 }, LevelGenerator = Class.extend({
     init: function(parent) {
         this.parent = parent, this.tileDesigner = new TileDesigner(), this.nonPlaceObstaclesBiomes = [ "OCEAN", "BEACH", "LAKE", "ISLAND1", "ISLAND2", "ISLAND3", "ROAD1" ], 
-        this.nullTiles = [ "NULL", "OCEAN" ];
+        this.nullTiles = [ "NULL", "OCEAN" ], displayColors = APP.environmentList[0].colors;
     },
     createHordes: function() {
         for (var tempMonster = null, monsters = [], i = 0; 10 > i; i++) {
@@ -2159,7 +2222,7 @@ var Application = AbstractApplication.extend({
     },
     putObstacles: function() {
         for (var accBounds = 2, yAcc = 1e-5, i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (this.parent.currentNode.getNextFloat() < .1 && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer1[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer2[i][j].biome)) {
-            var obs = new Obstacle();
+            var obs = new EnvironmentObject(APP.environmentList[0].threes[0]);
             obs.build(), obs.seed = 1.1 * this.parent.currentNode.getNextFloat(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize + yAcc), 
             yAcc += 1e-4, this.parent.entityLayer.addChild(obs);
         }
@@ -2229,7 +2292,7 @@ var Application = AbstractApplication.extend({
                 biome: this.map.centers[i].biome,
                 tile: "CENTER"
             } : {
-                biome: "BASE_GRASS",
+                biome: "BASE",
                 tile: "CENTER"
             }, "BEACH" === this.map.centers[i].biome) this.parent.currentNode.mapDataLayer1[jy][ix] = {
                 biome: "OCEAN",
@@ -2481,7 +2544,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        for (var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", "_dist/img/levels/leftTop.png", "_dist/img/levels/rightTop.png", "_dist/img/levels/leftBottom.png", "_dist/img/levels/rightBottom.png", "_dist/img/levels/tile1.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ], i = arrayThrees.length - 1; i >= 0; i--) for (var j = arrayThrees[i].length - 1; j >= 0; j--) assetsToLoader.push(arrayThrees[i][j]);
+        for (var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", "_dist/img/levels/leftTop.png", "_dist/img/levels/rightTop.png", "_dist/img/levels/leftBottom.png", "_dist/img/levels/rightBottom.png", "_dist/img/levels/tile1.png", "_dist/img/flora/florest1/three1.JSON", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ], i = arrayThrees.length - 1; i >= 0; i--) for (var j = arrayThrees[i].length - 1; j >= 0; j--) assetsToLoader.push(arrayThrees[i][j]);
         for (var k = arrayRocks.length - 1; k >= 0; k--) for (var l = arrayRocks[k].length - 1; l >= 0; l--) assetsToLoader.push(arrayRocks[k][l]);
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
@@ -2640,7 +2703,7 @@ var Application = AbstractApplication.extend({
     },
     boundsCollision: function() {
         if (this.currentNode.mapData && this.player) for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) if (tempEntity = this.entityLayer.childs[i], 
-        "fire" !== tempEntity.type && "bag" !== tempEntity.type && "fairy" !== tempEntity.type) {
+        "fire" !== tempEntity.type && "bag" !== tempEntity.type && "fairy" !== tempEntity.type && "environment" !== tempEntity.type) {
             var centerPositionPlayer = {
                 x: tempEntity.getPosition().x + tempEntity.centerPosition.x,
                 y: tempEntity.getPosition().y + tempEntity.centerPosition.y

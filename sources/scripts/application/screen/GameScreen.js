@@ -70,6 +70,7 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/levels/leftBottom.png',
             '_dist/img/levels/rightBottom.png',
             '_dist/img/levels/tile1.png',
+            '_dist/img/flora/florest1/three1.JSON',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
@@ -490,7 +491,7 @@ var GameScreen = AbstractScreen.extend({
         if(this.currentNode.mapData && this.player){
             for (var i = this.entityLayer.childs.length - 1; i >= 0; i--) {
                 tempEntity = this.entityLayer.childs[i];
-                if(tempEntity.type !== 'fire' && tempEntity.type !== 'bag'  && tempEntity.type !== 'fairy'){
+                if(tempEntity.type !== 'fire' && tempEntity.type !== 'bag'  && tempEntity.type !== 'fairy' && tempEntity.type !== 'environment'){
                     var centerPositionPlayer = {x:tempEntity.getPosition().x + tempEntity.centerPosition.x,
                         y:tempEntity.getPosition().y + tempEntity.centerPosition.y};
 

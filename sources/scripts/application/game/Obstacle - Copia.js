@@ -1,7 +1,6 @@
 /*jshint undef:false */
-var Obstacle = Entity.extend({
+var Obstacle = Class.extend({
     init:function(){
-        this._super();
         this.updateable = true;
         this.collidable = true;
         this.arrayObstacles = Math.random() < 0.5?arrayThrees[0]:arrayRocks[0];
@@ -9,6 +8,7 @@ var Obstacle = Entity.extend({
         this.type = 'environment';
         this.width = APP.nTileSize / 1.8;
         this.height = APP.nTileSize / 2.5;
+
         this.debugGraphic = new PIXI.Graphics();
         this.debugGraphic.beginFill(0xFF3300);
         this.debugGraphic.lineStyle(1, 0xffd900, 1);

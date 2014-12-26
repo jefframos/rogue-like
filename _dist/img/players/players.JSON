@@ -11,7 +11,7 @@
                 "magicPower":28,
                 "battlePower":14,
                 "defense":38,
-                "magicDefense":23                
+                "magicDefense":23
             },
             "modifiers":{
                 "baseHPModifier":1.32,
