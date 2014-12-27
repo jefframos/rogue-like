@@ -1122,7 +1122,8 @@ var Application = AbstractApplication.extend({
         this.type = "environment", this.width = APP.nTileSize / 1.8, this.height = APP.nTileSize / 2.5, 
         this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0, 
-        this.life = 3, this.seed = 0, this.currentMadness = APP.getMadness(), this.state = 0;
+        this.seed = 0, this.currentMadness = APP.getMadness(), this.state = 0, this.frames = this.envModel.frames, 
+        this.life = this.envModel.life, this.arrayFrames = this.getFramesByRange(this.envModel.sourceLabel, 0, this.frames - 1);
     },
     preKill: function() {
         var self = this;
@@ -1150,7 +1151,7 @@ var Application = AbstractApplication.extend({
         }, this.bounds;
     },
     fireCollide: function() {
-        this.life <= 0 || (this.life--, APP.updateMadness(.9), this.getContent().scale.x = .95, 
+        this.life <= 0 || (this.life--, APP.updateMadness(.1), this.getContent().scale.x = .95, 
         this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
             x: 1,
             y: 1,
@@ -1158,15 +1159,18 @@ var Application = AbstractApplication.extend({
         }), this.life <= 0 && (this.collidable = !1, this.updateable = !1, this.preKill()));
     },
     build: function() {
-        this.sprite = new PIXI.Sprite.fromFrame("three10000");
+        this.sprite = new PIXI.Sprite.fromFrame(this.arrayFrames[0]), this.updateGraphic(), 
         this.sprite.anchor.x = .5, this.sprite.anchor.y = 1, this.getContent().type = this.type;
     },
     updateGraphic: function() {
-        if (-1 !== this.state) {
-            this.getContent().tint = 16777215;
-            var self = this;
-            -1 !== self.state && (this.sprite.parent.removeChild(this.sprite), this.sprite = new PIXI.Sprite.fromFrame("three10001"));
-        }
+        var nextFrame = Math.floor(this.currentMadness / 2 * (this.frames - 1));
+        console.log(this.currentMadness / 2, this.frames - 1), this.currentFrame !== nextFrame && (this.currentFrame = nextFrame, 
+        this.sprite.setTexture(PIXI.Sprite.fromFrame(this.arrayFrames[this.currentFrame]).texture), 
+        this.getContent().scale.x = .95, this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
+            x: 1,
+            y: 1,
+            ease: "easeOutElastic"
+        }));
     },
     update: function() {
         if (this._super(), this.currentMadness !== APP.getMadness()) {
@@ -1175,13 +1179,12 @@ var Application = AbstractApplication.extend({
             dist > this.seed && this.updateGraphic();
         }
     },
-    respaw: function() {
-        var rndPos = {
-            x: 142 * Math.floor(12 * Math.random() * 142 / 142) + 104,
-            y: 142 * Math.floor(7 * Math.random() * 142 / 142) + 177 + 142
-        };
-        this.pointDistance(rndPos.x, rndPos.y, windowWidth / 2, windowHeight / 2) < 200 && this.respaw(), 
-        this.setPosition(rndPos.x, rndPos.y), this.collidable = !0;
+    getFramesByRange: function(label, init, end, type) {
+        for (var tempArray = [], tempI = "", i = init; end >= i; i++) 10 > i ? tempI = "00" + i : 100 > i ? tempI = "0" + i : 1e3 > i && (tempI = i), 
+        tempArray.push(label + tempI);
+        if ("pingPong" === type) for (var j = end - 1; j > init; j--) 10 > j ? tempI = "00" + j : 100 > j ? tempI = "0" + j : 1e3 > j && (tempI = j), 
+        tempArray.push(label + tempI);
+        return tempArray;
     }
 }), Fairy = Entity.extend({
     init: function(player) {
