@@ -65,7 +65,14 @@ var Fire = Entity.extend({
         }
     },
     build: function(){
-        this._super(this.imgSource);
+
+
+        // this.texture = PIXI.Texture.fromImage(img);
+        this.sprite = new PIXI.Sprite.fromFrame(this.imgSource);
+
+        this.sprite.anchor.x = 0.5;
+        this.sprite.anchor.y = 0.5;
+
         this.updateable = true;
         this.collidable = true;
         // var self = this;

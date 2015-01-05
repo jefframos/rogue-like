@@ -259,7 +259,19 @@ var BoxHUD1 = Class.extend({
 		this.img.getContent().scale.y = 0.0;
 		this.img.getContent().anchor.x = 0.5;
 		this.img.getContent().anchor.y = 0.5;
-		TweenLite.to(this.img.getContent().scale, 0.4, {x: 0.8, y: 0.8, ease:'easeOutBack'});
+		var tempW = this.img.getContent().texture.width;
+		var tempH = this.img.getContent().texture.height;
+		if(tempW > 0){
+			var tempScaleX = 35 / tempW;
+			var tempScaleY = 28 / tempH;
+			var scale = tempScaleX;
+			if(tempScaleY < tempScaleX){
+				scale = tempScaleY;
+			}
+			TweenLite.to(this.img.getContent().scale, 0.4, {x:scale, y: scale, ease:'easeOutBack'});
+		}else{
+			TweenLite.to(this.img.getContent().scale, 0.4, {x: 0.8, y: 0.8, ease:'easeOutBack'});
+		}
 		var posCorrection = (30 / 2) * 0.8;
 		var otherCorrection = 12;
 		this.img.setPosition((this.width / 2 -posCorrection) + otherCorrection,

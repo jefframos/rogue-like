@@ -536,7 +536,16 @@ var Application = AbstractApplication.extend({
         this.infoImg && this.infoImg.getContent().parent && this.infoImg.getContent().parent.removeChild(this.infoImg.getContent()), 
         this.img = new SimpleSprite(src), this.infoImg = new SimpleSprite(src), this.container.addChild(this.img.getContent()), 
         this.img.getContent().scale.x = 0, this.img.getContent().scale.y = 0, this.img.getContent().anchor.x = .5, 
-        this.img.getContent().anchor.y = .5, TweenLite.to(this.img.getContent().scale, .4, {
+        this.img.getContent().anchor.y = .5;
+        var tempW = this.img.getContent().texture.width, tempH = this.img.getContent().texture.height;
+        if (tempW > 0) {
+            var tempScaleX = 35 / tempW, tempScaleY = 28 / tempH, scale = tempScaleX;
+            tempScaleX > tempScaleY && (scale = tempScaleY), TweenLite.to(this.img.getContent().scale, .4, {
+                x: scale,
+                y: scale,
+                ease: "easeOutBack"
+            });
+        } else TweenLite.to(this.img.getContent().scale, .4, {
             x: .8,
             y: .8,
             ease: "easeOutBack"
@@ -1307,7 +1316,8 @@ var Application = AbstractApplication.extend({
         }
     },
     build: function() {
-        this._super(this.imgSource), this.updateable = !0, this.collidable = !0, this.debugGraphic = new PIXI.Graphics(), 
+        this.sprite = new PIXI.Sprite.fromFrame(this.imgSource), this.sprite.anchor.x = .5, 
+        this.sprite.anchor.y = .5, this.updateable = !0, this.collidable = !0, this.debugGraphic = new PIXI.Graphics(), 
         this.debugGraphic.beginFill(1127168), this.debugGraphic.lineStyle(1, 16767232, 1), 
         this.debugGraphic.endFill(), this.getContent().alpha = .2;
     },
@@ -1715,7 +1725,7 @@ var Application = AbstractApplication.extend({
                 x: tempFireSpeed * Math.sin(tempAngle),
                 y: tempFireSpeed * Math.cos(tempAngle)
             });
-            tempFire.timeLive = this.fireStepLive / 5, spellModel && (this.playerModel.spellPower = spellModel.spellPower + this.weaponModel ? this.weaponModel.magicPower : 0, 
+            tempFire.timeLive = this.fireStepLive / 2, spellModel && (this.playerModel.spellPower = spellModel.spellPower + this.weaponModel ? this.weaponModel.magicPower : 0, 
             tempFire.imgSource = spellModel.srcImg), tempFire.fireType = "magical", tempFire.power = this.playerModel.getDemage("magical"), 
             tempFire.range *= 1.5, tempFire.build(), tempFire.getContent().scale.x = 2, tempFire.getContent().scale.y = 2, 
             tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y + 10), this.layer.addChild(tempFire), 
@@ -2574,7 +2584,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", "_dist/img/levels/leftTop.png", "_dist/img/levels/rightTop.png", "_dist/img/levels/leftBottom.png", "_dist/img/levels/rightBottom.png", "_dist/img/levels/tile1.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ], i = 0;
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", "_dist/img/levels/leftTop.png", "_dist/img/levels/rightTop.png", "_dist/img/levels/leftBottom.png", "_dist/img/levels/rightBottom.png", "_dist/img/levels/tile1.png", "_dist/img/weapons/weapons_spritesheet.json", "_dist/img/spells/spells_spritesheet.json", "_dist/img/potions/potions_spritesheet.json", "_dist/img/relics/relics_spritesheet.json", "_dist/img/armor/armor_spritesheet.json", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ], i = 0;
         for (console.log("list", APP.environmentList), i = APP.environmentList.length - 1; i >= 0; i--) console.log("list - ", i, APP.environmentList[i]), 
         assetsToLoader.push(APP.environmentList[i].graphics);
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];

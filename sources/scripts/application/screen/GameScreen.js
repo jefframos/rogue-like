@@ -81,6 +81,11 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/levels/leftBottom.png',
             '_dist/img/levels/rightBottom.png',
             '_dist/img/levels/tile1.png',
+            '_dist/img/weapons/weapons_spritesheet.json',
+            '_dist/img/spells/spells_spritesheet.json',
+            '_dist/img/potions/potions_spritesheet.json',
+            '_dist/img/relics/relics_spritesheet.json',
+            '_dist/img/armor/armor_spritesheet.json',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson

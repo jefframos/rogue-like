@@ -347,7 +347,7 @@ var Player = SpritesheetEntity.extend({
                 tempAngle = angle + tempAcc * (angleAcc / numFires) * Math.PI / 180;
             }
             var tempFire = new Fire({x:tempFireSpeed * Math.sin(tempAngle), y: tempFireSpeed * Math.cos(tempAngle)});
-            tempFire.timeLive = this.fireStepLive / 5;
+            tempFire.timeLive = this.fireStepLive / 2;
             if(spellModel){
                 this.playerModel.spellPower = spellModel.spellPower + this.weaponModel?this.weaponModel.magicPower:0;
                 tempFire.imgSource = spellModel.srcImg;

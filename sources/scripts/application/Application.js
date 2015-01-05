@@ -90,7 +90,8 @@ var Application = AbstractApplication.extend({
                             '_dist/img/enemies/enemies.JSON',
                             '_dist/img/armor/armor.JSON',
                             '_dist/img/flora/flora.JSON',
-                            '_dist/img/players/players.JSON'];
+                            '_dist/img/players/players.JSON'
+                            ];
         this.assetsLoader = new PIXI.AssetLoader(JSONToLoader);
         var self = this;
 

@@ -5,8 +5,8 @@
          "name":"bolt1",
          "mp":6,
          "spellPower":20,
-         "icoImg":"_dist/img/spells/icos/bolt1.png",
-         "srcImg":"_dist/img/spells/bolt1.png",
+         "icoImg":"bolt1",
+         "srcImg":"bolt1",
          "isMultiple":false
       },
       {
@@ -14,8 +14,8 @@
          "name":"fire1",
          "mp":4,
          "spellPower":21,
-         "icoImg":"_dist/img/spells/icos/fire1.png",
-         "srcImg":"_dist/img/spells/fire1.png",
+         "icoImg":"fire1",
+         "srcImg":"fire1",
          "isMultiple":false
       },
       {
@@ -23,8 +23,8 @@
          "name":"ice1",
          "mp":5,
          "spellPower":22,
-         "icoImg":"_dist/img/spells/icos/ice1.png",
-         "srcImg":"_dist/img/spells/ice1.png",
+         "icoImg":"ice1",
+         "srcImg":"ice1",
          "isMultiple":false
       },
       {
@@ -32,8 +32,8 @@
          "name":"poison",
          "mp":3,
          "spellPower":25,
-         "icoImg":"_dist/img/spells/icos/poison.png",
-         "srcImg":"_dist/img/spells/poison.png",
+         "icoImg":"poison",
+         "srcImg":"poison",
          "isMultiple":false
       },
       {
@@ -41,8 +41,8 @@
          "name":"wind",
          "mp":75,
          "spellPower":25,
-         "icoImg":"_dist/img/spells/icos/wind.png",
-         "srcImg":"_dist/img/spells/wind.png",
+         "icoImg":"wind",
+         "srcImg":"wind",
          "isMultiple":true
       },
       {
@@ -50,8 +50,8 @@
          "name":"bolt2",
          "mp":22,
          "spellPower":26,
-         "icoImg":"_dist/img/spells/icos/bolt2.png",
-         "srcImg":"_dist/img/spells/bolt2.png",
+         "icoImg":"bolt2",
+         "srcImg":"bolt2",
          "isMultiple":false
       },
       {
@@ -59,8 +59,8 @@
          "name":"fire2",
          "mp":20,
          "spellPower":60,
-         "icoImg":"_dist/img/spells/icos/fire2.png",
-         "srcImg":"_dist/img/spells/fire2.png",
+         "icoImg":"fire2",
+         "srcImg":"fire2",
          "isMultiple":false
       },
       {
@@ -68,8 +68,8 @@
          "name":"ice2",
          "mp":21,
          "spellPower":62,
-         "icoImg":"_dist/img/spells/icos/ice2.png",
-         "srcImg":"_dist/img/spells/ice2.png",
+         "icoImg":"ice2",
+         "srcImg":"ice2",
          "isMultiple":false
       },
       {
@@ -77,8 +77,8 @@
          "name":"drain",
          "mp":15,
          "spellPower":38,
-         "icoImg":"_dist/img/spells/icos/drain.png",
-         "srcImg":"_dist/img/spells/drain.png",
+         "icoImg":"drain",
+         "srcImg":"drain",
          "isMultiple":false
       },
       {
@@ -86,8 +86,8 @@
          "name":"meteor",
          "mp":62,
          "spellPower":36,
-         "icoImg":"_dist/img/spells/icos/meteor.png",
-         "srcImg":"_dist/img/spells/meteor.png",
+         "icoImg":"meteor",
+         "srcImg":"meteor",
          "isMultiple":true
       },
       {
@@ -95,8 +95,8 @@
          "name":"bio",
          "mp":26,
          "spellPower":53,
-         "icoImg":"_dist/img/spells/icos/bio.png",
-         "srcImg":"_dist/img/spells/bio.png",
+         "icoImg":"bio",
+         "srcImg":"bio",
          "isMultiple":false
       },
       {
@@ -104,8 +104,8 @@
          "name":"flare",
          "mp":45,
          "spellPower":60,
-         "icoImg":"_dist/img/spells/icos/flare.png",
-         "srcImg":"_dist/img/spells/flare.png",
+         "icoImg":"flare",
+         "srcImg":"flare",
          "isMultiple":false
       },
       {
@@ -113,8 +113,8 @@
          "name":"quake",
          "mp":50,
          "spellPower":111,
-         "icoImg":"_dist/img/spells/icos/quake.png",
-         "srcImg":"_dist/img/spells/quake.png",
+         "icoImg":"quake",
+         "srcImg":"quake",
          "isMultiple":true
       },
       {
@@ -122,8 +122,8 @@
          "name":"bolt3",
          "mp":53,
          "spellPower":120,
-         "icoImg":"_dist/img/spells/icos/bolt3.png",
-         "srcImg":"_dist/img/spells/bolt3.png",
+         "icoImg":"bolt3",
+         "srcImg":"bolt3",
          "isMultiple":false
       },
       {
@@ -131,8 +131,8 @@
          "name":"fire3",
          "mp":51,
          "spellPower":121,
-         "icoImg":"_dist/img/spells/icos/fire3.png",
-         "srcImg":"_dist/img/spells/fire3.png",
+         "icoImg":"fire3",
+         "srcImg":"fire3",
          "isMultiple":false
       },
       {
@@ -140,8 +140,8 @@
          "name":"ice3",
          "mp":52,
          "spellPower":122,
-         "icoImg":"_dist/img/spells/icos/ice3.png",
-         "srcImg":"_dist/img/spells/ice3.png",
+         "icoImg":"ice3",
+         "srcImg":"ice3",
          "isMultiple":false
       },
       {
@@ -149,8 +149,8 @@
          "name":"merton",
          "mp":85,
          "spellPower":138,
-         "icoImg":"_dist/img/spells/icos/merton.png",
-         "srcImg":"_dist/img/spells/merton.png",
+         "icoImg":"merton",
+         "srcImg":"merton",
          "isMultiple":false
       },
       {
@@ -158,8 +158,8 @@
          "name":"ultima",
          "mp":80,
          "spellPower":150,
-         "icoImg":"_dist/img/spells/icos/ultima.png",
-         "srcImg":"_dist/img/spells/ultima.png",
+         "icoImg":"ultima",
+         "srcImg":"ultima",
          "isMultiple":true
       }
    ]

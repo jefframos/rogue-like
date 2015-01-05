@@ -6,504 +6,504 @@
             "defenseArmor": 60,
             "magicDefenseArmor": 43,
             "price": 11000,
-            "icoImg": "_dist/img/armor/armor1.png"
+            "icoImg": "armor1"
         },
         {
             "name":"Buckler" ,
             "defenseArmor":16,
             "magicDefenseArmor":10,
             "price":200,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Crystal Shld" ,
             "defenseArmor":50,
             "magicDefenseArmor":34,
             "price":7000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Diamond Shld" ,
             "defenseArmor":40,
             "magicDefenseArmor":27,
             "price":3500,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Flame Shld" ,
             "defenseArmor":41,
             "magicDefenseArmor":28,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Force Shld" ,
             "defenseArmor":0,
             "magicDefenseArmor":70,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Genji Shld" ,
             "defenseArmor":54,
             "magicDefenseArmor":50,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Gold Shld" ,
             "defenseArmor":34,
             "magicDefenseArmor":23,
             "price":2500,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Heavy Shld" ,
             "defenseArmor":22,
             "magicDefenseArmor":14,
             "price":400,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Ice Shld" ,
             "defenseArmor":42,
             "magicDefenseArmor":28,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Mithril Shld" ,
             "defenseArmor":27,
             "magicDefenseArmor":18,
             "price":1200,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Paladin Shld" ,
             "defenseArmor":59,
             "magicDefenseArmor":59,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Thunder Shld" ,
             "defenseArmor":43,
             "magicDefenseArmor":28,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"TortoiseShld" ,
             "defenseArmor":66,
             "magicDefenseArmor":66,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Bandana" ,
             "defenseArmor":16,
             "magicDefenseArmor":10,
             "price":800,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Bards Hat" ,
             "defenseArmor":19,
             "magicDefenseArmor":21,
             "price":3000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Beret" ,
             "defenseArmor":21,
             "magicDefenseArmor":21,
             "price":3500,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Cat Hood" ,
             "defenseArmor":33,
             "magicDefenseArmor":33,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Circlet" ,
             "defenseArmor":25,
             "magicDefenseArmor":19,
             "price":7000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Coronet" ,
             "defenseArmor":23,
             "magicDefenseArmor":23,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Crystal Helm" ,
             "defenseArmor":29,
             "magicDefenseArmor":19,
             "price":10000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Dark Hood" ,
             "defenseArmor":26,
             "magicDefenseArmor":17,
             "price":7500,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Diamond Helm" ,
             "defenseArmor":27,
             "magicDefenseArmor":18,
             "price":8000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Genji Helmet" ,
             "defenseArmor":36,
             "magicDefenseArmor":38,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Gold Helmet" ,
             "defenseArmor":22,
             "magicDefenseArmor":15,
             "price":4000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Green Beret" ,
             "defenseArmor":19,
             "magicDefenseArmor":13,
             "price":3000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Hair Band" ,
             "defenseArmor":12,
             "magicDefenseArmor":81,
             "price":50,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Head Band" ,
             "defenseArmor":16,
             "magicDefenseArmor":10,
             "price":1600,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Iron Helmet" ,
             "defenseArmor":18,
             "magicDefenseArmor":12,
             "price":1000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Leather Hat" ,
             "defenseArmor":11,
             "magicDefenseArmor":7,
             "price":50,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Magus Hat" ,
             "defenseArmor":15,
             "magicDefenseArmor":16,
             "price":600,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Mithril Helm" ,
             "defenseArmor":20,
             "magicDefenseArmor":13,
             "price":2000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Mystery Veil" ,
             "defenseArmor":24,
             "magicDefenseArmor":25,
             "price":5500,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Oath Veil" ,
             "defenseArmor":32,
             "magicDefenseArmor":31,
             "price":9000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Plumed Hat" ,
             "defenseArmor":14,
             "magicDefenseArmor":9,
             "price":250,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Red Cap" ,
             "defenseArmor":24,
             "magicDefenseArmor":17,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Regal Crown" ,
             "defenseArmor":28,
             "magicDefenseArmor":23,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Thornlet" ,
             "defenseArmor":38,
             "magicDefenseArmor":0,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Tiara" ,
             "defenseArmor":22,
             "magicDefenseArmor":20,
             "price":3000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Tiger Mask" ,
             "defenseArmor":21,
             "magicDefenseArmor":13,
             "price":2500,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Titanium" ,
             "defenseArmor":42,
             "magicDefenseArmor":42,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"BehemothSuit" ,
             "defenseArmor":94,
             "magicDefenseArmor":73,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Chocobo Suit" ,
             "defenseArmor":56,
             "magicDefenseArmor":38,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Cotton Robe" ,
             "defenseArmor":32,
             "magicDefenseArmor":21,
             "price":200,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Crystal Mail" ,
             "defenseArmor":72,
             "magicDefenseArmor":49,
             "price":17000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Czarina Gown" ,
             "defenseArmor":70,
             "magicDefenseArmor":64,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Dark Gear" ,
             "defenseArmor":68,
             "magicDefenseArmor":46,
             "price":13000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Diamond Vest" ,
             "defenseArmor":65,
             "magicDefenseArmor":44,
             "price":12000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"DiamondArmor" ,
             "defenseArmor":70,
             "magicDefenseArmor":47,
             "price":15000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Force Armor" ,
             "defenseArmor":69,
             "magicDefenseArmor":68,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Gaia Gear" ,
             "defenseArmor":53,
             "magicDefenseArmor":43,
             "price":6000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Genji Armor" ,
             "defenseArmor":90,
             "magicDefenseArmor":80,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Gold Armor" ,
             "defenseArmor":55,
             "magicDefenseArmor":37,
             "price":10000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Imps Armor" ,
             "defenseArmor":100,
             "magicDefenseArmor":100,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Iron Armor" ,
             "defenseArmor":40,
             "magicDefenseArmor":27,
             "price":700,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Kung Fu Suit" ,
             "defenseArmor":34,
             "magicDefenseArmor":23,
             "price":250,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"LeatherArmor" ,
             "defenseArmor":28,
             "magicDefenseArmor":19,
             "price":150,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Light Robe" ,
             "defenseArmor":60,
             "magicDefenseArmor":43,
             "price":11000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Minerva" ,
             "defenseArmor":88,
             "magicDefenseArmor":70,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Mirage Vest" ,
             "defenseArmor":48,
             "magicDefenseArmor":36,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Mithril Mail" ,
             "defenseArmor":51,
             "magicDefenseArmor":34,
             "price":3500,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Mithril Vest" ,
             "defenseArmor":45,
             "magicDefenseArmor":30,
             "price":1200,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Moogle Suit" ,
             "defenseArmor":58,
             "magicDefenseArmor":52,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Ninja Gear" ,
             "defenseArmor":47,
             "magicDefenseArmor":32,
             "price":1100,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Nutkin Suit" ,
             "defenseArmor":86,
             "magicDefenseArmor":67,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Power Sash" ,
             "defenseArmor":52,
             "magicDefenseArmor":35,
             "price":5000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Red Jacket" ,
             "defenseArmor":78,
             "magicDefenseArmor":55,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Silk Robe" ,
             "defenseArmor":39,
             "magicDefenseArmor":29,
             "price":600,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Snow Muffler" ,
             "defenseArmor":128,
             "magicDefenseArmor":90,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Tabby Suit" ,
             "defenseArmor":54,
             "magicDefenseArmor":36,
             "price":2,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"Tao Robe" ,
             "defenseArmor":68,
             "magicDefenseArmor":50,
             "price":13000,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         },
         {
             "name":"White Dress" ,
             "defenseArmor":47,
             "magicDefenseArmor":35,
             "price":2200,
-            "icoImg":"_dist/img/armor/armor1.png"
+            "icoImg":"armor1"
         }
     ]
 }

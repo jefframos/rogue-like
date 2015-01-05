@@ -6,28 +6,28 @@
             "status":"2shots" ,
             "baseValue":0 ,
             "price":100,
-            "icoImg":"_dist/img/relics/relic1.png"
+            "icoImg":"relic1"
         },
         {
             "name":"relic 2" ,
             "status":"3shots" ,
             "baseValue":0 ,
             "price":100,
-            "icoImg":"_dist/img/relics/relic1.png"
+            "icoImg":"relic1"
         },
         {
             "name":"power" ,
             "status":"powershot" ,
             "baseValue":0 ,
             "price":100,
-            "icoImg":"_dist/img/relics/relic1.png"
+            "icoImg":"relic1"
         },
         {
             "name":"speed" ,
             "status":"speedshot" ,
             "baseValue":0 ,
             "price":100,
-            "icoImg":"_dist/img/relics/relic1.png"
+            "icoImg":"relic1"
         }
     ]
 }
