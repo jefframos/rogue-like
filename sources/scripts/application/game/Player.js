@@ -55,11 +55,12 @@ var Player = SpritesheetEntity.extend({
 
         this.fireFreq = this.playerModel.fireFreq - 3;
 
-        this.fireSpeed = this.fireModel.fireSpeed;
+        this.fireSpeed = this.defaultVelocity * 3;
 
-        if(this.fireSpeed < this.defaultVelocity * 1.1){
-            this.fireSpeed = this.defaultVelocity * 1.1;
-        }
+
+        // if(this.fireSpeed <= this.defaultVelocity * 2){
+        //     this.fireSpeed = this.defaultVelocity * 2.2;
+        // }
        
         this.fireStepLive = this.fireModel.fireStepLive;
     },
@@ -70,7 +71,7 @@ var Player = SpritesheetEntity.extend({
         pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y-5 + Math.random() * 10 - this.height/2 - 20);
         pop.initMotion(-15 - (Math.random() * 10), 1.5);
         this.getTexture().tint = 0xFF0000;
-
+        APP.getGame().updatePlayerHud();
         this.updateAtt();
        
     },
@@ -416,7 +417,7 @@ var Player = SpritesheetEntity.extend({
             }
             tempFire.power = this.playerModel.getDemage('physical');
             tempFire.build();
-            tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y +10);
+            tempFire.setPosition(this.getPosition().x + this.width / 2, this.getPosition().y + 10);
             this.layer.addChild(tempFire);
             this.fireFreqAcum = tempFireFreq;
             tempFire.getContent().rotation = -tempAngle + (180 * Math.PI / 180);

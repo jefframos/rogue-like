@@ -288,6 +288,9 @@ var Application = AbstractApplication.extend({
     getGame: function() {
         return this.gameScreen;
     },
+    updatePlayerLevel: function(levels) {
+        for (var i = 0; levels > i; i++) this.gameScreen.playerModel.levelUp();
+    },
     getMousePos: function() {
         return this.stage.getMousePosition();
     },
@@ -1130,12 +1133,14 @@ var Application = AbstractApplication.extend({
         this.type = "environment", this.width = APP.nTileSize / 1.8, this.height = APP.nTileSize / 2.5, 
         this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0, 
-        this.seed = seed, this.stateModifier = seed.getNextFloat(), this.arrayModfiers = [ (1 - this.stateModifier) / 2, this.stateModifier + (1 - this.stateModifier) / 2 ], 
+        this.seed = seed, this.stateModifier = .5 + .5 * this.seed.getNextFloat(), this.arrayModfiers = [ (1 - this.stateModifier) / 2, this.stateModifier + (1 - this.stateModifier) / 2 ], 
         this.currentMadness = APP.getMadness(), this.state = 1, this.lifeArray = this.treeModel.life, 
         this.life = this.lifeArray[this.state], this.arrayFrames = [], this.arrayFrames.push(this.treeModel.happyTrees[Math.floor(this.treeModel.happyTrees.length * this.seed.getNextFloat())]), 
         this.arrayFrames.push(this.treeModel.normalTrees[Math.floor(this.treeModel.normalTrees.length * this.seed.getNextFloat())]), 
         this.arrayFrames.push(this.treeModel.madTrees[Math.floor(this.treeModel.madTrees.length * this.seed.getNextFloat())]), 
-        this.modifier = treeModel.modifier, this.frequencies = treeModel.frequencies;
+        this.modifier = treeModel.modifier, this.frequencies = treeModel.frequencies, this.ableStates = [], 
+        this.ableStates.push(this.seed.getNextFloat() < treeModel.frequencies[0]), this.ableStates.push(this.seed.getNextFloat() < treeModel.frequencies[1]), 
+        this.ableStates.push(this.seed.getNextFloat() < treeModel.frequencies[2]);
     },
     preKill: function() {
         var self = this;
@@ -1163,8 +1168,8 @@ var Application = AbstractApplication.extend({
         }, this.bounds;
     },
     fireCollide: function() {
-        this.life <= 0 || (this.life--, console.log(this.life), APP.updateMadness(this.modifier[this.state]), 
-        this.getContent().scale.x = .95, this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
+        this.life <= 0 || (this.life--, APP.updateMadness(this.modifier[this.state]), this.getContent().scale.x = .95, 
+        this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
             x: 1,
             y: 1,
             ease: "easeOutElastic"
@@ -1176,14 +1181,15 @@ var Application = AbstractApplication.extend({
     },
     updateGraphic: function() {
         var tempState = 1;
-        this.currentMadness / 2 < this.arrayModfiers[0] && (tempState = 0), this.currentMadness / 2 > this.arrayModfiers[1] && (tempState = 2), 
-        tempState !== this.state && (this.state = tempState, this.life = this.lifeArray[this.state] - this.life, 
+        console.log(this.arrayModfiers), this.currentMadness / 2 < this.arrayModfiers[0] && (tempState = 0), 
+        this.currentMadness / 2 > this.arrayModfiers[1] && (tempState = 2), tempState !== this.state && (this.state = tempState, 
+        this.ableStates[this.state] && (this.life = this.lifeArray[this.state] - this.life, 
         this.sprite.setTexture(PIXI.Sprite.fromFrame(this.arrayFrames[this.state]).texture), 
         this.getContent().scale.x = .95, this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
             x: 1,
             y: 1,
             ease: "easeOutElastic"
-        }));
+        })));
     },
     update: function() {
         if (this._super(), this.currentMadness !== APP.getMadness()) {
@@ -1248,7 +1254,7 @@ var Application = AbstractApplication.extend({
     }
 }), Fire = Entity.extend({
     init: function(vel) {
-        this._super(!0), this.updateable = !1, this.deading = !1, this.range = 20, this.width = 1, 
+        this._super(!0), this.updateable = !1, this.deading = !1, this.range = 40, this.width = 1, 
         this.height = 1, this.type = "fire", this.target = "enemy", this.fireType = "physical", 
         this.node = null, this.velocity.x = vel.x, this.velocity.y = vel.y, this.timeLive = 10, 
         this.power = 1, this.defaultVelocity = 1, this.imgSource = "_dist/img/spells/fire1.png";
@@ -1303,11 +1309,12 @@ var Application = AbstractApplication.extend({
     build: function() {
         this._super(this.imgSource), this.updateable = !0, this.collidable = !0, this.debugGraphic = new PIXI.Graphics(), 
         this.debugGraphic.beginFill(1127168), this.debugGraphic.lineStyle(1, 16767232, 1), 
-        this.debugGraphic.endFill();
+        this.debugGraphic.endFill(), this.getContent().alpha = .2;
     },
     update: function() {
-        this._super(), this.timeLive--, this.timeLive <= 0 && this.preKill(), this.getContent() && (this.width = .3 * this.getContent().width, 
-        this.height = .3 * this.getContent().height), this.getBounds(), this.range = this.width / .3;
+        this._super(), this.timeLive--, this.timeLive <= 0 && this.preKill(), null === this.debugGraphic.parent && null !== this.getContent().parent && this.getContent().parent.addChild(this.debugGraphic), 
+        this.getContent() && (this.width = .3 * this.getContent().width, this.height = .3 * this.getContent().height), 
+        this.getBounds(), this.range = this.width, this.debugPolygon(5596740, !0);
     },
     collide: function(arrayCollide) {
         this.collidable && arrayCollide[0].type === this.target && (this.preKill(), arrayCollide[0].hurt(this.power, this.fireType));
@@ -1589,14 +1596,13 @@ var Application = AbstractApplication.extend({
     },
     updateAtt: function() {
         this.defaultVelocity = this.playerModel.velocity, this.fireFreq = this.playerModel.fireFreq - 3, 
-        this.fireSpeed = this.fireModel.fireSpeed, this.fireSpeed < 1.1 * this.defaultVelocity && (this.fireSpeed = 1.1 * this.defaultVelocity), 
-        this.fireStepLive = this.fireModel.fireStepLive;
+        this.fireSpeed = 3 * this.defaultVelocity, this.fireStepLive = this.fireModel.fireStepLive;
     },
     levelUp: function() {
         var pop = new PopUpText("white");
         pop.setText("LEVEL UP"), APP.getEffectsContainer().addChild(pop.getContent()), pop.setPosition(this.getPosition().x + this.centerPosition.x - 20, this.getPosition().y - 5 + 10 * Math.random() - this.height / 2 - 20), 
         pop.initMotion(-15 - 10 * Math.random(), 1.5), this.getTexture().tint = 16711680, 
-        this.updateAtt();
+        APP.getGame().updatePlayerHud(), this.updateAtt();
     },
     updateXP: function(xp) {
         var pop = new PopUpText("green");
@@ -1732,7 +1738,7 @@ var Application = AbstractApplication.extend({
             });
             tempFire.timeLive = this.fireStepLive, weaponModel && (this.playerModel.weaponPower = weaponModel.battlePower, 
             tempFire.imgSource = weaponModel.srcImg), tempFire.power = this.playerModel.getDemage("physical"), 
-            tempFire.build(), tempFire.setPosition(this.getPosition().x + 40, this.getPosition().y + 10), 
+            tempFire.build(), tempFire.setPosition(this.getPosition().x + this.width / 2, this.getPosition().y + 10), 
             this.layer.addChild(tempFire), this.fireFreqAcum = tempFireFreq, tempFire.getContent().rotation = -tempAngle + 180 * Math.PI / 180;
         }
     },
@@ -2025,7 +2031,7 @@ var Application = AbstractApplication.extend({
     }
 }), FireModel = Class.extend({
     init: function() {
-        this.fireSpeed = 12, this.fireStepLive = 65;
+        this.fireSpeed = 12, this.fireStepLive = 30;
     },
     update: function() {}
 }), ItemModel = Class.extend({
@@ -2102,13 +2108,16 @@ var Application = AbstractApplication.extend({
         this.hpMax = this.baseHP * (this.stamina + 32) / 32, this.hp = this.hpMax, this.baseMP = this.level * (20 / this.baseMPModifier), 
         this.mpMax = this.baseMP * (this.magicPower + 32) / 32, this.mp = this.mpMax, this.critialChance = 0, 
         this.speedStatus = "normal", this.vigor2 = 2 * this.vigor, this.vigor >= 128 && (this.vigor2 = 255), 
-        this.attack = this.battlePower + this.vigor2, this.xp = 0, this.velocity = 8 - (255 - this.speed) / 35 + 2, 
-        this.velocity /= 3, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.3, 
-        this.entity = null, this.csvStr = "level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n", 
+        this.attack = this.battlePower + this.vigor2, this.xp = 0, this.updateVelocity(), 
+        this.fireFreq = (255 - this.speed) / (.4 * this.speed) * 1.3, this.entity = null, 
+        this.csvStr = "level,hp,mp,vigor,speed,stamina,magicPower,battlePower,defense,attack,magicDefense,velocity,fireFreq,demagePhysical,demageMagical\n", 
         this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n", 
         console.log("PlayerModel", this);
         var nextl = this.level, befl = this.level - 1;
         this.toNextLevel = (nextl * nextl + nextl + 3) / 4 * 20 * nextl, this.toBeforeLevel = (befl * befl + befl + 3) / 4 * 20 * befl;
+    },
+    updateVelocity: function() {
+        this.velocity = 8 - (255 - this.speed) / 35 + 2, this.velocity /= 2;
     },
     log: function() {
         console.log(), console.log("stats"), console.log("class,", this.playerClass), console.log("level,", Math.floor(this.level)), 
@@ -2151,7 +2160,7 @@ var Application = AbstractApplication.extend({
         this.baseHPModifier -= .008, this.baseMPModifier += .02, this.baseHP = this.level * (20 / this.baseHPModifier), 
         this.baseMP = this.level * (20 / this.baseMPModifier), this.hpMax += this.baseHP * (this.stamina + 32) / 32, 
         this.hp = this.hpMax, this.mpMax += this.baseMP * (this.magicPower + 32) / 32, this.mp = this.mpMax, 
-        this.velocity = 8 - (255 - this.speed) / 35 + 2, this.velocity /= 3, this.fireFreq = (255 - this.speed) / (.4 * this.speed) * (1.1 + 1e3 * this.speedModifier), 
+        this.updateVelocity(), this.fireFreq = (255 - this.speed) / (.4 * this.speed) * (1.1 + 1e3 * this.speedModifier), 
         this.fireFreq <= 4 && (this.fireFreq = 4), this.fireFreq >= 25 && (this.fireFreq = 25), 
         this.velocity >= 9 && (this.velocity = 9), this.velocity <= 2 && (this.velocity = 2), 
         this.csvStr += this.level + "," + Math.floor(this.hpMax) + "," + Math.floor(this.mpMax) + "," + Math.floor(this.vigor) + "," + Math.floor(this.speed) + "," + Math.floor(this.stamina) + "," + Math.floor(this.magicPower) + "," + Math.floor(this.battlePower) + "," + Math.floor(this.defense) + "," + Math.floor(this.attack) + "," + Math.floor(this.magicDefense) + "," + Math.floor(this.velocity) + "," + Math.floor(this.fireFreq) + "," + Math.floor(this.getDemage("physical")) + "," + Math.floor(this.getDemage("magical")) + "\n", 
@@ -2243,7 +2252,7 @@ var Application = AbstractApplication.extend({
     },
     putObstacles: function() {
         for (var accBounds = 2, yAcc = 1e-5, currentEnvironent = 0, treeModel = APP.environmentList[currentEnvironent].treeModelList[0], i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (treeModel.frequence > this.parent.currentNode.getNextFloat() && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && (this.possibleBiome(this.parent.currentNode.mapData[i][j].biome, treeModel) || this.possibleBiome(this.parent.currentNode.mapDataLayer1[i][j].biome, treeModel) || this.possibleBiome(this.parent.currentNode.mapDataLayer2[i][j].biome, treeModel))) {
-            var obs = new EnvironmentObject(treeModel, new Float(.3 + .7 * this.parent.currentNode.getNextFloat()));
+            var obs = new EnvironmentObject(treeModel, new Float(this.parent.currentNode.getNextFloat()));
             obs.build(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize + yAcc), 
             yAcc += 1e-4, this.parent.entityLayer.addChild(obs);
         }
@@ -2556,7 +2565,7 @@ var Application = AbstractApplication.extend({
             y: 10
         }, this.mouseDown = !1;
         var clss = "thief", rnd = Math.random();
-        .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), this.playerModel = APP.playersList[2].clone(), 
+        .33 > rnd ? clss = "warrior" : .66 > rnd && (clss = "mage"), window.location.hash ? "#thief" === window.location.hash ? this.playerModel = APP.playersList[0].clone() : "#mage" === window.location.hash ? this.playerModel = APP.playersList[1].clone() : "#warrior" === window.location.hash && (this.playerModel = APP.playersList[2].clone()) : this.playerModel = APP.playersList[2].clone(), 
         this.playerModel.mp = 100, this.playerModel.mpMax = 100, this.playerReady = !1, 
         this.gameMadness = 1;
     },
@@ -2584,6 +2593,9 @@ var Application = AbstractApplication.extend({
         APP.getHUD().addChild(this.blackShape), this.collisionSystem = new BoundCollisionSystem(this, !1), 
         this.effectsContainer = new PIXI.DisplayObjectContainer(), this.addChild(this.effectsContainer), 
         this.levelGenerator = new LevelGenerator(this), this.resetLevel(), this.arrayBags = [];
+    },
+    updatePlayerHud: function() {
+        this.playerHUD.addModel(this.playerModel, this.player);
     },
     createHUD: function() {
         this.barsContainer = new PIXI.DisplayObjectContainer(), this.playerHUD = new PlayerHUD("player"), 

@@ -15,7 +15,7 @@ var EnvironmentObject = Entity.extend({
 		this.debugGraphic.endFill();
 		this.range = 0;
 		this.seed = seed;
-		this.stateModifier = seed.getNextFloat();
+		this.stateModifier = 0.5 + this.seed.getNextFloat() * 0.5;
 		this.arrayModfiers = [(1 - this.stateModifier)/2, this.stateModifier + (1 - this.stateModifier)/2];
 
 		this.currentMadness = APP.getMadness();
@@ -32,6 +32,10 @@ var EnvironmentObject = Entity.extend({
 
 		this.modifier = treeModel.modifier;
 		this.frequencies = treeModel.frequencies;
+		this.ableStates = [];
+		this.ableStates.push(this.seed.getNextFloat() < treeModel.frequencies[0]);
+		this.ableStates.push(this.seed.getNextFloat() < treeModel.frequencies[1]);
+		this.ableStates.push(this.seed.getNextFloat() < treeModel.frequencies[2]);
 	},
 	preKill:function(){
 		var self = this;
@@ -55,8 +59,6 @@ var EnvironmentObject = Entity.extend({
 			return;
 		}
 		this.life --;
-		// APP.updateMadness(0.01);
-		console.log(this.life);
 		APP.updateMadness(this.modifier[this.state]);
 		this.getContent().scale.x = 0.95;
 		this.getContent().scale.y = 0.95;
@@ -68,17 +70,15 @@ var EnvironmentObject = Entity.extend({
 		}
 	},
 	build: function(){
-		// console.log('criou o Obstacle');
 		this.sprite = new PIXI.Sprite.fromFrame(this.arrayFrames[this.state]);
-
 		this.updateGraphic();
-		// this.respaw();
 		this.sprite.anchor.x = 0.5;
 		this.sprite.anchor.y = 1;
 		this.getContent().type = this.type;
 	},
 	updateGraphic: function(){
 		var tempState = 1;
+		console.log(this.arrayModfiers);
 		if(this.currentMadness/2 < this.arrayModfiers[0]){
 			tempState = 0;
 		}
@@ -90,6 +90,9 @@ var EnvironmentObject = Entity.extend({
 			return;
 		}
 		this.state = tempState;
+		if(!this.ableStates[this.state]){
+			return;
+		}
 		this.life = this.lifeArray[this.state] - this.life;
 		this.sprite.setTexture(PIXI.Sprite.fromFrame(this.arrayFrames[this.state]).texture);
 		this.getContent().scale.x = 0.95;
@@ -103,7 +106,6 @@ var EnvironmentObject = Entity.extend({
 		if(this.currentMadness !== APP.getMadness()){
 			this.currentMadness = APP.getMadness();
 			var dist = pointDistance(this.currentMadness,0,1,0);
-			// console.log((this.currentMadness +2) / 3 );
 			if(dist > this.stateModifier){
 				this.updateGraphic();
 			}

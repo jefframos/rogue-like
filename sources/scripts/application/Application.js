@@ -42,6 +42,11 @@ var Application = AbstractApplication.extend({
     getGame:function(){
         return this.gameScreen;
     },
+    updatePlayerLevel:function(levels){
+        for (var i = 0; i < levels; i++) {
+            this.gameScreen.playerModel.levelUp();
+        }
+    },
     getMousePos:function(){
         return this.stage.getMousePosition();
     },

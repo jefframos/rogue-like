@@ -208,7 +208,7 @@ var LevelGenerator = Class.extend({
 						this.possibleBiome(this.parent.currentNode.mapDataLayer2[i][j].biome, treeModel)
 					)
 					){
-					var obs = new EnvironmentObject(treeModel, new Float(0.3 + this.parent.currentNode.getNextFloat() * 0.7));
+					var obs = new EnvironmentObject(treeModel, new Float(this.parent.currentNode.getNextFloat()));
 					obs.build();
 					obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize + yAcc);
 					yAcc += 0.0001;

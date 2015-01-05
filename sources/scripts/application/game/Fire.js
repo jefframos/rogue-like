@@ -4,7 +4,7 @@ var Fire = Entity.extend({
         this._super( true );
         this.updateable = false;
         this.deading = false;
-        this.range = 20;
+        this.range = 40;
         this.width = 1;
         this.height = 1;
         this.type = 'fire';
@@ -73,6 +73,8 @@ var Fire = Entity.extend({
         this.debugGraphic.beginFill(0x113300);
         this.debugGraphic.lineStyle(1, 0xffd900, 1);
         this.debugGraphic.endFill();
+
+        this.getContent().alpha = 0.2;
     },
     update: function(){
         this._super();
@@ -81,23 +83,23 @@ var Fire = Entity.extend({
             this.preKill();
         }
 
-        // if(this.debugGraphic.parent === null && this.getContent().parent !== null)
-        // {
-        //     this.getContent().parent.addChild(this.debugGraphic);
-        // }
+        if(this.debugGraphic.parent === null && this.getContent().parent !== null)
+        {
+            this.getContent().parent.addChild(this.debugGraphic);
+        }
 
         if(this.getContent()){
             this.width = this.getContent().width * 0.3;
             this.height = this.getContent().height * 0.3;
         }
         this.getBounds();
-        this.range = this.width / 0.3;
+        this.range = this.width;// / 0.5;
         // this.debugGraphic.clear();
         // this.debugGraphic.beginFill(0xFF3300);
         // this.debugGraphic.lineStyle(1, 0xffd900, 1);
         // this.debugGraphic.drawRect(this.bounds.x, this.bounds.y,this.bounds.w, this.bounds.h);
-        //this.debugGraphic.endFill();
-        // this.debugPolygon(0x556644, true);
+        // this.debugGraphic.endFill();
+        this.debugPolygon(0x556644, true);
     },
     collide:function(arrayCollide){
         // console.log('fireCollide', arrayCollide[0].type);

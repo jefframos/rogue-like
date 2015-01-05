@@ -24,9 +24,9 @@
                             "florest1_tree_mad1",
                             "florest1_tree_mad2"
                         ],                    
-                        "modifier":[0.5,0.2,0.05],
+                        "modifier":[0.1,0.05,0.025],
                         "life":[5,8,20],
-                        "frequencies":[1,1,1],
+                        "frequencies":[0.8,1,0.8],
                         "frequence":0.2
                     }
                 ],

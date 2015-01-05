@@ -33,7 +33,18 @@ var GameScreen = AbstractScreen.extend({
             clss = 'mage';
         }
 
-        this.playerModel = APP.playersList[2].clone();
+        if(window.location.hash) {
+            if(window.location.hash === '#thief'){
+                this.playerModel = APP.playersList[0].clone();
+            }else if(window.location.hash === '#mage'){
+                this.playerModel = APP.playersList[1].clone();
+            }else if(window.location.hash === '#warrior'){
+                this.playerModel = APP.playersList[2].clone();
+            }
+        }else{
+            this.playerModel = APP.playersList[2].clone();
+        }
+
         // this.playerModel = APP.playersList[Math.floor(Math.random()*APP.playersList.length)].clone();
 
         this.playerModel.mp = 100;
@@ -151,6 +162,9 @@ var GameScreen = AbstractScreen.extend({
         this.arrayBags = [];
     },
     //cria a HUD
+    updatePlayerHud:function(){
+        this.playerHUD.addModel(this.playerModel, this.player);
+    },
     createHUD:function(){
 
         
