@@ -6,11 +6,60 @@
                 "name":"Florest 1",
                 "threes":[
                     {
-                        "sourceLabel":"three10",
-                        "graphics":"_dist/img/flora/florest1/three1.JSON",
-                        "frames":3,
-                        "frequence":0.08,
-                        "drop":"NULL",
+                        "happyThrees":
+                        {
+                            "sources":[
+                                {
+                                    "frequence":0.08,
+                                    "biomes":[
+                                        "STANDARD1",
+                                        "STANDARD2",
+                                        "STANDARD3"
+                                    ],
+                                    "labelList":[
+                                        "florest1_three_happy1",
+                                        "florest1_three_happy2"
+                                    ]
+                                }
+                            ]
+                        },
+                        "normalThrees":
+                        {
+                            "sources":[
+                                {
+                                    "frequence":0.08,
+                                    "biomes":[
+                                        "STANDARD1",
+                                        "STANDARD2",
+                                        "STANDARD3"
+                                    ],
+                                    "labelList":[
+                                        "florest1_three_normal1",
+                                        "florest1_three_normal2",
+                                        "florest1_three_normal3"
+                                    ]
+                                }
+                            ]
+                        },
+
+                        "madThrees":
+                        {
+                            "sources":[
+                                {
+                                    "frequence":0.08,
+                                    "biomes":[
+                                        "STANDARD1",
+                                        "STANDARD2",
+                                        "STANDARD3"
+                                    ],
+                                    "labelList":[
+                                        "florest1_three_mad1",
+                                        "florest1_three_mad2"
+                                    ]
+                                }
+                            ]
+                        },
+                        "graphics":"_dist/img/flora/florest1/florest1.JSON",
                         "life":8
                     }
                 ],
@@ -22,7 +71,8 @@
                     "LAVA":"0xcc3333",
                     "ROAD1":"0xcc3333",
                     "BEACH":"0x336339",
-                    "BASE":"0x336339",
+                    "BASEOLD":"0x336339",
+                    "BASE":"0x488E5A",
                     "ISLAND1":"0x402A1C",
                     "ISLAND2":"0x9B6E4D",
                     "ISLAND3":"0xC19C70"
