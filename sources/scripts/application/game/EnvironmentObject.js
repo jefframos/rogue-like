@@ -1,12 +1,11 @@
 /*jshint undef:false */
 var EnvironmentObject = Entity.extend({
-	init:function(envModel){
-		this.envModel = envModel;
+	init:function(treeModel, seed){
+		this.treeModel = treeModel;
 		this._super();
 		this.updateable = true;
 		this.collidable = true;
-		this.arrayObstacles = Math.random() < 0.5?arrayThrees[0]:arrayRocks[0];
-		this.srcImg =  this.arrayObstacles[Math.floor(Math.random() * this.arrayObstacles.length)];
+
 		this.type = 'environment';
 		this.width = APP.nTileSize / 1.8;
 		this.height = APP.nTileSize / 2.5;
@@ -15,12 +14,24 @@ var EnvironmentObject = Entity.extend({
 		this.debugGraphic.lineStyle(1, 0xffd900, 1);
 		this.debugGraphic.endFill();
 		this.range = 0;
-		this.seed = 0;
+		this.seed = seed;
+		this.stateModifier = seed.getNextFloat();
+		this.arrayModfiers = [(1 - this.stateModifier)/2, this.stateModifier + (1 - this.stateModifier)/2];
+
 		this.currentMadness = APP.getMadness();
-		this.state = 0;
-		this.frames = this.envModel.frames;
-		this.life = this.envModel.life;
-		this.arrayFrames = this.getFramesByRange(this.envModel.sourceLabel, 0, this.frames-1);
+		this.state = 1;
+
+
+		this.lifeArray = this.treeModel.life;
+		this.life = this.lifeArray[this.state];
+
+		this.arrayFrames = [];
+		this.arrayFrames.push(this.treeModel.happyTrees[Math.floor(this.treeModel.happyTrees.length * this.seed.getNextFloat())]);
+		this.arrayFrames.push(this.treeModel.normalTrees[Math.floor(this.treeModel.normalTrees.length * this.seed.getNextFloat())]);
+		this.arrayFrames.push(this.treeModel.madTrees[Math.floor(this.treeModel.madTrees.length * this.seed.getNextFloat())]);
+
+		this.modifier = treeModel.modifier;
+		this.frequencies = treeModel.frequencies;
 	},
 	preKill:function(){
 		var self = this;
@@ -45,7 +56,8 @@ var EnvironmentObject = Entity.extend({
 		}
 		this.life --;
 		// APP.updateMadness(0.01);
-		APP.updateMadness(0.1);
+		console.log(this.life);
+		APP.updateMadness(this.modifier[this.state]);
 		this.getContent().scale.x = 0.95;
 		this.getContent().scale.y = 0.95;
 		TweenLite.to(this.getContent().scale, 0.5, {x:1, y:1, ease:'easeOutElastic'});
@@ -57,7 +69,7 @@ var EnvironmentObject = Entity.extend({
 	},
 	build: function(){
 		// console.log('criou o Obstacle');
-		this.sprite = new PIXI.Sprite.fromFrame(this.arrayFrames[0]);
+		this.sprite = new PIXI.Sprite.fromFrame(this.arrayFrames[this.state]);
 
 		this.updateGraphic();
 		// this.respaw();
@@ -66,19 +78,23 @@ var EnvironmentObject = Entity.extend({
 		this.getContent().type = this.type;
 	},
 	updateGraphic: function(){
-		var nextFrame =  Math.floor((this.currentMadness) / 2 * (this.frames - 1) );
-		console.log((this.currentMadness) / 2, (this.frames - 1));
+		var tempState = 1;
+		if(this.currentMadness/2 < this.arrayModfiers[0]){
+			tempState = 0;
+		}
+		if(this.currentMadness/2 > this.arrayModfiers[1]){
+			tempState = 2;
+		}
 
-		if(this.currentFrame === nextFrame){
+		if(tempState === this.state){
 			return;
 		}
-		this.currentFrame = nextFrame;
-		// console.log(this.currentFrame, nextFrame);
-		this.sprite.setTexture(PIXI.Sprite.fromFrame(this.arrayFrames[this.currentFrame]).texture);
+		this.state = tempState;
+		this.life = this.lifeArray[this.state] - this.life;
+		this.sprite.setTexture(PIXI.Sprite.fromFrame(this.arrayFrames[this.state]).texture);
 		this.getContent().scale.x = 0.95;
 		this.getContent().scale.y = 0.95;
 		TweenLite.to(this.getContent().scale, 0.5, {x:1, y:1, ease:'easeOutElastic'});
-		// this.state = -1;
 	},
 	update: function(){
 		
@@ -88,43 +104,9 @@ var EnvironmentObject = Entity.extend({
 			this.currentMadness = APP.getMadness();
 			var dist = pointDistance(this.currentMadness,0,1,0);
 			// console.log((this.currentMadness +2) / 3 );
-			if(dist > this.seed){
+			if(dist > this.stateModifier){
 				this.updateGraphic();
 			}
 		}
-	},
-	getFramesByRange:function (label, init, end, type){
-		var tempArray = [];
-		var tempI = '';
-		
-		for (var i = init; i <= end; i++) {
-			if(i < 10){
-				tempI = '00' + i;
-			}
-			else if(i < 100){
-				tempI = '0' + i;
-			}
-			else if(i < 1000){
-				tempI =  i;
-			}
-			tempArray.push(label+tempI);
-		}
-		if(type === 'pingPong')
-		{
-			for (var j = end - 1; j > init; j--) {
-				if(j < 10){
-					tempI = '00' + j;
-				}
-				else if(j < 100){
-					tempI = '0' + j;
-				}
-				else if(j < 1000){
-					tempI =  j;
-				}
-				tempArray.push(label+tempI);
-			}
-		}
-
-		return tempArray;
 	}
 });

@@ -1,4 +1,4 @@
-/*! jefframos 26-12-2014 */
+/*! jefframos 05-01-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -179,6 +179,17 @@ var DungeonGenerator = Class.extend({
         var x = 1e4 * Math.sin(this.seed++);
         return x - Math.floor(x);
     }
+}), Float = Class.extend({
+    init: function(seed) {
+        this.seed = seed, this.tempAccSeed = this.seed;
+    },
+    applySeed: function() {
+        this.tempAccSeed = this.seed;
+    },
+    getNextFloat: function() {
+        var x = 1e4 * Math.sin(this.tempAccSeed++);
+        return x - Math.floor(x);
+    }
 }), NodeModel = Class.extend({
     init: function() {
         this.position = [], this.dist = 0, this.parentPosition = [], this.childrenSides = [ null, null, null, null ], 
@@ -318,19 +329,17 @@ var Application = AbstractApplication.extend({
         var self = this, jsonLoaderEnvironment = new PIXI.JsonLoader("_dist/img/flora/flora.JSON");
         jsonLoaderEnvironment.on("loaded", function(evt) {
             console.log("jsonLoaderEnvironment", evt.content.json);
-            for (var i = 0; i < evt.content.json.itens.biomas.length; i++) self.environmentList.push(new EnvironmentModel(evt.content.json.itens.biomas[i].name, evt.content.json.itens.biomas[i].threes, evt.content.json.itens.biomas[i].colors)), 
+            for (var i = 0; i < evt.content.json.itens.biomas.length; i++) self.environmentList.push(new EnvironmentModel(evt.content.json.itens.biomas[i].name, evt.content.json.itens.biomas[i].trees, evt.content.json.itens.biomas[i].colors, evt.content.json.itens.biomas[i].graphics)), 
             console.log("env", self.environmentList);
             self.updateLoad();
         }), jsonLoaderEnvironment.load();
         var jsonLoaderPlayers = new PIXI.JsonLoader("_dist/img/players/players.JSON");
         jsonLoaderPlayers.on("loaded", function(evt) {
-            console.log("jsonLoaderPlayers", evt.content.json);
             for (var i = 0; i < evt.content.json.itens.length; i++) self.playersList.push(new PlayerModel(evt.content.json.itens[i].name, evt.content.json.itens[i].label, evt.content.json.itens[i].stats, evt.content.json.itens[i].modifiers, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
             self.updateLoad();
         }), jsonLoaderPlayers.load();
         var jsonLoaderMonsters = new PIXI.JsonLoader("_dist/img/enemies/enemies.JSON");
         jsonLoaderMonsters.on("loaded", function(evt) {
-            console.log("jsonLoaderMonsters", evt.content.json);
             for (var i = 0; i < evt.content.json.itens.length; i++) self.monsterList.push(new MonsterModel(evt.content.json.itens[i].name, evt.content.json.itens[i].stats, evt.content.json.itens[i].fire, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
             self.updateLoad();
         }), jsonLoaderMonsters.load();
@@ -1116,14 +1125,17 @@ var Application = AbstractApplication.extend({
         return Math.sqrt((x -= x0) * x + (y -= y0) * y);
     }
 }), EnvironmentObject = Entity.extend({
-    init: function(envModel) {
-        this.envModel = envModel, this._super(), this.updateable = !0, this.collidable = !0, 
-        this.arrayObstacles = Math.random() < .5 ? arrayThrees[0] : arrayRocks[0], this.srcImg = this.arrayObstacles[Math.floor(Math.random() * this.arrayObstacles.length)], 
+    init: function(treeModel, seed) {
+        this.treeModel = treeModel, this._super(), this.updateable = !0, this.collidable = !0, 
         this.type = "environment", this.width = APP.nTileSize / 1.8, this.height = APP.nTileSize / 2.5, 
         this.debugGraphic = new PIXI.Graphics(), this.debugGraphic.beginFill(16724736), 
         this.debugGraphic.lineStyle(1, 16767232, 1), this.debugGraphic.endFill(), this.range = 0, 
-        this.seed = 0, this.currentMadness = APP.getMadness(), this.state = 0, this.frames = this.envModel.frames, 
-        this.life = this.envModel.life, this.arrayFrames = this.getFramesByRange(this.envModel.sourceLabel, 0, this.frames - 1);
+        this.seed = seed, this.stateModifier = seed.getNextFloat(), this.arrayModfiers = [ (1 - this.stateModifier) / 2, this.stateModifier + (1 - this.stateModifier) / 2 ], 
+        this.currentMadness = APP.getMadness(), this.state = 1, this.lifeArray = this.treeModel.life, 
+        this.life = this.lifeArray[this.state], this.arrayFrames = [], this.arrayFrames.push(this.treeModel.happyTrees[Math.floor(this.treeModel.happyTrees.length * this.seed.getNextFloat())]), 
+        this.arrayFrames.push(this.treeModel.normalTrees[Math.floor(this.treeModel.normalTrees.length * this.seed.getNextFloat())]), 
+        this.arrayFrames.push(this.treeModel.madTrees[Math.floor(this.treeModel.madTrees.length * this.seed.getNextFloat())]), 
+        this.modifier = treeModel.modifier, this.frequencies = treeModel.frequencies;
     },
     preKill: function() {
         var self = this;
@@ -1151,21 +1163,22 @@ var Application = AbstractApplication.extend({
         }, this.bounds;
     },
     fireCollide: function() {
-        this.life <= 0 || (this.life--, APP.updateMadness(.1), this.getContent().scale.x = .95, 
-        this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
+        this.life <= 0 || (this.life--, console.log(this.life), APP.updateMadness(this.modifier[this.state]), 
+        this.getContent().scale.x = .95, this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
             x: 1,
             y: 1,
             ease: "easeOutElastic"
         }), this.life <= 0 && (this.collidable = !1, this.updateable = !1, this.preKill()));
     },
     build: function() {
-        this.sprite = new PIXI.Sprite.fromFrame(this.arrayFrames[0]), this.updateGraphic(), 
+        this.sprite = new PIXI.Sprite.fromFrame(this.arrayFrames[this.state]), this.updateGraphic(), 
         this.sprite.anchor.x = .5, this.sprite.anchor.y = 1, this.getContent().type = this.type;
     },
     updateGraphic: function() {
-        var nextFrame = Math.floor(this.currentMadness / 2 * (this.frames - 1));
-        console.log(this.currentMadness / 2, this.frames - 1), this.currentFrame !== nextFrame && (this.currentFrame = nextFrame, 
-        this.sprite.setTexture(PIXI.Sprite.fromFrame(this.arrayFrames[this.currentFrame]).texture), 
+        var tempState = 1;
+        this.currentMadness / 2 < this.arrayModfiers[0] && (tempState = 0), this.currentMadness / 2 > this.arrayModfiers[1] && (tempState = 2), 
+        tempState !== this.state && (this.state = tempState, this.life = this.lifeArray[this.state] - this.life, 
+        this.sprite.setTexture(PIXI.Sprite.fromFrame(this.arrayFrames[this.state]).texture), 
         this.getContent().scale.x = .95, this.getContent().scale.y = .95, TweenLite.to(this.getContent().scale, .5, {
             x: 1,
             y: 1,
@@ -1176,15 +1189,8 @@ var Application = AbstractApplication.extend({
         if (this._super(), this.currentMadness !== APP.getMadness()) {
             this.currentMadness = APP.getMadness();
             var dist = pointDistance(this.currentMadness, 0, 1, 0);
-            dist > this.seed && this.updateGraphic();
+            dist > this.stateModifier && this.updateGraphic();
         }
-    },
-    getFramesByRange: function(label, init, end, type) {
-        for (var tempArray = [], tempI = "", i = init; end >= i; i++) 10 > i ? tempI = "00" + i : 100 > i ? tempI = "0" + i : 1e3 > i && (tempI = i), 
-        tempArray.push(label + tempI);
-        if ("pingPong" === type) for (var j = end - 1; j > init; j--) 10 > j ? tempI = "00" + j : 100 > j ? tempI = "0" + j : 1e3 > j && (tempI = j), 
-        tempArray.push(label + tempI);
-        return tempArray;
     }
 }), Fairy = Entity.extend({
     init: function(player) {
@@ -2012,8 +2018,10 @@ var Application = AbstractApplication.extend({
         this.price = price, this.icoImg = icoImg, this.type = "armor", this.type2 = "equip";
     }
 }), EnvironmentModel = Class.extend({
-    init: function(name, threes, colors) {
-        this.name = name, this.threes = threes, this.colors = colors;
+    init: function(name, tree, colors, graphics) {
+        this.name = name, this.colors = colors, this.treeModelList = [];
+        for (var i = tree.length - 1; i >= 0; i--) this.treeModelList.push(new TreeModel(tree[i]));
+        this.graphics = graphics;
     }
 }), FireModel = Class.extend({
     init: function() {
@@ -2185,6 +2193,12 @@ var Application = AbstractApplication.extend({
         this.level = level, this.name = name, this.label = name, this.mp = mp, this.spellPower = spellPower, 
         this.icoImg = icoImg, this.srcImg = srcImg, this.isMultiple = isMultiple, this.type = "spell";
     }
+}), TreeModel = Class.extend({
+    init: function(tree) {
+        this.biomes = tree.biomes, this.happyTrees = tree.happyTrees, this.normalTrees = tree.normalTrees, 
+        this.madTrees = tree.madTrees, this.modifier = tree.modifier, this.life = tree.life, 
+        this.frequencies = tree.frequencies, this.frequence = tree.frequence;
+    }
 }), WeaponModel = Class.extend({
     init: function(name, battlePower, magicPower, hitRate, price, icoImg, srcImg) {
         this.name = name, this.label = name, this.battlePower = battlePower, this.magicPower = magicPower, 
@@ -2223,10 +2237,14 @@ var Application = AbstractApplication.extend({
         for (var i = this.nonPlaceObstaclesBiomes.length - 1; i >= 0; i--) if (biome === this.nonPlaceObstaclesBiomes[i]) return !1;
         return !0;
     },
+    possibleBiome: function(biome, model) {
+        for (var i = model.biomes.length - 1; i >= 0; i--) if (biome === model.biomes[i]) return !0;
+        return !1;
+    },
     putObstacles: function() {
-        for (var accBounds = 2, yAcc = 1e-5, i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (this.parent.currentNode.getNextFloat() < .1 && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer1[i][j].biome) && this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer2[i][j].biome)) {
-            var obs = new EnvironmentObject(APP.environmentList[0].threes[0]);
-            obs.build(), obs.seed = 1.1 * this.parent.currentNode.getNextFloat(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize + yAcc), 
+        for (var accBounds = 2, yAcc = 1e-5, currentEnvironent = 0, treeModel = APP.environmentList[currentEnvironent].treeModelList[0], i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) if (treeModel.frequence > this.parent.currentNode.getNextFloat() && void 0 !== this.parent.currentNode.mapData[i][j] && void 0 !== this.parent.currentNode.mapData[i][j].biome && (this.possibleBiome(this.parent.currentNode.mapData[i][j].biome, treeModel) || this.possibleBiome(this.parent.currentNode.mapDataLayer1[i][j].biome, treeModel) || this.possibleBiome(this.parent.currentNode.mapDataLayer2[i][j].biome, treeModel))) {
+            var obs = new EnvironmentObject(treeModel, new Float(.3 + .7 * this.parent.currentNode.getNextFloat()));
+            obs.build(), obs.setPosition(i * APP.nTileSize, (j + 1) * APP.nTileSize + yAcc), 
             yAcc += 1e-4, this.parent.entityLayer.addChild(obs);
         }
     },
@@ -2547,8 +2565,9 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        for (var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", "_dist/img/levels/leftTop.png", "_dist/img/levels/rightTop.png", "_dist/img/levels/leftBottom.png", "_dist/img/levels/rightBottom.png", "_dist/img/levels/tile1.png", "_dist/img/flora/florest1/three1.JSON", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ], i = arrayThrees.length - 1; i >= 0; i--) for (var j = arrayThrees[i].length - 1; j >= 0; j--) assetsToLoader.push(arrayThrees[i][j]);
-        for (var k = arrayRocks.length - 1; k >= 0; k--) for (var l = arrayRocks[k].length - 1; l >= 0; l--) assetsToLoader.push(arrayRocks[k][l]);
+        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", "_dist/img/levels/leftTop.png", "_dist/img/levels/rightTop.png", "_dist/img/levels/leftBottom.png", "_dist/img/levels/rightBottom.png", "_dist/img/levels/tile1.png", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ], i = 0;
+        for (console.log("list", APP.environmentList), i = APP.environmentList.length - 1; i >= 0; i--) console.log("list - ", i, APP.environmentList[i]), 
+        assetsToLoader.push(APP.environmentList[i].graphics);
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
     },
     onProgress: function() {
@@ -2782,7 +2801,7 @@ var Application = AbstractApplication.extend({
             roomState = "key";
         }
         for (this.player = new Player(this.playerModel), this.currentNode.applySeed(); this.bgContainer.children.length; ) this.bgContainer.removeChildAt(0);
-        var i = 0, sizeHelper = 150;
+        var i = 0, sizeHelper = 15;
         this.currentNode.bg ? (this.bgContainer.addChild(this.currentNode.bg), this.bgContainer.addChild(this.currentNode.bgLayer1), 
         this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3)) : (this.marginTiles = {
             x: Math.floor(this.mapPosition.x / APP.nTileSize) + sizeHelper,

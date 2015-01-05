@@ -184,33 +184,36 @@ var LevelGenerator = Class.extend({
 		}
 		return true;
 	},
+	possibleBiome: function(biome, model){
+		for (var i = model.biomes.length - 1; i >= 0; i--) {
+			if(biome === model.biomes[i]){
+				return true;
+			}
+		}
+		return false;
+	},
 	putObstacles: function(){
 		var accBounds = 2;
 		var yAcc = 0.00001;
+		var currentEnvironent = 0;
+		var treeModel = APP.environmentList[currentEnvironent].treeModelList[0];
 		for (var i = this.parent.currentNode.mapData.length - accBounds; i >= accBounds; i--) {
 			for (var j = this.parent.currentNode.mapData[i].length - accBounds; j >= accBounds; j--) {
-				if(this.parent.currentNode.getNextFloat() <  0.1 &&
+				if(treeModel.frequence > this.parent.currentNode.getNextFloat() &&
 					this.parent.currentNode.mapData[i][j]!== undefined &&
 					this.parent.currentNode.mapData[i][j].biome !== undefined &&
-					this.possibleBiomesToObstacles(this.parent.currentNode.mapData[i][j].biome) &&
-					this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer1[i][j].biome) &&
-					this.possibleBiomesToObstacles(this.parent.currentNode.mapDataLayer2[i][j].biome)){
-
-					// var obs = new Obstacle();
-					// obs.build();
-					// obs.seed = this.parent.currentNode.getNextFloat() * 1.1;
-					// obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize + yAcc);
-					// yAcc += 0.0001;
-					// this.parent.entityLayer.addChild(obs);
-					var obs = new EnvironmentObject(APP.environmentList[0].threes[0]);
+					(
+						this.possibleBiome(this.parent.currentNode.mapData[i][j].biome, treeModel) ||
+						this.possibleBiome(this.parent.currentNode.mapDataLayer1[i][j].biome, treeModel) ||
+						this.possibleBiome(this.parent.currentNode.mapDataLayer2[i][j].biome, treeModel)
+					)
+					){
+					var obs = new EnvironmentObject(treeModel, new Float(0.3 + this.parent.currentNode.getNextFloat() * 0.7));
 					obs.build();
-					obs.seed = this.parent.currentNode.getNextFloat() * 1.1;
 					obs.setPosition((i)* APP.nTileSize, (j+1)* APP.nTileSize + yAcc);
 					yAcc += 0.0001;
 					this.parent.entityLayer.addChild(obs);
 				}
-					// this.parent.currentNode.mapData[i][k] = {biome:'OCEAN', position:'CENTER'};
-				// }
 			}
 		}
 	},

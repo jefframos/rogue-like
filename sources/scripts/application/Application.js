@@ -131,8 +131,9 @@ var Application = AbstractApplication.extend({
             for (var i = 0; i < evt.content.json.itens.biomas.length; i++) {
                 self.environmentList.push(new EnvironmentModel(
                     evt.content.json.itens.biomas[i].name,
-                    evt.content.json.itens.biomas[i].threes,
-                    evt.content.json.itens.biomas[i].colors
+                    evt.content.json.itens.biomas[i].trees,
+                    evt.content.json.itens.biomas[i].colors,
+                    evt.content.json.itens.biomas[i].graphics
                 ));
                 console.log('env', self.environmentList);
             }
@@ -143,7 +144,7 @@ var Application = AbstractApplication.extend({
 
         var jsonLoaderPlayers = new PIXI.JsonLoader('_dist/img/players/players.JSON');
         jsonLoaderPlayers.on('loaded', function(evt) {
-            console.log('jsonLoaderPlayers',evt.content.json);
+            // console.log('jsonLoaderPlayers',evt.content.json);
             for (var i = 0; i < evt.content.json.itens.length; i++) {
                 self.playersList.push(new PlayerModel(
                     evt.content.json.itens[i].name,
@@ -160,7 +161,7 @@ var Application = AbstractApplication.extend({
 
         var jsonLoaderMonsters = new PIXI.JsonLoader('_dist/img/enemies/enemies.JSON');
         jsonLoaderMonsters.on('loaded', function(evt) {
-            console.log('jsonLoaderMonsters',evt.content.json);
+            // console.log('jsonLoaderMonsters',evt.content.json);
             for (var i = 0; i < evt.content.json.itens.length; i++) {
                 self.monsterList.push(new MonsterModel(
                     evt.content.json.itens[i].name,

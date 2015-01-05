@@ -4,65 +4,33 @@
         "biomas":[
             {
                 "name":"Florest 1",
-                "threes":[
+                "trees":[
                     {
-                        "happyThrees":
-                        {
-                            "sources":[
-                                {
-                                    "frequence":0.08,
-                                    "biomes":[
-                                        "STANDARD1",
-                                        "STANDARD2",
-                                        "STANDARD3"
-                                    ],
-                                    "labelList":[
-                                        "florest1_three_happy1",
-                                        "florest1_three_happy2"
-                                    ]
-                                }
-                            ]
-                        },
-                        "normalThrees":
-                        {
-                            "sources":[
-                                {
-                                    "frequence":0.08,
-                                    "biomes":[
-                                        "STANDARD1",
-                                        "STANDARD2",
-                                        "STANDARD3"
-                                    ],
-                                    "labelList":[
-                                        "florest1_three_normal1",
-                                        "florest1_three_normal2",
-                                        "florest1_three_normal3"
-                                    ]
-                                }
-                            ]
-                        },
+                        "biomes":["STANDARD2"],
+                        "happyTrees":
+                        [
+                            "florest1_tree_happy1",
+                            "florest1_tree_happy2"
+                        ],
+                        "normalTrees":
+                        [
+                            "florest1_tree_normal1",
+                            "florest1_tree_normal2",
+                            "florest1_tree_normal3"
+                        ],
 
-                        "madThrees":
-                        {
-                            "sources":[
-                                {
-                                    "frequence":0.08,
-                                    "biomes":[
-                                        "STANDARD1",
-                                        "STANDARD2",
-                                        "STANDARD3"
-                                    ],
-                                    "labelList":[
-                                        "florest1_three_mad1",
-                                        "florest1_three_mad2"
-                                    ]
-                                }
-                            ]
-                        },
-                        "graphics":"_dist/img/flora/florest1/florest1.JSON",
-                        "life":8
+                        "madTrees":
+                        [
+                            "florest1_tree_mad1",
+                            "florest1_tree_mad2"
+                        ],                    
+                        "modifier":[0.5,0.2,0.05],
+                        "life":[5,8,20],
+                        "frequencies":[1,1,1],
+                        "frequence":0.2
                     }
                 ],
+                "graphics":"_dist/img/flora/florest1/florest1.JSON",
                 "colors":{
                     "STANDARD1":"0x488E5A",
                     "STANDARD2":"0x3D7747",
@@ -70,7 +38,8 @@
                     "LAKE":"0x336699",
                     "LAVA":"0xcc3333",
                     "ROAD1":"0xcc3333",
-                    "BEACH":"0x336339",
+                    "BEACH":"0x488E5A",
+                    "BEACHOLD":"0x336339",
                     "BASEOLD":"0x336339",
                     "BASE":"0x488E5A",
                     "ISLAND1":"0x402A1C",

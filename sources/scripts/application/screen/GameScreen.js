@@ -70,21 +70,28 @@ var GameScreen = AbstractScreen.extend({
             '_dist/img/levels/leftBottom.png',
             '_dist/img/levels/rightBottom.png',
             '_dist/img/levels/tile1.png',
-            '_dist/img/flora/florest1/three1.JSON',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
         ];
-        for (var i = arrayThrees.length - 1; i >= 0; i--) {
-            for (var j = arrayThrees[i].length - 1; j >= 0; j--) {
-                assetsToLoader.push(arrayThrees[i][j]);
-            }
+        var i = 0;
+        var j = 0;
+        console.log('list', APP.environmentList);
+        for (i = APP.environmentList.length - 1; i >= 0; i--) {
+            console.log('list - ', i, APP.environmentList[i]);
+            assetsToLoader.push(APP.environmentList[i].graphics);
         }
-        for (var k = arrayRocks.length - 1; k >= 0; k--) {
-            for (var l = arrayRocks[k].length - 1; l >= 0; l--) {
-                assetsToLoader.push(arrayRocks[k][l]);
-            }
-        }
+
+        // for (i = arrayThrees.length - 1; i >= 0; i--) {
+        //     for (j = arrayThrees[i].length - 1; j >= 0; j--) {
+        //         assetsToLoader.push(arrayThrees[i][j]);
+        //     }
+        // }
+        // for (var k = arrayRocks.length - 1; k >= 0; k--) {
+        //     for (var l = arrayRocks[k].length - 1; l >= 0; l--) {
+        //         assetsToLoader.push(arrayRocks[k][l]);
+        //     }
+        // }
         this.loader = new PIXI.AssetLoader(assetsToLoader);
         this.initLoad();
 
@@ -600,7 +607,7 @@ var GameScreen = AbstractScreen.extend({
         // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * APP.nTileSize - Math.floor(this.mapPosition.y*2)};
         var i = 0;
         var j = 0;
-        var sizeHelper = 150;
+        var sizeHelper = 15;
         if(this.currentNode.bg){
             this.bgContainer.addChild(this.currentNode.bg);
             this.bgContainer.addChild(this.currentNode.bgLayer1);
