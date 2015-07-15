@@ -19,7 +19,7 @@ var Application = AbstractApplication.extend({
         this.nTileSize = 64;
         //size utilizado nos personagens
         this.tileSize = {x: this.nTileSize, y:  this.nTileSize};
-        
+
 	},
     updateMadness:function(value){
         this.gameScreen.gameMadness += value;
@@ -83,14 +83,14 @@ var Application = AbstractApplication.extend({
         this.environmentList = [];
 
         this._super();
-        var JSONToLoader = ['_dist/img/relics/relics.JSON',
-                            '_dist/img/weapons/weapons.JSON',
-                            '_dist/img/spells/spells.JSON',
-                            '_dist/img/potions/potions.JSON',
-                            '_dist/img/enemies/enemies.JSON',
-                            '_dist/img/armor/armor.JSON',
-                            '_dist/img/flora/flora.JSON',
-                            '_dist/img/players/players.JSON'
+        var JSONToLoader = ['dist/img/relics/relics.JSON',
+                            'dist/img/weapons/weapons.JSON',
+                            'dist/img/spells/spells.JSON',
+                            'dist/img/potions/potions.JSON',
+                            'dist/img/enemies/enemies.JSON',
+                            'dist/img/armor/armor.JSON',
+                            'dist/img/flora/flora.JSON',
+                            'dist/img/players/players.JSON'
                             ];
         this.assetsLoader = new PIXI.AssetLoader(JSONToLoader);
         var self = this;
@@ -131,7 +131,7 @@ var Application = AbstractApplication.extend({
     {
         var self = this;
 
-        var jsonLoaderEnvironment = new PIXI.JsonLoader('_dist/img/flora/flora.JSON');
+        var jsonLoaderEnvironment = new PIXI.JsonLoader('dist/img/flora/flora.JSON');
         jsonLoaderEnvironment.on('loaded', function(evt) {
             console.log('jsonLoaderEnvironment',evt.content.json);
             for (var i = 0; i < evt.content.json.itens.biomas.length; i++) {
@@ -148,7 +148,7 @@ var Application = AbstractApplication.extend({
         jsonLoaderEnvironment.load();
 
 
-        var jsonLoaderPlayers = new PIXI.JsonLoader('_dist/img/players/players.JSON');
+        var jsonLoaderPlayers = new PIXI.JsonLoader('dist/img/players/players.JSON');
         jsonLoaderPlayers.on('loaded', function(evt) {
             // console.log('jsonLoaderPlayers',evt.content.json);
             for (var i = 0; i < evt.content.json.itens.length; i++) {
@@ -165,7 +165,7 @@ var Application = AbstractApplication.extend({
         });
         jsonLoaderPlayers.load();
 
-        var jsonLoaderMonsters = new PIXI.JsonLoader('_dist/img/enemies/enemies.JSON');
+        var jsonLoaderMonsters = new PIXI.JsonLoader('dist/img/enemies/enemies.JSON');
         jsonLoaderMonsters.on('loaded', function(evt) {
             // console.log('jsonLoaderMonsters',evt.content.json);
             for (var i = 0; i < evt.content.json.itens.length; i++) {
@@ -181,7 +181,7 @@ var Application = AbstractApplication.extend({
         });
         jsonLoaderMonsters.load();
 
-        var jsonLoaderRelics = new PIXI.JsonLoader('_dist/img/relics/relics.JSON');
+        var jsonLoaderRelics = new PIXI.JsonLoader('dist/img/relics/relics.JSON');
         jsonLoaderRelics.on('loaded', function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) {
                 self.relicList.push(new RelicModel(evt.content.json.itens[i].name,
@@ -195,7 +195,7 @@ var Application = AbstractApplication.extend({
         });
         jsonLoaderRelics.load();
 
-        var jsonLoaderArmor = new PIXI.JsonLoader('_dist/img/armor/armor.JSON');
+        var jsonLoaderArmor = new PIXI.JsonLoader('dist/img/armor/armor.JSON');
         jsonLoaderArmor.on('loaded', function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) {
                 self.armorList.push(new ArmorModel(evt.content.json.itens[i].name,
@@ -210,7 +210,7 @@ var Application = AbstractApplication.extend({
         });
         jsonLoaderArmor.load();
 
-        var jsonLoaderWeapon = new PIXI.JsonLoader('_dist/img/weapons/weapons.JSON');
+        var jsonLoaderWeapon = new PIXI.JsonLoader('dist/img/weapons/weapons.JSON');
         jsonLoaderWeapon.on('loaded', function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) {
                 self.weaponList.push(new WeaponModel(evt.content.json.itens[i].name,
@@ -227,7 +227,7 @@ var Application = AbstractApplication.extend({
         });
         jsonLoaderWeapon.load();
 
-        var jsonLoaderSpell = new PIXI.JsonLoader('_dist/img/spells/spells.JSON');
+        var jsonLoaderSpell = new PIXI.JsonLoader('dist/img/spells/spells.JSON');
         jsonLoaderSpell.on('loaded', function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) {
                 self.spellList.push(new SpellModel(evt.content.json.itens[i].level,
@@ -244,10 +244,10 @@ var Application = AbstractApplication.extend({
         });
         jsonLoaderSpell.load();
 
-        var jsonLoaderPotion = new PIXI.JsonLoader('_dist/img/potions/potions.JSON');
+        var jsonLoaderPotion = new PIXI.JsonLoader('dist/img/potions/potions.JSON');
         jsonLoaderPotion.on('loaded', function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) {
-                
+
                 self.itemList.push(new ItemModel(evt.content.json.itens[i].name,
                     evt.content.json.itens[i].effect,
                     evt.content.json.itens[i].baseValue,

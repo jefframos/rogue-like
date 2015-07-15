@@ -12,9 +12,9 @@
 
 		<!-- <link rel="shortcut icon" href="favicon.ico"> -->
 
-		<link rel="stylesheet" href="_dist/css/main.css">
+		<link rel="stylesheet" href="dist/css/main.css">
 		<!-- #201E3B -->
-		<style type="text/css">	
+		<style type="text/css">
 		body{
 			margin: 0;
 			padding: 0;
@@ -39,9 +39,9 @@
 	</style>
 	</head>
 	<body>
-		<script src="_dist/js/lib/plugins.js"></script>
-		<script src="_dist/js/lib/voronoi-map-min.js"></script>
-		<script src="_dist/js/main.js"></script>
+		<script src="dist/js/lib/plugins.js"></script>
+		<script src="dist/js/lib/voronoi-map-min.js"></script>
+		<script src="dist/js/main.js"></script>
 
 		<!-- <img src="https://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&amp;size=100x100" alt="" title="" /> -->
 

@@ -25,9 +25,9 @@
                 "magicDefenseModifier":0.004
             },
             "graphicsData":{
-                "icoImg":"_dist/img/players/foxyIco.png",
-                "srcImg":"_dist/img/players/foxy.png",
-                "srcJson":"_dist/img/players/foxy.json",
+                "icoImg":"dist/img/players/foxyIco.png",
+                "srcImg":"dist/img/players/foxy.png",
+                "srcJson":"dist/img/players/foxy.json",
                 "sourceLabel":"fox0",
                 "positionSprite":{
                     "x": 25,
@@ -76,7 +76,7 @@
                 "magicPower":39,
                 "battlePower":12,
                 "defense":42,
-                "magicDefense":33                
+                "magicDefense":33
             },
             "modifiers":{
                 "baseHPModifier":1.32,
@@ -90,9 +90,9 @@
                 "magicDefenseModifier":0.007
             },
             "graphicsData":{
-                "icoImg":"_dist/img/players/foxyIco.png",
-                "srcImg":"_dist/img/players/foxy.png",
-                "srcJson":"_dist/img/players/foxy.json",
+                "icoImg":"dist/img/players/foxyIco.png",
+                "srcImg":"dist/img/players/foxy.png",
+                "srcJson":"dist/img/players/foxy.json",
                 "sourceLabel":"fox0",
                 "positionSprite":{
                     "x": 25,
@@ -141,7 +141,7 @@
                 "magicPower":25,
                 "battlePower":25,
                 "defense":48,
-                "magicDefense":20               
+                "magicDefense":20
             },
             "modifiers":{
                 "baseHPModifier":1.32,
@@ -155,9 +155,9 @@
                 "magicDefenseModifier":0.0025
             },
             "graphicsData":{
-                "icoImg":"_dist/img/players/foxyIco.png",
-                "srcImg":"_dist/img/players/foxy.png",
-                "srcJson":"_dist/img/players/foxy.json",
+                "icoImg":"dist/img/players/foxyIco.png",
+                "srcImg":"dist/img/players/foxy.png",
+                "srcJson":"dist/img/players/foxy.json",
                 "sourceLabel":"fox0",
                 "positionSprite":{
                     "x": 25,

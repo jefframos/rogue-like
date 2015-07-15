@@ -49,7 +49,7 @@ var Door = Entity.extend({
             // console.log(this.polygon);
             this.debugGraphic.beginFill(color, 0.5);
             this.debugGraphic.lineStyle(1, 0xffd900);
-            
+
             this.debugGraphic.drawCircle(this.getPosition().x + this.centerPosition.x,this.getPosition().y + this.centerPosition.y,this.range);
             // this.debugGraphic.moveTo(this.polygon.points[this.polygon.points.length - 1].x,this.polygon.points[this.polygon.points.length - 1].y);
             // // console.log('this.polygon',this.polygon.points);
@@ -61,9 +61,9 @@ var Door = Entity.extend({
         }
     },
     build: function(){
-        this._super('_dist/img/cubo.png');
+        this._super('dist/img/cubo.png');
         var self = this;
-        
+
         // this.debugGraphic = new PIXI.Graphics();
         // this.debugGraphic.beginFill(0xFF3300);
         // this.debugGraphic.lineStyle(1, 0xffd900, 1);

@@ -5,9 +5,9 @@ var Fairy = Entity.extend({
         this.updateable = true;
         this.collidable = false;
         this.player = player;
-        // this.arrayObstacles = ['_dist/img/fairy/f1.png'];
-  
-        this.srcImg =  '_dist/img/fairy/f1.png';//this.arrayObstacles[imgId];
+        // this.arrayObstacles = ['dist/img/fairy/f1.png'];
+
+        this.srcImg =  'dist/img/fairy/f1.png';//this.arrayObstacles[imgId];
         this.type = 'fairy';
         this.width = 25;//APP.tileSize.x;
         this.height = 25;//APP.tileSize.x;
@@ -108,7 +108,7 @@ var Fairy = Entity.extend({
         this.fairySprite.position.x += this.virtualVelocity.x;
         this.fairySprite.position.y += this.virtualVelocity.y;
 
-        
+
         // if(this.fairySprite.position.y + this.fairyContainer.position.y > this.player.getPosition().y)
         // {
         //     this.forceFrontPlayer();
@@ -158,7 +158,7 @@ var Fairy = Entity.extend({
                 if(Math.abs(this.velocity.y < 0.05)){
                     this.velocity.y = 0;
                 }
-               
+
             }
 
             this.fairyAngle += 2.8;
@@ -181,7 +181,7 @@ var Fairy = Entity.extend({
             }
 
             // console.log(this.bounceAcc / this.bounceAccMax);
-            
+
         }
         // if(this.debugGraphic.parent === null && this.getContent().parent !== null)
         // {

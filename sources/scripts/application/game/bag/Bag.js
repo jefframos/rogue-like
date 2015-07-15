@@ -9,7 +9,7 @@ var Bag = Entity.extend({
         // this.target = 'player';
         this.model = model;
         this.player = player;
-        this.imgSource = '_dist/img/HUD/bags/bag1.png';
+        this.imgSource = 'dist/img/HUD/bags/bag1.png';
         this.isShow = false;
 	},
     update:function(){
@@ -30,6 +30,6 @@ var Bag = Entity.extend({
         this.getContent().scale.x = 0;
         this.getContent().scale.y = 0;
         TweenLite.to(this.getContent().scale, 0.5, {x:1, y:1, ease:'easeOutElastic'});
-       
+
     }
 });

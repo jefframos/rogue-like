@@ -9,16 +9,16 @@ var WaitScreen = AbstractScreen.extend({
     build: function () {
         this._super();
 
-        var bg = new SimpleSprite('_dist/img/bg.png');
+        var bg = new SimpleSprite('dist/img/bg.png');
         // var bg = new SimpleSprite('http://api.qrserver.com/v1/create-qr-code/?data=HelloWorld&amp;size=100x100');
         this.addChild(bg);
 
-        
+
 
         this.name = new PIXI.Text('Aguardando mobile entrar', {fill:'black', align:'center'});
         // this.addChild(this.name);
 
-        var assetsToLoader = ['_dist/img/qrcode.png'];
+        var assetsToLoader = ['dist/img/qrcode.png'];
 
         this.loader = new PIXI.AssetLoader(assetsToLoader);
         this.initLoad();
@@ -36,7 +36,7 @@ var WaitScreen = AbstractScreen.extend({
         var qrcode = new SimpleSprite($('qrcode').context.images[0].src);
         // $('qrcode').css({ opacity: 0 });
 
-        // var qrcode = new SimpleSprite('_dist/img/qrcode.png');
+        // var qrcode = new SimpleSprite('dist/img/qrcode.png');
         this.addChild(qrcode);
         qrcode.getContent().position.x = windowWidth / 2 - qrcode.getContent().width / 2;
         qrcode.getContent().position.y = windowHeight / 2 - qrcode.getContent().height / 2;

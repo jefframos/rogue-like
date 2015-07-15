@@ -8,9 +8,9 @@ var RainParticle = Class.extend({
 		this.dir=dir;
 		this.hArea=hArea;
 		this.vArea=vArea;
-		
 
-		this.texture = new PIXI.Texture.fromImage('_dist/img/drop.png');
+
+		this.texture = new PIXI.Texture.fromImage('dist/img/drop.png');
 		this.content = new PIXI.Sprite(this.texture);
 
 		this.content.position.x = Math.random() * hArea;
@@ -42,7 +42,7 @@ var RainParticle = Class.extend({
 
 		// this.windSpeed = Math.cos(this.gambAccum) * 5;
 
-		
+
 		// console.log(this.windSpeed);
 		// this.gambAccum ++;
 		// if(this.gambAccum > 200){

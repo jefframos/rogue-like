@@ -23,14 +23,14 @@
                         [
                             "florest1_tree_mad1",
                             "florest1_tree_mad2"
-                        ],                    
+                        ],
                         "modifier":[0.1,0.05,0.025],
                         "life":[5,8,20],
                         "frequencies":[0.8,1,0.8],
                         "frequence":0.2
                     }
                 ],
-                "graphics":"_dist/img/flora/florest1/florest1.JSON",
+                "graphics":"dist/img/flora/florest1/florest1.JSON",
                 "colors":{
                     "STANDARD1":"0x488E5A",
                     "STANDARD2":"0x3D7747",

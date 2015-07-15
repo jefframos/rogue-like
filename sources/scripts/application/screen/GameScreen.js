@@ -7,7 +7,7 @@ var GameScreen = AbstractScreen.extend({
         this.bgContainer = new PIXI.DisplayObjectContainer();
         this.addChild(this.bgContainer);
 
-        
+
         this.currentAppModel = new AppModel();
 
         this.mainLayer = new Layer('main');
@@ -65,27 +65,27 @@ var GameScreen = AbstractScreen.extend({
     build: function () {
         this._super();
         var assetsToLoader = [
-            '_dist/img/drop.png',
-            '_dist/img/pixel.jpg',
-            '_dist/img/HUD/bags/bag1.png',
-            '_dist/img/HUD/box.png',
-            '_dist/img/HUD/backWeapon.png',
-            '_dist/img/HUD/backArmor.png',
-            '_dist/img/HUD/backSpec.png',
-            '_dist/img/HUD/backFairy.png',
-            '_dist/img/HUD/backPlayerHUD.png',
-            '_dist/img/HUD/levelContent.png',
-            '_dist/img/HUD/backEquips.png',
-            '_dist/img/levels/leftTop.png',
-            '_dist/img/levels/rightTop.png',
-            '_dist/img/levels/leftBottom.png',
-            '_dist/img/levels/rightBottom.png',
-            '_dist/img/levels/tile1.png',
-            '_dist/img/weapons/weapons_spritesheet.json',
-            '_dist/img/spells/spells_spritesheet.json',
-            '_dist/img/potions/potions_spritesheet.json',
-            '_dist/img/relics/relics_spritesheet.json',
-            '_dist/img/armor/armor_spritesheet.json',
+            'dist/img/drop.png',
+            'dist/img/pixel.jpg',
+            'dist/img/HUD/bags/bag1.png',
+            'dist/img/HUD/box.png',
+            'dist/img/HUD/backWeapon.png',
+            'dist/img/HUD/backArmor.png',
+            'dist/img/HUD/backSpec.png',
+            'dist/img/HUD/backFairy.png',
+            'dist/img/HUD/backPlayerHUD.png',
+            'dist/img/HUD/levelContent.png',
+            'dist/img/HUD/backEquips.png',
+            'dist/img/levels/leftTop.png',
+            'dist/img/levels/rightTop.png',
+            'dist/img/levels/leftBottom.png',
+            'dist/img/levels/rightBottom.png',
+            'dist/img/levels/tile1.png',
+            'dist/img/weapons/weapons_spritesheet.json',
+            'dist/img/spells/spells_spritesheet.json',
+            'dist/img/potions/potions_spritesheet.json',
+            'dist/img/relics/relics_spritesheet.json',
+            'dist/img/armor/armor_spritesheet.json',
             this.playerModel.graphicsData.icoImg,
             this.playerModel.graphicsData.srcImg,
             this.playerModel.graphicsData.srcJson
@@ -172,14 +172,14 @@ var GameScreen = AbstractScreen.extend({
     },
     createHUD:function(){
 
-        
+
         // this.fog.build();
         this.barsContainer = new PIXI.DisplayObjectContainer();
         this.playerHUD = new PlayerHUD('player');
         this.playerHUD.setPosition(15, - this.playerHUD.getContent().height + 100);
         this.barsContainer.addChild(this.playerHUD.getContent());
-       
-        this.levelContent = new SimpleSprite('_dist/img/HUD/levelContent.png');
+
+        this.levelContent = new SimpleSprite('dist/img/HUD/levelContent.png');
         this.barsContainer.addChild(this.levelContent.getContent());
 
         this.humanityBar = new BarView(240,10, 100,100);
@@ -224,7 +224,7 @@ var GameScreen = AbstractScreen.extend({
         // this.equips[2] = APP.relicList[1];
 
         this.equipsContainer = new PIXI.DisplayObjectContainer();
-        this.backEquips = new SimpleSprite('_dist/img/HUD/backEquips.png');
+        this.backEquips = new SimpleSprite('dist/img/HUD/backEquips.png');
         this.backEquips.setPosition(-12,-14);
         this.equipsContainer.addChild(this.backEquips.getContent());
 
@@ -252,7 +252,7 @@ var GameScreen = AbstractScreen.extend({
         this.armorEquip.setPosition(73,4);
         this.armorEquip.addModel(this.equips[1]);
 
-        
+
 
         APP.getHUD().addChild(this.equipsContainer);
         this.equipsContainer.position.x = contentEquipPos.x;
@@ -272,13 +272,13 @@ var GameScreen = AbstractScreen.extend({
         var lineAccum = 0;
         var rowAccum = 0;
         var inventoryPosition = {x: (realWindowWidth / 2) - (46 * this.inventory.length) / 2 + 10, y:windowHeight - 50};
-       
+
         for (var i = 0; i < this.inventory.length; i++) {
             tempBox = new BoxHUD1(42,36, 3, i);
             tempBox.setPosition(rowAccum*46, lineAccum * 42);
             rowAccum ++;
             this.inventoryContainer.addChild(tempBox.getContent());
-           
+
             this.inventory[i] = tempBox;
         }
 
@@ -438,7 +438,7 @@ var GameScreen = AbstractScreen.extend({
                     }else{
                         APP.getHUDController().hideBagContent();
                     }
-                    
+
                 }
             }
         }
@@ -553,7 +553,7 @@ var GameScreen = AbstractScreen.extend({
                         this.currentNode.mapData[tilePositionUp.x][tilePositionUp.y].biome === 'OCEAN' && tempEntity.virtualVelocity.y < 0){
                         tempEntity.virtualVelocity.y = 0;
                     }
-                    
+
                     pass = this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] !== undefined && this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] !== undefined;
                     if(this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y] &&
                         this.currentNode.mapData[tilePositionRight.x][tilePositionRight.y].biome === 'OCEAN' && tempEntity.virtualVelocity.x > 0){
@@ -621,7 +621,7 @@ var GameScreen = AbstractScreen.extend({
             this.bgContainer.removeChildAt(0);
         }
         //seta o tamanho novamente, sempre
-        
+
         // console.log(this.tempSizeTiles, this.mapPosition);
         // this.levelBounds = {x: this.tempSizeTiles.x * APP.nTileSize - Math.floor(this.mapPosition.x*2), y: this.tempSizeTiles.y * APP.nTileSize - Math.floor(this.mapPosition.y*2)};
         var i = 0;
@@ -656,7 +656,7 @@ var GameScreen = AbstractScreen.extend({
         // this.bgContainer
 
         this.levelBounds= {x: this.currentNode.mapData.length * APP.nTileSize, y: this.currentNode.mapData[0].length * APP.nTileSize};
-        
+
 
 
         if(this.minimapHUD)

@@ -8,12 +8,12 @@ var BoxHUD1 = Class.extend({
 
 		this.width = width;
 		this.height = height;
-		this.background = new SimpleSprite('_dist/img/HUD/box.png');
-		this.backgroundOver = new SimpleSprite('_dist/img/HUD/boxGlow.png');
-		
+		this.background = new SimpleSprite('dist/img/HUD/box.png');
+		this.backgroundOver = new SimpleSprite('dist/img/HUD/boxGlow.png');
+
 		this.img = null;
 		this.infoImg = null;
-		
+
 		this.container.hitArea = new PIXI.Rectangle(0,0,width, height);
 
 		if(infoSide !== 0){
@@ -46,7 +46,7 @@ var BoxHUD1 = Class.extend({
 			this.infoContainer.alpha = 0;
 
 			if(id < 4){
-				this.shortcut = new SimpleSprite('_dist/img/HUD/topBox.png');
+				this.shortcut = new SimpleSprite('dist/img/HUD/topBox.png');
 				this.container.addChild(this.shortcut.getContent());
 				this.shortcut.getContent().position.x = 7;
 				this.shortcut.getContent().position.y = -14;
@@ -54,7 +54,7 @@ var BoxHUD1 = Class.extend({
 				this.setTextPos(20 , -13);
 			}
 
-			
+
 			this.container.addChild(this.infoContainer);
 			this.container.addChild(this.background.getContent());
 			this.container.addChild(this.backgroundOver.getContent());
@@ -179,7 +179,7 @@ var BoxHUD1 = Class.extend({
 				textTitle = model.label;
 				text = model.effect + addicionalLabel;
 				if(!this.quant){
-					this.quant = new SimpleSprite('_dist/img/HUD/quantBox.png');
+					this.quant = new SimpleSprite('dist/img/HUD/quantBox.png');
 					this.container.addChild(this.quant.getContent());
 					this.quant.getContent().position.x = -7;
 					this.quant.getContent().position.y = 24;

@@ -8,7 +8,7 @@ var HUDController = Class.extend({
 
 
 		this.bagContent = new PIXI.DisplayObjectContainer();
-        this.bagContentBackground = new SimpleSprite('_dist/img/HUD/bagContent.png');
+        this.bagContentBackground = new SimpleSprite('dist/img/HUD/bagContent.png');
         this.bagContent.addChild(this.bagContentBackground.getContent());
         this.bagContent.pivot.x = 35;
         this.bagContent.pivot.y = 59;
@@ -141,7 +141,7 @@ var HUDController = Class.extend({
 
 		this.currentBox = box;
 		this.currentModel = this.currentBox.model;
-		
+
 		if(!this.currentBox.infoImg){
 			return;
 		}

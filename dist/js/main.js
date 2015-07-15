@@ -1,4 +1,4 @@
-/*! jefframos 05-01-2015 */
+/*! jefframos 15-07-2015 */
 function rgbToHsl(r, g, b) {
     r /= 255, g /= 255, b /= 255;
     var h, s, max = Math.max(r, g, b), min = Math.min(r, g, b), l = (max + min) / 2;
@@ -244,7 +244,7 @@ var DungeonGenerator = Class.extend({
     setReadCallback: function(callback) {
         this.readCallback = callback;
     },
-    socketError: function() {
+    socketError: function(error) {
         this.trigger(SmartSocket.SOCKET_ERROR, obj);
     },
     setObj: function(obj) {
@@ -313,7 +313,7 @@ var Application = AbstractApplication.extend({
         this.playersList = [], this.monsterList = [], this.spellList = [], this.weaponList = [], 
         this.armorList = [], this.itemList = [], this.relicList = [], this.environmentList = [], 
         this._super();
-        var JSONToLoader = [ "_dist/img/relics/relics.JSON", "_dist/img/weapons/weapons.JSON", "_dist/img/spells/spells.JSON", "_dist/img/potions/potions.JSON", "_dist/img/enemies/enemies.JSON", "_dist/img/armor/armor.JSON", "_dist/img/flora/flora.JSON", "_dist/img/players/players.JSON" ];
+        var JSONToLoader = [ "dist/img/relics/relics.JSON", "dist/img/weapons/weapons.JSON", "dist/img/spells/spells.JSON", "dist/img/potions/potions.JSON", "dist/img/enemies/enemies.JSON", "dist/img/armor/armor.JSON", "dist/img/flora/flora.JSON", "dist/img/players/players.JSON" ];
         this.assetsLoader = new PIXI.AssetLoader(JSONToLoader);
         var self = this;
         this.assetsLoader.onComplete = function() {
@@ -329,44 +329,44 @@ var Application = AbstractApplication.extend({
         this.screenManager.change("Main");
     },
     onAssetsLoaded: function() {
-        var self = this, jsonLoaderEnvironment = new PIXI.JsonLoader("_dist/img/flora/flora.JSON");
+        var self = this, jsonLoaderEnvironment = new PIXI.JsonLoader("dist/img/flora/flora.JSON");
         jsonLoaderEnvironment.on("loaded", function(evt) {
             console.log("jsonLoaderEnvironment", evt.content.json);
             for (var i = 0; i < evt.content.json.itens.biomas.length; i++) self.environmentList.push(new EnvironmentModel(evt.content.json.itens.biomas[i].name, evt.content.json.itens.biomas[i].trees, evt.content.json.itens.biomas[i].colors, evt.content.json.itens.biomas[i].graphics)), 
             console.log("env", self.environmentList);
             self.updateLoad();
         }), jsonLoaderEnvironment.load();
-        var jsonLoaderPlayers = new PIXI.JsonLoader("_dist/img/players/players.JSON");
+        var jsonLoaderPlayers = new PIXI.JsonLoader("dist/img/players/players.JSON");
         jsonLoaderPlayers.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.playersList.push(new PlayerModel(evt.content.json.itens[i].name, evt.content.json.itens[i].label, evt.content.json.itens[i].stats, evt.content.json.itens[i].modifiers, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
             self.updateLoad();
         }), jsonLoaderPlayers.load();
-        var jsonLoaderMonsters = new PIXI.JsonLoader("_dist/img/enemies/enemies.JSON");
+        var jsonLoaderMonsters = new PIXI.JsonLoader("dist/img/enemies/enemies.JSON");
         jsonLoaderMonsters.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.monsterList.push(new MonsterModel(evt.content.json.itens[i].name, evt.content.json.itens[i].stats, evt.content.json.itens[i].fire, evt.content.json.itens[i].graphicsData, evt.content.json.itens[i].config));
             self.updateLoad();
         }), jsonLoaderMonsters.load();
-        var jsonLoaderRelics = new PIXI.JsonLoader("_dist/img/relics/relics.JSON");
+        var jsonLoaderRelics = new PIXI.JsonLoader("dist/img/relics/relics.JSON");
         jsonLoaderRelics.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.relicList.push(new RelicModel(evt.content.json.itens[i].name, evt.content.json.itens[i].status, evt.content.json.itens[i].baseValue, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg));
             self.updateLoad();
         }), jsonLoaderRelics.load();
-        var jsonLoaderArmor = new PIXI.JsonLoader("_dist/img/armor/armor.JSON");
+        var jsonLoaderArmor = new PIXI.JsonLoader("dist/img/armor/armor.JSON");
         jsonLoaderArmor.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.armorList.push(new ArmorModel(evt.content.json.itens[i].name, evt.content.json.itens[i].defenseArmor, evt.content.json.itens[i].magicDefenseArmor, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg));
             self.updateLoad();
         }), jsonLoaderArmor.load();
-        var jsonLoaderWeapon = new PIXI.JsonLoader("_dist/img/weapons/weapons.JSON");
+        var jsonLoaderWeapon = new PIXI.JsonLoader("dist/img/weapons/weapons.JSON");
         jsonLoaderWeapon.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.weaponList.push(new WeaponModel(evt.content.json.itens[i].name, evt.content.json.itens[i].battlePower, evt.content.json.itens[i].magicPower, evt.content.json.itens[i].hitRate, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg, evt.content.json.itens[i].srcImg));
             self.updateLoad();
         }), jsonLoaderWeapon.load();
-        var jsonLoaderSpell = new PIXI.JsonLoader("_dist/img/spells/spells.JSON");
+        var jsonLoaderSpell = new PIXI.JsonLoader("dist/img/spells/spells.JSON");
         jsonLoaderSpell.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.spellList.push(new SpellModel(evt.content.json.itens[i].level, evt.content.json.itens[i].name, evt.content.json.itens[i].mp, evt.content.json.itens[i].spellPower, evt.content.json.itens[i].icoImg, evt.content.json.itens[i].srcImg, evt.content.json.itens[i].isMultiple));
             self.updateLoad();
         }), jsonLoaderSpell.load();
-        var jsonLoaderPotion = new PIXI.JsonLoader("_dist/img/potions/potions.JSON");
+        var jsonLoaderPotion = new PIXI.JsonLoader("dist/img/potions/potions.JSON");
         jsonLoaderPotion.on("loaded", function(evt) {
             for (var i = 0; i < evt.content.json.itens.length; i++) self.itemList.push(new ItemModel(evt.content.json.itens[i].name, evt.content.json.itens[i].effect, evt.content.json.itens[i].baseValue, evt.content.json.itens[i].price, evt.content.json.itens[i].icoImg));
             self.updateLoad();
@@ -419,8 +419,8 @@ var Application = AbstractApplication.extend({
 }), BoxHUD1 = Class.extend({
     init: function(width, height, infoSide, id) {
         if (this.text = "default", this.type = "inventory", this.container = new PIXI.DisplayObjectContainer(), 
-        this.infoSide = infoSide, this.width = width, this.height = height, this.background = new SimpleSprite("_dist/img/HUD/box.png"), 
-        this.backgroundOver = new SimpleSprite("_dist/img/HUD/boxGlow.png"), this.img = null, 
+        this.infoSide = infoSide, this.width = width, this.height = height, this.background = new SimpleSprite("dist/img/HUD/box.png"), 
+        this.backgroundOver = new SimpleSprite("dist/img/HUD/boxGlow.png"), this.img = null, 
         this.infoImg = null, this.container.hitArea = new PIXI.Rectangle(0, 0, width, height), 
         0 !== infoSide) {
             this.infoContainer = new PIXI.DisplayObjectContainer(), this.backShapeInfo = new PIXI.Graphics(), 
@@ -429,20 +429,20 @@ var Application = AbstractApplication.extend({
             this.backShapeInfo.lineTo(0, 16), this.infoContainer.addChild(this.backShapeInfo), 
             this.infoContainer.pivot.x = 85, this.infoContainer.pivot.y = 85, 1 === infoSide ? this.infoContainer.position.x = -this.backShapeInfo.width : 2 === infoSide ? this.infoContainer.position.x = this.backShapeInfo.width : 3 === infoSide ? (this.infoContainer.position.y = -86 + this.infoContainer.pivot.y, 
             this.infoContainer.position.x = -62 + this.infoContainer.pivot.x) : 4 === infoSide && (this.infoContainer.position.y = this.backShapeInfo.height), 
-            this.infoContainer.alpha = 0, 4 > id && (this.shortcut = new SimpleSprite("_dist/img/HUD/topBox.png"), 
+            this.infoContainer.alpha = 0, 4 > id && (this.shortcut = new SimpleSprite("dist/img/HUD/topBox.png"), 
             this.container.addChild(this.shortcut.getContent()), this.shortcut.getContent().position.x = 7, 
             this.shortcut.getContent().position.y = -14, this.setText(id + 1), this.setTextPos(20, -13)), 
             this.container.addChild(this.infoContainer), this.container.addChild(this.background.getContent()), 
             this.container.addChild(this.backgroundOver.getContent()), this.backgroundOver.getContent().alpha = 0, 
             this.container.setInteractive(!0), this.model = null;
             var self = this;
-            this.container.mouseover = function() {
+            this.container.mouseover = function(mouseData) {
                 self.showInfo(), self.overState();
-            }, this.container.mouseout = function() {
+            }, this.container.mouseout = function(mouseData) {
                 self.hideInfo(), self.outState();
-            }, this.container.mouseup = function() {
+            }, this.container.mouseup = function(mouseData) {
                 APP.getHUDController().upThisBox(self);
-            }, this.container.mousedown = function() {
+            }, this.container.mousedown = function(mouseData) {
                 APP.getHUDController().dragInventory(self);
             };
         }
@@ -492,7 +492,7 @@ var Application = AbstractApplication.extend({
             var text = "";
             if (model && (textTitle = model.label), model instanceof WeaponModel) text = "PWR: +" + model.battlePower + "\nMPW: +" + model.magicPower; else if (model instanceof ArmorModel) text = "DEF: +" + model.defenseArmor + "\nMDF: +" + model.magicDefenseArmor; else if (model instanceof RelicModel) text = "STATUS: \n" + model.status; else if (model instanceof SpellModel) text = "MPW: " + model.spellPower + "\nMP: " + model.mp; else if (model instanceof ItemModel) {
                 var addicionalLabel = 0 !== model.baseValue ? "\n+ " + model.baseValue : "";
-                textTitle = model.label, text = model.effect + addicionalLabel, this.quant || (this.quant = new SimpleSprite("_dist/img/HUD/quantBox.png"), 
+                textTitle = model.label, text = model.effect + addicionalLabel, this.quant || (this.quant = new SimpleSprite("dist/img/HUD/quantBox.png"), 
                 this.container.addChild(this.quant.getContent()), this.quant.getContent().position.x = -7, 
                 this.quant.getContent().position.y = 24, this.setQuantText(model.quant), this.setQuantTextPos(-3, 26));
             }
@@ -564,8 +564,8 @@ var Application = AbstractApplication.extend({
 }), EquipsHUD = Class.extend({
     init: function(type) {
         this.type = type, this.container = new PIXI.DisplayObjectContainer();
-        var imgScr = "_dist/img/HUD/backWeapon.png";
-        "fairy" === this.type ? imgScr = "_dist/img/HUD/backFairy.png" : "relic" === this.type ? imgScr = "_dist/img/HUD/backSpec.png" : "armor" === this.type && (imgScr = "_dist/img/HUD/backArmor.png"), 
+        var imgScr = "dist/img/HUD/backWeapon.png";
+        "fairy" === this.type ? imgScr = "dist/img/HUD/backFairy.png" : "relic" === this.type ? imgScr = "dist/img/HUD/backSpec.png" : "armor" === this.type && (imgScr = "dist/img/HUD/backArmor.png"), 
         this.background = new SimpleSprite(imgScr), this.container.addChild(this.background.getContent()), 
         this.infoContainer = new PIXI.DisplayObjectContainer(), this.backShapeInfo = new PIXI.Graphics(), 
         this.backShapeInfo.lineStyle(4, 3793465), this.backShapeInfo.beginFill(1313571), 
@@ -578,13 +578,13 @@ var Application = AbstractApplication.extend({
         this.container.addChild(this.infoContainer), this.width = this.background.texture.width, 
         this.height = this.background.texture.height, this.container.setInteractive(!0);
         var self = this;
-        this.container.mouseover = function() {
+        this.container.mouseover = function(mouseData) {
             self.showInfo(), self.overState();
-        }, this.container.mouseout = function() {
+        }, this.container.mouseout = function(mouseData) {
             self.hideInfo(), self.outState();
-        }, this.container.mouseup = function() {
+        }, this.container.mouseup = function(mouseData) {
             APP.getHUDController().upEquipBox(self);
-        }, this.container.mousedown = function() {
+        }, this.container.mousedown = function(mouseData) {
             APP.getHUDController().dragInventory(self);
         };
     },
@@ -669,13 +669,13 @@ var Application = AbstractApplication.extend({
 }), HUDController = Class.extend({
     init: function(container, stage) {
         this.container = container, this.dragged = null, this.currentModel = null, this.stage = stage, 
-        this.bagContent = new PIXI.DisplayObjectContainer(), this.bagContentBackground = new SimpleSprite("_dist/img/HUD/bagContent.png"), 
+        this.bagContent = new PIXI.DisplayObjectContainer(), this.bagContentBackground = new SimpleSprite("dist/img/HUD/bagContent.png"), 
         this.bagContent.addChild(this.bagContentBackground.getContent()), this.bagContent.pivot.x = 35, 
         this.bagContent.pivot.y = 59, this.bagContent.alpha = 0, this.bagContent.position.x = windowWidth / 2 + 30, 
         this.bagContent.position.y = windowHeight / 2 - 25, this.bagContentImg = null, this.container.addChild(this.bagContent), 
         this.currentBag = null, this.bagContent.setInteractive(!0);
         var self = this;
-        this.bagContent.mousedown = function() {
+        this.bagContent.mousedown = function(mouseData) {
             if (self.currentBag) if (APP.getGame().addModelInventory(self.currentBag.model)) self.currentBag.model = null, 
             self.removeBag(); else {
                 console.log("inventory is full");
@@ -684,7 +684,7 @@ var Application = AbstractApplication.extend({
                 pop.setPosition(self.currentBag.getPosition().x - 50, self.currentBag.getPosition().y - 5 + 10 * Math.random()), 
                 pop.initMotion(-15 - 10 * Math.random(), .8);
             }
-        }, this.stage.stage.mouseup = function() {
+        }, this.stage.stage.mouseup = function(mouseData) {
             self.releaseInventory();
         };
     },
@@ -750,7 +750,7 @@ var Application = AbstractApplication.extend({
             }), this.container.addChild(this.dragged);
         }
     },
-    update: function() {
+    update: function(img) {
         this.dragged && (this.dragged.position.x = APP.getMousePos().x, this.dragged.position.y = APP.getMousePos().y);
     }
 }), LifeBarHUD = Class.extend({
@@ -857,7 +857,7 @@ var Application = AbstractApplication.extend({
     }
 }), MapHUD = Class.extend({
     init: function(img) {
-        this.width = 100, this.height = 100, img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : (this.background = new PIXI.Graphics(), 
+        this.width = 100, this.height = 100, img ? "string" == typeof img ? this.texture = new PIXI.Texture.fromImage(img) : this.texture = img : (this.background = new PIXI.Graphics(), 
         this.background.beginFill(displayColors.OCEAN), this.background.drawRect(-15, -15, this.width + 30, this.height + 30), 
         this.background.endFill()), this.mask = new PIXI.Graphics(), this.container = new PIXI.DisplayObjectContainer(), 
         this.mapContainer = new PIXI.DisplayObjectContainer(), this.container.addChild(this.background), 
@@ -870,7 +870,7 @@ var Application = AbstractApplication.extend({
     build: function(node) {
         this.node = node;
         var tempMapContainer = new PIXI.DisplayObjectContainer(), tempRect = null;
-        for (i = 0; i < node.mapDataLayer1.length; i++) for (j = 0; j < node.mapDataLayer1[i].length; j++) tempRect = new SimpleSprite("_dist/img/pixel.jpg"), 
+        for (i = 0; i < node.mapDataLayer1.length; i++) for (j = 0; j < node.mapDataLayer1[i].length; j++) tempRect = new SimpleSprite("dist/img/pixel.jpg"), 
         tempRect.setPosition(i, j), tempMapContainer.addChild(tempRect.getContent()), tempRect.getContent().tint = displayColors[node.mapDataLayer1[i][j].biome];
         tempMapContainer.scale.x = this.sizeTile.x, tempMapContainer.scale.y = this.sizeTile.y, 
         this.mapContainer.addChild(tempMapContainer), tempMapContainer.cacheAsBitmap = !0, 
@@ -933,7 +933,7 @@ var Application = AbstractApplication.extend({
     }
 }), Minimap = Class.extend({
     init: function(img) {
-        img ? this.texture = "string" == typeof img ? new PIXI.Texture.fromImage(img) : img : this.background = new PIXI.Graphics(), 
+        img ? "string" == typeof img ? this.texture = new PIXI.Texture.fromImage(img) : this.texture = img : this.background = new PIXI.Graphics(), 
         this.container = new PIXI.DisplayObjectContainer(), this.container.addChild(this.background), 
         this.arrayRooms = [], this.margin = {
             x: 20,
@@ -949,7 +949,7 @@ var Application = AbstractApplication.extend({
     build: function() {
         for (var minX = 9999, minY = 9999, maxX = -9999, maxY = -9999, tempX = 0, tempY = 0, j = 0; j < APP.gen.rooms.length; j++) for (var item = APP.gen.rooms[j], i = 0; i < item.length; i++) if (item[i].id > 0) {
             var tempRoomView = new PIXI.Graphics();
-            tempRoomView.beginFill(1 === item[i].mode ? 5428328 : 2 === item[i].mode ? 11447982 : 3 === item[i].mode ? 16239929 : 4 === item[i].mode ? 16202041 : 5 === item[i].mode ? 2171169 : 6 === item[i].mode ? 13324996 : 16777215), 
+            1 === item[i].mode ? tempRoomView.beginFill(5428328) : 2 === item[i].mode ? tempRoomView.beginFill(11447982) : 3 === item[i].mode ? tempRoomView.beginFill(16239929) : 4 === item[i].mode ? tempRoomView.beginFill(16202041) : 5 === item[i].mode ? tempRoomView.beginFill(2171169) : 6 === item[i].mode ? tempRoomView.beginFill(13324996) : tempRoomView.beginFill(16777215), 
             tempRoomView.lineStyle(1, 3355443, 1), tempX = item[i].position[1] * this.sizeTile.x, 
             tempY = item[i].position[0] * this.sizeTile.y, tempRoomView.position.x = tempX, 
             tempRoomView.position.y = tempY, tempRoomView.drawRect(0, 0, this.sizeGraph.x, this.sizeGraph.y), 
@@ -971,7 +971,7 @@ var Application = AbstractApplication.extend({
 }), PlayerHUD = Class.extend({
     init: function(type) {
         this.type = type, this.container = new PIXI.DisplayObjectContainer();
-        var imgScr = "_dist/img/HUD/backPlayerHUD.png";
+        var imgScr = "dist/img/HUD/backPlayerHUD.png";
         this.background = new SimpleSprite(imgScr), this.container.addChild(this.background.getContent()), 
         this.infoContainer = new PIXI.DisplayObjectContainer(), this.backShapeInfo = new PIXI.Graphics(), 
         this.backShapeInfo.lineStyle(4, 3793465), this.backShapeInfo.beginFill(1313571), 
@@ -984,9 +984,9 @@ var Application = AbstractApplication.extend({
         this.container.addChild(this.infoContainer), this.backShapeInfo.scale.x = -1, this.width = this.background.texture.width, 
         this.height = this.background.texture.height, this.container.setInteractive(!0);
         var self = this;
-        this.container.mouseover = function() {
+        this.container.mouseover = function(mouseData) {
             self.showInfo(), self.overState();
-        }, this.container.mouseout = function() {
+        }, this.container.mouseout = function(mouseData) {
             self.hideInfo(), self.outState();
         };
     },
@@ -1125,7 +1125,7 @@ var Application = AbstractApplication.extend({
         this.debugGraphic.endFill());
     },
     build: function() {
-        this._super("_dist/img/cubo.png");
+        this._super("dist/img/cubo.png");
     },
     update: function() {
         this._super(), this.getBounds();
@@ -1210,7 +1210,7 @@ var Application = AbstractApplication.extend({
 }), Fairy = Entity.extend({
     init: function(player) {
         this._super(), this.updateable = !0, this.collidable = !1, this.player = player, 
-        this.srcImg = "_dist/img/fairy/f1.png", this.type = "fairy", this.width = 25, this.height = 25, 
+        this.srcImg = "dist/img/fairy/f1.png", this.type = "fairy", this.width = 25, this.height = 25, 
         this.bounceAcc = 0, this.bounceAccMax = 30, this.velYHelper = 1, this.fairyContainer = new PIXI.DisplayObjectContainer(), 
         this.range = 0, this.fairyAngle = 0, this.noDepth = !0;
     },
@@ -1266,7 +1266,7 @@ var Application = AbstractApplication.extend({
         this._super(!0), this.updateable = !1, this.deading = !1, this.range = 40, this.width = 1, 
         this.height = 1, this.type = "fire", this.target = "enemy", this.fireType = "physical", 
         this.node = null, this.velocity.x = vel.x, this.velocity.y = vel.y, this.timeLive = 10, 
-        this.power = 1, this.defaultVelocity = 1, this.imgSource = "_dist/img/spells/fire1.png";
+        this.power = 1, this.defaultVelocity = 1, this.imgSource = "dist/img/spells/fire1.png";
     },
     getBounds: function() {
         return this.bounds = {
@@ -1356,7 +1356,7 @@ var Application = AbstractApplication.extend({
     hurt: function(power) {
         console.log("hurt"), this.life -= power, this.life <= 0 && this.preKill();
     },
-    collide: function() {
+    collide: function(arrayCollide) {
         console.log("this.node", this.node), console.log("col enemy");
     },
     getBounds: function() {
@@ -1487,7 +1487,7 @@ var Application = AbstractApplication.extend({
         if (-1 !== this.state) {
             this.getContent().tint = 16777215;
             var self = this;
-            -1 !== self.state && (self.texture.destroy(), self.sprite.setTexture(PIXI.Texture.fromImage("_dist/img/flora/florest1/treeEvil.png")), 
+            -1 !== self.state && (self.texture.destroy(), self.sprite.setTexture(PIXI.Texture.fromImage("dist/img/flora/florest1/treeEvil.png")), 
             self.getContent().scale.x = .95, self.getContent().scale.y = .95, TweenLite.to(self.getContent().scale, .5, {
                 x: 1,
                 y: 1,
@@ -1560,7 +1560,7 @@ var Application = AbstractApplication.extend({
         if (-1 !== this.state) {
             this.getContent().tint = 16777215;
             var self = this;
-            -1 !== self.state && (self.texture.destroy(), self.sprite.setTexture(PIXI.Texture.fromImage("_dist/img/flora/florest1/treeEvil.png")), 
+            -1 !== self.state && (self.texture.destroy(), self.sprite.setTexture(PIXI.Texture.fromImage("dist/img/flora/florest1/treeEvil.png")), 
             self.getContent().scale.x = .95, self.getContent().scale.y = .95, TweenLite.to(self.getContent().scale, .5, {
                 x: 1,
                 y: 1,
@@ -1694,7 +1694,7 @@ var Application = AbstractApplication.extend({
         this.mouseAngle = Math.atan2(windowHeight / 2 - APP.getMousePos().y + this.centerPosition.y, windowWidth / 2 - APP.getMousePos().x + this.centerPosition.x);
         var motion = "side";
         this.mouseAngle = this.mouseAngle / Math.PI * 180 + 180, this.mouseAngle > 45 && this.mouseAngle < 135 ? motion = "down" : this.mouseAngle > 225 && this.mouseAngle < 315 && (motion = "up"), 
-        "side" === motion && (this.spritesheet.scale.x = APP.getMousePos().x < windowWidth / 2 + this.centerPosition.x ? 1 : -1), 
+        "side" === motion && (APP.getMousePos().x < windowWidth / 2 + this.centerPosition.x ? this.spritesheet.scale.x = 1 : this.spritesheet.scale.x = -1), 
         this.velocity.y + this.velocity.x !== 0 ? this.spritesheet.play(motion) : "side" === motion ? this.spritesheet.play("idleSide") : "up" === motion ? this.spritesheet.play("idleUp") : "down" === motion && this.spritesheet.play("idleDown"), 
         this.returnCollider > 0 && this.returnCollider--, this.deading && this.setVelocity(0, 0), 
         this.getTexture() && this.playerModel.graphicsData.positionSprite && (this.playerModel.graphicsData.positionSprite.x && (this.getContent().position.x = this.playerModel.graphicsData.positionSprite.x), 
@@ -1829,7 +1829,7 @@ var Application = AbstractApplication.extend({
 }), Bag = Entity.extend({
     init: function(model, player) {
         this._super(!0), this.updateable = !0, this.colidable = !1, this.range = 50, this.type = "bag", 
-        this.model = model, this.player = player, this.imgSource = "_dist/img/HUD/bags/bag1.png", 
+        this.model = model, this.player = player, this.imgSource = "dist/img/HUD/bags/bag1.png", 
         this.isShow = !1;
     },
     update: function() {},
@@ -2064,7 +2064,7 @@ var Application = AbstractApplication.extend({
         this.speed = stats.speed, this.magicPower = stats.magicPower, this.battlePower = stats.battlePower, 
         this.defense = stats.defense, this.magicDefense = stats.magicDefense, this.stamina = stats.stamina, 
         this.critialChance = 0, this.speedStatus = "normal", this.fire.type ? this.attackType = this.fire.type : (this.attackType = "physical", 
-        stats.magicPower > stats.battlePower && (this.attackType = "magical")), this.xp = stats.xp > 0 ? stats.xp : 100, 
+        stats.magicPower > stats.battlePower && (this.attackType = "magical")), stats.xp > 0 ? this.xp = stats.xp : this.xp = 100, 
         this.spellPower = 9, this.speedModifier = .005, this.magicPowerModifier = .004, 
         this.battlePowerModifier = .005, this.defenseModifier = .004, this.magicDefenseModifier = .004, 
         this.baseHPModifier = 1.62, this.staminaModifier = .008, this.updateLevel(stats.level);
@@ -2105,7 +2105,7 @@ var Application = AbstractApplication.extend({
 }), PlayerModel = Class.extend({
     init: function(name, label, stats, modifiers, graphicsData, config) {
         this.level = 1, this.name = name, this.label = label, this.stats = stats, this.modifiers = modifiers, 
-        this.graphicsData = graphicsData, this.confi = config, this.playerClass = name ? name : "warrior", 
+        this.graphicsData = graphicsData, this.confi = config, name ? this.playerClass = name : this.playerClass = "warrior", 
         this.vigor = this.stats.vigor, this.speed = this.stats.speed, this.stamina = this.stats.stamina, 
         this.magicPower = this.stats.magicPower, this.battlePower = this.stats.battlePower, 
         this.defense = this.stats.defense, this.magicDefense = this.stats.magicDefense, 
@@ -2224,13 +2224,13 @@ var Application = AbstractApplication.extend({
         this.hitRate = hitRate, this.price = price, this.srcImg = srcImg, this.icoImg = icoImg, 
         this.type = "weapon", this.type2 = "equip";
     }
-}), displayColors = {}, arrayThrees = [ [ "_dist/img/flora/florest1/tree1.png", "_dist/img/flora/florest1/tree2.png", "_dist/img/flora/florest1/tree3.png", "_dist/img/flora/florest1/tree4.png" ], [ "_dist/img/flora/florest1/treeEvil.png" ] ], arrayRocks = [ [ "_dist/img/flora/florest1/rock1.png", "_dist/img/flora/florest1/rock2.png", "_dist/img/flora/florest1/rock3.png" ] ], tilesGraphics = {
-    TOP_LEFT: "_dist/img/levels/leftTop.png",
-    TOP_RIGHT: "_dist/img/levels/rightTop.png",
-    BOTTOM_LEFT: "_dist/img/levels/leftBottom.png",
-    BOTTOM_RIGHT: "_dist/img/levels/rightBottom.png",
-    CENTER: "_dist/img/levels/tile1.png",
-    BASE1: "_dist/img/levels/base1.png"
+}), displayColors = {}, arrayThrees = [ [ "dist/img/flora/florest1/tree1.png", "dist/img/flora/florest1/tree2.png", "dist/img/flora/florest1/tree3.png", "dist/img/flora/florest1/tree4.png" ], [ "dist/img/flora/florest1/treeEvil.png" ] ], arrayRocks = [ [ "dist/img/flora/florest1/rock1.png", "dist/img/flora/florest1/rock2.png", "dist/img/flora/florest1/rock3.png" ] ], tilesGraphics = {
+    TOP_LEFT: "dist/img/levels/leftTop.png",
+    TOP_RIGHT: "dist/img/levels/rightTop.png",
+    BOTTOM_LEFT: "dist/img/levels/leftBottom.png",
+    BOTTOM_RIGHT: "dist/img/levels/rightBottom.png",
+    CENTER: "dist/img/levels/tile1.png",
+    BASE1: "dist/img/levels/base1.png"
 }, LevelGenerator = Class.extend({
     init: function(parent) {
         this.parent = parent, this.tileDesigner = new TileDesigner(), this.nonPlaceObstaclesBiomes = [ "OCEAN", "BEACH", "LAKE", "ISLAND1", "ISLAND2", "ISLAND3", "ROAD1" ], 
@@ -2328,10 +2328,10 @@ var Application = AbstractApplication.extend({
             if (ix = Math.floor(this.map.centers[i].point.y / APP.nTileSize), jy = Math.floor(this.map.centers[i].point.x / APP.nTileSize), 
             this.parent.currentNode.placedTiles[jy][ix] = null, this.parent.currentNode.placedTilesLayer1[jy][ix] = null, 
             this.parent.currentNode.placedTilesLayer2[jy][ix] = null, this.parent.currentNode.placedTilesLayer3[jy][ix] = null, 
-            this.parent.currentNode.mapData[jy][ix] = "BEACH" === this.map.centers[i].biome || "OCEAN" === this.map.centers[i].biome ? {
+            "BEACH" === this.map.centers[i].biome || "OCEAN" === this.map.centers[i].biome ? this.parent.currentNode.mapData[jy][ix] = {
                 biome: this.map.centers[i].biome,
                 tile: "CENTER"
-            } : {
+            } : this.parent.currentNode.mapData[jy][ix] = {
                 biome: "BASE",
                 tile: "CENTER"
             }, "BEACH" === this.map.centers[i].biome) this.parent.currentNode.mapDataLayer1[jy][ix] = {
@@ -2451,7 +2451,7 @@ var Application = AbstractApplication.extend({
         this.parent = parent;
     },
     roundTilesBaseIslandColors: function(data) {
-        for (var i = data.length - 1; i >= 0; i--) for (var j = data[i].length - 1; j >= 0; j--) void 0 !== data[i][j].biome && (data[i][j].biome = "TOP_LEFT" === data[i][j].tile ? "ISLAND1" : "TOP_RIGHT" === data[i][j].tile ? "ISLAND3" : "ISLAND2");
+        for (var i = data.length - 1; i >= 0; i--) for (var j = data[i].length - 1; j >= 0; j--) void 0 !== data[i][j].biome && ("TOP_LEFT" === data[i][j].tile ? data[i][j].biome = "ISLAND1" : "TOP_RIGHT" === data[i][j].tile ? data[i][j].biome = "ISLAND3" : data[i][j].biome = "ISLAND2");
         this.improveColors(data, "ISLAND2"), this.improveColors(data, "ISLAND1"), this.improveColors(data, "ISLAND3");
     },
     improveColors: function(data, type) {
@@ -2538,7 +2538,7 @@ var Application = AbstractApplication.extend({
 }), RainParticle = Class.extend({
     init: function(fallSpeed, windSpeed, hArea, vArea, dir) {
         this.fallSpeed = fallSpeed, this.windSpeed = windSpeed, this.dir = dir, this.hArea = hArea, 
-        this.vArea = vArea, this.texture = new PIXI.Texture.fromImage("_dist/img/drop.png"), 
+        this.vArea = vArea, this.texture = new PIXI.Texture.fromImage("dist/img/drop.png"), 
         this.content = new PIXI.Sprite(this.texture), this.content.position.x = Math.random() * hArea, 
         this.content.position.y = Math.random() * vArea, this.gambAccum = 0;
     },
@@ -2584,7 +2584,7 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var assetsToLoader = [ "_dist/img/drop.png", "_dist/img/pixel.jpg", "_dist/img/HUD/bags/bag1.png", "_dist/img/HUD/box.png", "_dist/img/HUD/backWeapon.png", "_dist/img/HUD/backArmor.png", "_dist/img/HUD/backSpec.png", "_dist/img/HUD/backFairy.png", "_dist/img/HUD/backPlayerHUD.png", "_dist/img/HUD/levelContent.png", "_dist/img/HUD/backEquips.png", "_dist/img/levels/leftTop.png", "_dist/img/levels/rightTop.png", "_dist/img/levels/leftBottom.png", "_dist/img/levels/rightBottom.png", "_dist/img/levels/tile1.png", "_dist/img/weapons/weapons_spritesheet.json", "_dist/img/spells/spells_spritesheet.json", "_dist/img/potions/potions_spritesheet.json", "_dist/img/relics/relics_spritesheet.json", "_dist/img/armor/armor_spritesheet.json", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ], i = 0;
+        var assetsToLoader = [ "dist/img/drop.png", "dist/img/pixel.jpg", "dist/img/HUD/bags/bag1.png", "dist/img/HUD/box.png", "dist/img/HUD/backWeapon.png", "dist/img/HUD/backArmor.png", "dist/img/HUD/backSpec.png", "dist/img/HUD/backFairy.png", "dist/img/HUD/backPlayerHUD.png", "dist/img/HUD/levelContent.png", "dist/img/HUD/backEquips.png", "dist/img/levels/leftTop.png", "dist/img/levels/rightTop.png", "dist/img/levels/leftBottom.png", "dist/img/levels/rightBottom.png", "dist/img/levels/tile1.png", "dist/img/weapons/weapons_spritesheet.json", "dist/img/spells/spells_spritesheet.json", "dist/img/potions/potions_spritesheet.json", "dist/img/relics/relics_spritesheet.json", "dist/img/armor/armor_spritesheet.json", this.playerModel.graphicsData.icoImg, this.playerModel.graphicsData.srcImg, this.playerModel.graphicsData.srcJson ], i = 0;
         for (console.log("list", APP.environmentList), i = APP.environmentList.length - 1; i >= 0; i--) console.log("list - ", i, APP.environmentList[i]), 
         assetsToLoader.push(APP.environmentList[i].graphics);
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad(), this.equips = [ null, null, null ];
@@ -2610,7 +2610,7 @@ var Application = AbstractApplication.extend({
     createHUD: function() {
         this.barsContainer = new PIXI.DisplayObjectContainer(), this.playerHUD = new PlayerHUD("player"), 
         this.playerHUD.setPosition(15, -this.playerHUD.getContent().height + 100), this.barsContainer.addChild(this.playerHUD.getContent()), 
-        this.levelContent = new SimpleSprite("_dist/img/HUD/levelContent.png"), this.barsContainer.addChild(this.levelContent.getContent()), 
+        this.levelContent = new SimpleSprite("dist/img/HUD/levelContent.png"), this.barsContainer.addChild(this.levelContent.getContent()), 
         this.humanityBar = new BarView(240, 10, 100, 100), this.humanityBar.setFrontColor(11359623), 
         this.humanityBar.setBackColor(16745728), this.humanityBar.setPosition(windowWidth / 2 - this.humanityBar.width / 2, 20), 
         this.humanityBar.updateBar(50, 100), APP.getHUD().addChild(this.humanityBar.getContent()), 
@@ -2630,7 +2630,7 @@ var Application = AbstractApplication.extend({
         this.barsContainer.position.y = 100, this.barsContainer.rotation = degreesToRadians(-5), 
         this.barsContainer.scale.x = .7, this.barsContainer.scale.y = .7, APP.getHUD().addChild(this.barsContainer), 
         this.equips[0] = APP.weaponList[0], this.equips[1] = APP.armorList[0], this.equipsContainer = new PIXI.DisplayObjectContainer(), 
-        this.backEquips = new SimpleSprite("_dist/img/HUD/backEquips.png"), this.backEquips.setPosition(-12, -14), 
+        this.backEquips = new SimpleSprite("dist/img/HUD/backEquips.png"), this.backEquips.setPosition(-12, -14), 
         this.equipsContainer.addChild(this.backEquips.getContent());
         var contentEquipPos = {
             x: windowWidth - 110,
@@ -2722,7 +2722,7 @@ var Application = AbstractApplication.extend({
     updateHUD: function() {
         this.HPView.updateBar(Math.floor(this.playerModel.hp), Math.floor(this.playerModel.hpMax)), 
         this.HPView.setText(Math.floor(this.playerModel.hp) + "/ " + Math.floor(this.playerModel.hpMax)), 
-        this.levelLabel.setText(this.playerModel.level < 10 ? " " + this.playerModel.level : this.playerModel.level), 
+        this.playerModel.level < 10 ? this.levelLabel.setText(" " + this.playerModel.level) : this.levelLabel.setText(this.playerModel.level), 
         this.MPView.updateBar(Math.floor(this.playerModel.mp), Math.floor(this.playerModel.mpMax)), 
         this.MPView.setText(Math.floor(this.playerModel.mp) + "/ " + Math.floor(this.playerModel.mpMax));
         var tempXP = Math.floor(this.playerModel.xp) - Math.floor(this.playerModel.toBeforeLevel), tempNext = Math.floor(this.playerModel.toNextLevel) - Math.floor(this.playerModel.toBeforeLevel);
@@ -2788,7 +2788,7 @@ var Application = AbstractApplication.extend({
             this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y] && "OCEAN" === this.currentNode.mapData[tilePositionLeft.x][tilePositionLeft.y].biome && tempEntity.virtualVelocity.x < 0 && (tempEntity.virtualVelocity.x = 0);
         }
     },
-    killLevel: function() {
+    killLevel: function(callback) {
         var self = this;
         this.playerReady = !1;
         for (var k = this.entityLayer.childs.length - 1; k >= 0; k--) this.entityLayer.childs[k].preKill();
@@ -2828,10 +2828,10 @@ var Application = AbstractApplication.extend({
         this.bgContainer.addChild(this.currentNode.bgLayer2), this.bgContainer.addChild(this.currentNode.bgLayer3)) : (this.marginTiles = {
             x: Math.floor(this.mapPosition.x / APP.nTileSize) + sizeHelper,
             y: Math.floor(this.mapPosition.y / APP.nTileSize) + sizeHelper
-        }, this.tempSizeTiles = 1 === this.currentNode.mode ? {
+        }, 1 === this.currentNode.mode ? this.tempSizeTiles = {
             x: Math.floor(windowWidth / APP.nTileSize) + this.marginTiles.x,
             y: Math.floor(windowHeight / APP.nTileSize) + this.marginTiles.y
-        } : {
+        } : this.tempSizeTiles = {
             x: 100 + this.marginTiles.x + Math.floor(15 * this.currentNode.getNextFloat()),
             y: 120 + this.marginTiles.y + Math.floor(15 * this.currentNode.getNextFloat())
         }, this.currentNode.bg = this.levelGenerator.createRoom(), this.bgContainer.addChild(this.currentNode.backLayer), 
@@ -2882,12 +2882,12 @@ var Application = AbstractApplication.extend({
     },
     build: function() {
         this._super();
-        var bg = new SimpleSprite("_dist/img/bg.png");
+        var bg = new SimpleSprite("dist/img/bg.png");
         this.addChild(bg), this.name = new PIXI.Text("Aguardando mobile entrar", {
             fill: "black",
             align: "center"
         });
-        var assetsToLoader = [ "_dist/img/qrcode.png" ];
+        var assetsToLoader = [ "dist/img/qrcode.png" ];
         this.loader = new PIXI.AssetLoader(assetsToLoader), this.initLoad();
     },
     onAssetsLoaded: function() {
@@ -2929,9 +2929,9 @@ var Application = AbstractApplication.extend({
 }), InputManager = Class.extend({
     init: function(parent) {
         var game = parent, self = this;
-        this.vecPositions = [], document.body.addEventListener("mouseup", function() {
+        this.vecPositions = [], document.body.addEventListener("mouseup", function(e) {
             game.player && (game.mouseDown = !1);
-        }), document.body.addEventListener("mousedown", function() {
+        }), document.body.addEventListener("mousedown", function(e) {
             game.player && APP.getMousePos().x < windowWidth && APP.getMousePos().y < windowHeight - 70 && (game.mouseDown = !0);
         }), document.body.addEventListener("keyup", function(e) {
             if (game.player) {

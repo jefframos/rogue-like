@@ -69,7 +69,7 @@ var Obstacle = Entity.extend({
         if(this.state === -1){
             return;
         }
-        
+
         this.getContent().tint = 0xFFFFFF;
 
         var self = this;
@@ -78,18 +78,18 @@ var Obstacle = Entity.extend({
             return;
         }
         self.texture.destroy();
-        self.sprite.setTexture(PIXI.Texture.fromImage('_dist/img/flora/florest1/treeEvil.png'));// = new PIXI.Sprite(self.texture);
+        self.sprite.setTexture(PIXI.Texture.fromImage('dist/img/flora/florest1/treeEvil.png'));// = new PIXI.Sprite(self.texture);
         self.getContent().scale.x = 0.95;
         self.getContent().scale.y = 0.95;
         TweenLite.to(self.getContent().scale, 0.5, {x:1, y:1, ease:'easeOutElastic'});
         self.state = -1;
         // },200);
-        
+
         //this.sprite.anchor.x = 0.5;
         //this.sprite.anchor.y = 0.5;
     },
     update: function(){
-        
+
         this._super();
 
         if(this.currentMadness !== APP.getMadness()){

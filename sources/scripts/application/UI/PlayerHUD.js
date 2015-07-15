@@ -3,7 +3,7 @@ var PlayerHUD = Class.extend({
 	init: function (type){
 		this.type = type;
 		this.container = new PIXI.DisplayObjectContainer();
-		var imgScr = '_dist/img/HUD/backPlayerHUD.png';
+		var imgScr = 'dist/img/HUD/backPlayerHUD.png';
 		this.background = new SimpleSprite(imgScr);
 		this.container.addChild(this.background.getContent());
 
@@ -38,7 +38,7 @@ var PlayerHUD = Class.extend({
 		this.infoContainer.position.x = 530;//-165 + this.infoContainer.pivot.x;
 		this.infoContainer.position.y = this.infoContainer.pivot.y;
 		this.infoContainer.alpha = 0;
-		
+
 		this.container.addChild(this.infoContainer);
 
 
@@ -193,7 +193,7 @@ var PlayerHUD = Class.extend({
 		this.img.getContent().anchor.y = 0.5;
 		// TweenLite.to(this.img.getContent().scale, 0.4, {x: 0.8, y: 0.8, ease:'easeOutBack'});
 		var posCorrection = {x:0, y:10};
-		
+
 		// console.log(this.background);
 		this.img.setPosition((this.width / 2) + posCorrection.x,
 		(this.height / 2) + posCorrection.y);

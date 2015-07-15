@@ -16,13 +16,13 @@ var Fire = Entity.extend({
         this.timeLive = 10;
         this.power = 1;
         this.defaultVelocity = 1;
-        this.imgSource = '_dist/img/spells/fire1.png';
+        this.imgSource = 'dist/img/spells/fire1.png';
 
     },
     getBounds: function(){
         this.bounds = {x: this.getPosition().x-this.width/2, y: this.getPosition().y-this.height/2, w: this.width, h: this.height};
         this.centerPosition = {x:this.width/2, y:this.height/2};
-        
+
         this.collisionPoints = {
             up:{x:this.bounds.x + this.bounds.w / 2, y:this.bounds.y},
             down:{x:this.bounds.x + this.bounds.w / 2, y:this.bounds.y + this.bounds.h},
@@ -116,7 +116,7 @@ var Fire = Entity.extend({
                 this.preKill();
                 //}
                 arrayCollide[0].hurt(this.power, this.fireType);
-                
+
             }
         }
     },
@@ -129,7 +129,7 @@ var Fire = Entity.extend({
             this.getContent().tint = 0xff0000;
 
             TweenLite.to(this.getContent().scale, 0.3, {x:0.2, y:0.2, onComplete:function(){self.kill = true;}});
-            
+
             if(this.debugGraphic.parent){
                 this.debugGraphic.parent.removeChild(this.debugGraphic);
             }

@@ -3,15 +3,15 @@ var EquipsHUD = Class.extend({
 	init: function (type){
 		this.type = type;
 		this.container = new PIXI.DisplayObjectContainer();
-		var imgScr = '_dist/img/HUD/backWeapon.png';
+		var imgScr = 'dist/img/HUD/backWeapon.png';
 		if(this.type === 'fairy'){
-			imgScr = '_dist/img/HUD/backFairy.png';
+			imgScr = 'dist/img/HUD/backFairy.png';
 		}
 		else if(this.type === 'relic'){
-			imgScr = '_dist/img/HUD/backSpec.png';
+			imgScr = 'dist/img/HUD/backSpec.png';
 		}
 		else if(this.type === 'armor'){
-			imgScr = '_dist/img/HUD/backArmor.png';
+			imgScr = 'dist/img/HUD/backArmor.png';
 		}
 		this.background = new SimpleSprite(imgScr);
 		this.container.addChild(this.background.getContent());
@@ -46,7 +46,7 @@ var EquipsHUD = Class.extend({
 		this.infoContainer.position.x = -75 + this.infoContainer.pivot.x;
 		this.infoContainer.position.y = 75 + this.infoContainer.pivot.y;
 		this.infoContainer.alpha = 0;
-		
+
 		this.container.addChild(this.infoContainer);
 
 

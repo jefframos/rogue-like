@@ -19,7 +19,7 @@ var MapHUD = Class.extend({
 		}
 
 		this.mask = new PIXI.Graphics();
-		
+
 
 		this.container = new PIXI.DisplayObjectContainer();
 		this.mapContainer = new PIXI.DisplayObjectContainer();
@@ -70,7 +70,7 @@ var MapHUD = Class.extend({
 		// {
 		// 	this.container.removeChildAt(0);
 		// }
-		
+
 		var tempMapContainer = new PIXI.DisplayObjectContainer();
 		var tempRect = null;
 		// this.miniPlayer.beginFill(0xFF0000);
@@ -78,7 +78,7 @@ var MapHUD = Class.extend({
 		for (i = 0; i < node.mapDataLayer1.length; i++) {
 
 			for (j = 0; j < node.mapDataLayer1[i].length; j++) {
-				tempRect = new SimpleSprite('_dist/img/pixel.jpg');
+				tempRect = new SimpleSprite('dist/img/pixel.jpg');
 				tempRect.setPosition(i,j);
 				tempMapContainer.addChild(tempRect.getContent());
 				tempRect.getContent().tint = displayColors[node.mapDataLayer1[i][j].biome];
@@ -100,7 +100,7 @@ var MapHUD = Class.extend({
 
 		var bottomEdge = {x:this.width/1.3 + Math.random()*10 ,y:this.height + Math.random()*10};
 		this.mask.lineTo(bottomEdge.x,bottomEdge.y);
-		
+
 
 		var leftBottomEdge = {x:this.width/2.8 + Math.random()*10 ,y:this.height/1.1 + Math.random()*10};
 		this.mask.lineTo(leftBottomEdge.x,leftBottomEdge.y);
@@ -177,7 +177,7 @@ var MapHUD = Class.extend({
 		this.player.rotation = this.mouseAngle;
 		this.mapContainer.position.x = -(playerPos.x * this.sizeTile.x) + this.width/2;// + (this.node.mapDataLayer1.length  * this.sizeTile.x) /2;
 		this.mapContainer.position.y = -(playerPos.y * this.sizeTile.y) + this.height/2;// + (this.node.mapDataLayer1[0].length  * this.sizeTile.y) /2;
-		
+
 	},
 	getContent:function(){
 		return this.container;

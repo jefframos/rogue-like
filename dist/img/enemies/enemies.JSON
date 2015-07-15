@@ -15,21 +15,21 @@
                 "xp":20
             },
             "fire":{
-                "srcImg":"_dist/img/enemies/bullets/RedFire.PNG",
+                "srcImg":"dist/img/enemies/bullets/RedFire.PNG",
                 "quant":5,
                 "type":"physical",
                 "mode":"arround",
                 "lifeTime":50,
                 "speed":5,
-                "fireFreq": 100                
+                "fireFreq": 100
             },
             "graphicsData":{
-                "icoImg":"_dist/img/weapons/Sumo Master.png",
-                "srcImg":"_dist/img/enemies/Sumo Master.png",
+                "icoImg":"dist/img/weapons/Sumo Master.png",
+                "srcImg":"dist/img/enemies/Sumo Master.png",
                 "srcJson":"",
                 "sourceLabel":"STATIC",
                 "bkp":{
-                    "srcJson":"_dist/img/enemies/sockets.JSON",
+                    "srcJson":"dist/img/enemies/sockets.JSON",
                     "sourceLabel":"sockets10"
                 },
                 "frames":{
@@ -58,7 +58,7 @@
                 "xp":6
             },
             "fire":{
-                "srcImg":"_dist/img/enemies/bullets/RedFire.PNG",
+                "srcImg":"dist/img/enemies/bullets/RedFire.PNG",
                 "quant":1,
                 "type":"physical",
                 "mode":"normal",
@@ -67,12 +67,12 @@
                 "fireFreq": 90
             },
             "graphicsData":{
-                "icoImg":"_dist/img/weapons/dagger.png",
-                "srcImg":"_dist/img/enemies/Lil Sumo.png",
+                "icoImg":"dist/img/weapons/dagger.png",
+                "srcImg":"dist/img/enemies/Lil Sumo.png",
                 "srcJson":"",
                 "sourceLabel":"STATIC",
                 "bkp":{
-                    "srcJson":"_dist/img/enemies/dragon.JSON",
+                    "srcJson":"dist/img/enemies/dragon.JSON",
                     "sourceLabel":"dragon10"
                 },
                 "frames":{
@@ -101,7 +101,7 @@
                 "xp":15
             },
             "fire":{
-                "srcImg":"_dist/img/enemies/bullets/RedFire.PNG",
+                "srcImg":"dist/img/enemies/bullets/RedFire.PNG",
                 "quant":5,
                 "type":"physical",
                 "mode":"arround",
@@ -110,8 +110,8 @@
                 "fireFreq": 60
             },
             "graphicsData":{
-                "icoImg":"_dist/img/enemies/Poison Scorpion.png",
-                "srcImg":"_dist/img/enemies/Poison Scorpion.png",
+                "icoImg":"dist/img/enemies/Poison Scorpion.png",
+                "srcImg":"dist/img/enemies/Poison Scorpion.png",
                 "srcJson":"",
                 "sourceLabel":"STATIC",
                 "frames":{}
