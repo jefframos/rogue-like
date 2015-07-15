@@ -1,0 +1,33 @@
+{
+    "itens":
+    [
+        {
+            "name":"relic 1" ,
+            "status":"2shots" ,
+            "baseValue":0 ,
+            "price":100,
+            "icoImg":"relic1"
+        },
+        {
+            "name":"relic 2" ,
+            "status":"3shots" ,
+            "baseValue":0 ,
+            "price":100,
+            "icoImg":"relic1"
+        },
+        {
+            "name":"power" ,
+            "status":"powershot" ,
+            "baseValue":0 ,
+            "price":100,
+            "icoImg":"relic1"
+        },
+        {
+            "name":"speed" ,
+            "status":"speedshot" ,
+            "baseValue":0 ,
+            "price":100,
+            "icoImg":"relic1"
+        }
+    ]
+}

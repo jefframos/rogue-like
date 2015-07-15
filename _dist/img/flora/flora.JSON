@@ -1,0 +1,53 @@
+{
+    "itens":
+    {
+        "biomas":[
+            {
+                "name":"Florest 1",
+                "trees":[
+                    {
+                        "biomes":["STANDARD2"],
+                        "happyTrees":
+                        [
+                            "florest1_tree_happy1",
+                            "florest1_tree_happy2"
+                        ],
+                        "normalTrees":
+                        [
+                            "florest1_tree_normal1",
+                            "florest1_tree_normal2",
+                            "florest1_tree_normal3"
+                        ],
+
+                        "madTrees":
+                        [
+                            "florest1_tree_mad1",
+                            "florest1_tree_mad2"
+                        ],                    
+                        "modifier":[0.1,0.05,0.025],
+                        "life":[5,8,20],
+                        "frequencies":[0.8,1,0.8],
+                        "frequence":0.2
+                    }
+                ],
+                "graphics":"_dist/img/flora/florest1/florest1.JSON",
+                "colors":{
+                    "STANDARD1":"0x488E5A",
+                    "STANDARD2":"0x3D7747",
+                    "STANDARD3":"0x488E5A",
+                    "LAKE":"0x336699",
+                    "LAVA":"0xcc3333",
+                    "ROAD1":"0xcc3333",
+                    "BEACH":"0x488E5A",
+                    "BEACHOLD":"0x336339",
+                    "BASEOLD":"0x336339",
+                    "BASE":"0x488E5A",
+                    "ISLAND1":"0x402A1C",
+                    "ISLAND2":"0x9B6E4D",
+                    "ISLAND3":"0xC19C70"
+                }
+            }
+        ]
+
+    }
+}

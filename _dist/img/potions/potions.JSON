@@ -1,0 +1,26 @@
+{
+    "itens":
+    [
+        {
+            "name": "Minor Potion",
+            "effect": "regen HP",
+            "baseValue": 35,
+            "price": 100,
+            "icoImg": "hpPotion"
+        },
+        {
+            "name": "Minor Ether",
+            "effect": "regen MP",
+            "baseValue": 35,
+            "price": 100,
+            "icoImg": "mpPotion"
+        },
+        {
+            "name": "Haste",
+            "effect": "haste",
+            "baseValue": 0,
+            "price": 100,
+            "icoImg": "hastePotion"
+        }
+    ]
+}
